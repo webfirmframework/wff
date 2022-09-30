@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 
 /**
  *
@@ -62,7 +63,7 @@ public final class MinIntervalExecutor {
      * @param task        the Runnable object to execute.
      */
     public MinIntervalExecutor(final Executor executor, final long minInterval, final Runnable task) {
-        this.executor = executor;
+        this.executor = executor != null ? executor : WffConfiguration.getVirtualThreadExecutor();
         this.minInterval = minInterval;
         this.task = task;
         if (task == null) {
@@ -79,7 +80,7 @@ public final class MinIntervalExecutor {
      * @param task        the Runnable object to execute.
      */
     public MinIntervalExecutor(final long minInterval, final Runnable task) {
-        executor = null;
+        executor = WffConfiguration.getVirtualThreadExecutor();
         this.minInterval = minInterval;
         this.task = task;
         if (task == null) {

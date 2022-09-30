@@ -134,6 +134,8 @@ public final class AbstractHtml5SharedObject implements Serializable {
 
     private volatile URIChangeTagSupplier urlPathChangeTagSupplier;
 
+    private volatile boolean whenURIUsed;
+
     public AbstractHtml5SharedObject(final AbstractHtml rootTag) {
         this.rootTag = rootTag;
         objectId = SharedObjectIdGenerator.nextId();
@@ -239,7 +241,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param accessObject
      * @return the childTagAppendListener
@@ -253,7 +255,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param childTagAppendListener the childTagAppendListener to set
      * @param accessObject
@@ -268,7 +270,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param accessObject
      * @return the childTagRemoveListener
@@ -282,7 +284,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param childTagRemoveListener the childTagRemoveListener to set
      * @param accessObject
@@ -432,7 +434,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param accessObject
      * @return the insertBeforeListener
@@ -452,7 +454,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param insertBeforeListener the insertBeforeListener to set
      * @param accessObject
@@ -471,7 +473,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param accessObject
      * @return the replaceListener
@@ -489,7 +491,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param replaceListener the replaceListener to set
      * @param accessObject
@@ -506,7 +508,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param accessObject
      * @return the insertTagsBeforeListener
@@ -524,7 +526,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param insertTagsBeforeListener the insertTagsBeforeListener to set
      * @param accessObject
@@ -542,7 +544,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param accessObject
      * @return the insertAfterListener
@@ -560,7 +562,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param insertAfterListener the insertAfterListener to set
      * @param accessObject
@@ -577,7 +579,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param wffBMDataDeleteListener the wffDataDeleteListener to set
      * @param accessObject
@@ -593,7 +595,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param wffBMDataUpdateListener the wffDataUpdateListener to set
      * @param accessObject
@@ -609,7 +611,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param accessObject
      * @return the insertBeforeListener
@@ -627,7 +629,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param accessObject
      * @return the wffBMDataUpdateListener
@@ -688,7 +690,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param pushQueue    the BrowserPage push queue to set
      * @param accessObject
@@ -702,7 +704,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @return the the push queue of BrowserPage
      */
@@ -718,7 +720,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param activeWSListener true if BrowserPage.wsListener != null otherwise
      *                         false
@@ -733,7 +735,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @return true if BrowserPage.wsListener != null otherwise false
      */
@@ -755,7 +757,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @param urlPathChangeTagSupplier
      * @param accessObject
@@ -771,7 +773,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     /**
-     * NB:- This method is for only for internal use
+     * NB:- This method is only for internal use
      *
      * @return htmlsForURLChange
      * @since 12.0.0-beta.1
@@ -784,4 +786,27 @@ public final class AbstractHtml5SharedObject implements Serializable {
         return urlPathChangeTagSupplier;
     }
 
+    /**
+     * @param accessObject
+     * @since 12.0.0-beta.7
+     */
+    public void whenURIUsed(@SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        whenURIUsed = true;
+    }
+
+    /**
+     * NB: This is mainly for internal use. If it returns true it doesn't mean that
+     * whenURI exists, if the whenURI is removed later after adding it then also
+     * this method will return true.
+     *
+     * @return true if whenURI feature is used anywhere in the tag hierarchy
+     *         otherwise false.
+     * @since 12.0.0-beta.7
+     */
+    public boolean isWhenURIUsed() {
+        return whenURIUsed;
+    }
 }

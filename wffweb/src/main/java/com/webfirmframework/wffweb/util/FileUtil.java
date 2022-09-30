@@ -20,11 +20,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author WFF
@@ -46,37 +48,83 @@ public final class FileUtil {
      * @param more     sub-directories
      * @return true if the basePath directory is deleted
      * @since 3.0.18
+     * @since 12.0.0-beta.7 memory optimization improvements
      */
     public static boolean removeDirRecursively(final String basePath, final String... more) {
         final Path dirPath = Paths.get(basePath, more);
+
         boolean deleted = false;
-        try {
-            if (Files.exists(dirPath)) {
-                final Deque<Path> q = Files.list(dirPath).collect(Collectors.toCollection(ArrayDeque::new));
-                Path each;
-                while ((each = q.poll()) != null) {
-                    if (Files.isDirectory(each)) {
-                        final List<Path> paths = Files.list(each).collect(Collectors.toList());
-                        if (paths.size() > 0) {
-                            for (final Path path : paths) {
-                                q.addFirst(path);
+        if (Files.exists(dirPath) && Files.isDirectory(dirPath)) {
+            // even if it is false it should proceed
+            try {
+                removeFilesRecursivelyByWalk(dirPath);
+                try (Stream<Path> pathsUnderDirPath = Files.list(dirPath)) {
+                    final Deque<Path> q = pathsUnderDirPath.collect(Collectors.toCollection(ArrayDeque::new));
+                    Path each;
+                    while ((each = q.poll()) != null) {
+                        if (Files.isDirectory(each)) {
+                            try (Stream<Path> pathsOfEach = Files.list(each)) {
+                                final List<Path> paths = pathsOfEach.toList();
+                                if (paths.size() > 0) {
+                                    for (final Path path : paths) {
+                                        q.addFirst(path);
+                                    }
+                                    q.addLast(each);
+                                } else {
+                                    Files.deleteIfExists(each);
+                                }
                             }
-                            q.addLast(each);
                         } else {
                             Files.deleteIfExists(each);
                         }
-
-                    } else {
-                        Files.deleteIfExists(each);
                     }
+                    deleted = Files.deleteIfExists(dirPath);
                 }
-                deleted = Files.deleteIfExists(dirPath);
+            } catch (final IOException e) {
+                // NOP
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
+        }
+
+        return deleted;
+    }
+
+    private static void deleteIfExists(final Path path) {
+        try {
+            Files.deleteIfExists(path);
         } catch (final IOException e) {
             // NOP
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
-        return deleted;
+    }
+
+    /**
+     * Deletes the basePath directory even if it is not empty.
+     *
+     * @param basePath
+     * @param more     sub-directories
+     * @return true if the basePath directory is deleted
+     * @since 12.0.0-beta.7
+     */
+    public static boolean removeDirRecursivelyByWalk(final String basePath, final String... more) {
+        final Path dirPath = Paths.get(basePath, more);
+        if (Files.exists(dirPath) && Files.isDirectory(dirPath)) {
+            try {
+                removeFilesRecursivelyByWalk(dirPath);
+                try (Stream<Path> walk = Files.walk(dirPath)) {
+                    walk.sorted(Comparator.reverseOrder()).forEach(FileUtil::deleteIfExists);
+                }
+            } catch (final IOException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+        }
+
+        return !Files.exists(dirPath);
+    }
+
+    private static void removeFilesRecursivelyByWalk(final Path dirPath) throws IOException {
+        try (Stream<Path> walk = Files.walk(dirPath)) {
+            walk.filter(Files::isRegularFile).forEach(FileUtil::deleteIfExists);
+        }
     }
 
 }

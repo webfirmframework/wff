@@ -523,9 +523,11 @@ public class AttributeRegistry {
      *         length
      * @author WFF
      * @since 1.1.3
+     * @since 12.0.0-beta.7
+     * immutable list
      */
     public static List<String> getAttributeNames() {
-        return new ArrayList<>(IndexedAttributeName.INSTANCE.sortedAttrNames());
+        return List.copyOf(IndexedAttributeName.INSTANCE.sortedAttrNames());
     }
 
     /**

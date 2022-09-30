@@ -302,4 +302,139 @@ public class WhenURIUseCaseTest {
         assertNull(browserPage.getURI());
         
     }
+    
+    @Test
+    public void testGetCurrentWhenURIProperties1() {
+        StringBuilder controlFlow = new StringBuilder();
+
+        Div div1 = new Div(null);
+        div1.whenURI((uriEvent) -> uriEvent.uriAfter().startsWith(initialUri), () -> {
+
+            div1.getCurrentWhenURIProperties().setPreventDuplicateSuccess(true);
+            controlFlow.append("div1.whenURI success\n");
+
+            return new AbstractHtml[] { new NoTag(null, "successcontent") };
+        }, () -> {
+            
+            div1.getCurrentWhenURIProperties().setPreventDuplicateFail(true);
+            controlFlow.append("div1.whenURI fail\n");
+
+            return new AbstractHtml[] { new NoTag(null, "failcontent") };
+        });
+
+        mainDiv.appendChild(div1);
+        assertEquals("div1.whenURI success\n", controlFlow.toString());
+        assertEquals("<div data-wff-id=\"S3\">successcontent</div>", div1.toBigHtmlString());
+        controlFlow.setLength(0);
+
+        browserPage.setURI(uri1);
+
+        assertEquals("<div data-wff-id=\"S3\">failcontent</div>", div1.toBigHtmlString());
+
+        assertEquals("div1.whenURI fail\n", controlFlow.toString());
+
+        browserPage.setURI(uri11);
+
+        assertEquals("<div data-wff-id=\"S3\">failcontent</div>", div1.toBigHtmlString());
+
+        assertEquals("div1.whenURI fail\n", controlFlow.toString());
+        
+        controlFlow.setLength(0);
+        browserPage.setURI(initialUri);
+        assertEquals("div1.whenURI success\n", controlFlow.toString());
+        assertEquals("<div data-wff-id=\"S3\">successcontent</div>", div1.toBigHtmlString());
+    }
+    
+    @Test
+    public void testGetCurrentWhenURIProperties2() {
+        StringBuilder controlFlow = new StringBuilder();
+
+        Div div1 = new Div(null);
+        div1.whenURI((uriEvent) -> uriEvent.uriAfter().startsWith("/user/items"), () -> {
+
+            div1.getCurrentWhenURIProperties().setPreventDuplicateSuccess(true);
+            controlFlow.append("div1.whenURI success\n");
+
+            Div div2 = new Div(null);
+            div2.whenURI(uriEvent -> uriEvent.uriAfter().startsWith("/user/items/view/123"), () -> {
+                div2.getCurrentWhenURIProperties().setPreventDuplicateSuccess(true);
+                controlFlow.append("div2.whenURI success\n");
+                return null;
+            }, () -> {
+                div2.getCurrentWhenURIProperties().setPreventDuplicateFail(true);
+                controlFlow.append("div2.whenURI fail\n");
+                return null;
+            }).currentAs();
+
+            return new AbstractHtml[] { new NoTag(null, "successcontent"), div2 };
+        }, () -> {
+
+            div1.getCurrentWhenURIProperties().setPreventDuplicateFail(true);
+            controlFlow.append("div1.whenURI fail\n");
+
+            return new AbstractHtml[] { new NoTag(null, "failcontent") };
+        });
+
+        mainDiv.appendChild(div1);
+        assertEquals("div1.whenURI fail\n", controlFlow.toString());
+        assertEquals("<div data-wff-id=\"S3\">failcontent</div>", div1.toBigHtmlString());
+        
+
+        browserPage.setURI("/user/items/view/123");
+
+        assertEquals("<div data-wff-id=\"S3\">successcontent<div data-wff-id=\"S4\"></div></div>", div1.toBigHtmlString());
+
+        assertEquals("""
+                div1.whenURI fail
+                div1.whenURI success
+                div2.whenURI success
+                """, controlFlow.toString());
+        
+        browserPage.setURI("/user/items/view/123456");
+
+        assertEquals("<div data-wff-id=\"S3\">successcontent<div data-wff-id=\"S4\"></div></div>", div1.toBigHtmlString());
+
+        assertEquals("""
+                div1.whenURI fail
+                div1.whenURI success
+                div2.whenURI success
+                """, controlFlow.toString());
+        
+        browserPage.setURI("/user/items/view/345");
+
+        assertEquals("<div data-wff-id=\"S3\">successcontent<div data-wff-id=\"S4\"></div></div>", div1.toBigHtmlString());
+
+        assertEquals("""
+                div1.whenURI fail
+                div1.whenURI success
+                div2.whenURI success
+                div2.whenURI fail
+                """, controlFlow.toString());
+
+        browserPage.setURI("/user/items/view/678");
+
+        assertEquals("<div data-wff-id=\"S3\">successcontent<div data-wff-id=\"S4\"></div></div>", div1.toBigHtmlString());
+
+        assertEquals("""
+                div1.whenURI fail
+                div1.whenURI success
+                div2.whenURI success
+                div2.whenURI fail
+                """, controlFlow.toString());
+        
+        browserPage.setURI("/user/items/view/123");
+
+        assertEquals("<div data-wff-id=\"S3\">successcontent<div data-wff-id=\"S4\"></div></div>", div1.toBigHtmlString());
+        
+        assertEquals("""
+                div1.whenURI fail
+                div1.whenURI success
+                div2.whenURI success
+                div2.whenURI fail
+                div2.whenURI success
+                """, controlFlow.toString());
+
+        
+    }
+        
 }

@@ -2,6 +2,7 @@ module com.webfirmframework.wffweb {
 
     requires java.base;
     requires java.logging;
+    requires java.management;
 
     exports com.webfirmframework.wffweb;
     exports com.webfirmframework.wffweb.common;

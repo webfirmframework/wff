@@ -49,6 +49,16 @@ public class ClassAttributeTest {
             assertEquals("class=\"class1 class2\"",
                     classAttribute.toHtmlString());
         }
+        {
+            ClassAttribute classAttribute = new ClassAttribute("");
+            assertEquals("",
+                    classAttribute.getAttributeValue());
+        }
+        {
+            ClassAttribute classAttribute = new ClassAttribute();
+            assertEquals("",
+                    classAttribute.getAttributeValue());
+        }
     }
 
     @Test

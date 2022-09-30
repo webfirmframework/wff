@@ -39,13 +39,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import com.webfirmframework.wffweb.internal.InternalId;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.security.object.SharedTagContentSecurity;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.server.page.ClientTasksWrapper;
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
@@ -1193,7 +1193,7 @@ public class SharedTagContent<T> {
                 // this.executor = executor;
 
                 final List<Map.Entry<NoTag, InsertedTagData<T>>> insertedTagsEntries = insertedTags.entrySet().stream()
-                        .sorted(Map.Entry.comparingByValue()).collect(Collectors.toList());
+                        .sorted(Map.Entry.comparingByValue()).toList();
 
                 insertedTags.clear();
 
@@ -1234,7 +1234,7 @@ public class SharedTagContent<T> {
                         } else {
                             noTag = prevNoTag;
                         }
-                    } catch (final RuntimeException e) {
+                    } catch (final Exception e) {
                         contentApplied = new Content<>("", false);
                         ((AbstractHtml) prevNoTag).setCacheSTCFormatter(null, ACCESS_OBJECT);
                         noTag = new NoTag(null, contentApplied.content, contentApplied.contentTypeHtml);
@@ -1389,7 +1389,7 @@ public class SharedTagContent<T> {
                                     if (runnable != null) {
                                         runnables.add(runnable);
                                     }
-                                } catch (final RuntimeException e) {
+                                } catch (final Exception e) {
                                     LOGGER.log(Level.SEVERE, "Exception while ContentChangeListener.contentChanged", e);
                                 }
                             }
@@ -1408,7 +1408,7 @@ public class SharedTagContent<T> {
                 for (final Runnable runnable : runnables) {
                     try {
                         runnable.run();
-                    } catch (final RuntimeException e) {
+                    } catch (final Exception e) {
                         LOGGER.log(Level.SEVERE,
                                 "Exception while Runnable.run returned by ContentChangeListener.contentChanged", e);
                     }
@@ -1477,10 +1477,11 @@ public class SharedTagContent<T> {
         }
 
         if (pushQueues.size() > 1) {
+            final Executor activeExecutor = executor != null ? executor : WffConfiguration.getVirtualThreadExecutor();
             if (UpdateClientNature.ALLOW_ASYNC_PARALLEL.equals(updateClientNature)) {
-                if (executor != null) {
+                if (activeExecutor != null) {
                     for (final PushQueue pushQueue : pushQueues) {
-                        executor.execute(pushQueue::push);
+                        activeExecutor.execute(pushQueue::push);
                     }
                 } else {
                     for (final PushQueue pushQueue : pushQueues) {
@@ -1489,14 +1490,13 @@ public class SharedTagContent<T> {
                 }
 
             } else if (UpdateClientNature.ALLOW_PARALLEL.equals(updateClientNature)) {
-
-                if (executor != null) {
+                if (activeExecutor != null) {
                     final List<CompletableFuture<Boolean>> cfList = new ArrayList<>(pushQueues.size());
                     for (final PushQueue pushQueue : pushQueues) {
                         final CompletableFuture<Boolean> cf = CompletableFuture.supplyAsync(() -> {
                             pushQueue.push();
                             return true;
-                        }, executor);
+                        }, activeExecutor);
                         cfList.add(cf);
                     }
 
@@ -1598,7 +1598,7 @@ public class SharedTagContent<T> {
                     noTag = new NoTag(null, "", false);
                 }
 
-            } catch (final RuntimeException e) {
+            } catch (final Exception e) {
                 noTag = new NoTag(null, "", false);
                 LOGGER.log(Level.SEVERE, "Exception while ContentFormatter.format", e);
             }
@@ -1913,7 +1913,7 @@ public class SharedTagContent<T> {
                                 if (runnable != null) {
                                     runnables.add(runnable);
                                 }
-                            } catch (final RuntimeException e) {
+                            } catch (final Exception e) {
                                 LOGGER.log(Level.SEVERE, "Exception while DetachListener.detached", e);
                             }
                         }
@@ -1939,7 +1939,7 @@ public class SharedTagContent<T> {
             for (final Runnable runnable : runnables) {
                 try {
                     runnable.run();
-                } catch (final RuntimeException e) {
+                } catch (final Exception e) {
                     LOGGER.log(Level.SEVERE, "Exception while Runnable.run returned by DetachListener.detached", e);
                 }
             }

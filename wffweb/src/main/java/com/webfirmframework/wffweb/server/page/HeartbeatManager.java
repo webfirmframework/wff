@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 
 /**
  *
@@ -68,7 +69,7 @@ public final class HeartbeatManager {
      *                    to the heartbeat url for keeping http session alive.
      */
     public HeartbeatManager(final Executor executor, final long minInterval, final Runnable task) {
-        this.executor = executor;
+        this.executor = executor != null ? executor : WffConfiguration.getVirtualThreadExecutor();
         this.minInterval = minInterval;
         lastAccessedTime = System.currentTimeMillis();
         this.task = task;
@@ -87,7 +88,7 @@ public final class HeartbeatManager {
      *                    to the heartbeat url for keeping http session alive.
      */
     public HeartbeatManager(final long minInterval, final Runnable task) {
-        executor = null;
+        executor = WffConfiguration.getVirtualThreadExecutor();
         this.minInterval = minInterval;
         this.task = task;
         if (task == null) {

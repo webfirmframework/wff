@@ -863,30 +863,38 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
      */
     protected void setAttributeValue(final String attributeValue) {
         if (!Objects.equals(this.attributeValue, attributeValue)) {
-            boolean listenerInvoked = false;
-
-            final Collection<Lock> writeLocks = lockAndGetWriteLocksWithAttrLock();
-
-            // should be after lockAndGetWriteLocks
-            final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
-
-            try {
-
-                // this.attributeValue = attributeValue must be
-                // before invokeValueChangeListeners
-                this.attributeValue = attributeValue;
-                setModifiedLockless(true);
-                invokeValueChangeListeners(ownerTagsRecord);
-                listenerInvoked = true;
-            } finally {
-                for (final Lock lock : writeLocks) {
-                    lock.unlock();
-                }
-
-            }
-
-            pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
+            assignAttributeValue(attributeValue);
         }
+    }
+
+    /**
+     * @param attributeValue the value to set again even if the existing value is
+     *                       same at server side, the assigned value will be
+     *                       reflected in the UI. Sometimes we may modify the value
+     *                       only at client side (not server side), {@code setValue}
+     *                       will change only if the passed value is different from
+     *                       existing value at server side.
+     * @since 12.0.0-beta.7
+     */
+    protected void assignAttributeValue(final String attributeValue) {
+        boolean listenerInvoked = false;
+        final Collection<Lock> writeLocks = lockAndGetWriteLocksWithAttrLock();
+        // should be after lockAndGetWriteLocks
+        final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
+        try {
+
+            // this.attributeValue = attributeValue must be
+            // before invokeValueChangeListeners
+            this.attributeValue = attributeValue;
+            setModifiedLockless(true);
+            invokeValueChangeListeners(ownerTagsRecord);
+            listenerInvoked = true;
+        } finally {
+            for (final Lock lock : writeLocks) {
+                lock.unlock();
+            }
+        }
+        pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
     }
 
     /**
@@ -1063,7 +1071,10 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
      * @param attributeValueSet the attributeValueSet to set
      * @author WFF
      * @since 1.0.0
+     * @deprecated use {@link #replaceAllInAttributeValueSet(Collection)} instead of
+     *             this method. This method is only for internal use.
      */
+    @Deprecated(forRemoval = false, since = "12.0.0-beta.7")
     protected void setAttributeValueSet(final Set<String> attributeValueSet) {
         if (!Objects.equals(this.attributeValueSet, attributeValueSet)) {
             final long stamp = ownerTagsLock.writeLock();

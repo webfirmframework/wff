@@ -15,16 +15,42 @@
  */
 package com.webfirmframework.wffweb.settings;
 
+import java.lang.management.ManagementFactory;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * @author WFF
- * @since 1.0.0
  * @version 1.0.0
- *
+ * @since 1.0.0
  */
 public class WffConfiguration {
 
     private static boolean debugMode;
     private static boolean directionWarningOn;
+
+    private static final Executor VIRTUAL_THREAD_EXECUTOR;
+
+    static {
+        ExecutorService tempExecutor = null;
+        try {
+            // TODO ManagementFactory requires java.management module so remove this line
+            // later and the module entry from module-info.java as well
+            final List<String> inputArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
+            if (Integer.parseInt(System.getProperty("java.vm.specification.version", "17")) >= 19
+                    && (inputArguments.contains("--enable-preview")
+                            || inputArguments.contains("--enable-virtual-thread"))
+                    && Executors.class.getMethod("newVirtualThreadPerTaskExecutor")
+                            .invoke(null) instanceof final ExecutorService executor) {
+                tempExecutor = executor;
+            }
+        } catch (final Exception e) {
+            // NOP
+        }
+        VIRTUAL_THREAD_EXECUTOR = tempExecutor;
+    }
 
     /**
      * @return the debugMode
@@ -65,4 +91,11 @@ public class WffConfiguration {
         WffConfiguration.directionWarningOn = directionWarningOn;
     }
 
+    /**
+     * @return the virtual thread per task executor if available otherwise null.
+     * @since 12.0.0-beta.7
+     */
+    public static Executor getVirtualThreadExecutor() {
+        return VIRTUAL_THREAD_EXECUTOR;
+    }
 }

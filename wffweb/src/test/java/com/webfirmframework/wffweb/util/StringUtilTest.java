@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.util;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.junit.Test;
@@ -448,7 +449,8 @@ public class StringUtilTest {
         int deli = Character.codePointAt(";", 0);
         
         assertEquals("one;two;three", StringUtil.split("one;two;three", ':')[0]);
-        
+        assertArrayEquals(new String[]{"", "some", "uri", "pathparam", "[pathUri]", "gap", "{userId}"}, StringUtil.split("/some/uri/pathparam/[pathUri]/gap/{userId}", '/'));
+
         assertEquals("without", StringUtil.split("without", deli)[0]);
         
         assertEquals("", StringUtil.split("", deli)[0]);
@@ -619,9 +621,20 @@ public class StringUtilTest {
 
     @Test
     public void testJoin2() throws Exception {
-        final String join = StringUtil.join(',', "one", "two", "three", "four");
-
-        assertEquals("one,two,three,four", join);
+        {
+            final String join = StringUtil.join(',', "one", "two", "three", "four");
+            assertEquals("one,two,three,four", join);
+        }
+        {
+            final String join = StringUtil.join(' ', new String[0]
+                    );
+            assertEquals("", join);
+        }
+        {
+            final String join = StringUtil.join(' ',
+                    "one");
+            assertEquals("one", join);
+        }
 
     }
 
@@ -636,6 +649,16 @@ public class StringUtilTest {
             final String join = StringUtil.join(' ',
                     Arrays.asList("one", "two", "three", "four"));
             assertEquals("one two three four", join);
+        }
+        {
+            final String join = StringUtil.join(' ',
+                    List.of());
+            assertEquals("", join);
+        }
+        {
+            final String join = StringUtil.join(' ',
+                    List.of("one"));
+            assertEquals("one", join);
         }
     }
     

@@ -175,6 +175,12 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     private volatile URIEvent lastURIEvent;
 
+    private volatile int lastWhenURIIndex = -1;
+
+    private volatile boolean lastWhenURISuccess = false;
+
+    private volatile URIChangeContent lastURIChangeContent = null;
+
     private volatile Boolean lastURIPredicateTest = null;
 
     volatile long hierarchyOrder;
@@ -216,7 +222,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     private static record URIChangeContent(Predicate<URIEvent> uriEventPredicate, Supplier<AbstractHtml[]> successTags,
             Supplier<AbstractHtml[]> failTags, Consumer<TagEvent> successConsumer, Consumer<TagEvent> failConsumer,
-            WhenURIMethodType methodType) implements Serializable {
+            WhenURIMethodType methodType, WhenURIProperties whenURIProperties) implements Serializable {
     }
 
     static {
@@ -1427,7 +1433,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 3.0.1
      */
     public boolean removeChildren(final AbstractHtml... children) {
-        return removeChildren(Arrays.asList(children));
+        return removeChildren(List.of(children));
     }
 
     /**
@@ -1844,6 +1850,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                 eachChild.sharedObject = sharedObject;
 
+                if (eachChild.uriChangeContents != null && !eachChild.sharedObject.isWhenURIUsed()) {
+                    eachChild.sharedObject.whenURIUsed(ACCESS_OBJECT);
+                }
+
                 // NB: 0 for rootTag so first increment and assign
                 eachChild.hierarchyOrder = ++sharedObject.getRootTag().hierarchyOrderCounter;
 
@@ -1871,22 +1881,27 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 12.0.0-beta.1 should be called only after lock and while
      *        adding/append/prepend/whenURI etc.. this tag to another tag.
      */
-    private final void applyURIChange(final AbstractHtml5SharedObject sharedObject) {
-        final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
-        applyURIChange(uriChangeTagSupplier, false);
+    private void applyURIChange(final AbstractHtml5SharedObject sharedObject) {
+        applyURIChange(sharedObject, null, false);
     }
 
     /**
-     * @param uriChangeTagSupplier
+     * @param sharedObject
+     * @param tagByWffId   it is required only if calling from
+     *                     browserPage.initAbstractHtml method otherwise null.
      * @param updateClient
+     * @return
      * @since 12.0.0-beta.1 should be called only after lock and while
      *        adding/append/prepend/whenURI etc.. this tag to another tag.
      */
-    private final void applyURIChange(final URIChangeTagSupplier uriChangeTagSupplier, final boolean updateClient) {
+    void applyURIChange(final AbstractHtml5SharedObject sharedObject, final Map<String, AbstractHtml> tagByWffId,
+            final boolean updateClient) {
+
+        final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
 
         final URIEvent currentURIEvent = uriChangeTagSupplier != null ? uriChangeTagSupplier.supply(null) : null;
 
-        if (currentURIEvent != null) {
+        if (currentURIEvent != null || tagByWffId != null) {
             final Deque<List<AbstractHtml>> childrenStack = new ArrayDeque<>();
             childrenStack.push(List.of(this));
             List<AbstractHtml> children;
@@ -1898,10 +1913,19 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     if (innerHtmls != null && innerHtmls.length > 0) {
                         childrenStack.push(List.of(innerHtmls));
                     } else if (eachChild.children != null && eachChild.children.size() > 0) {
-                        childrenStack.push(new ArrayList<>(eachChild.children));
+                        childrenStack.push(List.copyOf(eachChild.children));
                     }
                     if (eachChild.uriChangeContents != null) {
+                        // null checking is not required if uriChangeTagSupplier == null then both
+                        // currentURIEvent and
+                        // tagByWffId will be null
                         uriChangeTagSupplier.supply(eachChild);
+                        if (tagByWffId != null && TagUtil.isTagged(eachChild)) {
+                            if (eachChild.dataWffId == null) {
+                                eachChild.setDataWffId(sharedObject.getNewDataWffId(ACCESS_OBJECT));
+                            }
+                            tagByWffId.put(eachChild.dataWffId.getValue(), eachChild);
+                        }
                     }
                 }
             }
@@ -2741,7 +2765,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 return false;
             }
 
-            final List<String> removedAttributeNames = new ArrayList<String>(attributesToRemove.size());
+            final List<String> removedAttributeNames = new ArrayList<>(attributesToRemove.size());
 
             for (final AbstractAttribute attribute : attributesToRemove) {
                 if (AttributeUtil.unassignOwnerTag(ACCESS_OBJECT, attribute, this)
@@ -3669,7 +3693,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 break;
             }
 
-            final List<AbstractHtml> childrenHoldingBottomChild = new ArrayList<>(bottomChild.parent.children);
+            final List<AbstractHtml> childrenHoldingBottomChild = List.copyOf(bottomChild.parent.children);
 
             final int indexOfNextToBottomChild = childrenHoldingBottomChild.indexOf(bottomChild) + 1;
 
@@ -3683,7 +3707,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     break;
                 }
 
-                final List<AbstractHtml> childrenHoldingParent = new ArrayList<>(bottomChild.parent.parent.children);
+                final List<AbstractHtml> childrenHoldingParent = List.copyOf(bottomChild.parent.parent.children);
 
                 final int indexOfNextToBottomParent = childrenHoldingParent.indexOf(bottomChild.parent) + 1;
 
@@ -3744,7 +3768,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 }
             }
 
-            final List<AbstractHtml> childrenHoldingBottomChild = new ArrayList<>(bottomChild.parent.children);
+            final List<AbstractHtml> childrenHoldingBottomChild = List.copyOf(bottomChild.parent.children);
 
             final int indexOfNextToBottomChild = childrenHoldingBottomChild.indexOf(bottomChild) + 1;
 
@@ -3767,7 +3791,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     }
                 }
 
-                final List<AbstractHtml> childrenHoldingParent = new ArrayList<>(bottomChild.parent.parent.children);
+                final List<AbstractHtml> childrenHoldingParent = List.copyOf(bottomChild.parent.parent.children);
 
                 final int indexOfNextToBottomParent = childrenHoldingParent.indexOf(bottomChild.parent) + 1;
 
@@ -3880,7 +3904,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             if (child.parent != null) {
 
-                final List<AbstractHtml> childrenHoldingChild = new ArrayList<>(child.parent.children);
+                final List<AbstractHtml> childrenHoldingChild = List.copyOf(child.parent.children);
                 final int nextIndexOfChild = childrenHoldingChild.indexOf(child) + 1;
                 if (nextIndexOfChild < childrenHoldingChild.size()) {
                     return childrenHoldingChild.get(nextIndexOfChild);
@@ -3909,7 +3933,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             current = null;
 
             if (child.parent != null) {
-                final List<AbstractHtml> childrenHoldingChild = new ArrayList<>(child.parent.children);
+                final List<AbstractHtml> childrenHoldingChild = List.copyOf(child.parent.children);
 
                 final int nextIndexOfChild = childrenHoldingChild.indexOf(child) + 1;
                 if (nextIndexOfChild < childrenHoldingChild.size()) {
@@ -4594,7 +4618,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      */
     private List<Lock> initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
             final AbstractHtml[] removedAbstractHtmls) {
-        final List<Lock> locks = new ArrayList<Lock>(removedAbstractHtmls.length);
+        final List<Lock> locks = new ArrayList<>(removedAbstractHtmls.length);
         for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
             final Lock lock = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, true);
             locks.add(lock);
@@ -4671,6 +4695,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 }
 
                 stackChild.sharedObject = newSharedObject;
+
+                if (stackChild.uriChangeContents != null && !stackChild.sharedObject.isWhenURIUsed()) {
+                    stackChild.sharedObject.whenURIUsed(ACCESS_OBJECT);
+                }
 
                 final Set<AbstractHtml> subChildren = stackChild.children;
 
@@ -5974,7 +6002,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             int count = 0;
 
-            final List<Lock> newSOLocks = new ArrayList<Lock>(1);
+            final List<Lock> newSOLocks = new ArrayList<>(1);
 
             try {
 
@@ -6889,6 +6917,45 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_SUPPLIER, null, null, index);
     }
 
+    /**
+     * Replaces the children of this tag with the tags supplied by
+     * {@code successTagsSupplier} if the predicate test returns true otherwise
+     * invokes {@code failConsumer} if no further {@code whenURI} conditions exist
+     * and if the {@code failConsumer} is null the existing children of this tag
+     * will be removed. To remove the supplier objects from this tag, call
+     * {@link AbstractHtml#removeURIChangeActions()} method. To get the current uri
+     * inside the supplier object call {@link BrowserPage#getURI()}. This action
+     * will be performed after initial client ping. You can call {@code whenURI}
+     * multiple times to set multiple actions,
+     * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
+     * action at the given index. If multiple actions are added by this method, only
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
+     *
+     * @param uriEventPredicate   the predicate object to test, the argument of the
+     *                            test method is the changed uri details, if the
+     *                            test method returns true then the tags given by
+     *                            {@code successTagsSupplier} will be added as inner
+     *                            html to this tag. If test returns false, the tags
+     *                            given by {@code failTagsSupplier} will be added as
+     *                            * inner html to this tag and if the
+     *                            {@code failTagsSupplier} is null the existing
+     *                            children will be removed from this tag.
+     * @param successTagsSupplier the supplier object for child tags if
+     *                            {@code uriEventPredicate} test returns true. If
+     *                            {@code successTagsSupplier.get()} method returns
+     *                            null, no action will be done on the tag.
+     * @param failConsumer        the consumer to execute if
+     *                            {@code uriEventPredicate.test()} returns false.
+     *                            {@code null} can be passed if there is no
+     *                            {@code failConsumer}.
+     * @param index               the index to replace the existing action with
+     *                            this. A value less than zero will add this
+     *                            condition to the last.
+     * @return URIStateSwitch
+     * @since 12.0.0-beta.1
+     */
     @Override
     public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Consumer<TagEvent> failConsumer,
@@ -6900,6 +6967,43 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 null, failConsumer, index);
     }
 
+    /**
+     * Replaces the children of this tag with the tags supplied by
+     * {@code successTagsSupplier} if the predicate test returns true otherwise
+     * invokes {@code failConsumer} if no further {@code whenURI} conditions exist
+     * and if the {@code failConsumer} is null the existing children of this tag
+     * will be removed. To remove the supplier objects from this tag, call
+     * {@link AbstractHtml#removeURIChangeActions()} method. To get the current uri
+     * inside the supplier object call {@link BrowserPage#getURI()}. This action
+     * will be performed after initial client ping. You can call {@code whenURI}
+     * multiple times to set multiple actions,
+     * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
+     * action at the given index. If multiple actions are added by this method, only
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
+     *
+     * @param uriEventPredicate   the predicate object to test, the argument of the
+     *                            test method is the changed uri details, if the
+     *                            test method returns true then the tags given by
+     *                            {@code successTagsSupplier} will be added as inner
+     *                            html to this tag. If test returns false, the tags
+     *                            given by {@code failTagsSupplier} will be added as
+     *                            * inner html to this tag and if the
+     *                            {@code failTagsSupplier} is null the existing
+     *                            children will be removed from this tag.
+     * @param successTagsSupplier the supplier object for child tags if
+     *                            {@code uriEventPredicate} test returns true. If
+     *                            {@code successTagsSupplier.get()} method returns
+     *                            null, no action will be done on the tag.
+     * @param failConsumer        the consumer to execute if
+     *                            {@code uriEventPredicate.test()} returns false.
+     *                            {@code null} can be passed if there is no
+     *                            {@code failConsumer}.
+     *
+     * @return URIStateSwitch
+     * @since 12.0.0-beta.1
+     */
     @Override
     public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Consumer<TagEvent> failConsumer) {
@@ -6910,6 +7014,47 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 null, failConsumer, -1);
     }
 
+    /**
+     * Invokes {@code successConsumer} if the predicate test returns true otherwise
+     * replaces the children of this tag with the tags supplied by
+     * {@code failTagsSupplier} if no further {@code whenURI} conditions exist and
+     * if the {@code successConsumer} is null the existing children of this tag will
+     * be removed if predicate test returns true. To remove the whenURI actions from
+     * this tag, call {@link AbstractHtml#removeURIChangeActions()} method. To get
+     * the current uri inside the supplier object call {@link BrowserPage#getURI()}.
+     * This action will be performed after initial client ping. You can call
+     * {@code whenURI} multiple times to set multiple actions,
+     * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
+     * action at the given index. If multiple actions are added by this method, only
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
+     *
+     * @param uriEventPredicate the predicate object to test, the argument of the
+     *                          test method is the changed uri details, if the test
+     *                          method returns true then the tags given by
+     *                          {@code successTagsSupplier} will be added as inner
+     *                          html to this tag. If test returns false, the tags
+     *                          given by {@code failTagsSupplier} will be added as *
+     *                          inner html to this tag and if the
+     *                          {@code failTagsSupplier} is null the existing
+     *                          children will be removed from this tag.
+     * @param successConsumer   the consumer object to invoke if
+     *                          {@code uriEventPredicate} test returns true, no
+     *                          changes will be done on the tag.
+     * @param failTagsSupplier  the supplier object to supply child tags for the tag
+     *                          if {@code uriEventPredicate.test()} returns false.
+     *                          {@code null} can be passed if there is no
+     *                          {@code failTagsSupplier} in such case the existing
+     *                          children will be removed.
+     *
+     * @param index             the index to replace the existing action with this.
+     *                          A value less than zero will add this condition to
+     *                          the last.
+     *
+     * @return URIStateSwitch
+     * @since 12.0.0-beta.1
+     */
     @Override
     public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Consumer<TagEvent> successConsumer,
             final Supplier<AbstractHtml[]> failTagsSupplier, final int index) {
@@ -6920,6 +7065,44 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 successConsumer, null, index);
     }
 
+    /**
+     * Invokes {@code successConsumer} if the predicate test returns true otherwise
+     * replaces the children of this tag with the tags supplied by
+     * {@code failTagsSupplier} if no further {@code whenURI} conditions exist and
+     * if the {@code successConsumer} is null the existing children of this tag will
+     * be removed if predicate test returns true. To remove the whenURI actions from
+     * this tag, call {@link AbstractHtml#removeURIChangeActions()} method. To get
+     * the current uri inside the supplier object call {@link BrowserPage#getURI()}.
+     * This action will be performed after initial client ping. You can call
+     * {@code whenURI} multiple times to set multiple actions,
+     * {@link AbstractHtml#removeURIChangeAction(int)} may be used to remove each
+     * action at the given index. If multiple actions are added by this method, only
+     * the first {@code uriEventPredicate} test passed action will be performed on
+     * uri change. The main intention of this method is to set children tags for
+     * this tag when the given {@code uriEventPredicate} test passes on URI change.
+     *
+     * @param uriEventPredicate the predicate object to test, the argument of the
+     *                          test method is the changed uri details, if the test
+     *                          method returns true then the tags given by
+     *                          {@code successTagsSupplier} will be added as inner
+     *                          html to this tag. If test returns false, the tags
+     *                          given by {@code failTagsSupplier} will be added as *
+     *                          inner html to this tag and if the
+     *                          {@code failTagsSupplier} is null the existing
+     *                          children will be removed from this tag.
+     * @param successConsumer   the consumer object to invoke if
+     *                          {@code uriEventPredicate} test returns true, no
+     *                          changes will be done on the tag.
+     * @param failTagsSupplier  the supplier object to supply child tags for the tag
+     *                          if {@code uriEventPredicate.test()} returns false.
+     *                          {@code null} can be passed if there is no
+     *                          {@code failTagsSupplier} in such case the existing
+     *                          children will be removed.
+     *
+     *
+     * @return URIStateSwitch
+     * @since 12.0.0-beta.1
+     */
     @Override
     public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Consumer<TagEvent> successConsumer,
             final Supplier<AbstractHtml[]> failTagsSupplier) {
@@ -7019,7 +7202,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
             final URIChangeContent uriChangeContent = new URIChangeContent(uriEventPredicate, successTagsSupplier,
-                    failTagsSupplier, successConsumer, failConsumer, methodType);
+                    failTagsSupplier, successConsumer, failConsumer, methodType, new WhenURIProperties());
 
             if (uriChangeContents == null && index >= 0) {
                 throw new InvalidValueException("There is no existing whenURI condition to replace");
@@ -7034,8 +7217,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 uriChangeContents.set(index, uriChangeContent);
             }
 
-            final URIChangeTagSupplier uriChangeTagSupplier = sharedObject.getURIChangeTagSupplier(ACCESS_OBJECT);
-            applyURIChange(uriChangeTagSupplier, true);
+            sharedObject.whenURIUsed(ACCESS_OBJECT);
+
+            applyURIChange(sharedObject, null, true);
 
         } finally {
             lock.unlock();
@@ -7056,6 +7240,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             uriChangeContents = null;
             lastURIEvent = null;
             lastURIPredicateTest = null;
+            lastWhenURIIndex = -1;
+            lastURIChangeContent = null;
         } finally {
             lock.unlock();
         }
@@ -7078,6 +7264,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 uriChangeContents = null;
                 lastURIEvent = null;
                 lastURIPredicateTest = null;
+                lastWhenURIIndex = -1;
+                lastURIChangeContent = null;
             }
 
         } finally {
@@ -7110,7 +7298,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                         if (innerHtmls != null && innerHtmls.length > 0) {
                             childrenStack.push(List.of(innerHtmls));
                         } else if (eachChild.children != null && eachChild.children.size() > 0) {
-                            childrenStack.push(new ArrayList<>(eachChild.children));
+                            childrenStack.push(List.copyOf(eachChild.children));
                         }
                         if (eachChild.uriChangeContents != null) {
                             uriChangeTagSupplier.supply(eachChild);
@@ -7145,28 +7333,49 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             boolean executed = false;
 
+            int index = 0;
+
+            int uriChangeContentIndex = index;
+
+            final int lastWhenURIIndexLocal = lastWhenURIIndex;
+
             for (final URIChangeContent each : uriChangeContents) {
                 lastUriChangeContent = each;
+                lastURIChangeContent = each;
+                uriChangeContentIndex = index;
+                lastWhenURIIndex = uriChangeContentIndex;
+                index++;
 
                 if (each.uriEventPredicate.test(uriEvent)) {
                     if (each.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_CONSUMER)
                             || each.methodType.equals(WhenURIMethodType.SUCCESS_CONSUMER_FAIL_SUPPLIER)) {
-                        each.successConsumer.accept(new TagEvent(this, uriEvent));
+                        if (each.whenURIProperties == null || lastWhenURIIndexLocal == -1
+                                || !each.whenURIProperties.duplicateSuccessPrevented
+                                || lastWhenURIIndexLocal != uriChangeContentIndex || !lastWhenURISuccess) {
+                            each.successConsumer.accept(new TagEvent(this, uriEvent));
+                            lastWhenURISuccess = true;
+                        }
                     } else {
-                        final AbstractHtml[] innerHtmls = each.successTags.get();
-                        if (innerHtmls != null) {
-                            // just to throw exception if it contains null or duplicate element
-                            Set.of(innerHtmls);
-                            if (children == null || !Arrays.equals(children.toArray(), innerHtmls)) {
-                                addInnerHtmls(true, updateClient, innerHtmls);
+                        if (each.whenURIProperties == null || lastWhenURIIndexLocal == -1
+                                || !each.whenURIProperties.duplicateSuccessPrevented
+                                || lastWhenURIIndexLocal != uriChangeContentIndex || !lastWhenURISuccess) {
+                            final AbstractHtml[] innerHtmls = each.successTags.get();
+                            if (innerHtmls != null) {
+                                // just to throw exception if it contains null or duplicate element
+                                Set.of(innerHtmls);
+                                if (children == null || !Arrays.equals(children.toArray(), innerHtmls)) {
+                                    addInnerHtmls(true, updateClient, innerHtmls);
+                                }
+                                insertedHtmls = innerHtmls;
                             }
-                            insertedHtmls = innerHtmls;
+                            lastWhenURISuccess = true;
                         }
                     }
 
                     executed = true;
                     break;
                 }
+
             }
 
             if (lastUriChangeContent != null) {
@@ -7176,37 +7385,87 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                             || lastUriChangeContent.methodType
                                     .equals(WhenURIMethodType.SUCCESS_SUPPLIER_FAIL_CONSUMER)) {
                         if (lastUriChangeContent.failConsumer != null) {
-                            lastUriChangeContent.failConsumer.accept(new TagEvent(this, uriEvent));
+                            if (lastUriChangeContent.whenURIProperties == null || lastWhenURIIndexLocal == -1
+                                    || !lastUriChangeContent.whenURIProperties.duplicateFailPrevented
+                                    || lastWhenURIIndexLocal != uriChangeContentIndex || lastWhenURISuccess) {
+                                lastUriChangeContent.failConsumer.accept(new TagEvent(this, uriEvent));
+                                lastWhenURISuccess = false;
+                            }
                             lastURIPredicateTest = true;
                         }
                     } else {
-                        final Supplier<AbstractHtml[]> failTags = lastUriChangeContent.failTags();
-                        if (failTags != null) {
-                            final AbstractHtml[] innerHtmls = failTags.get();
-                            if (innerHtmls != null) {
-                                // just to throw exception if it contains null or duplicate element
-                                Set.of(innerHtmls);
-                                if (children == null || !Arrays.equals(children.toArray(), innerHtmls)) {
-                                    addInnerHtmls(true, updateClient, innerHtmls);
+                        if (lastUriChangeContent.failTags != null) {
+                            if (lastUriChangeContent.whenURIProperties == null || lastWhenURIIndexLocal == -1
+                                    || !lastUriChangeContent.whenURIProperties.duplicateFailPrevented
+                                    || lastWhenURIIndexLocal != uriChangeContentIndex || lastWhenURISuccess) {
+                                final AbstractHtml[] innerHtmls = lastUriChangeContent.failTags.get();
+                                if (innerHtmls != null) {
+                                    // just to throw exception if it contains null or duplicate element
+                                    Set.of(innerHtmls);
+                                    if (children == null || !Arrays.equals(children.toArray(), innerHtmls)) {
+                                        addInnerHtmls(true, updateClient, innerHtmls);
+                                    }
+                                    insertedHtmls = innerHtmls;
                                 }
-                                insertedHtmls = innerHtmls;
+                                lastWhenURISuccess = false;
                             }
                             lastURIPredicateTest = true;
+
                         } else {
-                            if (updateClient) {
-                                removeAllChildren();
-                            } else {
-                                removeAllChildrenAndGetEventsLockless(updateClient);
+                            if (lastUriChangeContent.whenURIProperties == null || lastWhenURIIndexLocal == -1
+                                    || !lastUriChangeContent.whenURIProperties.duplicateFailPrevented
+                                    || lastWhenURIIndexLocal != uriChangeContentIndex || lastWhenURISuccess) {
+                                if (updateClient) {
+                                    removeAllChildren();
+                                } else {
+                                    removeAllChildrenAndGetEventsLockless(updateClient);
+                                }
+                                lastWhenURISuccess = false;
                             }
                         }
                     }
                 }
 
                 lastURIEvent = uriEvent;
+                lastURIChangeContent = null;
             }
+
         }
 
         return insertedHtmls;
+    }
+
+    @Override
+    public WhenURIProperties getCurrentWhenURIProperties() {
+        final Lock lock = lockAndGetReadLock();
+        try {
+            // lastURIChangeContent is just to check if this method is called inside
+            // predicate, success or fail object's methods.
+            final URIChangeContent lastURIChangeContent = this.lastURIChangeContent;
+            if (lastURIChangeContent != null) {
+                return lastURIChangeContent.whenURIProperties;
+            }
+        } finally {
+            lock.unlock();
+        }
+        return null;
+    }
+
+    @Override
+    public WhenURIProperties getWhenURIProperties(final int index) {
+        final Lock lock = lockAndGetReadLock();
+        try {
+            final List<URIChangeContent> uriChangeContents = this.uriChangeContents;
+            if (uriChangeContents != null) {
+                final URIChangeContent uriChangeContent = uriChangeContents.get(index);
+                if (uriChangeContent != null) {
+                    return uriChangeContent.whenURIProperties;
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+        return null;
     }
 
 }

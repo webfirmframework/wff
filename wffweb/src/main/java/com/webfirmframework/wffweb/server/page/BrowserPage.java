@@ -68,6 +68,7 @@ import com.webfirmframework.wffweb.common.URIEventMask;
 import com.webfirmframework.wffweb.internal.security.object.BrowserPageSecurity;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.TagNameConstants;
@@ -496,15 +497,7 @@ public abstract class BrowserPage implements Serializable {
 
                 final Thread taskThread = Thread.currentThread();
                 waitingThreadRef.getAndSet(taskThread);
-                try {
-                    pushWffBMBytesQueueLock.acquire();
-                } catch (final InterruptedException e) {
-                    waitingThreadRef.compareAndSet(taskThread, null);
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "Thread InterruptedException", e);
-                    }
-                    return;
-                }
+                pushWffBMBytesQueueLock.acquireUninterruptibly();
 
                 try {
 
@@ -645,8 +638,9 @@ public abstract class BrowserPage implements Serializable {
 
         if (!taskFromClientQ.isEmpty()) {
             final Executor executor = this.executor;
-            if (executor != null) {
-                executor.execute(this::executeTasksFromClientFromQ);
+            final Executor activeExecutor = executor != null ? executor : WffConfiguration.getVirtualThreadExecutor();
+            if (activeExecutor != null) {
+                activeExecutor.execute(this::executeTasksFromClientFromQ);
             } else if (externalDrivePath != null) {
                 CompletableFuture.runAsync(this::executeTasksFromClientFromQ);
             } else {
@@ -1029,14 +1023,11 @@ public abstract class BrowserPage implements Serializable {
                         // NB: see javadoc on its declaration
                         commonLock.lock();
                         try {
-                            for (int i = 1; i < nameValues.size(); i++) {
+                            // NB: should be in reverse order as the token should be set first then only the
+                            // setURI is to be called.
+                            for (int i = nameValues.size() - 1; i > 0; i--) {
                                 final NameValue nm = nameValues.get(i);
-                                if (nm.getName()[0] == Task.SET_URI.getValueByte()) {
-                                    final URIEventInitiator eventInitiator = URIEventInitiator
-                                            .get(nm.getValues()[0][0]);
-                                    final String urlPath = new String(nm.getValues()[1], StandardCharsets.UTF_8);
-                                    setURI(false, urlPath, eventInitiator, false);
-                                } else if (nm.getName()[0] == Task.SET_LS_TOKEN.getValueByte()) {
+                                if (nm.getName()[0] == Task.SET_LS_TOKEN.getValueByte()) {
                                     final WffBMArray bmArray = new WffBMArray(nm.getValues()[0]);
                                     for (final Object each : bmArray) {
                                         if (each instanceof final WffBMObject bmObj) {
@@ -1055,11 +1046,13 @@ public abstract class BrowserPage implements Serializable {
                                                 }
                                             }
                                         }
-
                                     }
-
+                                } else if (nm.getName()[0] == Task.SET_URI.getValueByte()) {
+                                    final URIEventInitiator eventInitiator = URIEventInitiator
+                                            .get(nm.getValues()[0][0]);
+                                    final String urlPath = new String(nm.getValues()[1], StandardCharsets.UTF_8);
+                                    setURI(false, urlPath, eventInitiator, false);
                                 }
-
                             }
                             onInitialClientPingInvoked = true;
                             onInitialClientPing(rootTag);
@@ -2051,6 +2044,7 @@ public abstract class BrowserPage implements Serializable {
                     }
 
                     tagByWffId = rootTag.getSharedObject().initTagByWffId(ACCESS_OBJECT);
+                    addInnerHtmlsForURLChange(rootTag);
 
                     addDataWffIdAttribute(rootTag);
                     // attribute value change listener
@@ -2067,7 +2061,11 @@ public abstract class BrowserPage implements Serializable {
                     addWffBMDataUpdateListener(rootTag);
                     addWffBMDataDeleteListener(rootTag);
                     addPushQueue(rootTag);
-                    addInnerHtmlsForURLChange(rootTag);
+
+                    if (rootTag.getSharedObject().isWhenURIUsed()) {
+                        TagUtil.applyURIChangeAndAddDataWffIdAttribute(rootTag, rootTag.getSharedObject(), tagByWffId,
+                                ACCESS_OBJECT);
+                    }
 
                     wsWarningDisabled = true;
                     afterRender(rootTag);
@@ -2298,15 +2296,7 @@ public abstract class BrowserPage implements Serializable {
         boolean copied = false;
 
         if (!unholdPushLock.hasQueuedThreads()) {
-            try {
-                unholdPushLock.acquire();
-            } catch (final InterruptedException e) {
-                // NOP
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "Thread InterruptedException", e);
-                }
-                return false;
-            }
+            unholdPushLock.acquireUninterruptibly();
 
             try {
 
