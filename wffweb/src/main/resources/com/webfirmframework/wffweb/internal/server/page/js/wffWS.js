@@ -115,6 +115,7 @@ var wffWS = new function() {
                 	// payloadId = 0 means it has no id but has placeholder for id
                 	if (payloadId != 0 && payloadId != wffGlobal.getUniqueServerSidePayloadId()) {
                 	    wffGlobal.onPayloadLoss();
+                	    return;
                 	} else {
                         // TODO optimize later
                         var bin = [];
@@ -126,7 +127,6 @@ var wffWS = new function() {
                 }
 
 				var executed = wffClientMethods.exePostFun(binary);
-
 				if (!executed) {
 					wffClientCRUDUtil.invokeTasks(binary);
 				}
