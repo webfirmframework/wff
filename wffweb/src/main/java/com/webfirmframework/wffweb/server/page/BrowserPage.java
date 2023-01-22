@@ -653,12 +653,16 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      */
     public final void webSocketMessaged(final byte[] message) {
+        if (!checkLosslessCommunication(message)) {
+            return;
+        }
+        // should be after checkLosslessCommunication
         lastClientAccessedTime = System.currentTimeMillis();
         // minimum number of an empty bm message length is 4
         // below that length is not a valid bm message so check
         // message.length < 4
         // later if there is such requirement
-        if ((message.length < 4) || !checkLosslessCommunication(message)) {
+        if ((message.length < 4)) {
             return;
         }
 
