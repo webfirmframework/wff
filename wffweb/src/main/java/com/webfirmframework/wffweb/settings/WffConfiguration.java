@@ -42,7 +42,7 @@ public class WffConfiguration {
             if (Integer.parseInt(System.getProperty("java.vm.specification.version", "17")) >= 19
                     && (inputArguments.contains("--enable-preview")
                             || inputArguments.contains("--enable-virtual-thread")
-                            || "true".equals(System.getProperty("enable-virtual-thread", "false")))
+                            || "true".equals(System.getProperty("enable-virtual-thread")))
                     && Executors.class.getMethod("newVirtualThreadPerTaskExecutor")
                             .invoke(null) instanceof final ExecutorService executor) {
                 tempExecutor = executor;
