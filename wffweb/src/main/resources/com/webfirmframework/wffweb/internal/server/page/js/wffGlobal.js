@@ -4,26 +4,30 @@
 window.wffGlobal = new function() {
 
 	var wffId = -1;
-	var serverSidePayloadIdGenerator = 0;
-	var clientSidePayloadIdGenerator = 0;
+	// serverSidePayloadIdGenerator
+	var serverPIdGen = 0;
+	// clientSidePayloadIdGenerator
+	var clientPIdGen = 0;
 	var MAX_INT_VALUE = 2147483647;
+	// onPayloadLossInvoked
+	var onPLI = false;
 
 	this.getUniqueWffIntId = function() {
 		return ++wffId;
 	};
 	this.getUniqueServerSidePayloadId = function() {
-	    var id = ++serverSidePayloadIdGenerator;
+	    var id = ++serverPIdGen;
 	    if (id == 0) {
-	        id = ++serverSidePayloadIdGenerator;
+	        id = ++serverPIdGen;
 	    } else if (id > MAX_INT_VALUE) {
 	        id = id * -1;
 	    }
 		return id;
 	};
 	this.getUniqueClientSidePayloadId = function() {
-	    var id = ++clientSidePayloadIdGenerator;
+	    var id = ++clientPIdGen;
 	    if (id == 0) {
-	        id = ++serverSidePayloadIdGenerator;
+	        id = ++serverPIdGen;
 	    } else if (id > MAX_INT_VALUE) {
 	        id = id * -1;
 	    }
@@ -47,7 +51,7 @@ window.wffGlobal = new function() {
 	//reconnect time interval for WebSocket
 	this.WS_RECON = "${WS_RECON}";
 	this.LOSSLESS_COMM = "${LOSSLESS_COMM}";
-	this.onPayloadLoss = function() {"${ON_PAYLOAD_LOSS}"};
+	this.onPayloadLoss = function() {if (!this.onPLI) { this.onPLI = true; "${ON_PAYLOAD_LOSS}"}};
 
 	if ((typeof TextEncoder) === "undefined") {
 
