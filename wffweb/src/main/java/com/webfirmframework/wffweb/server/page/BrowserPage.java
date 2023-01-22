@@ -662,7 +662,7 @@ public abstract class BrowserPage implements Serializable {
         // below that length is not a valid bm message so check
         // message.length < 4
         // later if there is such requirement
-        if ((message.length < 4)) {
+        if (message.length < 4) {
             return;
         }
 
