@@ -41,7 +41,8 @@ public class WffConfiguration {
             final List<String> inputArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
             if (Integer.parseInt(System.getProperty("java.vm.specification.version", "17")) >= 19
                     && (inputArguments.contains("--enable-preview")
-                            || inputArguments.contains("--enable-virtual-thread"))
+                            || inputArguments.contains("--enable-virtual-thread")
+                            || "true".equals(System.getProperty("enable-virtual-thread", "false")))
                     && Executors.class.getMethod("newVirtualThreadPerTaskExecutor")
                             .invoke(null) instanceof final ExecutorService executor) {
                 tempExecutor = executor;
