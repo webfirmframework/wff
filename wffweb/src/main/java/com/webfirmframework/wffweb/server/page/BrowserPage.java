@@ -688,7 +688,7 @@ public abstract class BrowserPage implements Serializable {
         if (onPayloadLoss != null && message.length > PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length) {
             final int payloadId = WffBinaryMessageUtil
                     .getIntFromBytes(new byte[] { message[0], message[1], message[2], message[3] });
-            if (payloadId == clientSidePayloadIdGenerator.incrementAndGet()) {
+            if (payloadId == getClientSidePayloadId()) {
                 losslessCommunicationCheckFailed = false;
                 return true;
             }
