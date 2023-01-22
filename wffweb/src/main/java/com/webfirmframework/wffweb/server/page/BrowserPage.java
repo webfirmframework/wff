@@ -2275,6 +2275,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      */
     public final void performBrowserPageAction(final ByteBuffer actionByteBuffer) {
+        // actionByteBuffer is already prepended by payloadId placeholder
         push(new ClientTasksWrapper(actionByteBuffer));
         if (holdPush.get() == 0) {
             pushWffBMBytesQueue();
@@ -2403,7 +2404,7 @@ public abstract class BrowserPage implements Serializable {
 
                     int index = 0;
                     for (final ByteBuffer eachWffBM : wffBMs) {
-                        values[index] = eachWffBM.array();
+                        values[index] = removePayloadIdPlaceholder(eachWffBM);
                         index++;
                     }
 
@@ -3172,6 +3173,17 @@ public abstract class BrowserPage implements Serializable {
         }
 
         return ByteBuffer.wrap(bmMsg);
+    }
+
+    private byte[] removePayloadIdPlaceholder(final ByteBuffer bmMsg) {
+        if (onPayloadLoss != null) {
+            final byte[] bmMsgWithoutId = new byte[bmMsg.array().length - PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length];
+            System.arraycopy(bmMsg.array(), PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length, bmMsgWithoutId, 0,
+                    bmMsgWithoutId.length);
+            bmMsg.position(PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length);
+            return bmMsgWithoutId;
+        }
+        return bmMsg.array();
     }
 
     private ByteBuffer buildPayloadForClient(final ByteBuffer bmMsgWithIdPlaceholder) {
