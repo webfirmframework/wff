@@ -3176,14 +3176,15 @@ public abstract class BrowserPage implements Serializable {
     }
 
     private byte[] removePayloadIdPlaceholder(final ByteBuffer bmMsg) {
+        final byte[] array = bmMsg.array();
         if (onPayloadLoss != null) {
-            final byte[] bmMsgWithoutId = new byte[bmMsg.array().length - PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length];
-            System.arraycopy(bmMsg.array(), PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length, bmMsgWithoutId, 0,
+            final byte[] bmMsgWithoutId = new byte[array.length - PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length];
+            System.arraycopy(array, PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length, bmMsgWithoutId, 0,
                     bmMsgWithoutId.length);
             bmMsg.position(PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length);
             return bmMsgWithoutId;
         }
-        return bmMsg.array();
+        return array;
     }
 
     private ByteBuffer buildPayloadForClient(final ByteBuffer bmMsgWithIdPlaceholder) {
