@@ -4,10 +4,32 @@
 window.wffGlobal = new function() {
 
 	var wffId = -1;
+	var serverSidePayloadIdGenerator = 0;
+	var clientSidePayloadIdGenerator = 0;
+	var MAX_INT_VALUE = 2147483647;
 
 	this.getUniqueWffIntId = function() {
 		return ++wffId;
 	};
+	this.getUniqueServerSidePayloadId = function() {
+	    var id = ++serverSidePayloadIdGenerator;
+	    if (id == 0) {
+	        id = ++serverSidePayloadIdGenerator;
+	    } else if (id > MAX_INT_VALUE) {
+	        id = id * -1;
+	    }
+		return id;
+	};
+	this.getUniqueClientSidePayloadId = function() {
+	    var id = ++clientSidePayloadIdGenerator;
+	    if (id == 0) {
+	        id = ++serverSidePayloadIdGenerator;
+	    } else if (id > MAX_INT_VALUE) {
+	        id = id * -1;
+	    }
+		return id;
+	};
+
 
 	//COMPRESSED WFF DATA
 	this.CPRSD_DATA = "${CPRSD_DATA}";
@@ -24,6 +46,8 @@ window.wffGlobal = new function() {
 	this.REMOVE_PREV_BP_ON_TABCLOSE = "${REMOVE_PREV_BP_ON_TABCLOSE}";
 	//reconnect time interval for WebSocket
 	this.WS_RECON = "${WS_RECON}";
+	this.LOSSLESS_COMM = "${LOSSLESS_COMM}";
+	this.onPayloadLoss = function() {"${ON_PAYLOAD_LOSS}"};
 
 	if ((typeof TextEncoder) === "undefined") {
 

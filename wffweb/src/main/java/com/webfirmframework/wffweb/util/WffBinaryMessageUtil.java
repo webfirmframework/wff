@@ -215,17 +215,23 @@ public enum WffBinaryMessageUtil {
 
         @Override
         public List<NameValue> parse(final byte[] message) {
+            return parse(message, 0, message.length);
+        }
+
+        @Override
+        public List<NameValue> parse(final byte[] message, final int offset, final int length) {
 
             // needs to optimize this code to find the total no. of name values.
             final List<NameValue> nameValues = new LinkedList<>();
 
-            final byte[] nameLengthBytes = new byte[message[0]];
-            final byte[] valueLengthBytes = new byte[message[1]];
+            final byte[] nameLengthBytes = new byte[message[offset]];
+            final byte[] valueLengthBytes = new byte[message[offset + 1]];
 
             final int nameLengthBytesLength = nameLengthBytes.length;
             final int valueLengthBytesLength = valueLengthBytes.length;
 
-            for (int messageIndex = 2; messageIndex < message.length; messageIndex++) {
+            final int endIndex = offset + length - 1;
+            for (int messageIndex = offset + 2; messageIndex <= endIndex; messageIndex++) {
 
                 final NameValue nameValue = new NameValue();
 
@@ -307,6 +313,18 @@ public enum WffBinaryMessageUtil {
         }
 
         return finalValues[0];
+    }
+
+    /**
+     * @param message the wff binary message bytes
+     * @param offset  the start index
+     * @param length  the number of bytes to be read from the offset
+     * @return the list of name value pairs
+     * @since 12.0.0-beta.8
+     * @author WFF
+     */
+    public List<NameValue> parse(final byte[] message, final int offset, final int length) {
+        throw new AssertionError();
     }
 
     /**

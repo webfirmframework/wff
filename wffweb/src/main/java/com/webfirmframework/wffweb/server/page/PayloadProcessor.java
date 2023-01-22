@@ -128,6 +128,14 @@ public class PayloadProcessor implements Serializable {
      * @since 3.0.3
      */
     private void transferToBrowserPageWS(final ByteBuffer messagePart, final boolean last) {
+        // if lossless communication is enabled
+        if (wsMessageChunks.isEmpty()) {
+            final byte[] message = messagePart.array();
+            if (!browserPage.checkLosslessCommunication(message)) {
+                return;
+            }
+        }
+
         if (last) {
             wsMessageChunks.add(messagePart);
             final int totalCapacity = wsMessageChunksTotalCapacity.getAndSet(0) + messagePart.capacity();

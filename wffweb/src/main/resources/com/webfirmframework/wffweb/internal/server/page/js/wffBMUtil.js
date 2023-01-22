@@ -237,6 +237,7 @@ var wffBMUtil = new function() {
 		var bytes = [ (value >> 24), (value >> 16), (value >> 8), value ];
 		return bytes;
 	};
+	this.getBytesFromInt = getBytesFromInt;
 
 	/**
 	 * @param bytes

@@ -28,24 +28,36 @@ public enum BrowserPageAction {
 
     RELOAD(Task.RELOAD_BROWSER, null), RELOAD_FROM_CACHE(Task.RELOAD_BROWSER_FROM_CACHE, null);
 
-    private byte[] actionBytes;
+    private static final byte[] PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID = new byte[4];
+
+    private final byte[] actionBytes;
 
     private BrowserPageAction(final Task task, final String js) {
-        init(task, js);
+        actionBytes = init(task, js);
     }
 
-    private void init(final Task task, final String js) {
+    private byte[] init(final Task task, final String js) {
+        // this should be locally declared because
+        // BrowserPageAction.PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID gives null in this
+        // scope
+        final byte[] placeholderByteArrayForPayloadId = new byte[4];
         if (js != null) {
-
             final NameValue nameValue = new NameValue();
             nameValue.setName(js.getBytes(StandardCharsets.UTF_8));
             nameValue.setValues(new byte[][] {});
 
-            actionBytes = WffBinaryMessageUtil.VERSION_1
+            final byte[] bmMsg = WffBinaryMessageUtil.VERSION_1
                     .getWffBinaryMessageBytes(Task.RELOAD_BROWSER.getTaskNameValue(), nameValue);
+
+            final ByteBuffer byteBuffer = ByteBuffer.allocate(bmMsg.length + placeholderByteArrayForPayloadId.length);
+            byteBuffer.put(placeholderByteArrayForPayloadId).put(bmMsg).rewind();
+            return byteBuffer.array();
         } else {
-            actionBytes = WffBinaryMessageUtil.VERSION_1
+            final byte[] bmMsg = WffBinaryMessageUtil.VERSION_1
                     .getWffBinaryMessageBytes(Task.RELOAD_BROWSER.getTaskNameValue());
+            final ByteBuffer byteBuffer = ByteBuffer.allocate(bmMsg.length + placeholderByteArrayForPayloadId.length);
+            byteBuffer.put(placeholderByteArrayForPayloadId).put(bmMsg).rewind();
+            return byteBuffer.array();
         }
     }
 
@@ -80,26 +92,36 @@ public enum BrowserPageAction {
      * @author WFF
      */
     public static ByteBuffer getActionByteBufferForExecuteJS(final String js) {
-        return ByteBuffer.wrap(getActionBytesForExecuteJS(js, false));
+        final byte[] actionBytesForExecuteJS = getActionBytesForExecuteJS(js, false);
+        final ByteBuffer byteBuffer = ByteBuffer
+                .allocate(actionBytesForExecuteJS.length + PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length);
+        byteBuffer.put(PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID).put(actionBytesForExecuteJS).rewind();
+        return byteBuffer;
     }
 
     /**
      * Gets the action {@code ByteBuffer} for executing the given JavaScript.
      *
-     * @param js               JavaScript to execute in the browser
-     * @param onlyInOtherBrowserPages true to execute the js only on the other pages not on
-     *                         the page on which the the action is performed (i.e.
-     *                         {@code browserPage.performBrowserPageAction} is
-     *                         called). Other pages include all other pages opened
-     *                         in other tabs even if they are loaded from different
-     *                         nodes. false to execute the js only on the action
-     *                         performed browser page not on other pages.
+     * @param js                      JavaScript to execute in the browser
+     * @param onlyInOtherBrowserPages true to execute the js only on the other pages
+     *                                not on the page on which the action is
+     *                                performed (i.e.
+     *                                {@code browserPage.performBrowserPageAction}
+     *                                is called). Other pages include all other
+     *                                pages opened in other tabs even if they are
+     *                                loaded from different nodes. false to execute
+     *                                the js only on the action performed browser
+     *                                page not on other pages.
      * @return the action {@code ByteBuffer} for executing the given JavaScript in
      *         the browser.
      * @since 12.0.0-beta.4
      */
     public static ByteBuffer getActionByteBufferForExecuteJS(final String js, final boolean onlyInOtherBrowserPages) {
-        return ByteBuffer.wrap(getActionBytesForExecuteJS(js, onlyInOtherBrowserPages));
+        final byte[] actionBytesForExecuteJS = getActionBytesForExecuteJS(js, onlyInOtherBrowserPages);
+        final ByteBuffer byteBuffer = ByteBuffer
+                .allocate(actionBytesForExecuteJS.length + PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length);
+        byteBuffer.put(PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID).put(actionBytesForExecuteJS).rewind();
+        return byteBuffer;
     }
 
     /**
@@ -114,20 +136,26 @@ public enum BrowserPageAction {
      * @author WFF
      */
     public static byte[] getActionBytesForExecuteJS(final String js) {
-        return getActionBytesForExecuteJS(js, false);
+        final byte[] actionBytesForExecuteJS = getActionBytesForExecuteJS(js, false);
+        final ByteBuffer byteBuffer = ByteBuffer
+                .allocate(actionBytesForExecuteJS.length + PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length);
+        byteBuffer.put(PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID).put(actionBytesForExecuteJS).rewind();
+        return byteBuffer.array();
     }
 
     /**
      * Gets the action bytes for executing the given JavaScript in the browser.
      *
-     * @param js               JavaScript to execute in the browser
-     * @param onlyInOtherBrowserPages true to execute the js only on the other pages not on
-     *                         the page on which the the action is performed (i.e.
-     *                         {@code browserPage.performBrowserPageAction} is
-     *                         called). Other pages include all other pages opened
-     *                         in other tabs even if they are loaded from different
-     *                         nodes. false to execute the js only on the action
-     *                         performed browser page not on other pages.
+     * @param js                      JavaScript to execute in the browser
+     * @param onlyInOtherBrowserPages true to execute the js only on the other pages
+     *                                not on the page on which the action is
+     *                                performed (i.e.
+     *                                {@code browserPage.performBrowserPageAction}
+     *                                is called). Other pages include all other
+     *                                pages opened in other tabs even if they are
+     *                                loaded from different nodes. false to execute
+     *                                the js only on the action performed browser
+     *                                page not on other pages.
      * @return the action bytes for executing the given JavaScript in the browser.
      * @since 12.0.0-beta.4
      */

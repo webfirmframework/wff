@@ -68,6 +68,7 @@ import com.webfirmframework.wffweb.common.URIEventMask;
 import com.webfirmframework.wffweb.internal.security.object.BrowserPageSecurity;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
+import com.webfirmframework.wffweb.server.page.action.BrowserPageAction;
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Html;
@@ -228,6 +229,16 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile Reference<BrowserPageSessionImpl> sessionRef;
 
+    private static final byte[] PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID = new byte[4];
+
+    private final AtomicInteger serverSidePayloadIdGenerator = new AtomicInteger();
+
+    private final AtomicInteger clientSidePayloadIdGenerator = new AtomicInteger();
+
+    private final OnPayloadLoss onPayloadLoss = enableLosslessBrowserPageCommunicationWithoutException();
+
+    private volatile boolean losslessCommunicationCheckFailed;
+
     // NB: this non-static initialization makes BrowserPage and PayloadProcessor
     // never to get GCd. It leads to memory leak. It seems to be a bug.
     // private final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL =
@@ -267,6 +278,25 @@ public abstract class BrowserPage implements Serializable {
          * when new {@code BrowserPage} is requested by the tab.
          */
         INIT_REMOVE_PREVIOUS
+    }
+
+    /**
+     * @since 12.0.0-beta.8
+     */
+    @FunctionalInterface
+    protected interface ServerSideAction {
+        void perform();
+    }
+
+    /**
+     * @param javaScript       the JavaScript code to invoke at client side when
+     *                         there is a lossy communication detected at client
+     *                         side.
+     * @param serverSideAction the action to perform at server side when there is a
+     *                         lossy communication detected at server side.
+     * @since 12.0.0-beta.8
+     */
+    protected record OnPayloadLoss(String javaScript, ServerSideAction serverSideAction) {
     }
 
     public abstract String webSocketUrl();
@@ -435,8 +465,8 @@ public abstract class BrowserPage implements Serializable {
     }
 
     final void push(final NameValue... nameValues) {
-        push(new ClientTasksWrapper(
-                ByteBuffer.wrap(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues))));
+
+        push(new ClientTasksWrapper(buildPayload(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues))));
     }
 
     /**
@@ -452,8 +482,8 @@ public abstract class BrowserPage implements Serializable {
         while ((taskNameValues = multiTasks.poll()) != null) {
             final NameValue[] nameValues = taskNameValues.toArray(new NameValue[taskNameValues.size()]);
 
-            final ByteBuffer byteBuffer = ByteBuffer
-                    .wrap(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues));
+            final ByteBuffer byteBuffer = buildPayload(
+                    WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues));
             tasks[index] = byteBuffer;
             index++;
         }
@@ -522,7 +552,7 @@ public abstract class BrowserPage implements Serializable {
                                     for (int i = 0; i < length; i++) {
                                         final ByteBuffer byteBuffer = byteBuffers.get(i);
                                         if (byteBuffer != null) {
-                                            wsListener.push(byteBuffer);
+                                            wsListener.push(buildPayloadForClient(byteBuffer));
                                         }
                                         byteBuffers.set(i, null);
                                     }
@@ -531,12 +561,14 @@ public abstract class BrowserPage implements Serializable {
 
                             } catch (final PushFailedException e) {
                                 if (pushQueueEnabled && wffBMBytesQueue.offerFirst(clientTask)) {
+                                    rollbackServerSidePayloadId();
                                     pushQueueSize.increment();
                                 }
 
                                 break;
                             } catch (final IllegalStateException | NullPointerException e) {
                                 if (wffBMBytesQueue.offerFirst(clientTask)) {
+                                    rollbackServerSidePayloadId();
                                     pushQueueSize.increment();
                                 }
                                 break;
@@ -626,9 +658,7 @@ public abstract class BrowserPage implements Serializable {
         // below that length is not a valid bm message so check
         // message.length < 4
         // later if there is such requirement
-        if (message.length < 4) {
-            // message.length == 0 when client sends an empty message just
-            // for ping
+        if ((message.length < 4) || !checkLosslessCommunication(message)) {
             return;
         }
 
@@ -648,6 +678,26 @@ public abstract class BrowserPage implements Serializable {
             }
         }
 
+    }
+
+    final boolean checkLosslessCommunication(final byte[] message) {
+        if (losslessCommunicationCheckFailed) {
+            return false;
+        }
+        // if lossless communication is enabled
+        if (onPayloadLoss != null && message.length > PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length) {
+            final int payloadId = WffBinaryMessageUtil
+                    .getIntFromBytes(new byte[] { message[0], message[1], message[2], message[3] });
+            if (payloadId == clientSidePayloadIdGenerator.incrementAndGet()) {
+                losslessCommunicationCheckFailed = false;
+                return true;
+            }
+            losslessCommunicationCheckFailed = true;
+            onPayloadLoss.serverSideAction.perform();
+            return false;
+        }
+        losslessCommunicationCheckFailed = false;
+        return true;
     }
 
     /**
@@ -997,7 +1047,19 @@ public abstract class BrowserPage implements Serializable {
      */
     private void executeWffBMTask(final byte[] message) throws UnsupportedEncodingException {
 
-        final List<NameValue> nameValues = WffBinaryMessageUtil.VERSION_1.parse(message);
+        // message is a BM Message which never starts with 0, if it starts with 0 it
+        // means it is prepended by id placeholder
+        final int offset;
+        final int length;
+        if (onPayloadLoss != null) {
+            offset = PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length;
+            length = message.length - offset;
+        } else {
+            offset = 0;
+            length = message.length;
+        }
+
+        final List<NameValue> nameValues = WffBinaryMessageUtil.VERSION_1.parse(message, offset, length);
 
         final NameValue task = nameValues.get(0);
         final byte taskValue = task.getValues()[0][0];
@@ -1521,11 +1583,14 @@ public abstract class BrowserPage implements Serializable {
 
                     script.setDataWffId(wffScriptTagId);
 
+                    final boolean losslessCommunication = onPayloadLoss != null;
+                    final String onPayloadLossJS = losslessCommunication ? onPayloadLoss.javaScript : "";
+
                     final String wffJs = WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId, getInstanceId(),
                             removePrevFromBrowserContextOnTabInit, removeFromBrowserContextOnTabClose,
                             (wsHeartbeatInterval > 0 ? wsHeartbeatInterval : wsDefaultHeartbeatInterval),
                             (wsReconnectInterval > 0 ? wsReconnectInterval : wsDefaultReconnectInterval),
-                            autoremoveWffScript);
+                            autoremoveWffScript, losslessCommunication, onPayloadLossJS);
 
                     if (enableDeferOnWffScript) {
                         // byes are in UTF-8 so charset=utf-8 is explicitly
@@ -1566,10 +1631,13 @@ public abstract class BrowserPage implements Serializable {
 
             script.setDataWffId(wffScriptTagId);
 
+            final boolean losslessCommunication = onPayloadLoss != null;
+            final String onPayloadLossJS = losslessCommunication ? onPayloadLoss.javaScript : "";
             final String wffJs = WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId, getInstanceId(),
                     removePrevFromBrowserContextOnTabInit, removeFromBrowserContextOnTabClose,
                     (wsHeartbeatInterval > 0 ? wsHeartbeatInterval : wsDefaultHeartbeatInterval),
-                    (wsReconnectInterval > 0 ? wsReconnectInterval : wsDefaultReconnectInterval), autoremoveWffScript);
+                    (wsReconnectInterval > 0 ? wsReconnectInterval : wsDefaultReconnectInterval), autoremoveWffScript,
+                    losslessCommunication, onPayloadLossJS);
 
             if (enableDeferOnWffScript) {
                 // byes are in UTF-8 so charset=utf-8 is explicitly specified
@@ -2337,8 +2405,8 @@ public abstract class BrowserPage implements Serializable {
 
                     invokeMultipleTasks.setValues(values);
 
-                    wffBMBytesQueue.add(new ClientTasksWrapper(ByteBuffer
-                            .wrap(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(invokeMultipleTasks))));
+                    wffBMBytesQueue.add(new ClientTasksWrapper(buildPayload(
+                            WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(invokeMultipleTasks))));
 
                     pushQueueSize.increment();
 
@@ -3053,6 +3121,86 @@ public abstract class BrowserPage implements Serializable {
         }
 
         return tempDirPath;
+    }
+
+    private OnPayloadLoss enableLosslessBrowserPageCommunicationWithoutException() {
+        try {
+            return enableLosslessBrowserPageCommunication();
+        } catch (final RuntimeException e) {
+            LOGGER.log(Level.SEVERE,
+                    "Exception invoking enableLosslessUICommunication so disabled lossless UI communication", e);
+        }
+        return null;
+    }
+
+    /**
+     * @return return an object of {@code OnPayloadLoss} to enable it or return null
+     *         to disable it.
+     * @since 12.0.0-beta.8
+     */
+    protected OnPayloadLoss enableLosslessBrowserPageCommunication() {
+        return new OnPayloadLoss("location.reload();", () -> BrowserPage.this
+                .performBrowserPageAction(BrowserPageAction.RELOAD_FROM_CACHE.getActionByteBuffer()));
+    }
+
+    /**
+     * @return true if enabled
+     * @since 12.0.0-beta.8
+     */
+    public final boolean losslessBrowserPageCommunication() {
+        return onPayloadLoss != null;
+    }
+
+    private ByteBuffer buildPayload(final byte[] bmMsg) {
+        if (onPayloadLoss != null) {
+            // 4 for id bytes
+            final ByteBuffer byteBuffer = ByteBuffer
+                    .allocate(bmMsg.length + PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length);
+            // bmMsg never starts with 0, if it starts with 0 it means it is already
+            // prepended by id placeholder
+            if (bmMsg[0] != 0) {
+                // placeholder for id bytes
+                byteBuffer.put(PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID);
+            }
+            byteBuffer.put(bmMsg);
+            byteBuffer.rewind();
+            return byteBuffer;
+        }
+
+        return ByteBuffer.wrap(bmMsg);
+    }
+
+    private ByteBuffer buildPayloadForClient(final ByteBuffer bmMsgWithIdPlaceholder) {
+        if (onPayloadLoss != null) {
+            // id bytes should always be length 4
+            bmMsgWithIdPlaceholder.put(WffBinaryMessageUtil.getBytesFromInt(getServerSidePayloadId()));
+            bmMsgWithIdPlaceholder.rewind();
+        }
+
+        return bmMsgWithIdPlaceholder;
+    }
+
+    private int getServerSidePayloadId() {
+        int id = serverSidePayloadIdGenerator.incrementAndGet();
+        if (id == 0) {
+            id = serverSidePayloadIdGenerator.incrementAndGet();
+        }
+        return id;
+    }
+
+    private void rollbackServerSidePayloadId() {
+        final int id = serverSidePayloadIdGenerator.decrementAndGet();
+        if (id == 0) {
+            serverSidePayloadIdGenerator.decrementAndGet();
+        }
+    }
+
+    private int getClientSidePayloadId() {
+        int id = clientSidePayloadIdGenerator.incrementAndGet();
+        if (id == 0) {
+            id = clientSidePayloadIdGenerator.incrementAndGet();
+        }
+        return id;
     }
 
 }
