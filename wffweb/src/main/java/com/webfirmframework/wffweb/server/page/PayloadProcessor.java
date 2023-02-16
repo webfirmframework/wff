@@ -115,39 +115,31 @@ public class PayloadProcessor implements Serializable {
     public void webSocketMessaged(final ByteBuffer messagePart, final boolean last) {
 
         if (last && wsMessageChunksTotalCapacity.get() == 0) {
-            final byte[] array = messagePart.array();
             if (inputBufferLimit != null) {
-                inputBufferLimit.acquireUninterruptibly(array.length);
+                inputBufferLimit.acquireUninterruptibly(messagePart.capacity());
                 try {
-                    browserPage.webSocketMessaged(array);
+                    browserPage.webSocketMessaged(messagePart.array());
                 } finally {
-                    inputBufferLimit.release(array.length);
+                    inputBufferLimit.release(messagePart.capacity());
                 }
             } else {
-                browserPage.webSocketMessaged(array);
+                browserPage.webSocketMessaged(messagePart.array());
             }
         } else {
             if (singleThreaded) {
                 if (inputBufferLimit != null) {
-                    final int permits = messagePart.array().length;
-                    inputBufferLimit.acquireUninterruptibly(permits);
-                    try {
-                        transferToBrowserPageWS(messagePart, last);
-                    } finally {
-                        inputBufferLimit.release(permits);
-                    }
+                    inputBufferLimit.acquireUninterruptibly(messagePart.capacity());
+                    transferToBrowserPageWS(messagePart, last);
                 } else {
                     transferToBrowserPageWS(messagePart, last);
                 }
 
             } else {
                 commonLock.lock();
-                final int permits = messagePart.array().length;
-                inputBufferLimit.acquireUninterruptibly(permits);
                 try {
+                    inputBufferLimit.acquireUninterruptibly(messagePart.capacity());
                     transferToBrowserPageWS(messagePart, last);
                 } finally {
-                    inputBufferLimit.release(permits);
                     commonLock.unlock();
                 }
             }
@@ -165,6 +157,9 @@ public class PayloadProcessor implements Serializable {
         if (wsMessageChunks.isEmpty()) {
             final byte[] message = messagePart.array();
             if (!browserPage.checkLosslessCommunication(message)) {
+                if (inputBufferLimit != null) {
+                    inputBufferLimit.release(message.length);
+                }
                 return;
             }
         }
@@ -172,8 +167,17 @@ public class PayloadProcessor implements Serializable {
         if (last) {
             wsMessageChunks.add(messagePart);
             final int totalCapacity = wsMessageChunksTotalCapacity.getAndSet(0) + messagePart.capacity();
+            final byte[] message = pollAndConvertToByteArray(totalCapacity, wsMessageChunks);
+            if (inputBufferLimit != null) {
+                try {
+                    browserPage.webSocketMessaged(message);
+                } finally {
+                    inputBufferLimit.release(message.length);
+                }
+            } else {
+                browserPage.webSocketMessaged(message);
+            }
 
-            browserPage.webSocketMessaged(pollAndConvertToByteArray(totalCapacity, wsMessageChunks));
         } else {
             wsMessageChunks.add(messagePart);
             wsMessageChunksTotalCapacity.addAndGet(messagePart.capacity());

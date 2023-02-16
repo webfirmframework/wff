@@ -318,16 +318,18 @@ public abstract class BrowserPage implements Serializable {
      * contains the default values for all of these parameters.
      *
      * @param inputBufferLimit  the limit for input buffer, i.e. the number of bytes
-     *                          allowed to store. This is the buffer used to store
-     *                          the data from the client events. The threads which
-     *                          store the data to the buffer will be blocked until
-     *                          enough space available in the buffer.
-     *
-     * @param outputBufferLimit the limit for output buffer, i.e. the number of
-     *                          bytes allowed to store. This is the buffer used to
-     *                          store the data from the server events. The threads
+     *                          allowed to store, a value <= 0 represents no limit
+     *                          i.e. unlimited size. This is the buffer used to
+     *                          store the data from the client events. The threads
      *                          which store the data to the buffer will be blocked
      *                          until enough space available in the buffer.
+     *
+     * @param outputBufferLimit the limit for output buffer, i.e. the number of
+     *                          bytes allowed to store, a value <= 0 represents no
+     *                          limit i.e. unlimited size. This is the buffer used
+     *                          to store the data from the server events. The
+     *                          threads which store the data to the buffer will be
+     *                          blocked until enough space available in the buffer.
      * @param onPayloadLoss     pass an object of {@code OnPayloadLoss} to enable or
      *                          null to disable lossless browser page communication.
      * @since 12.0.0-beta.8
