@@ -46,6 +46,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceArray;
@@ -236,7 +237,7 @@ public abstract class BrowserPage implements Serializable {
     private final AtomicInteger clientSidePayloadIdGenerator = new AtomicInteger();
 
     // should be before settings field initialization
-    private final Settings defaultSettings = new Settings(1024 * 1024, 1024 * 1024,
+    private final Settings defaultSettings = new Settings(1024 * 1024, 1024 * 1024, 60_000,
             new OnPayloadLoss("location.reload();", () -> BrowserPage.this
                     .performBrowserPageAction(BrowserPageAction.RELOAD_FROM_CACHE.getActionByteBuffer())));
 
@@ -323,18 +324,21 @@ public abstract class BrowserPage implements Serializable {
      *                          store the data from the client events. The threads
      *                          which store the data to the buffer will be blocked
      *                          until enough space available in the buffer.
-     *
      * @param outputBufferLimit the limit for output buffer, i.e. the number of
      *                          bytes allowed to store, a value <= 0 represents no
      *                          limit i.e. unlimited size. This is the buffer used
      *                          to store the data from the server events. The
      *                          threads which store the data to the buffer will be
      *                          blocked until enough space available in the buffer.
+     * @param ioBufferTimeout   the timeout milliseconds for waiting threads of
+     *                          input and output buffer. It is usually equal to the
+     *                          timeout of session.
      * @param onPayloadLoss     pass an object of {@code OnPayloadLoss} to enable or
      *                          null to disable lossless browser page communication.
      * @since 12.0.0-beta.8
      */
-    protected record Settings(int inputBufferLimit, int outputBufferLimit, OnPayloadLoss onPayloadLoss) {
+    protected record Settings(int inputBufferLimit, int outputBufferLimit, long ioBufferTimeout,
+            OnPayloadLoss onPayloadLoss) {
     }
 
     public abstract String webSocketUrl();
@@ -503,12 +507,22 @@ public abstract class BrowserPage implements Serializable {
     }
 
     final void push(final NameValue... nameValues) {
-
         final ByteBuffer payload = buildPayload(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues));
         if (outputBufferLimit != null) {
-            outputBufferLimit.acquireUninterruptibly(payload.capacity());
+            try {
+                if (outputBufferLimit.tryAcquire(payload.capacity(), settings.ioBufferTimeout, TimeUnit.MILLISECONDS)) {
+                    push(new ClientTasksWrapper(payload));
+                } else {
+                    throw new WffRuntimeException("Timeout reached while preparing server event for client.");
+                }
+            } catch (final InterruptedException e) {
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.", e);
+                }
+            }
+        } else {
+            push(new ClientTasksWrapper(payload));
         }
-        push(new ClientTasksWrapper(payload));
     }
 
     /**
@@ -534,9 +548,21 @@ public abstract class BrowserPage implements Serializable {
 
         final ClientTasksWrapper clientTasks = new ClientTasksWrapper(tasks);
         if (outputBufferLimit != null) {
-            outputBufferLimit.acquireUninterruptibly(totalNoOfBytes);
+            try {
+                if (outputBufferLimit.tryAcquire(totalNoOfBytes, settings.ioBufferTimeout, TimeUnit.MILLISECONDS)) {
+                    push(clientTasks);
+                } else {
+                    throw new WffRuntimeException("Timeout reached while preparing server event for client.");
+                }
+            } catch (final InterruptedException e) {
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.", e);
+                }
+            }
+        } else {
+            push(clientTasks);
         }
-        push(clientTasks);
+
         return clientTasks;
     }
 
@@ -722,9 +748,20 @@ public abstract class BrowserPage implements Serializable {
         // executeWffBMTask(message);
 
         if (inputBufferLimit != null) {
-            inputBufferLimit.acquireUninterruptibly(message.length);
+            try {
+                if (inputBufferLimit.tryAcquire(message.length, settings.ioBufferTimeout, TimeUnit.MILLISECONDS)) {
+                    taskFromClientQ.offer(message);
+                } else {
+                    throw new WffRuntimeException("Timeout reached while processing event from client.");
+                }
+            } catch (final InterruptedException e) {
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.", e);
+                }
+            }
+        } else {
+            taskFromClientQ.offer(message);
         }
-        taskFromClientQ.offer(message);
 
         if (!taskFromClientQ.isEmpty()) {
             final Executor executor = this.executor;
@@ -2337,9 +2374,22 @@ public abstract class BrowserPage implements Serializable {
     public final void performBrowserPageAction(final ByteBuffer actionByteBuffer) {
         // actionByteBuffer is already prepended by payloadId placeholder
         if (outputBufferLimit != null) {
-            outputBufferLimit.acquireUninterruptibly(actionByteBuffer.capacity());
+            try {
+                if (outputBufferLimit.tryAcquire(actionByteBuffer.capacity(), settings.ioBufferTimeout,
+                        TimeUnit.MILLISECONDS)) {
+                    push(new ClientTasksWrapper(actionByteBuffer));
+                } else {
+                    throw new WffRuntimeException("Timeout reached while preparing server event for client.");
+                }
+            } catch (final InterruptedException e) {
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.", e);
+                }
+            }
+        } else {
+            push(new ClientTasksWrapper(actionByteBuffer));
         }
-        push(new ClientTasksWrapper(actionByteBuffer));
+
         if (holdPush.get() == 0) {
             pushWffBMBytesQueue();
         }
@@ -2475,9 +2525,24 @@ public abstract class BrowserPage implements Serializable {
 
                     final ByteBuffer payload = buildPayload(
                             WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(invokeMultipleTasks));
-                    wffBMBytesQueue.add(new ClientTasksWrapper(payload));
+
                     if (outputBufferLimit != null) {
-                        outputBufferLimit.acquireUninterruptibly(payload.capacity());
+                        try {
+                            if (outputBufferLimit.tryAcquire(payload.capacity(), settings.ioBufferTimeout,
+                                    TimeUnit.MILLISECONDS)) {
+                                wffBMBytesQueue.add(new ClientTasksWrapper(payload));
+                            } else {
+                                throw new WffRuntimeException(
+                                        "Timeout reached while preparing server event for client.");
+                            }
+                        } catch (final InterruptedException e) {
+                            if (LOGGER.isLoggable(Level.SEVERE)) {
+                                LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.",
+                                        e);
+                            }
+                        }
+                    } else {
+                        wffBMBytesQueue.add(new ClientTasksWrapper(payload));
                     }
 
                     pushQueueSize.increment();
@@ -3203,7 +3268,16 @@ public abstract class BrowserPage implements Serializable {
         try {
             final Settings settings = useSettings();
             if (settings != null) {
+                if ((settings.inputBufferLimit > 0 || settings.outputBufferLimit > 0)
+                        && settings.ioBufferTimeout <= 0) {
+                    throw new InvalidValueException(
+                            "ioBufferTimeout in BrowserPage.Settings should be greater than zero.");
+                }
                 return settings;
+            }
+        } catch (final InvalidValueException e) {
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         } catch (final RuntimeException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
