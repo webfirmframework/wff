@@ -798,7 +798,7 @@ public enum BrowserPageContext {
 
         } else {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("The associatd HttpSession is alread closed for the id");
+                LOGGER.warning("The associated HttpSession is already closed for the id");
             }
         }
         runAutoClean();
