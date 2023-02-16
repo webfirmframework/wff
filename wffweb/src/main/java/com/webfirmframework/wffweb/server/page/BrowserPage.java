@@ -317,21 +317,22 @@ public abstract class BrowserPage implements Serializable {
      * The {@code Settings} object returned by {@link #defaultSettings()} method
      * contains the default values for all of these parameters.
      *
-     * @param inputBufferLimit  the limit for input buffer. This is the buffer used
-     *                          to store the data from the client events. The
-     *                          threads which store the data to the buffer will be
-     *                          blocked until enough space available in the buffer.
-     *                          *
-     * @param outputBufferLimit the limit for output buffer. This is the buffer used
-     *                          to store the data from the server events. The
-     *                          threads which store the data to the buffer will be
-     *                          blocked until enough space available in the buffer.
+     * @param inputBufferLimit  the limit for input buffer, i.e. the number of bytes
+     *                          allowed to store. This is the buffer used to store
+     *                          the data from the client events. The threads which
+     *                          store the data to the buffer will be blocked until
+     *                          enough space available in the buffer.
+     *
+     * @param outputBufferLimit the limit for output buffer, i.e. the number of
+     *                          bytes allowed to store. This is the buffer used to
+     *                          store the data from the server events. The threads
+     *                          which store the data to the buffer will be blocked
+     *                          until enough space available in the buffer.
      * @param onPayloadLoss     pass an object of {@code OnPayloadLoss} to enable or
-     *                          null * to disable lossless browser page
-     *                          communication.
+     *                          null to disable lossless browser page communication.
      * @since 12.0.0-beta.8
      */
-    public record Settings(int inputBufferLimit, int outputBufferLimit, OnPayloadLoss onPayloadLoss) {
+    protected record Settings(int inputBufferLimit, int outputBufferLimit, OnPayloadLoss onPayloadLoss) {
     }
 
     public abstract String webSocketUrl();
@@ -3192,7 +3193,7 @@ public abstract class BrowserPage implements Serializable {
         return tempDirPath;
     }
 
-    public final Settings defaultSettings() {
+    protected final Settings defaultSettings() {
         return defaultSettings;
     }
 
@@ -3224,7 +3225,7 @@ public abstract class BrowserPage implements Serializable {
      * @return the Settings applied to this browserPage instance
      * @since 12.0.0-beta.8
      */
-    public final Settings getSettings() {
+    protected final Settings getSettings() {
         return settings;
     }
 
