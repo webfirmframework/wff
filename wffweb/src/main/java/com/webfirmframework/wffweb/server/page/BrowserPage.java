@@ -515,17 +515,32 @@ public abstract class BrowserPage implements Serializable {
     final void push(final NameValue... nameValues) {
         final ByteBuffer payload = buildPayload(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues));
         if (outputBufferLimit != null) {
-            try {
-                // onPayloadLoss check should be second
-                if (outputBufferLimit.tryAcquire(payload.capacity(), settings.ioBufferTimeout, TimeUnit.MILLISECONDS)
-                        || onPayloadLoss == null) {
-                    push(new ClientTasksWrapper(payload));
-                } else {
-                    throw new WffRuntimeException("Timeout reached while preparing server event for client.");
-                }
-            } catch (final InterruptedException e) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.", e);
+            if (!losslessCommunicationCheckFailed) {
+                try {
+                    // onPayloadLoss check should be second
+                    if (outputBufferLimit.tryAcquire(payload.capacity(), settings.ioBufferTimeout,
+                            TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
+                        push(new ClientTasksWrapper(payload));
+                    } else {
+                        if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
+                            losslessCommunicationCheckFailed = true;
+                            // it already contains placeholder for payloadId
+                            final ByteBuffer clientAction = BrowserPageAction
+                                    .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
+                            push(new ClientTasksWrapper(clientAction));
+                        }
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.severe(
+                                    """
+                                            Buffer timeout reached while preparing server event for client so further changes will not be pushed to client.
+                                             Increase Settings.outputBufferLimit or Settings.ioBufferTimeout to solve this issue.
+                                             NB: Settings.ioBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                        }
+                    }
+                } catch (final InterruptedException e) {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.", e);
+                    }
                 }
             }
         } else {
@@ -556,17 +571,32 @@ public abstract class BrowserPage implements Serializable {
 
         final ClientTasksWrapper clientTasks = new ClientTasksWrapper(tasks);
         if (outputBufferLimit != null) {
-            try {
-                // onPayloadLoss check should be second
-                if (outputBufferLimit.tryAcquire(totalNoOfBytes, settings.ioBufferTimeout, TimeUnit.MILLISECONDS)
-                        || onPayloadLoss == null) {
-                    push(clientTasks);
-                } else {
-                    throw new WffRuntimeException("Timeout reached while preparing server event for client.");
-                }
-            } catch (final InterruptedException e) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.", e);
+            if (!losslessCommunicationCheckFailed) {
+                try {
+                    // onPayloadLoss check should be second
+                    if (outputBufferLimit.tryAcquire(totalNoOfBytes, settings.ioBufferTimeout, TimeUnit.MILLISECONDS)
+                            || onPayloadLoss == null) {
+                        push(clientTasks);
+                    } else {
+                        if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
+                            losslessCommunicationCheckFailed = true;
+                            // it already contains placeholder for payloadId
+                            final ByteBuffer clientAction = BrowserPageAction
+                                    .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
+                            push(new ClientTasksWrapper(clientAction));
+                        }
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.severe(
+                                    """
+                                            Buffer timeout reached while preparing server event for client so further changes will not be pushed to client.
+                                             Increase Settings.outputBufferLimit or Settings.ioBufferTimeout to solve this issue.
+                                             NB: Settings.ioBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                        }
+                    }
+                } catch (final InterruptedException e) {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.", e);
+                    }
                 }
             }
         } else {
@@ -877,7 +907,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * Invokes just before {@link BrowserPage#render()} method. This is an empty
      * method in BrowserPage. Override and use. This method invokes only once per
-     * object in all of its life time.
+     * object in all of its lifetime.
      *
      * @since 3.0.1
      */
@@ -887,7 +917,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * Override and use this method to render html content to the client browser
-     * page. This method invokes only once per object in all of its life time.
+     * page. This method invokes only once per object in all of its lifetime.
      *
      * @return the object of {@link Html} class which needs to be displayed in the
      *         client browser page.
@@ -898,7 +928,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * Invokes after {@link BrowserPage#render()} method. This is an empty method in
      * BrowserPage. Override and use. This method invokes only once per object in
-     * all of its life time.
+     * all of its lifetime.
      *
      * @param rootTag the rootTag returned by {@link BrowserPage#render()} method.
      * @since 3.0.1
@@ -2386,17 +2416,32 @@ public abstract class BrowserPage implements Serializable {
     public final void performBrowserPageAction(final ByteBuffer actionByteBuffer) {
         // actionByteBuffer is already prepended by payloadId placeholder
         if (outputBufferLimit != null) {
-            try {
-                // onPayloadLoss check should be second
-                if (outputBufferLimit.tryAcquire(actionByteBuffer.capacity(), settings.ioBufferTimeout,
-                        TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
-                    push(new ClientTasksWrapper(actionByteBuffer));
-                } else {
-                    throw new WffRuntimeException("Timeout reached while preparing server event for client.");
-                }
-            } catch (final InterruptedException e) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.", e);
+            if (!losslessCommunicationCheckFailed) {
+                try {
+                    // onPayloadLoss check should be second
+                    if (outputBufferLimit.tryAcquire(actionByteBuffer.capacity(), settings.ioBufferTimeout,
+                            TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
+                        push(new ClientTasksWrapper(actionByteBuffer));
+                    } else {
+                        if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
+                            losslessCommunicationCheckFailed = true;
+                            // it already contains placeholder for payloadId
+                            final ByteBuffer clientAction = BrowserPageAction
+                                    .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
+                            push(new ClientTasksWrapper(clientAction));
+                        }
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.severe(
+                                    """
+                                            Buffer timeout reached while preparing server event for client so further changes will not be pushed to client.
+                                             Increase Settings.outputBufferLimit or Settings.ioBufferTimeout to solve this issue.
+                                             NB: Settings.ioBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                        }
+                    }
+                } catch (final InterruptedException e) {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.", e);
+                    }
                 }
             }
         } else {
@@ -2540,19 +2585,33 @@ public abstract class BrowserPage implements Serializable {
                             WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(invokeMultipleTasks));
 
                     if (outputBufferLimit != null) {
-                        try {
-                            // onPayloadLoss check should be second
-                            if (outputBufferLimit.tryAcquire(payload.capacity(), settings.ioBufferTimeout,
-                                    TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
-                                wffBMBytesQueue.add(new ClientTasksWrapper(payload));
-                            } else {
-                                throw new WffRuntimeException(
-                                        "Timeout reached while preparing server event for client.");
-                            }
-                        } catch (final InterruptedException e) {
-                            if (LOGGER.isLoggable(Level.SEVERE)) {
-                                LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.",
-                                        e);
+                        if (!losslessCommunicationCheckFailed) {
+                            try {
+                                // onPayloadLoss check should be second
+                                if (outputBufferLimit.tryAcquire(payload.capacity(), settings.ioBufferTimeout,
+                                        TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
+                                    wffBMBytesQueue.add(new ClientTasksWrapper(payload));
+                                } else {
+                                    if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
+                                        losslessCommunicationCheckFailed = true;
+                                        // it already contains placeholder for payloadId
+                                        final ByteBuffer clientAction = BrowserPageAction
+                                                .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
+                                        wffBMBytesQueue.add(new ClientTasksWrapper(clientAction));
+                                    }
+                                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                                        LOGGER.severe(
+                                                """
+                                                        Buffer timeout reached while preparing server event for client so further changes will not be pushed to client.
+                                                         Increase Settings.outputBufferLimit or Settings.ioBufferTimeout to solve this issue.
+                                                         NB: Settings.ioBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                                    }
+                                }
+                            } catch (final InterruptedException e) {
+                                if (LOGGER.isLoggable(Level.SEVERE)) {
+                                    LOGGER.log(Level.SEVERE,
+                                            "Thread interrupted while preparing server event for client.", e);
+                                }
                             }
                         }
                     } else {
@@ -2650,7 +2709,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * To check if the given tag exists in the UI. <br>
      * NB:- This method is valid only if {@code browserPage#toHtmlString} or
-     * {@code browserPage#toOutputStream} is called at least once in the life time.
+     * {@code browserPage#toOutputStream} is called at least once in the lifetime.
      *
      * @param tag the tag object to be checked.
      * @return true if the given tag contains in the BrowserPage i.e. UI. false if
@@ -2660,7 +2719,7 @@ public abstract class BrowserPage implements Serializable {
      *                              rendered. i.e. if
      *                              {@code browserPage#toHtmlString} or
      *                              {@code browserPage#toOutputStream} was NOT
-     *                              called at least once in the life time.
+     *                              called at least once in the lifetime.
      *
      * @since 2.1.7
      */
@@ -2672,16 +2731,16 @@ public abstract class BrowserPage implements Serializable {
 
         if (rootTag == null) {
             throw new NotRenderedException(
-                    "Could not check its existance. Make sure that you have called browserPage#toHtmlString method atleast once in the life time.");
+                    "Could not check its existence. Make sure that you have called browserPage#toHtmlString method at least once in the lifetime.");
         }
 
-        // this is better way to check, the rest of the code is old
+        // this is the better way of checking, the rest of the code is old
         return rootTag.getSharedObject().equals(tag.getSharedObject());
     }
 
     /**
      * Sets the heartbeat ping interval of webSocket client in milliseconds. Give -1
-     * to disable it. By default it's set with -1. It affects only for the
+     * to disable it. By default, it's set with -1. It affects only for the
      * corresponding {@code BrowserPage} instance from which it is called. <br>
      * NB:- This method has effect only if it is called before
      * {@code BrowserPage#render()} method return. This method can be called inside
@@ -2710,7 +2769,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * Sets the default heartbeat ping interval of webSocket client in milliseconds.
-     * Give -1 to disable it. It affects globally. By default it's set with -1 till
+     * Give -1 to disable it. It affects globally. By default, it's set with -1 till
      * wffweb-2.1.8 and Since wffweb-2.1.9 it's 25000ms i.e. 25 seconds.<br>
      * NB:- This method has effect only if it is called before
      * {@code BrowserPage#render()} invocation.
@@ -2737,7 +2796,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * Sets the default reconnect interval of webSocket client in milliseconds. It
-     * affects globally. By default it's set with 2000 ms.<br>
+     * affects globally. By default, it's set with 2000 ms.<br>
      * NB:- This method has effect only if it is called before
      * {@code BrowserPage#render()} invocation.
      *
@@ -2765,7 +2824,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * Sets the reconnect interval of webSocket client in milliseconds. Give -1 to
-     * disable it. By default it's set with -1. It affects only for the
+     * disable it. By default, it's set with -1. It affects only for the
      * corresponding {@code BrowserPage} instance from which it is called. <br>
      * NB:- This method has effect only if it is called before
      * {@code BrowserPage#render()} method return. This method can be called inside
