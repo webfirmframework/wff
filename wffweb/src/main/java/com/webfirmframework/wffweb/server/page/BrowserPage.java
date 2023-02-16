@@ -316,20 +316,26 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * The {@code Settings} object returned by {@link #defaultSettings()} method
-     * contains the default values for all of these parameters.
+     * contains the default values for all of these parameters. The
+     * {@code inputBufferLimit} and {@code outputBufferLimit} works as expected only
+     * when {@code onPayloadLoss} param is passed otherwise the buffer may grow
+     * beyond the given limit especially when {@code ioBufferTimeout} is less than
+     * the BrowserPage session maxIdleTimeout (the {@code enableAutoClean} passed
+     * from {@link BrowserPageContext#enableAutoClean}).
      *
      * @param inputBufferLimit  the limit for input buffer, i.e. the number of bytes
-     *                          allowed to store, a value &lt;&equals; 0 represents no limit
-     *                          i.e. unlimited size. This is the buffer used to
-     *                          store the data from the client events. The threads
-     *                          which store the data to the buffer will be blocked
-     *                          until enough space available in the buffer.
-     * @param outputBufferLimit the limit for output buffer, i.e. the number of
-     *                          bytes allowed to store, a value &lt;&equals; 0 represents no
-     *                          limit i.e. unlimited size. This is the buffer used
-     *                          to store the data from the server events. The
+     *                          allowed to store, a value &lt;&equals; 0 represents
+     *                          no limit i.e. unlimited size. This is the buffer
+     *                          used to store the data from the client events. The
      *                          threads which store the data to the buffer will be
      *                          blocked until enough space available in the buffer.
+     * @param outputBufferLimit the limit for output buffer, i.e. the number of
+     *                          bytes allowed to store, a value &lt;&equals; 0
+     *                          represents no limit i.e. unlimited size. This is the
+     *                          buffer used to store the data from the server
+     *                          events. The threads which store the data to the
+     *                          buffer will be blocked until enough space available
+     *                          in the buffer.
      * @param ioBufferTimeout   the timeout milliseconds for waiting threads of
      *                          input and output buffer. It is usually equal to the
      *                          timeout of session.
@@ -510,7 +516,9 @@ public abstract class BrowserPage implements Serializable {
         final ByteBuffer payload = buildPayload(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues));
         if (outputBufferLimit != null) {
             try {
-                if (outputBufferLimit.tryAcquire(payload.capacity(), settings.ioBufferTimeout, TimeUnit.MILLISECONDS)) {
+                // onPayloadLoss check should be second
+                if (outputBufferLimit.tryAcquire(payload.capacity(), settings.ioBufferTimeout, TimeUnit.MILLISECONDS)
+                        || onPayloadLoss == null) {
                     push(new ClientTasksWrapper(payload));
                 } else {
                     throw new WffRuntimeException("Timeout reached while preparing server event for client.");
@@ -549,7 +557,9 @@ public abstract class BrowserPage implements Serializable {
         final ClientTasksWrapper clientTasks = new ClientTasksWrapper(tasks);
         if (outputBufferLimit != null) {
             try {
-                if (outputBufferLimit.tryAcquire(totalNoOfBytes, settings.ioBufferTimeout, TimeUnit.MILLISECONDS)) {
+                // onPayloadLoss check should be second
+                if (outputBufferLimit.tryAcquire(totalNoOfBytes, settings.ioBufferTimeout, TimeUnit.MILLISECONDS)
+                        || onPayloadLoss == null) {
                     push(clientTasks);
                 } else {
                     throw new WffRuntimeException("Timeout reached while preparing server event for client.");
@@ -749,7 +759,9 @@ public abstract class BrowserPage implements Serializable {
 
         if (inputBufferLimit != null) {
             try {
-                if (inputBufferLimit.tryAcquire(message.length, settings.ioBufferTimeout, TimeUnit.MILLISECONDS)) {
+                // onPayloadLoss check should be second
+                if (inputBufferLimit.tryAcquire(message.length, settings.ioBufferTimeout, TimeUnit.MILLISECONDS)
+                        || onPayloadLoss == null) {
                     taskFromClientQ.offer(message);
                 } else {
                     throw new WffRuntimeException("Timeout reached while processing event from client.");
@@ -2375,8 +2387,9 @@ public abstract class BrowserPage implements Serializable {
         // actionByteBuffer is already prepended by payloadId placeholder
         if (outputBufferLimit != null) {
             try {
+                // onPayloadLoss check should be second
                 if (outputBufferLimit.tryAcquire(actionByteBuffer.capacity(), settings.ioBufferTimeout,
-                        TimeUnit.MILLISECONDS)) {
+                        TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
                     push(new ClientTasksWrapper(actionByteBuffer));
                 } else {
                     throw new WffRuntimeException("Timeout reached while preparing server event for client.");
@@ -2528,8 +2541,9 @@ public abstract class BrowserPage implements Serializable {
 
                     if (outputBufferLimit != null) {
                         try {
+                            // onPayloadLoss check should be second
                             if (outputBufferLimit.tryAcquire(payload.capacity(), settings.ioBufferTimeout,
-                                    TimeUnit.MILLISECONDS)) {
+                                    TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
                                 wffBMBytesQueue.add(new ClientTasksWrapper(payload));
                             } else {
                                 throw new WffRuntimeException(
