@@ -235,7 +235,21 @@ public abstract class BrowserPage implements Serializable {
 
     private final AtomicInteger clientSidePayloadIdGenerator = new AtomicInteger();
 
-    private final OnPayloadLoss onPayloadLoss = enableLosslessBrowserPageCommunicationWithoutException();
+    // should be before settings field initialization
+    private final Settings defaultSettings = new Settings(1024 * 1024, 1024 * 1024,
+            new OnPayloadLoss("location.reload();", () -> BrowserPage.this
+                    .performBrowserPageAction(BrowserPageAction.RELOAD_FROM_CACHE.getActionByteBuffer())));
+
+    final Settings settings = useSettingsPvt();
+
+    private final OnPayloadLoss onPayloadLoss = settings.onPayloadLoss;
+
+    private final Semaphore inputBufferLimit = settings.inputBufferLimit > 0 ? new Semaphore(settings.inputBufferLimit)
+            : null;
+
+    private final Semaphore outputBufferLimit = settings.outputBufferLimit > 0
+            ? new Semaphore(settings.inputBufferLimit)
+            : null;
 
     private volatile boolean losslessCommunicationCheckFailed;
 
@@ -297,6 +311,27 @@ public abstract class BrowserPage implements Serializable {
      * @since 12.0.0-beta.8
      */
     protected record OnPayloadLoss(String javaScript, ServerSideAction serverSideAction) {
+    }
+
+    /**
+     * The {@code Settings} object returned by {@link #defaultSettings()} method
+     * contains the default values for all of these parameters.
+     *
+     * @param inputBufferLimit  the limit for input buffer. This is the buffer used
+     *                          to store the data from the client events. The
+     *                          threads which store the data to the buffer will be
+     *                          blocked until enough space available in the buffer.
+     *                          *
+     * @param outputBufferLimit the limit for output buffer. This is the buffer used
+     *                          to store the data from the server events. The
+     *                          threads which store the data to the buffer will be
+     *                          blocked until enough space available in the buffer.
+     * @param onPayloadLoss     pass an object of {@code OnPayloadLoss} to enable or
+     *                          null * to disable lossless browser page
+     *                          communication.
+     * @since 12.0.0-beta.8
+     */
+    public record Settings(int inputBufferLimit, int outputBufferLimit, OnPayloadLoss onPayloadLoss) {
     }
 
     public abstract String webSocketUrl();
@@ -466,7 +501,11 @@ public abstract class BrowserPage implements Serializable {
 
     final void push(final NameValue... nameValues) {
 
-        push(new ClientTasksWrapper(buildPayload(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues))));
+        final ByteBuffer payload = buildPayload(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues));
+        if (outputBufferLimit != null) {
+            outputBufferLimit.acquireUninterruptibly(payload.capacity());
+        }
+        push(new ClientTasksWrapper(payload));
     }
 
     /**
@@ -475,6 +514,7 @@ public abstract class BrowserPage implements Serializable {
      */
     final ClientTasksWrapper pushAndGetWrapper(final Queue<Collection<NameValue>> multiTasks) {
 
+        int totalNoOfBytes = 0;
         final ByteBuffer[] tasks = new ByteBuffer[multiTasks.size()];
         int index = 0;
 
@@ -482,13 +522,17 @@ public abstract class BrowserPage implements Serializable {
         while ((taskNameValues = multiTasks.poll()) != null) {
             final NameValue[] nameValues = taskNameValues.toArray(new NameValue[taskNameValues.size()]);
 
-            final ByteBuffer byteBuffer = buildPayload(
+            final ByteBuffer payload = buildPayload(
                     WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues));
-            tasks[index] = byteBuffer;
+            tasks[index] = payload;
+            totalNoOfBytes += payload.capacity();
             index++;
         }
 
         final ClientTasksWrapper clientTasks = new ClientTasksWrapper(tasks);
+        if (outputBufferLimit != null) {
+            outputBufferLimit.acquireUninterruptibly(totalNoOfBytes);
+        }
         push(clientTasks);
         return clientTasks;
     }
@@ -544,6 +588,7 @@ public abstract class BrowserPage implements Serializable {
 
                         do {
                             pushQueueSize.decrement();
+                            int totalBytesPushed = 0;
                             try {
 
                                 byteBuffers = clientTask.tasks();
@@ -553,6 +598,7 @@ public abstract class BrowserPage implements Serializable {
                                         final ByteBuffer byteBuffer = byteBuffers.get(i);
                                         if (byteBuffer != null) {
                                             wsListener.push(buildPayloadForClient(byteBuffer));
+                                            totalBytesPushed += byteBuffer.capacity();
                                         }
                                         byteBuffers.set(i, null);
                                     }
@@ -572,6 +618,10 @@ public abstract class BrowserPage implements Serializable {
                                     pushQueueSize.increment();
                                 }
                                 break;
+                            } finally {
+                                if (totalBytesPushed > 0 && outputBufferLimit != null) {
+                                    outputBufferLimit.release(totalBytesPushed);
+                                }
                             }
 
                             if (pushWffBMBytesQueueLock.hasQueuedThreads()) {
@@ -668,6 +718,9 @@ public abstract class BrowserPage implements Serializable {
 
         // executeWffBMTask(message);
 
+        if (inputBufferLimit != null) {
+            inputBufferLimit.acquireUninterruptibly(message.length);
+        }
         taskFromClientQ.offer(message);
 
         if (!taskFromClientQ.isEmpty()) {
@@ -745,6 +798,10 @@ public abstract class BrowserPage implements Serializable {
                             }
                             if (LOGGER.isLoggable(Level.SEVERE)) {
                                 LOGGER.log(Level.SEVERE, "Could not process this data received from client.", e);
+                            }
+                        } finally {
+                            if (inputBufferLimit != null) {
+                                inputBufferLimit.release(taskFromClient.length);
                             }
                         }
 
@@ -2276,6 +2333,9 @@ public abstract class BrowserPage implements Serializable {
      */
     public final void performBrowserPageAction(final ByteBuffer actionByteBuffer) {
         // actionByteBuffer is already prepended by payloadId placeholder
+        if (outputBufferLimit != null) {
+            outputBufferLimit.acquireUninterruptibly(actionByteBuffer.capacity());
+        }
         push(new ClientTasksWrapper(actionByteBuffer));
         if (holdPush.get() == 0) {
             pushWffBMBytesQueue();
@@ -2410,8 +2470,12 @@ public abstract class BrowserPage implements Serializable {
 
                     invokeMultipleTasks.setValues(values);
 
-                    wffBMBytesQueue.add(new ClientTasksWrapper(buildPayload(
-                            WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(invokeMultipleTasks))));
+                    final ByteBuffer payload = buildPayload(
+                            WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(invokeMultipleTasks));
+                    wffBMBytesQueue.add(new ClientTasksWrapper(payload));
+                    if (outputBufferLimit != null) {
+                        outputBufferLimit.acquireUninterruptibly(payload.capacity());
+                    }
 
                     pushQueueSize.increment();
 
@@ -3128,32 +3192,40 @@ public abstract class BrowserPage implements Serializable {
         return tempDirPath;
     }
 
-    private OnPayloadLoss enableLosslessBrowserPageCommunicationWithoutException() {
+    public final Settings defaultSettings() {
+        return defaultSettings;
+    }
+
+    private Settings useSettingsPvt() {
         try {
-            return enableLosslessBrowserPageCommunication();
+            final Settings settings = useSettings();
+            if (settings != null) {
+                return settings;
+            }
         } catch (final RuntimeException e) {
-            LOGGER.log(Level.SEVERE,
-                    "Exception invoking enableLosslessUICommunication so disabled lossless UI communication", e);
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.log(Level.SEVERE,
+                        "Exception while invoking the overridden useSettings method so default Settings will be applied",
+                        e);
+            }
         }
-        return null;
+        return defaultSettings;
     }
 
     /**
-     * @return return an object of {@code OnPayloadLoss} to enable it or return null
-     *         to disable it.
+     * @return the settings for this browserPage instance
      * @since 12.0.0-beta.8
      */
-    protected OnPayloadLoss enableLosslessBrowserPageCommunication() {
-        return new OnPayloadLoss("location.reload();", () -> BrowserPage.this
-                .performBrowserPageAction(BrowserPageAction.RELOAD_FROM_CACHE.getActionByteBuffer()));
+    protected Settings useSettings() {
+        return defaultSettings;
     }
 
     /**
-     * @return true if enabled
+     * @return the Settings applied to this browserPage instance
      * @since 12.0.0-beta.8
      */
-    public final boolean losslessBrowserPageCommunication() {
-        return onPayloadLoss != null;
+    public final Settings getSettings() {
+        return settings;
     }
 
     private ByteBuffer buildPayload(final byte[] bmMsg) {

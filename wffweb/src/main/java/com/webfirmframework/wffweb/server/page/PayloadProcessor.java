@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -39,6 +40,8 @@ public class PayloadProcessor implements Serializable {
 
     private final AtomicInteger wsMessageChunksTotalCapacity = new AtomicInteger(0);
 
+    private final Semaphore inputBufferLimit;
+
     private final BrowserPage browserPage;
 
     private final boolean singleThreaded;
@@ -49,6 +52,9 @@ public class PayloadProcessor implements Serializable {
         this.browserPage = browserPage;
         singleThreaded = false;
         commonLock = singleThreaded ? null : new ReentrantLock(true);
+        inputBufferLimit = browserPage.settings.inputBufferLimit() > 0
+                ? new Semaphore(browserPage.settings.inputBufferLimit())
+                : null;
     }
 
     /**
@@ -60,6 +66,9 @@ public class PayloadProcessor implements Serializable {
         this.browserPage = browserPage;
         this.singleThreaded = singleThreaded;
         commonLock = singleThreaded ? null : new ReentrantLock(true);
+        inputBufferLimit = browserPage.settings.inputBufferLimit() > 0
+                ? new Semaphore(browserPage.settings.inputBufferLimit())
+                : null;
     }
 
     /**
@@ -106,15 +115,39 @@ public class PayloadProcessor implements Serializable {
     public void webSocketMessaged(final ByteBuffer messagePart, final boolean last) {
 
         if (last && wsMessageChunksTotalCapacity.get() == 0) {
-            browserPage.webSocketMessaged(messagePart.array());
+            final byte[] array = messagePart.array();
+            if (inputBufferLimit != null) {
+                inputBufferLimit.acquireUninterruptibly(array.length);
+                try {
+                    browserPage.webSocketMessaged(array);
+                } finally {
+                    inputBufferLimit.release(array.length);
+                }
+            } else {
+                browserPage.webSocketMessaged(array);
+            }
         } else {
             if (singleThreaded) {
-                transferToBrowserPageWS(messagePart, last);
+                if (inputBufferLimit != null) {
+                    final int permits = messagePart.array().length;
+                    inputBufferLimit.acquireUninterruptibly(permits);
+                    try {
+                        transferToBrowserPageWS(messagePart, last);
+                    } finally {
+                        inputBufferLimit.release(permits);
+                    }
+                } else {
+                    transferToBrowserPageWS(messagePart, last);
+                }
+
             } else {
                 commonLock.lock();
+                final int permits = messagePart.array().length;
+                inputBufferLimit.acquireUninterruptibly(permits);
                 try {
                     transferToBrowserPageWS(messagePart, last);
                 } finally {
+                    inputBufferLimit.release(permits);
                     commonLock.unlock();
                 }
             }

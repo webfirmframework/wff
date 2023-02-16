@@ -805,7 +805,9 @@ public enum BrowserPageContext {
     }
 
     /**
-     * this method should be called when the websocket is messaged.
+     * this method should be called when the websocket is messaged, it is required
+     * only if PayloadProcessor is not used to deliver data from client to
+     * BrowserPage
      *
      * @param wffInstanceId the wffInstanceId which can be retried from the request
      *                      parameter in websocket connection.
