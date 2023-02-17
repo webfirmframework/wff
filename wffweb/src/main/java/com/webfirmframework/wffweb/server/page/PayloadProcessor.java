@@ -21,8 +21,6 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * PayloadProcessor for BrowserPage WebSocket's incoming bytes
@@ -40,21 +38,15 @@ public class PayloadProcessor implements Serializable {
 
     private final AtomicInteger wsMessageChunksTotalCapacity = new AtomicInteger(0);
 
-    private final Semaphore inputBufferLimit;
+    private final Semaphore inputBufferLimitLock;
 
     private final BrowserPage browserPage;
-
-    private final boolean singleThreaded;
-
-    private final transient Lock commonLock;
 
     private volatile boolean outOfMemoryError;
 
     public PayloadProcessor(final BrowserPage browserPage) {
         this.browserPage = browserPage;
-        singleThreaded = false;
-        commonLock = singleThreaded ? null : new ReentrantLock(true);
-        inputBufferLimit = browserPage.settings.inputBufferLimit() > 0
+        inputBufferLimitLock = browserPage.settings.inputBufferLimit() > 0
                 ? new Semaphore(browserPage.settings.inputBufferLimit())
                 : null;
     }
@@ -66,9 +58,7 @@ public class PayloadProcessor implements Serializable {
      */
     public PayloadProcessor(final BrowserPage browserPage, final boolean singleThreaded) {
         this.browserPage = browserPage;
-        this.singleThreaded = singleThreaded;
-        commonLock = singleThreaded ? null : new ReentrantLock(true);
-        inputBufferLimit = browserPage.settings.inputBufferLimit() > 0
+        inputBufferLimitLock = browserPage.settings.inputBufferLimit() > 0
                 ? new Semaphore(browserPage.settings.inputBufferLimit())
                 : null;
     }
@@ -79,7 +69,6 @@ public class PayloadProcessor implements Serializable {
      * @param dataArray the ByteByffers to merge
      * @return a single ByteBuffer after flip merged from all ByteBuffer objects
      *         from dataArray.
-     *
      * @since 3.0.2
      */
     // for testing purpose the method visibility is changed to package level
@@ -124,49 +113,37 @@ public class PayloadProcessor implements Serializable {
                             .formatted(browserPage.settings.inputBufferLimit()));
         }
 
+        // As per javadoc, inputBufferLimitLock.availablePermits() is typically used for
+        // debugging and testing purposes so avoided using it
         if (last && wsMessageChunksTotalCapacity.get() == 0) {
-            if (inputBufferLimit != null) {
+            if (inputBufferLimitLock != null) {
                 if (messagePart.capacity() > browserPage.settings.inputBufferLimit()) {
                     outOfMemoryError = true;
                     throw getOutOfMemoryError(messagePart.capacity());
                 }
-                inputBufferLimit.acquireUninterruptibly(messagePart.capacity());
-                try {
-                    browserPage.webSocketMessaged(messagePart.array());
-                } finally {
-                    inputBufferLimit.release(messagePart.capacity());
+                if (inputBufferLimitLock.tryAcquire(messagePart.capacity())) {
+                    try {
+                        browserPage.webSocketMessaged(messagePart.array());
+                    } finally {
+                        inputBufferLimitLock.release(messagePart.capacity());
+                    }
+                } else {
+                    outOfMemoryError = true;
+                    throw getOutOfMemoryError(messagePart.capacity());
                 }
             } else {
                 browserPage.webSocketMessaged(messagePart.array());
             }
         } else {
-            if (singleThreaded) {
-                if (inputBufferLimit != null) {
-                    if (messagePart.capacity() > inputBufferLimit.availablePermits()) {
-                        outOfMemoryError = true;
-                        throw getOutOfMemoryError(messagePart.capacity());
-                    }
-                    inputBufferLimit.acquireUninterruptibly(messagePart.capacity());
+            if (inputBufferLimitLock != null) {
+                if (inputBufferLimitLock.tryAcquire(messagePart.capacity())) {
                     transferToBrowserPageWS(messagePart, last);
                 } else {
-                    transferToBrowserPageWS(messagePart, last);
+                    outOfMemoryError = true;
+                    throw getOutOfMemoryError(messagePart.capacity());
                 }
             } else {
-                commonLock.lock();
-                try {
-                    if (inputBufferLimit != null) {
-                        if (messagePart.capacity() > inputBufferLimit.availablePermits()) {
-                            outOfMemoryError = true;
-                            throw getOutOfMemoryError(messagePart.capacity());
-                        }
-                        inputBufferLimit.acquireUninterruptibly(messagePart.capacity());
-                        transferToBrowserPageWS(messagePart, last);
-                    } else {
-                        transferToBrowserPageWS(messagePart, last);
-                    }
-                } finally {
-                    commonLock.unlock();
-                }
+                transferToBrowserPageWS(messagePart, last);
             }
         }
     }
@@ -190,8 +167,8 @@ public class PayloadProcessor implements Serializable {
         if (wsMessageChunks.isEmpty()) {
             final byte[] message = messagePart.array();
             if (!browserPage.checkLosslessCommunication(message)) {
-                if (inputBufferLimit != null) {
-                    inputBufferLimit.release(message.length);
+                if (inputBufferLimitLock != null) {
+                    inputBufferLimitLock.release(message.length);
                 }
                 return;
             }
@@ -201,16 +178,15 @@ public class PayloadProcessor implements Serializable {
             wsMessageChunks.add(messagePart);
             final int totalCapacity = wsMessageChunksTotalCapacity.getAndSet(0) + messagePart.capacity();
             final byte[] message = pollAndConvertToByteArray(totalCapacity, wsMessageChunks);
-            if (inputBufferLimit != null) {
+            if (inputBufferLimitLock != null) {
                 try {
                     browserPage.webSocketMessagedWithoutLosslessCheck(message);
                 } finally {
-                    inputBufferLimit.release(message.length);
+                    inputBufferLimitLock.release(message.length);
                 }
             } else {
                 browserPage.webSocketMessagedWithoutLosslessCheck(message);
             }
-
         } else {
             wsMessageChunks.add(messagePart);
             wsMessageChunksTotalCapacity.addAndGet(messagePart.capacity());

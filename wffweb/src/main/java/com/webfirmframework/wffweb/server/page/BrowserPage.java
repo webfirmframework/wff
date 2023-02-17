@@ -237,8 +237,10 @@ public abstract class BrowserPage implements Serializable {
     private final AtomicInteger clientSidePayloadIdGenerator = new AtomicInteger();
 
     // should be before settings field initialization
-    // 1024 *1024 = 1048576
-    private final Settings defaultSettings = new Settings(1048576, 1048576, 60_000,
+    // 1024 *1024 = 1048576 i.e. 1MB, a heavy html page size might be 1 MB in size
+    // so considered this value.
+    // gave ioBufferTimeout = 25_000 as the wsDefaultHeartbeatInterval is 25_000
+    private final Settings defaultSettings = new Settings(1048576, 1048576, 25_000,
             new OnPayloadLoss("location.reload();", () -> BrowserPage.this
                     .performBrowserPageAction(BrowserPageAction.RELOAD_FROM_CACHE.getActionByteBuffer())));
 
@@ -246,10 +248,11 @@ public abstract class BrowserPage implements Serializable {
 
     private final OnPayloadLoss onPayloadLoss = settings.onPayloadLoss;
 
-    private final Semaphore inputBufferLimit = settings.inputBufferLimit > 0 ? new Semaphore(settings.inputBufferLimit)
+    private final Semaphore inputBufferLimitLock = settings.inputBufferLimit > 0
+            ? new Semaphore(settings.inputBufferLimit)
             : null;
 
-    private final Semaphore outputBufferLimit = settings.outputBufferLimit > 0
+    private final Semaphore outputBufferLimitLock = settings.outputBufferLimit > 0
             ? new Semaphore(settings.inputBufferLimit)
             : null;
 
@@ -515,11 +518,11 @@ public abstract class BrowserPage implements Serializable {
 
     final void push(final NameValue... nameValues) {
         final ByteBuffer payload = buildPayload(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues));
-        if (outputBufferLimit != null) {
+        if (outputBufferLimitLock != null) {
             if (!losslessCommunicationCheckFailed) {
                 try {
                     // onPayloadLoss check should be second
-                    if (outputBufferLimit.tryAcquire(payload.capacity(), settings.ioBufferTimeout,
+                    if (outputBufferLimitLock.tryAcquire(payload.capacity(), settings.ioBufferTimeout,
                             TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
                         push(new ClientTasksWrapper(payload));
                     } else {
@@ -571,12 +574,12 @@ public abstract class BrowserPage implements Serializable {
         }
 
         final ClientTasksWrapper clientTasks = new ClientTasksWrapper(tasks);
-        if (outputBufferLimit != null) {
+        if (outputBufferLimitLock != null) {
             if (!losslessCommunicationCheckFailed) {
                 try {
                     // onPayloadLoss check should be second
-                    if (outputBufferLimit.tryAcquire(totalNoOfBytes, settings.ioBufferTimeout, TimeUnit.MILLISECONDS)
-                            || onPayloadLoss == null) {
+                    if (outputBufferLimitLock.tryAcquire(totalNoOfBytes, settings.ioBufferTimeout,
+                            TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
                         push(clientTasks);
                     } else {
                         losslessCommunicationCheckFailed = true;
@@ -689,8 +692,8 @@ public abstract class BrowserPage implements Serializable {
                                 }
                                 break;
                             } finally {
-                                if (totalBytesPushed > 0 && outputBufferLimit != null) {
-                                    outputBufferLimit.release(totalBytesPushed);
+                                if (totalBytesPushed > 0 && outputBufferLimitLock != null) {
+                                    outputBufferLimitLock.release(totalBytesPushed);
                                 }
                             }
 
@@ -798,10 +801,10 @@ public abstract class BrowserPage implements Serializable {
 
         // executeWffBMTask(message);
 
-        if (inputBufferLimit != null) {
+        if (inputBufferLimitLock != null) {
             try {
                 // onPayloadLoss check should be second
-                if (inputBufferLimit.tryAcquire(message.length, settings.ioBufferTimeout, TimeUnit.MILLISECONDS)
+                if (inputBufferLimitLock.tryAcquire(message.length, settings.ioBufferTimeout, TimeUnit.MILLISECONDS)
                         || onPayloadLoss == null) {
                     taskFromClientQ.offer(message);
                 } else {
@@ -903,8 +906,8 @@ public abstract class BrowserPage implements Serializable {
                                 LOGGER.log(Level.SEVERE, "Could not process this data received from client.", e);
                             }
                         } finally {
-                            if (inputBufferLimit != null) {
-                                inputBufferLimit.release(taskFromClient.length);
+                            if (inputBufferLimitLock != null) {
+                                inputBufferLimitLock.release(taskFromClient.length);
                             }
                         }
 
@@ -2436,11 +2439,11 @@ public abstract class BrowserPage implements Serializable {
      */
     public final void performBrowserPageAction(final ByteBuffer actionByteBuffer) {
         // actionByteBuffer is already prepended by payloadId placeholder
-        if (outputBufferLimit != null) {
+        if (outputBufferLimitLock != null) {
             if (!losslessCommunicationCheckFailed) {
                 try {
                     // onPayloadLoss check should be second
-                    if (outputBufferLimit.tryAcquire(actionByteBuffer.capacity(), settings.ioBufferTimeout,
+                    if (outputBufferLimitLock.tryAcquire(actionByteBuffer.capacity(), settings.ioBufferTimeout,
                             TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
                         push(new ClientTasksWrapper(actionByteBuffer));
                     } else {
@@ -2605,11 +2608,11 @@ public abstract class BrowserPage implements Serializable {
                     final ByteBuffer payload = buildPayload(
                             WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(invokeMultipleTasks));
 
-                    if (outputBufferLimit != null) {
+                    if (outputBufferLimitLock != null) {
                         if (!losslessCommunicationCheckFailed) {
                             try {
                                 // onPayloadLoss check should be second
-                                if (outputBufferLimit.tryAcquire(payload.capacity(), settings.ioBufferTimeout,
+                                if (outputBufferLimitLock.tryAcquire(payload.capacity(), settings.ioBufferTimeout,
                                         TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
                                     wffBMBytesQueue.add(new ClientTasksWrapper(payload));
                                 } else {
@@ -3362,11 +3365,6 @@ public abstract class BrowserPage implements Serializable {
         try {
             final Settings settings = useSettings();
             if (settings != null) {
-                if ((settings.inputBufferLimit > 0 || settings.outputBufferLimit > 0)
-                        && settings.ioBufferTimeout <= 0) {
-                    throw new InvalidValueException(
-                            "ioBufferTimeout in BrowserPage.Settings should be greater than zero.");
-                }
                 return settings;
             }
         } catch (final InvalidValueException e) {
