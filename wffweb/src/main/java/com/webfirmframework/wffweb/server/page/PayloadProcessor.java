@@ -118,7 +118,7 @@ public class PayloadProcessor implements Serializable {
         if (outOfMemoryError) {
             throw new OutOfMemoryError(
                     """
-                            The payloads received from client cannot be processed due to OutOfMemoryError, the previous payload size was more than the allowed size %s.
+                            The payloads received from client cannot be processed due to OutOfMemoryError, the previous payload size was more than the allowed size of %s.
                              Increase the value of browserPage.settings.inputBufferLimit to fix this error.
                              Override useSettings method in the subclass of BrowserPage to set a new values browserPage.settings."""
                             .formatted(browserPage.settings.inputBufferLimit()));
@@ -174,8 +174,8 @@ public class PayloadProcessor implements Serializable {
     private OutOfMemoryError getOutOfMemoryError(final int messagePartSize) {
         return new OutOfMemoryError(
                 """
-                        The client payload size is more than the allowed size %s specified by browserPage.settings.inputBufferLimit so further payloads received from client will not be processed.
-                         Increase the value of browserPage.settings.inputBufferLimit, it should be greater than or equal to %s to fix this error.
+                        The client payload size is more than the allowed size of %s specified by browserPage.settings.inputBufferLimit so further payloads received from client will not be processed.
+                         Increase the value of browserPage.settings.inputBufferLimit, it should be greater than or equal to a value of %s to fix this error.
                          Override useSettings method in the subclass of BrowserPage to set a new values browserPage.settings."""
                         .formatted(browserPage.settings.inputBufferLimit(), messagePartSize));
     }
