@@ -237,7 +237,8 @@ public abstract class BrowserPage implements Serializable {
     private final AtomicInteger clientSidePayloadIdGenerator = new AtomicInteger();
 
     // should be before settings field initialization
-    private final Settings defaultSettings = new Settings(1024 * 1024, 1024 * 1024, 60_000,
+    // 1024 *1024 = 1048576
+    private final Settings defaultSettings = new Settings(1048576, 1048576, 60_000,
             new OnPayloadLoss("location.reload();", () -> BrowserPage.this
                     .performBrowserPageAction(BrowserPageAction.RELOAD_FROM_CACHE.getActionByteBuffer())));
 
@@ -522,19 +523,19 @@ public abstract class BrowserPage implements Serializable {
                             TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
                         push(new ClientTasksWrapper(payload));
                     } else {
-                        if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
-                            losslessCommunicationCheckFailed = true;
-                            // it already contains placeholder for payloadId
-                            final ByteBuffer clientAction = BrowserPageAction
-                                    .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
-                            push(new ClientTasksWrapper(clientAction));
-                        }
+                        losslessCommunicationCheckFailed = true;
                         if (LOGGER.isLoggable(Level.SEVERE)) {
                             LOGGER.severe(
                                     """
                                             Buffer timeout reached while preparing server event for client so further changes will not be pushed to client.
                                              Increase Settings.outputBufferLimit or Settings.ioBufferTimeout to solve this issue.
                                              NB: Settings.ioBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                        }
+                        if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
+                            // it already contains placeholder for payloadId
+                            final ByteBuffer clientAction = BrowserPageAction
+                                    .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
+                            push(new ClientTasksWrapper(clientAction));
                         }
                     }
                 } catch (final InterruptedException e) {
@@ -578,19 +579,19 @@ public abstract class BrowserPage implements Serializable {
                             || onPayloadLoss == null) {
                         push(clientTasks);
                     } else {
-                        if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
-                            losslessCommunicationCheckFailed = true;
-                            // it already contains placeholder for payloadId
-                            final ByteBuffer clientAction = BrowserPageAction
-                                    .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
-                            push(new ClientTasksWrapper(clientAction));
-                        }
+                        losslessCommunicationCheckFailed = true;
                         if (LOGGER.isLoggable(Level.SEVERE)) {
                             LOGGER.severe(
                                     """
                                             Buffer timeout reached while preparing server event for client so further changes will not be pushed to client.
                                              Increase Settings.outputBufferLimit or Settings.ioBufferTimeout to solve this issue.
                                              NB: Settings.ioBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                        }
+                        if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
+                            // it already contains placeholder for payloadId
+                            final ByteBuffer clientAction = BrowserPageAction
+                                    .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
+                            push(new ClientTasksWrapper(clientAction));
                         }
                     }
                 } catch (final InterruptedException e) {
@@ -775,6 +776,16 @@ public abstract class BrowserPage implements Serializable {
         if (!checkLosslessCommunication(message)) {
             return;
         }
+        webSocketMessagedWithoutLosslessCheck(message);
+    }
+
+    /**
+     * @param message the bytes the received in onmessage
+     *
+     * @since 2.1.0
+     */
+    final void webSocketMessagedWithoutLosslessCheck(final byte[] message) {
+
         // should be after checkLosslessCommunication
         lastClientAccessedTime = System.currentTimeMillis();
         // minimum number of an empty bm message length is 4
@@ -794,7 +805,17 @@ public abstract class BrowserPage implements Serializable {
                         || onPayloadLoss == null) {
                     taskFromClientQ.offer(message);
                 } else {
-                    throw new WffRuntimeException("Timeout reached while processing event from client.");
+                    losslessCommunicationCheckFailed = true;
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.severe(
+                                """
+                                        Buffer timeout reached while processing event from client so further client events will not be received at server side.
+                                         Increase Settings.inputBufferLimit or Settings.ioBufferTimeout to solve this issue.
+                                         NB: Settings.ioBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                    }
+                    if (onPayloadLoss.serverSideAction != null) {
+                        onPayloadLoss.serverSideAction.perform();
+                    }
                 }
             } catch (final InterruptedException e) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
@@ -2423,19 +2444,19 @@ public abstract class BrowserPage implements Serializable {
                             TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
                         push(new ClientTasksWrapper(actionByteBuffer));
                     } else {
-                        if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
-                            losslessCommunicationCheckFailed = true;
-                            // it already contains placeholder for payloadId
-                            final ByteBuffer clientAction = BrowserPageAction
-                                    .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
-                            push(new ClientTasksWrapper(clientAction));
-                        }
+                        losslessCommunicationCheckFailed = true;
                         if (LOGGER.isLoggable(Level.SEVERE)) {
                             LOGGER.severe(
                                     """
                                             Buffer timeout reached while preparing server event for client so further changes will not be pushed to client.
                                              Increase Settings.outputBufferLimit or Settings.ioBufferTimeout to solve this issue.
                                              NB: Settings.ioBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                        }
+                        if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
+                            // it already contains placeholder for payloadId
+                            final ByteBuffer clientAction = BrowserPageAction
+                                    .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
+                            push(new ClientTasksWrapper(clientAction));
                         }
                     }
                 } catch (final InterruptedException e) {
@@ -2592,19 +2613,19 @@ public abstract class BrowserPage implements Serializable {
                                         TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
                                     wffBMBytesQueue.add(new ClientTasksWrapper(payload));
                                 } else {
-                                    if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
-                                        losslessCommunicationCheckFailed = true;
-                                        // it already contains placeholder for payloadId
-                                        final ByteBuffer clientAction = BrowserPageAction
-                                                .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
-                                        wffBMBytesQueue.add(new ClientTasksWrapper(clientAction));
-                                    }
+                                    losslessCommunicationCheckFailed = true;
                                     if (LOGGER.isLoggable(Level.SEVERE)) {
                                         LOGGER.severe(
                                                 """
                                                         Buffer timeout reached while preparing server event for client so further changes will not be pushed to client.
                                                          Increase Settings.outputBufferLimit or Settings.ioBufferTimeout to solve this issue.
                                                          NB: Settings.ioBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                                    }
+                                    if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
+                                        // it already contains placeholder for payloadId
+                                        final ByteBuffer clientAction = BrowserPageAction
+                                                .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
+                                        wffBMBytesQueue.add(new ClientTasksWrapper(clientAction));
                                     }
                                 }
                             } catch (final InterruptedException e) {
