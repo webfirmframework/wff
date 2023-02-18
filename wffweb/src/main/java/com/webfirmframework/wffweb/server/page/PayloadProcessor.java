@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.server.page;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.util.ConcurrentModificationException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
@@ -84,8 +85,9 @@ public class PayloadProcessor implements Serializable {
             final byte[] array = data.array();
             System.arraycopy(array, 0, wholeData, destStartIndex, array.length);
             destStartIndex += array.length;
-            if (destStartIndex == totalCapacity) {
-                break;
+            if (destStartIndex > totalCapacity) {
+                throw new ConcurrentModificationException(
+                        "PayloadProcessor.webSocketMessaged method is NOT allowed to call more than one thread at a time.");
             }
         }
 
