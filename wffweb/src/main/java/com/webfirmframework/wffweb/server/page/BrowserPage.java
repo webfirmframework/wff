@@ -253,7 +253,7 @@ public abstract class BrowserPage implements Serializable {
             : null;
 
     private final Semaphore outputBufferLimitLock = settings.outputBufferLimit > 0
-            ? new Semaphore(settings.inputBufferLimit)
+            ? new Semaphore(settings.outputBufferLimit)
             : null;
 
     private volatile boolean losslessCommunicationCheckFailed;
