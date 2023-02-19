@@ -518,38 +518,7 @@ public abstract class BrowserPage implements Serializable {
 
     final void push(final NameValue... nameValues) {
         final ByteBuffer payload = buildPayload(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues));
-        if (outputBufferLimitLock != null) {
-            if (!losslessCommunicationCheckFailed) {
-                try {
-                    // onPayloadLoss check should be second
-                    if (outputBufferLimitLock.tryAcquire(payload.capacity(), settings.ioBufferTimeout,
-                            TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
-                        push(new ClientTasksWrapper(payload));
-                    } else {
-                        losslessCommunicationCheckFailed = true;
-                        if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.severe(
-                                    """
-                                            Buffer timeout reached while preparing server event for client so further changes will not be pushed to client.
-                                             Increase Settings.outputBufferLimit or Settings.ioBufferTimeout to solve this issue.
-                                             NB: Settings.ioBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
-                        }
-                        if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
-                            // it already contains placeholder for payloadId
-                            final ByteBuffer clientAction = BrowserPageAction
-                                    .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
-                            push(new ClientTasksWrapper(clientAction));
-                        }
-                    }
-                } catch (final InterruptedException e) {
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.", e);
-                    }
-                }
-            }
-        } else {
-            push(new ClientTasksWrapper(payload));
-        }
+        push(new ClientTasksWrapper(payload));
     }
 
     /**
@@ -558,7 +527,6 @@ public abstract class BrowserPage implements Serializable {
      */
     final ClientTasksWrapper pushAndGetWrapper(final Queue<Collection<NameValue>> multiTasks) {
 
-        int totalNoOfBytes = 0;
         final ByteBuffer[] tasks = new ByteBuffer[multiTasks.size()];
         int index = 0;
 
@@ -569,18 +537,40 @@ public abstract class BrowserPage implements Serializable {
             final ByteBuffer payload = buildPayload(
                     WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues));
             tasks[index] = payload;
-            totalNoOfBytes += payload.capacity();
+            payload.capacity();
             index++;
         }
 
         final ClientTasksWrapper clientTasks = new ClientTasksWrapper(tasks);
+        push(clientTasks);
+        return clientTasks;
+    }
+
+    private void pushLockless(final ClientTasksWrapper clientTasks) {
+        if (holdPush.get() > 0) {
+            // add method internally calls offer method in ConcurrentLinkedQueue
+            wffBMBytesHoldPushQueue.offer(clientTasks);
+        } else {
+            if (!wffBMBytesHoldPushQueue.isEmpty()) {
+                copyCachedBMBytesToMainQ();
+            }
+            // add method internally calls offer which internally
+            // calls offerLast method in ConcurrentLinkedQueue
+
+            if (wffBMBytesQueue.offerLast(clientTasks)) {
+                pushQueueSize.increment();
+            }
+        }
+    }
+
+    private void push(final ClientTasksWrapper clientTasks) {
         if (outputBufferLimitLock != null) {
             if (!losslessCommunicationCheckFailed) {
                 try {
                     // onPayloadLoss check should be second
-                    if (outputBufferLimitLock.tryAcquire(totalNoOfBytes, settings.ioBufferTimeout,
+                    if (outputBufferLimitLock.tryAcquire(clientTasks.getCurrentSize(), settings.ioBufferTimeout,
                             TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
-                        push(clientTasks);
+                        pushLockless(clientTasks);
                     } else {
                         losslessCommunicationCheckFailed = true;
                         if (LOGGER.isLoggable(Level.SEVERE)) {
@@ -594,7 +584,13 @@ public abstract class BrowserPage implements Serializable {
                             // it already contains placeholder for payloadId
                             final ByteBuffer clientAction = BrowserPageAction
                                     .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
-                            push(new ClientTasksWrapper(clientAction));
+
+                            // do not use clear() as it may not clear from last to first in
+                            // ConcurrentLinkedDeque (no guarantee)
+                            while (wffBMBytesQueue.pollLast() != null) {
+                                // do nothing here, just to remove all items
+                            }
+                            wffBMBytesQueue.offerFirst(new ClientTasksWrapper(clientAction));
                         }
                     }
                 } catch (final InterruptedException e) {
@@ -604,28 +600,7 @@ public abstract class BrowserPage implements Serializable {
                 }
             }
         } else {
-            push(clientTasks);
-        }
-
-        return clientTasks;
-    }
-
-    private void push(final ClientTasksWrapper clientTasks) {
-
-        if (holdPush.get() > 0) {
-            // add method internally calls offer method in ConcurrentLinkedQueue
-            wffBMBytesHoldPushQueue.offer(clientTasks);
-        } else {
-
-            if (!wffBMBytesHoldPushQueue.isEmpty()) {
-                copyCachedBMBytesToMainQ();
-            }
-            // add method internally calls offer which internally
-            // calls offerLast method in ConcurrentLinkedQueue
-
-            if (wffBMBytesQueue.offerLast(clientTasks)) {
-                pushQueueSize.increment();
-            }
+            pushLockless(clientTasks);
         }
     }
 
@@ -2440,39 +2415,7 @@ public abstract class BrowserPage implements Serializable {
      */
     public final void performBrowserPageAction(final ByteBuffer actionByteBuffer) {
         // actionByteBuffer is already prepended by payloadId placeholder
-        if (outputBufferLimitLock != null) {
-            if (!losslessCommunicationCheckFailed) {
-                try {
-                    // onPayloadLoss check should be second
-                    if (outputBufferLimitLock.tryAcquire(actionByteBuffer.capacity(), settings.ioBufferTimeout,
-                            TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
-                        push(new ClientTasksWrapper(actionByteBuffer));
-                    } else {
-                        losslessCommunicationCheckFailed = true;
-                        if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.severe(
-                                    """
-                                            Buffer timeout reached while preparing server event for client so further changes will not be pushed to client.
-                                             Increase Settings.outputBufferLimit or Settings.ioBufferTimeout to solve this issue.
-                                             NB: Settings.ioBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
-                        }
-                        if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
-                            // it already contains placeholder for payloadId
-                            final ByteBuffer clientAction = BrowserPageAction
-                                    .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
-                            push(new ClientTasksWrapper(clientAction));
-                        }
-                    }
-                } catch (final InterruptedException e) {
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.", e);
-                    }
-                }
-            }
-        } else {
-            push(new ClientTasksWrapper(actionByteBuffer));
-        }
-
+        push(new ClientTasksWrapper(actionByteBuffer));
         if (holdPush.get() == 0) {
             pushWffBMBytesQueue();
         }
@@ -2609,39 +2552,9 @@ public abstract class BrowserPage implements Serializable {
                     final ByteBuffer payload = buildPayload(
                             WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(invokeMultipleTasks));
 
-                    if (outputBufferLimitLock != null) {
-                        if (!losslessCommunicationCheckFailed) {
-                            try {
-                                // onPayloadLoss check should be second
-                                if (outputBufferLimitLock.tryAcquire(payload.capacity(), settings.ioBufferTimeout,
-                                        TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
-                                    wffBMBytesQueue.add(new ClientTasksWrapper(payload));
-                                } else {
-                                    losslessCommunicationCheckFailed = true;
-                                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                                        LOGGER.severe(
-                                                """
-                                                        Buffer timeout reached while preparing server event for client so further changes will not be pushed to client.
-                                                         Increase Settings.outputBufferLimit or Settings.ioBufferTimeout to solve this issue.
-                                                         NB: Settings.ioBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
-                                    }
-                                    if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
-                                        // it already contains placeholder for payloadId
-                                        final ByteBuffer clientAction = BrowserPageAction
-                                                .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
-                                        wffBMBytesQueue.add(new ClientTasksWrapper(clientAction));
-                                    }
-                                }
-                            } catch (final InterruptedException e) {
-                                if (LOGGER.isLoggable(Level.SEVERE)) {
-                                    LOGGER.log(Level.SEVERE,
-                                            "Thread interrupted while preparing server event for client.", e);
-                                }
-                            }
-                        }
-                    } else {
-                        wffBMBytesQueue.add(new ClientTasksWrapper(payload));
-                    }
+                    // no need to call outputBufferLimitLock.tryAcquire as its caller methods do
+                    // this locking
+                    wffBMBytesQueue.add(new ClientTasksWrapper(payload));
 
                     pushQueueSize.increment();
 

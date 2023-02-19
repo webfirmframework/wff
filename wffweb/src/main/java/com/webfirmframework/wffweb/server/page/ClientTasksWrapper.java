@@ -18,7 +18,7 @@ package com.webfirmframework.wffweb.server.page;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-public class ClientTasksWrapper {
+public final class ClientTasksWrapper {
 
     private volatile AtomicReferenceArray<ByteBuffer> tasks;
 

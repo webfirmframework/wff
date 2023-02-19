@@ -127,7 +127,11 @@ class ExternalDriveClientTasksWrapperDeque extends ExternalDriveClientTasksWrapp
 
     @Override
     public ClientTasksWrapper pollLast() {
-        throw new MethodNotImplementedException();
+        final Long unreadId = firstUnreadIds.pollLast();
+        if (unreadId != null) {
+            return super.pollByReadId(unreadId);
+        }
+        return null;
     }
 
     @Override
