@@ -657,27 +657,28 @@ public abstract class BrowserPage implements Serializable {
 
                     ClientTasksWrapper clientTask = wffBMBytesQueue.poll();
                     if (clientTask != null) {
-                        AtomicReferenceArray<ByteBuffer> byteBuffers;
+                        AtomicReferenceArray<ByteBuffer> tasks;
 
                         do {
                             pushQueueSize.decrement();
                             int totalBytesPushed = 0;
                             try {
-
-                                byteBuffers = clientTask.tasks();
-                                if (byteBuffers != null) {
-                                    final int length = byteBuffers.length();
+                                tasks = clientTask.tasks();
+                                if (tasks != null) {
+                                    final int length = tasks.length();
                                     for (int i = 0; i < length; i++) {
-                                        final ByteBuffer byteBuffer = byteBuffers.get(i);
-                                        if (byteBuffer != null) {
-                                            wsListener.push(buildPayloadForClient(byteBuffer));
-                                            totalBytesPushed += byteBuffer.capacity();
+                                        final ByteBuffer task = tasks.get(i);
+                                        if (task != null) {
+                                            wsListener.push(buildPayloadForClient(task));
+                                            final int capacity = task.capacity();
+                                            totalBytesPushed += capacity;
+                                            clientTask.nullifyTask(capacity, tasks, i);
                                         }
-                                        byteBuffers.set(i, null);
                                     }
                                     clientTask.nullifyTasks();
+                                } else {
+                                    totalBytesPushed = clientTask.getCurrentSize();
                                 }
-
                             } catch (final PushFailedException e) {
                                 if (pushQueueEnabled && wffBMBytesQueue.offerFirst(clientTask)) {
                                     rollbackServerSidePayloadId();
@@ -692,7 +693,7 @@ public abstract class BrowserPage implements Serializable {
                                 }
                                 break;
                             } finally {
-                                if (totalBytesPushed > 0 && outputBufferLimitLock != null) {
+                                if (outputBufferLimitLock != null && totalBytesPushed > 0) {
                                     outputBufferLimitLock.release(totalBytesPushed);
                                 }
                             }
