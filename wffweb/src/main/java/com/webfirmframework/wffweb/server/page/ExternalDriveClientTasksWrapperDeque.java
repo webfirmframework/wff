@@ -106,13 +106,16 @@ class ExternalDriveClientTasksWrapperDeque extends ExternalDriveClientTasksWrapp
 
     @Override
     public void clear() {
-
+        // this is not atomic
+        super.clear();
         Long unreadId;
-        while ((unreadId = firstUnreadIds.poll()) != null) {
+        while ((unreadId = firstUnreadIds.pollLast()) != null) {
             deleteByReadId(unreadId);
         }
+    }
 
-        super.clear();
+    public void clearLast() {
+        super.clearInverse();
     }
 
     @Override
@@ -127,11 +130,17 @@ class ExternalDriveClientTasksWrapperDeque extends ExternalDriveClientTasksWrapp
 
     @Override
     public ClientTasksWrapper pollLast() {
-        final Long unreadId = firstUnreadIds.pollLast();
-        if (unreadId != null) {
-            return super.pollByReadId(unreadId);
-        }
-        return null;
+        // it is not possible to atomically poll from last
+//        final ClientTasksWrapper last = super.pollLast();
+//        if (last == null) {
+//            final Long unreadId = firstUnreadIds.pollLast();
+//            if (unreadId != null) {
+//                 return super.pollByReadId(unreadId);
+//            }
+//        }
+//
+//        return last;
+        throw new MethodNotImplementedException();
     }
 
     @Override

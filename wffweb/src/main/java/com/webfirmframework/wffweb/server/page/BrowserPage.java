@@ -537,7 +537,6 @@ public abstract class BrowserPage implements Serializable {
             final ByteBuffer payload = buildPayload(
                     WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues));
             tasks[index] = payload;
-            payload.capacity();
             index++;
         }
 
@@ -585,12 +584,20 @@ public abstract class BrowserPage implements Serializable {
                             final ByteBuffer clientAction = BrowserPageAction
                                     .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
 
-                            // do not use clear() as it may not clear from last to first in
-                            // ConcurrentLinkedDeque (no guarantee)
-                            while (wffBMBytesQueue.pollLast() != null) {
-                                // do nothing here, just to remove all items
+                            if (wffBMBytesQueue instanceof final ExternalDriveClientTasksWrapperDeque deque) {
+                                deque.clearLast();
+                                // deque.offerFirst is not allowed as the ClientTasksWrapper will not have
+                                // queueEntryId for
+                                // ExternalDriveClientTasksWrapperDeque
+                                deque.offerLast(new ClientTasksWrapper(clientAction));
+                            } else {
+                                // do not use clear() as it may not clear from last to first in
+                                // ConcurrentLinkedDeque (no guarantee)
+                                while (wffBMBytesQueue.pollLast() != null) {
+                                    // do nothing here, just to remove all items
+                                }
+                                wffBMBytesQueue.offerFirst(new ClientTasksWrapper(clientAction));
                             }
-                            wffBMBytesQueue.offerFirst(new ClientTasksWrapper(clientAction));
                         }
                     }
                 } catch (final InterruptedException e) {
