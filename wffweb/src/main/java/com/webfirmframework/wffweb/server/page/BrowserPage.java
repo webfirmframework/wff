@@ -185,9 +185,11 @@ public abstract class BrowserPage implements Serializable {
 
     private int wsReconnectInterval = -1;
 
-    private static int wsDefaultHeartbeatInterval = 25_000;
+    private static final int INITIAL_WS_DEFAULT_HEARTBEAT_INTERVAL = 25_000;
 
-    private static int wsDefaultReconnectInterval = 2_000;
+    private static volatile int wsDefaultHeartbeatInterval = INITIAL_WS_DEFAULT_HEARTBEAT_INTERVAL;
+
+    private static volatile int wsDefaultReconnectInterval = 2_000;
 
     private final LongAdder pushQueueSize = new LongAdder();
 
@@ -236,11 +238,14 @@ public abstract class BrowserPage implements Serializable {
 
     private final AtomicInteger clientSidePayloadIdGenerator = new AtomicInteger();
 
+    private static final long DEFAULT_IO_BUFFER_TIMEOUT = TimeUnit.MILLISECONDS
+            .toNanos(INITIAL_WS_DEFAULT_HEARTBEAT_INTERVAL);
+
     // should be before settings field initialization
     // 1024 *1024 = 1048576 i.e. 1MB, a heavy html page size might be 1 MB in size
     // so considered this value.
-    // gave ioBufferTimeout = 25_000 as the wsDefaultHeartbeatInterval is 25_000
-    private final Settings defaultSettings = new Settings(1048576, 1048576, 25_000,
+    // gave ioBufferTimeout = 25_000 as the wsDefaultHeartbeatInterval is 25_000ms
+    private final Settings defaultSettings = new Settings(1048576, 1048576, DEFAULT_IO_BUFFER_TIMEOUT,
             new OnPayloadLoss("location.reload();", () -> BrowserPage.this
                     .performBrowserPageAction(BrowserPageAction.RELOAD_FROM_CACHE.getActionByteBuffer())));
 
@@ -324,8 +329,10 @@ public abstract class BrowserPage implements Serializable {
      * {@code inputBufferLimit} and {@code outputBufferLimit} works as expected only
      * when {@code onPayloadLoss} param is passed otherwise the buffer may grow
      * beyond the given limit especially when {@code ioBufferTimeout} is less than
-     * the BrowserPage session maxIdleTimeout (the {@code enableAutoClean} passed
-     * from {@link BrowserPageContext#enableAutoClean}).
+     * the equalent nanoseconds of BrowserPage session maxIdleTimeout (the
+     * {@code maxIdleTimeout} passed from
+     * {@link BrowserPageContext#enableAutoClean}, eg: long ioBufferTimeout =
+     * TimeUnit.MILLISECONDS.toNanos(maxIdleTimeout)).
      *
      * @param inputBufferLimit  the limit for input buffer, i.e. the number of bytes
      *                          allowed to store, a value &lt;&equals; 0 represents
@@ -333,6 +340,7 @@ public abstract class BrowserPage implements Serializable {
      *                          used to store the data from the client events. The
      *                          threads which store the data to the buffer will be
      *                          blocked until enough space available in the buffer.
+     *
      * @param outputBufferLimit the limit for output buffer, i.e. the number of
      *                          bytes allowed to store, a value &lt;&equals; 0
      *                          represents no limit i.e. unlimited size. This is the
@@ -340,9 +348,22 @@ public abstract class BrowserPage implements Serializable {
      *                          events. The threads which store the data to the
      *                          buffer will be blocked until enough space available
      *                          in the buffer.
-     * @param ioBufferTimeout   the timeout milliseconds for waiting threads of
-     *                          input and output buffer. It is usually equal to the
-     *                          timeout of session.
+     *
+     * @param ioBufferTimeout   the timeout nanoseconds for waiting threads of input
+     *                          and output buffer. The optimal value may be a value
+     *                          less than or equal to the heartbeat time of
+     *                          websocket in nanoseconds ( set by
+     *                          {@link #setWebSocketHeartbeatInterval(int)} or
+     *                          {@link #setWebSocketDefultHeartbeatInterval(int)}).
+     *                          However, this value strictly depends on your
+     *                          application environment &amp; project requirements.
+     *                          The maximum recommended value is usually equal to
+     *                          the timeout of session in nanoseconds, which is
+     *                          nanoseconds of {@code maxIdleTimeout} passed in
+     *                          {@link BrowserPageContext#enableAutoClean}, eg: long
+     *                          ioBufferTimeout =
+     *                          TimeUnit.MILLISECONDS.toNanos(maxIdleTimeout).
+     *
      * @param onPayloadLoss     pass an object of {@code OnPayloadLoss} to enable or
      *                          null to disable lossless browser page communication.
      * @since 12.0.0-beta.8
@@ -568,7 +589,7 @@ public abstract class BrowserPage implements Serializable {
                 try {
                     // onPayloadLoss check should be second
                     if (outputBufferLimitLock.tryAcquire(clientTasks.getCurrentSize(), settings.ioBufferTimeout,
-                            TimeUnit.MILLISECONDS) || onPayloadLoss == null) {
+                            TimeUnit.NANOSECONDS) || onPayloadLoss == null) {
                         pushLockless(clientTasks);
                     } else {
                         losslessCommunicationCheckFailed = true;
@@ -787,7 +808,7 @@ public abstract class BrowserPage implements Serializable {
         if (inputBufferLimitLock != null) {
             try {
                 // onPayloadLoss check should be second
-                if (inputBufferLimitLock.tryAcquire(message.length, settings.ioBufferTimeout, TimeUnit.MILLISECONDS)
+                if (inputBufferLimitLock.tryAcquire(message.length, settings.ioBufferTimeout, TimeUnit.NANOSECONDS)
                         || onPayloadLoss == null) {
                     taskFromClientQ.offer(message);
                 } else {
