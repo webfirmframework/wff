@@ -244,9 +244,10 @@ public abstract class BrowserPage implements Serializable {
     // should be before settings field initialization
     // 1024 *1024 = 1048576 i.e. 1MB, a heavy html page size might be 1 MB in size
     // so considered this value.
-    // gave ioBufferTimeout = 25_000 as the wsDefaultHeartbeatInterval is 25_000ms
-    private final Settings defaultSettings = new Settings(1048576, 1048576, DEFAULT_IO_BUFFER_TIMEOUT,
-            new OnPayloadLoss("location.reload();", () -> BrowserPage.this
+    // gave inputBufferTimeout and outputBufferTimeout = 25_000 as the
+    // wsDefaultHeartbeatInterval is 25_000ms
+    private final Settings defaultSettings = new Settings(1048576, DEFAULT_IO_BUFFER_TIMEOUT, 1048576,
+            DEFAULT_IO_BUFFER_TIMEOUT, new OnPayloadLoss("location.reload();", () -> BrowserPage.this
                     .performBrowserPageAction(BrowserPageAction.RELOAD_FROM_CACHE.getActionByteBuffer())));
 
     final Settings settings = useSettingsPvt();
@@ -328,48 +329,63 @@ public abstract class BrowserPage implements Serializable {
      * contains the default values for all of these parameters. The
      * {@code inputBufferLimit} and {@code outputBufferLimit} works as expected only
      * when {@code onPayloadLoss} param is passed otherwise the buffer may grow
-     * beyond the given limit especially when {@code ioBufferTimeout} is less than
-     * the equalent nanoseconds of BrowserPage session maxIdleTimeout (the
+     * beyond the given limit especially when corresponding buffer timeout is less
+     * than the equalent nanoseconds of BrowserPage session maxIdleTimeout (the
      * {@code maxIdleTimeout} passed from
-     * {@link BrowserPageContext#enableAutoClean}, eg: long ioBufferTimeout =
-     * TimeUnit.MILLISECONDS.toNanos(maxIdleTimeout)).
+     * {@link BrowserPageContext#enableAutoClean}, eg: long inputBufferTimeout,
+     * outputBufferTimeout = TimeUnit.MILLISECONDS.toNanos(maxIdleTimeout));.
      *
-     * @param inputBufferLimit  the limit for input buffer, i.e. the number of bytes
-     *                          allowed to store, a value &lt;&equals; 0 represents
-     *                          no limit i.e. unlimited size. This is the buffer
-     *                          used to store the data from the client events. The
-     *                          threads which store the data to the buffer will be
-     *                          blocked until enough space available in the buffer.
-     *
-     * @param outputBufferLimit the limit for output buffer, i.e. the number of
-     *                          bytes allowed to store, a value &lt;&equals; 0
-     *                          represents no limit i.e. unlimited size. This is the
-     *                          buffer used to store the data from the server
-     *                          events. The threads which store the data to the
-     *                          buffer will be blocked until enough space available
-     *                          in the buffer.
-     *
-     * @param ioBufferTimeout   the timeout nanoseconds for waiting threads of input
-     *                          and output buffer. The optimal value may be a value
-     *                          less than or equal to the heartbeat time of
-     *                          websocket in nanoseconds ( set by
-     *                          {@link #setWebSocketHeartbeatInterval(int)} or
-     *                          {@link #setWebSocketDefultHeartbeatInterval(int)}).
-     *                          However, this value strictly depends on your
-     *                          application environment &amp; project requirements.
-     *                          The maximum recommended value is usually equal to
-     *                          the timeout of session in nanoseconds, which is
-     *                          nanoseconds of {@code maxIdleTimeout} passed in
-     *                          {@link BrowserPageContext#enableAutoClean}, eg: long
-     *                          ioBufferTimeout =
-     *                          TimeUnit.MILLISECONDS.toNanos(maxIdleTimeout).
-     *
-     * @param onPayloadLoss     pass an object of {@code OnPayloadLoss} to enable or
-     *                          null to disable lossless browser page communication.
+     * @param inputBufferLimit    the limit for input buffer, i.e. the number of
+     *                            bytes allowed to store, a value &lt;= 0 represents
+     *                            no limit i.e. unlimited size. This is the buffer
+     *                            used to store the data from the client events. The
+     *                            threads which store the data to the buffer will be
+     *                            blocked until enough space available in the
+     *                            buffer.
+     * @param inputBufferTimeout  the timeout nanoseconds for waiting threads of
+     *                            input buffer. The optimal value may be a value
+     *                            less than the heartbeat time of websocket in
+     *                            nanoseconds ( set by
+     *                            {@link #setWebSocketHeartbeatInterval(int)} or
+     *                            {@link #setWebSocketDefultHeartbeatInterval(int)}).
+     *                            However, this value strictly depends on your
+     *                            application environment &amp; project
+     *                            requirements. The maximum recommended value is
+     *                            usually equal to the timeout of session in
+     *                            nanoseconds, which is nanoseconds of
+     *                            {@code maxIdleTimeout} passed in
+     *                            {@link BrowserPageContext#enableAutoClean}, eg:
+     *                            long inputBufferTimeout =
+     *                            TimeUnit.MILLISECONDS.toNanos(maxIdleTimeout).
+     * @param outputBufferLimit   the limit for output buffer, i.e. the number of
+     *                            bytes allowed to store, a value &lt;= 0 represents
+     *                            no limit i.e. unlimited size. This is the buffer
+     *                            used to store the data from the server events. The
+     *                            threads which store the data to the buffer will be
+     *                            blocked until enough space available in the
+     *                            buffer.
+     * @param outputBufferTimeout the timeout nanoseconds for waiting threads of
+     *                            output buffer. The optimal value may be a value
+     *                            less than the heartbeat time of websocket in
+     *                            nanoseconds ( set by
+     *                            {@link #setWebSocketHeartbeatInterval(int)} or
+     *                            {@link #setWebSocketDefultHeartbeatInterval(int)}).
+     *                            However, this value strictly depends on your
+     *                            application environment &amp; project
+     *                            requirements. The maximum recommended value is
+     *                            usually equal to the timeout of session in
+     *                            nanoseconds, which is nanoseconds of
+     *                            {@code maxIdleTimeout} passed in
+     *                            {@link BrowserPageContext#enableAutoClean}, eg:
+     *                            long outputBufferTimeout =
+     *                            TimeUnit.MILLISECONDS.toNanos(maxIdleTimeout).
+     * @param onPayloadLoss       pass an object of {@code OnPayloadLoss} to enable
+     *                            or null to disable lossless browser page
+     *                            communication.
      * @since 12.0.0-beta.8
      */
-    protected record Settings(int inputBufferLimit, int outputBufferLimit, long ioBufferTimeout,
-            OnPayloadLoss onPayloadLoss) {
+    protected record Settings(int inputBufferLimit, long inputBufferTimeout, int outputBufferLimit,
+            long outputBufferTimeout, OnPayloadLoss onPayloadLoss) {
     }
 
     public abstract String webSocketUrl();
@@ -588,7 +604,7 @@ public abstract class BrowserPage implements Serializable {
             if (!losslessCommunicationCheckFailed) {
                 try {
                     // onPayloadLoss check should be second
-                    if (outputBufferLimitLock.tryAcquire(clientTasks.getCurrentSize(), settings.ioBufferTimeout,
+                    if (outputBufferLimitLock.tryAcquire(clientTasks.getCurrentSize(), settings.outputBufferTimeout,
                             TimeUnit.NANOSECONDS) || onPayloadLoss == null) {
                         pushLockless(clientTasks);
                     } else {
@@ -597,8 +613,8 @@ public abstract class BrowserPage implements Serializable {
                             LOGGER.severe(
                                     """
                                             Buffer timeout reached while preparing server event for client so further changes will not be pushed to client.
-                                             Increase Settings.outputBufferLimit or Settings.ioBufferTimeout to solve this issue.
-                                             NB: Settings.ioBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                                             Increase Settings.outputBufferLimit or Settings.outputBufferTimeout to solve this issue.
+                                             NB: Settings.outputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
                         }
                         if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
                             // it already contains placeholder for payloadId
@@ -808,7 +824,7 @@ public abstract class BrowserPage implements Serializable {
         if (inputBufferLimitLock != null) {
             try {
                 // onPayloadLoss check should be second
-                if (inputBufferLimitLock.tryAcquire(message.length, settings.ioBufferTimeout, TimeUnit.NANOSECONDS)
+                if (inputBufferLimitLock.tryAcquire(message.length, settings.inputBufferTimeout, TimeUnit.NANOSECONDS)
                         || onPayloadLoss == null) {
                     taskFromClientQ.offer(message);
                 } else {
@@ -817,8 +833,8 @@ public abstract class BrowserPage implements Serializable {
                         LOGGER.severe(
                                 """
                                         Buffer timeout reached while processing event from client so further client events will not be received at server side.
-                                         Increase Settings.inputBufferLimit or Settings.ioBufferTimeout to solve this issue.
-                                         NB: Settings.ioBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                                         Increase Settings.inputBufferLimit or Settings.inputBufferTimeout to solve this issue.
+                                         NB: Settings.inputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
                     }
                     if (onPayloadLoss.serverSideAction != null) {
                         onPayloadLoss.serverSideAction.perform();
