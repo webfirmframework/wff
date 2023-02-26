@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.webfirmframework.wffweb.common.SampleBrowserPage;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
 import org.junit.Assert;
 import org.junit.Test;
@@ -377,6 +378,10 @@ public class BrowserPageTest {
         assertEquals(result, returnedResult);
 
     }
-        
+
+    @Test
+    public void testSettings() {
+        SampleBrowserPage sampleBrowserPage = new SampleBrowserPage();
+    }
 
 }

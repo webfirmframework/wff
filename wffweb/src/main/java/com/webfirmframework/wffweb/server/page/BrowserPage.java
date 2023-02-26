@@ -321,7 +321,8 @@ public abstract class BrowserPage implements Serializable {
      *                         lossy communication detected at server side.
      * @since 12.0.0-beta.8
      */
-    protected record OnPayloadLoss(String javaScript, ServerSideAction serverSideAction) {
+    public record OnPayloadLoss(String javaScript, ServerSideAction serverSideAction) {
+        // should be public
     }
 
     /**
@@ -384,8 +385,9 @@ public abstract class BrowserPage implements Serializable {
      *                            communication.
      * @since 12.0.0-beta.8
      */
-    protected record Settings(int inputBufferLimit, long inputBufferTimeout, int outputBufferLimit,
+    public record Settings(int inputBufferLimit, long inputBufferTimeout, int outputBufferLimit,
             long outputBufferTimeout, OnPayloadLoss onPayloadLoss) {
+        // should be public
     }
 
     public abstract String webSocketUrl();
