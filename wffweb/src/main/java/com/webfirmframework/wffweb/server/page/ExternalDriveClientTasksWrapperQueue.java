@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2023 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,6 +103,37 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
             if (readId.compareAndSet(rId, newReadId)) {
                 return pollByReadId(newReadId);
             }
+        }
+
+        return null;
+    }
+
+    ClientTasksWrapper pollLast() {
+        // NB: it is not possible to atomically poll from last so don't use this method
+        // it will make bug
+        long rId;
+        long wId = writeId.get();
+        while ((rId = readId.get()) < wId) {
+            final long newWriteId = wId - 1L;
+
+            final long toCompare = wId;
+            final long rIdFinal = rId;
+            final long currentValue = writeId.accumulateAndGet(newWriteId, (existing, newValue) -> {
+                // null means no writing in progress
+                if (existing == toCompare && writeIdInProgressStates.get(newWriteId) == null
+                        && readId.get() == rIdFinal) {
+                    return newValue;
+                }
+
+                return existing;
+            });
+
+            if (currentValue == newWriteId) {
+                return pollByReadId(wId);
+            } else {
+                wId = newWriteId;
+            }
+
         }
 
         return null;
@@ -240,6 +271,12 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
 
     @Override
     public void clear() {
+        clearInverse();
+    }
+
+    @SuppressWarnings("unused")
+    private void clearFromFirstToLast() {
+        // old clear() method implementation
         long rId;
         while ((rId = readId.get()) < writeId.get()) {
             final long newReadId = rId + 1L;
@@ -249,6 +286,18 @@ class ExternalDriveClientTasksWrapperQueue implements Queue<ClientTasksWrapper> 
             }
             if (readId.compareAndSet(rId, newReadId)) {
                 deleteByReadId(newReadId);
+            }
+        }
+    }
+
+    void clearInverse() {
+        long rId;
+        long wId;
+        while ((rId = readId.get()) < (wId = writeId.get())) {
+            if (writeIdInProgressStates.get(rId) == null && readId.compareAndSet(rId, wId)) {
+                for (long i = rId; i < wId; i++) {
+                    deleteByReadId(i + 1L);
+                }
             }
         }
     }

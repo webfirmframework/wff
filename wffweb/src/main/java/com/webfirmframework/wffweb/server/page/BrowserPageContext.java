@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2023 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -798,14 +798,16 @@ public enum BrowserPageContext {
 
         } else {
             if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("The associatd HttpSession is alread closed for the id");
+                LOGGER.warning("The associated HttpSession is already closed for the id");
             }
         }
         runAutoClean();
     }
 
     /**
-     * this method should be called when the websocket is messaged.
+     * this method should be called when the websocket is messaged, it is required
+     * only if PayloadProcessor is not used to deliver data from client to
+     * BrowserPage
      *
      * @param wffInstanceId the wffInstanceId which can be retried from the request
      *                      parameter in websocket connection.

@@ -23,6 +23,7 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -80,8 +81,9 @@ public class WffBinaryMessageUtilTest {
         nameValues.add(new NameValue("name3".getBytes(), new byte[][]{"value3".getBytes(), "value41".getBytes()}));
 
         byte[] message = WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
-        
-        List<NameValue> actualNameValues = WffBinaryMessageUtil.VERSION_1.parse(message);
+
+        byte[] modifiedMessage = ByteBuffer.allocate(message.length + 8).put(new byte[4]).put(message).put(new byte[4]).rewind().array();
+        List<NameValue> actualNameValues = WffBinaryMessageUtil.VERSION_1.parse(modifiedMessage, 4, modifiedMessage.length - 8);
         
         for (int i = 0; i < actualNameValues.size(); i++) {
             
@@ -90,7 +92,7 @@ public class WffBinaryMessageUtilTest {
             NameValue actualNameValue = actualNameValues.get(i);
             
             assertArrayEquals(expectedNameValue.getName(), actualNameValue.getName());
-            
+
             final byte[][] values = expectedNameValue.getValues();
             
             for (int j = 0; j < values.length; j++) {

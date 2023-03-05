@@ -75,8 +75,22 @@ var wffWS = new function() {
 					//invalid wff bm message so not to process
 					return;
 				}
-				
-				wffClientCRUDUtil.invokeTasks(binary);
+				if ((wffGlobal.LOSSLESS_COMM || binary[0] == 0) && binary.length > 4) {
+				    var payloadId = wffBMUtil.getIntFromOptimizedBytes([binary[0], binary[1], binary[2], binary[3]]);
+				    // payloadId = 0 means it has no id but has placeholder for id
+				    if (payloadId != 0 && payloadId != wffGlobal.getUniqueServerSidePayloadId()) {
+				        wffGlobal.onPayloadLoss();
+				    } else {
+				        // TODO optimize later
+				        var bin = [];
+    				    for (var i = 4; i < binary.length; i++) {
+    				        bin.push(binary[i]);
+    				    }
+                        wffClientCRUDUtil.invokeTasks(bin);
+				    }
+				} else {
+				    wffClientCRUDUtil.invokeTasks(binary);
+				}
 			}catch(e){
 				wffLog(e);
 			}
@@ -96,8 +110,23 @@ var wffWS = new function() {
 				// console.log(i, binary[i]);
 				// }
 
-				var executed = wffClientMethods.exePostFun(binary);
+				if ((wffGlobal.LOSSLESS_COMM || binary[0] == 0) && binary.length > 4) {
+                	var payloadId = wffBMUtil.getIntFromOptimizedBytes([binary[0], binary[1], binary[2], binary[3]]);
+                	// payloadId = 0 means it has no id but has placeholder for id
+                	if (payloadId != 0 && payloadId != wffGlobal.getUniqueServerSidePayloadId()) {
+                	    wffGlobal.onPayloadLoss();
+                	    return;
+                	} else {
+                        // TODO optimize later
+                        var bin = [];
+                        for (var i = 4; i < binary.length; i++) {
+                            bin.push(binary[i]);
+                        }
+                        binary = bin;
+                	}
+                }
 
+				var executed = wffClientMethods.exePostFun(binary);
 				if (!executed) {
 					wffClientCRUDUtil.invokeTasks(binary);
 				}
@@ -159,7 +188,14 @@ var wffWS = new function() {
 	 */
 	this.send = function(bytes) {
 		if (bytes.length > 0) {
-			inDataQ.push(bytes);
+		    var bin = bytes;
+		    if (wffGlobal.LOSSLESS_COMM && bin.length > 4) {
+		        bin = wffBMUtil.getBytesFromInt(wffGlobal.getUniqueClientSidePayloadId());
+		        for (var i = 0; i < bytes.length; i++) {
+                    bin.push(bytes[i]);
+		        }
+		    }
+			inDataQ.push(bin);
 			if (sendQData !== null) {
 				sendQData();
 			}

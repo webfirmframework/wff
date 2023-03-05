@@ -347,8 +347,7 @@ var wffClientCRUDUtil = new function() {
 							htmlNodes.nodeName, htmlNodes
 									.getAttribute("data-wff-id"));
 					var parentOfExistingTag = existingTag.parentNode;
-					parentOfExistingTag.removeChild(existingTag);
-					
+					if (parentOfExistingTag) {parentOfExistingTag.removeChild(existingTag);}					
 				}
 				parentTag.insertBefore(htmlNodes, beforeTag);
 			}
@@ -391,8 +390,7 @@ var wffClientCRUDUtil = new function() {
 							htmlNodes.nodeName, htmlNodes
 									.getAttribute("data-wff-id"));
 					var parentOfExistingTag = existingTag.parentNode;
-					parentOfExistingTag.removeChild(existingTag);
-					
+					if (parentOfExistingTag) {parentOfExistingTag.removeChild(existingTag);}
 				}
 				
 				parentTag.insertBefore(htmlNodes, beforeTag);

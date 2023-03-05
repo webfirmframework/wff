@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2023 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@ package com.webfirmframework.wffweb.server.page;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.util.ConcurrentModificationException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * PayloadProcessor for BrowserPage WebSocket's incoming bytes
@@ -39,16 +39,17 @@ public class PayloadProcessor implements Serializable {
 
     private final AtomicInteger wsMessageChunksTotalCapacity = new AtomicInteger(0);
 
+    private final Semaphore inputBufferLimitLock;
+
     private final BrowserPage browserPage;
 
-    private final boolean singleThreaded;
-
-    private final transient Lock commonLock;
+    private volatile boolean outOfMemoryError;
 
     public PayloadProcessor(final BrowserPage browserPage) {
         this.browserPage = browserPage;
-        singleThreaded = false;
-        commonLock = singleThreaded ? null : new ReentrantLock(true);
+        inputBufferLimitLock = browserPage.settings.inputBufferLimit() > 0
+                ? new Semaphore(browserPage.settings.inputBufferLimit())
+                : null;
     }
 
     /**
@@ -58,8 +59,9 @@ public class PayloadProcessor implements Serializable {
      */
     public PayloadProcessor(final BrowserPage browserPage, final boolean singleThreaded) {
         this.browserPage = browserPage;
-        this.singleThreaded = singleThreaded;
-        commonLock = singleThreaded ? null : new ReentrantLock(true);
+        inputBufferLimitLock = browserPage.settings.inputBufferLimit() > 0
+                ? new Semaphore(browserPage.settings.inputBufferLimit())
+                : null;
     }
 
     /**
@@ -68,7 +70,6 @@ public class PayloadProcessor implements Serializable {
      * @param dataArray the ByteByffers to merge
      * @return a single ByteBuffer after flip merged from all ByteBuffer objects
      *         from dataArray.
-     *
      * @since 3.0.2
      */
     // for testing purpose the method visibility is changed to package level
@@ -84,8 +85,9 @@ public class PayloadProcessor implements Serializable {
             final byte[] array = data.array();
             System.arraycopy(array, 0, wholeData, destStartIndex, array.length);
             destStartIndex += array.length;
-            if (destStartIndex == totalCapacity) {
-                break;
+            if (destStartIndex > totalCapacity) {
+                throw new ConcurrentModificationException(
+                        "PayloadProcessor.webSocketMessaged method is NOT allowed to call more than one thread at a time.");
             }
         }
 
@@ -104,22 +106,57 @@ public class PayloadProcessor implements Serializable {
      * @since 3.0.2
      */
     public void webSocketMessaged(final ByteBuffer messagePart, final boolean last) {
-
-        if (last && wsMessageChunksTotalCapacity.get() == 0) {
-            browserPage.webSocketMessaged(messagePart.array());
-        } else {
-            if (singleThreaded) {
-                transferToBrowserPageWS(messagePart, last);
-            } else {
-                commonLock.lock();
-                try {
-                    transferToBrowserPageWS(messagePart, last);
-                } finally {
-                    commonLock.unlock();
-                }
-            }
-
+        if (outOfMemoryError) {
+            throw new OutOfMemoryError(
+                    """
+                            The payloads received from client cannot be processed due to OutOfMemoryError, the previous payload size was more than the allowed size of %s.
+                             Increase the value of browserPage.settings.inputBufferLimit to fix this error.
+                             Override useSettings method in the subclass of BrowserPage to set a new values browserPage.settings."""
+                            .formatted(browserPage.settings.inputBufferLimit()));
         }
+
+        // As per javadoc, inputBufferLimitLock.availablePermits() is typically used for
+        // debugging and testing purposes so avoided using it
+        if (last && wsMessageChunksTotalCapacity.get() == 0) {
+            if (inputBufferLimitLock != null) {
+                if (messagePart.capacity() > browserPage.settings.inputBufferLimit()) {
+                    outOfMemoryError = true;
+                    throw getOutOfMemoryError(messagePart.capacity());
+                }
+                if (inputBufferLimitLock.tryAcquire(messagePart.capacity())) {
+                    try {
+                        browserPage.webSocketMessaged(messagePart.array());
+                    } finally {
+                        inputBufferLimitLock.release(messagePart.capacity());
+                    }
+                } else {
+                    outOfMemoryError = true;
+                    throw getOutOfMemoryError(messagePart.capacity());
+                }
+            } else {
+                browserPage.webSocketMessaged(messagePart.array());
+            }
+        } else {
+            if (inputBufferLimitLock != null) {
+                if (inputBufferLimitLock.tryAcquire(messagePart.capacity())) {
+                    transferToBrowserPageWS(messagePart, last);
+                } else {
+                    outOfMemoryError = true;
+                    throw getOutOfMemoryError(messagePart.capacity());
+                }
+            } else {
+                transferToBrowserPageWS(messagePart, last);
+            }
+        }
+    }
+
+    private OutOfMemoryError getOutOfMemoryError(final int messagePartSize) {
+        return new OutOfMemoryError(
+                """
+                        The client payload size is more than the allowed size of %s specified by browserPage.settings.inputBufferLimit so further payloads received from client will not be processed.
+                         Increase the value of browserPage.settings.inputBufferLimit, it should be greater than or equal to a value of %s to fix this error.
+                         Override useSettings method in the subclass of BrowserPage to set a new values browserPage.settings."""
+                        .formatted(browserPage.settings.inputBufferLimit(), messagePartSize));
     }
 
     /**
@@ -128,11 +165,30 @@ public class PayloadProcessor implements Serializable {
      * @since 3.0.3
      */
     private void transferToBrowserPageWS(final ByteBuffer messagePart, final boolean last) {
+        // if lossless communication is enabled
+        if (wsMessageChunks.isEmpty()) {
+            final byte[] message = messagePart.array();
+            if (!browserPage.checkLosslessCommunication(message)) {
+                if (inputBufferLimitLock != null) {
+                    inputBufferLimitLock.release(message.length);
+                }
+                return;
+            }
+        }
+
         if (last) {
             wsMessageChunks.add(messagePart);
             final int totalCapacity = wsMessageChunksTotalCapacity.getAndSet(0) + messagePart.capacity();
-
-            browserPage.webSocketMessaged(pollAndConvertToByteArray(totalCapacity, wsMessageChunks));
+            final byte[] message = pollAndConvertToByteArray(totalCapacity, wsMessageChunks);
+            if (inputBufferLimitLock != null) {
+                try {
+                    browserPage.webSocketMessagedWithoutLosslessCheck(message);
+                } finally {
+                    inputBufferLimitLock.release(message.length);
+                }
+            } else {
+                browserPage.webSocketMessagedWithoutLosslessCheck(message);
+            }
         } else {
             wsMessageChunks.add(messagePart);
             wsMessageChunksTotalCapacity.addAndGet(messagePart.capacity());

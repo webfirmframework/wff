@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -166,8 +167,11 @@ public class ExternalDriveClientTasksWrapperDequeTest {
 	@Test
 	public void testClear() {
 		try {
+			Path tempDirectory = Files.createTempDirectory(this.getClass().getSimpleName());
 			final ExternalDriveClientTasksWrapperDeque q = new ExternalDriveClientTasksWrapperDeque(
-			        Files.createTempDirectory(this.getClass().getSimpleName()).toString(), dirName, "in");
+			        tempDirectory.toString(), dirName, "in");
+
+			final Path pathOfDataFilesDir = Path.of(tempDirectory.toString(), dirName, "in");
 
 			for (int i = 0; i < 100; i++) {
 				final String first = "first string " + i;
@@ -183,6 +187,11 @@ public class ExternalDriveClientTasksWrapperDequeTest {
 				q.offerLast(wrapper);
 			}
 
+
+			long totalFilesInDir = Files.list(pathOfDataFilesDir).count();
+
+			Assert.assertEquals(100, totalFilesInDir);
+
 			Assert.assertEquals(100, q.size());
 
 			q.offerFirst(q.poll());
@@ -197,6 +206,11 @@ public class ExternalDriveClientTasksWrapperDequeTest {
 
 			q.clear();
 
+			totalFilesInDir = Files.list(pathOfDataFilesDir).count();
+
+			Assert.assertEquals(0, totalFilesInDir);
+			Assert.assertEquals(q.size(), totalFilesInDir);
+
 			Assert.assertNull(q.poll());
 
 			Assert.assertTrue(q.isEmpty());
@@ -207,5 +221,57 @@ public class ExternalDriveClientTasksWrapperDequeTest {
 			Assert.fail("testExternalDriveClientTasksWrapperDeque failed due to IOException");
 		}
 	}
+	
+    @Test
+    public void testPoll() {
+        try {
+            final ExternalDriveClientTasksWrapperDeque q = new ExternalDriveClientTasksWrapperDeque(
+                    Files.createTempDirectory(this.getClass().getSimpleName()).toString(), dirName, "in");
+
+            for (int i = 0; i < 5; i++) {
+                final String first = "first string " + i;
+                final String second = "second string " + i;
+                final String third = "third string " + i;
+                final String fourth = "fourth string " + i;
+                final ClientTasksWrapper wrapper = new ClientTasksWrapper(
+                        ByteBuffer.wrap(first.getBytes(StandardCharsets.UTF_8)),
+                        ByteBuffer.wrap(second.getBytes(StandardCharsets.UTF_8)),
+                        ByteBuffer.wrap(third.getBytes(StandardCharsets.UTF_8)),
+                        ByteBuffer.wrap(fourth.getBytes(StandardCharsets.UTF_8)));
+
+                q.offerLast(wrapper);
+            }
+
+            Assert.assertEquals(5, q.size());
+
+            q.offerFirst(q.poll());
+            q.offerFirst(q.poll());
+
+            Assert.assertEquals(5, q.size());
+
+            Assert.assertFalse(q.isEmpty());
+
+            ClientTasksWrapper wrapper;
+            int i = 0;
+            while ((wrapper = q.poll()) != null) {
+                String firstString = new String(wrapper.tasks().get(0).array());
+                String secondString = new String(wrapper.tasks().get(1).array());
+                String thirdString = new String(wrapper.tasks().get(2).array());
+                String fourthString = new String(wrapper.tasks().get(3).array());
+                Assert.assertEquals("first string " + i, firstString);
+                Assert.assertEquals("second string " + i, secondString);
+                Assert.assertEquals("third string " + i, thirdString);
+                Assert.assertEquals("fourth string " + i, fourthString);
+                i++;
+            }
+
+            Assert.assertNull(q.pollFirst());
+
+            q.deleteBaseDirStructure();
+        } catch (final IOException e) {
+            e.printStackTrace();
+            Assert.fail("testExternalDriveClientTasksWrapperDeque failed due to IOException");
+        }
+    }
 
 }

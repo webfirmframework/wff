@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2023 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,8 @@ public class WffConfiguration {
             final List<String> inputArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
             if (Integer.parseInt(System.getProperty("java.vm.specification.version", "17")) >= 19
                     && (inputArguments.contains("--enable-preview")
-                            || inputArguments.contains("--enable-virtual-thread"))
+                            || inputArguments.contains("--enable-virtual-thread")
+                            || "true".equals(System.getProperty("virtualThread.enable")))
                     && Executors.class.getMethod("newVirtualThreadPerTaskExecutor")
                             .invoke(null) instanceof final ExecutorService executor) {
                 tempExecutor = executor;

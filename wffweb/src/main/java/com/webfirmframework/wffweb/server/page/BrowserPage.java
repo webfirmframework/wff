@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 Web Firm Framework
+ * Copyright 2014-2023 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceArray;
@@ -68,6 +69,7 @@ import com.webfirmframework.wffweb.common.URIEventMask;
 import com.webfirmframework.wffweb.internal.security.object.BrowserPageSecurity;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
+import com.webfirmframework.wffweb.server.page.action.BrowserPageAction;
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Html;
@@ -183,9 +185,11 @@ public abstract class BrowserPage implements Serializable {
 
     private int wsReconnectInterval = -1;
 
-    private static int wsDefaultHeartbeatInterval = 25_000;
+    private static final int INITIAL_WS_DEFAULT_HEARTBEAT_INTERVAL = 25_000;
 
-    private static int wsDefaultReconnectInterval = 2_000;
+    private static volatile int wsDefaultHeartbeatInterval = INITIAL_WS_DEFAULT_HEARTBEAT_INTERVAL;
+
+    private static volatile int wsDefaultReconnectInterval = 2_000;
 
     private final LongAdder pushQueueSize = new LongAdder();
 
@@ -228,6 +232,38 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile Reference<BrowserPageSessionImpl> sessionRef;
 
+    private static final byte[] PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID = new byte[4];
+
+    private final AtomicInteger serverSidePayloadIdGenerator = new AtomicInteger();
+
+    private final AtomicInteger clientSidePayloadIdGenerator = new AtomicInteger();
+
+    private static final long DEFAULT_IO_BUFFER_TIMEOUT = TimeUnit.MILLISECONDS
+            .toNanos(INITIAL_WS_DEFAULT_HEARTBEAT_INTERVAL);
+
+    // should be before settings field initialization
+    // 1024 *1024 = 1048576 i.e. 1MB, a heavy html page size might be 1 MB in size
+    // so considered this value.
+    // gave inputBufferTimeout and outputBufferTimeout = 25_000 as the
+    // wsDefaultHeartbeatInterval is 25_000ms
+    private final Settings defaultSettings = new Settings(1048576, DEFAULT_IO_BUFFER_TIMEOUT, 1048576,
+            DEFAULT_IO_BUFFER_TIMEOUT, new OnPayloadLoss("location.reload();", () -> BrowserPage.this
+                    .performBrowserPageAction(BrowserPageAction.RELOAD_FROM_CACHE.getActionByteBuffer())));
+
+    final Settings settings = useSettingsPvt();
+
+    private final OnPayloadLoss onPayloadLoss = settings.onPayloadLoss;
+
+    private final Semaphore inputBufferLimitLock = settings.inputBufferLimit > 0
+            ? new Semaphore(settings.inputBufferLimit)
+            : null;
+
+    private final Semaphore outputBufferLimitLock = settings.outputBufferLimit > 0
+            ? new Semaphore(settings.outputBufferLimit)
+            : null;
+
+    private volatile boolean losslessCommunicationCheckFailed;
+
     // NB: this non-static initialization makes BrowserPage and PayloadProcessor
     // never to get GCd. It leads to memory leak. It seems to be a bug.
     // private final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL =
@@ -267,6 +303,96 @@ public abstract class BrowserPage implements Serializable {
          * when new {@code BrowserPage} is requested by the tab.
          */
         INIT_REMOVE_PREVIOUS
+    }
+
+    /**
+     * @since 12.0.0-beta.8
+     */
+    @FunctionalInterface
+    protected interface ServerSideAction {
+        void perform();
+    }
+
+    /**
+     * @param javaScript       the JavaScript code to invoke at client side when
+     *                         there is a lossy communication detected at client
+     *                         side.
+     * @param serverSideAction the action to perform at server side when there is a
+     *                         lossy communication detected at server side.
+     * @since 12.0.0-beta.8
+     */
+    protected record OnPayloadLoss(String javaScript, ServerSideAction serverSideAction) {
+        // should be public
+
+        public OnPayloadLoss {
+        }
+    }
+
+    /**
+     * The {@code Settings} object returned by {@link #defaultSettings()} method
+     * contains the default values for all of these parameters. The
+     * {@code inputBufferLimit} and {@code outputBufferLimit} works as expected only
+     * when {@code onPayloadLoss} param is passed otherwise the buffer may grow
+     * beyond the given limit especially when corresponding buffer timeout is less
+     * than the equalent nanoseconds of BrowserPage session maxIdleTimeout (the
+     * {@code maxIdleTimeout} passed from
+     * {@link BrowserPageContext#enableAutoClean}, eg: long inputBufferTimeout,
+     * outputBufferTimeout = TimeUnit.MILLISECONDS.toNanos(maxIdleTimeout));.
+     *
+     * @param inputBufferLimit    the limit for input buffer, i.e. the number of
+     *                            bytes allowed to store, a value &lt;= 0 represents
+     *                            no limit i.e. unlimited size. This is the buffer
+     *                            used to store the data from the client events. The
+     *                            threads which store the data to the buffer will be
+     *                            blocked until enough space available in the
+     *                            buffer.
+     * @param inputBufferTimeout  the timeout nanoseconds for waiting threads of
+     *                            input buffer. The optimal value may be a value
+     *                            less than the heartbeat time of websocket in
+     *                            nanoseconds ( set by
+     *                            {@link #setWebSocketHeartbeatInterval(int)} or
+     *                            {@link #setWebSocketDefultHeartbeatInterval(int)}).
+     *                            However, this value strictly depends on your
+     *                            application environment &amp; project
+     *                            requirements. The maximum recommended value is
+     *                            usually equal to the timeout of session in
+     *                            nanoseconds, which is nanoseconds of
+     *                            {@code maxIdleTimeout} passed in
+     *                            {@link BrowserPageContext#enableAutoClean}, eg:
+     *                            long inputBufferTimeout =
+     *                            TimeUnit.MILLISECONDS.toNanos(maxIdleTimeout).
+     * @param outputBufferLimit   the limit for output buffer, i.e. the number of
+     *                            bytes allowed to store, a value &lt;= 0 represents
+     *                            no limit i.e. unlimited size. This is the buffer
+     *                            used to store the data from the server events. The
+     *                            threads which store the data to the buffer will be
+     *                            blocked until enough space available in the
+     *                            buffer.
+     * @param outputBufferTimeout the timeout nanoseconds for waiting threads of
+     *                            output buffer. The optimal value may be a value
+     *                            less than the heartbeat time of websocket in
+     *                            nanoseconds ( set by
+     *                            {@link #setWebSocketHeartbeatInterval(int)} or
+     *                            {@link #setWebSocketDefultHeartbeatInterval(int)}).
+     *                            However, this value strictly depends on your
+     *                            application environment &amp; project
+     *                            requirements. The maximum recommended value is
+     *                            usually equal to the timeout of session in
+     *                            nanoseconds, which is nanoseconds of
+     *                            {@code maxIdleTimeout} passed in
+     *                            {@link BrowserPageContext#enableAutoClean}, eg:
+     *                            long outputBufferTimeout =
+     *                            TimeUnit.MILLISECONDS.toNanos(maxIdleTimeout).
+     * @param onPayloadLoss       pass an object of {@code OnPayloadLoss} to enable
+     *                            or null to disable lossless browser page
+     *                            communication.
+     * @since 12.0.0-beta.8
+     */
+    protected record Settings(int inputBufferLimit, long inputBufferTimeout, int outputBufferLimit,
+            long outputBufferTimeout, OnPayloadLoss onPayloadLoss) {
+        // should be public
+        public Settings {
+        }
     }
 
     public abstract String webSocketUrl();
@@ -435,8 +561,8 @@ public abstract class BrowserPage implements Serializable {
     }
 
     final void push(final NameValue... nameValues) {
-        push(new ClientTasksWrapper(
-                ByteBuffer.wrap(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues))));
+        final ByteBuffer payload = buildPayload(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues));
+        push(new ClientTasksWrapper(payload));
     }
 
     /**
@@ -452,9 +578,9 @@ public abstract class BrowserPage implements Serializable {
         while ((taskNameValues = multiTasks.poll()) != null) {
             final NameValue[] nameValues = taskNameValues.toArray(new NameValue[taskNameValues.size()]);
 
-            final ByteBuffer byteBuffer = ByteBuffer
-                    .wrap(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues));
-            tasks[index] = byteBuffer;
+            final ByteBuffer payload = buildPayload(
+                    WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues));
+            tasks[index] = payload;
             index++;
         }
 
@@ -463,13 +589,11 @@ public abstract class BrowserPage implements Serializable {
         return clientTasks;
     }
 
-    private void push(final ClientTasksWrapper clientTasks) {
-
+    private void pushLockless(final ClientTasksWrapper clientTasks) {
         if (holdPush.get() > 0) {
             // add method internally calls offer method in ConcurrentLinkedQueue
             wffBMBytesHoldPushQueue.offer(clientTasks);
         } else {
-
             if (!wffBMBytesHoldPushQueue.isEmpty()) {
                 copyCachedBMBytesToMainQ();
             }
@@ -479,6 +603,55 @@ public abstract class BrowserPage implements Serializable {
             if (wffBMBytesQueue.offerLast(clientTasks)) {
                 pushQueueSize.increment();
             }
+        }
+    }
+
+    private void push(final ClientTasksWrapper clientTasks) {
+        if (outputBufferLimitLock != null) {
+            if (!losslessCommunicationCheckFailed) {
+                try {
+                    // onPayloadLoss check should be second
+                    if (outputBufferLimitLock.tryAcquire(clientTasks.getCurrentSize(), settings.outputBufferTimeout,
+                            TimeUnit.NANOSECONDS) || onPayloadLoss == null) {
+                        pushLockless(clientTasks);
+                    } else {
+                        losslessCommunicationCheckFailed = true;
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.severe(
+                                    """
+                                            Buffer timeout reached while preparing server event for client so further changes will not be pushed to client.
+                                             Increase Settings.outputBufferLimit or Settings.outputBufferTimeout to solve this issue.
+                                             NB: Settings.outputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                        }
+                        if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
+                            // it already contains placeholder for payloadId
+                            final ByteBuffer clientAction = BrowserPageAction
+                                    .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
+
+                            if (wffBMBytesQueue instanceof final ExternalDriveClientTasksWrapperDeque deque) {
+                                deque.clearLast();
+                                // deque.offerFirst is not allowed as the ClientTasksWrapper will not have
+                                // queueEntryId for
+                                // ExternalDriveClientTasksWrapperDeque
+                                deque.offerLast(new ClientTasksWrapper(clientAction));
+                            } else {
+                                // do not use clear() as it may not clear from last to first in
+                                // ConcurrentLinkedDeque (no guarantee)
+                                while (wffBMBytesQueue.pollLast() != null) {
+                                    // do nothing here, just to remove all items
+                                }
+                                wffBMBytesQueue.offerFirst(new ClientTasksWrapper(clientAction));
+                            }
+                        }
+                    }
+                } catch (final InterruptedException e) {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.", e);
+                    }
+                }
+            }
+        } else {
+            pushLockless(clientTasks);
         }
     }
 
@@ -510,36 +683,45 @@ public abstract class BrowserPage implements Serializable {
 
                     ClientTasksWrapper clientTask = wffBMBytesQueue.poll();
                     if (clientTask != null) {
-                        AtomicReferenceArray<ByteBuffer> byteBuffers;
+                        AtomicReferenceArray<ByteBuffer> tasks;
 
                         do {
                             pushQueueSize.decrement();
+                            int totalBytesPushed = 0;
                             try {
-
-                                byteBuffers = clientTask.tasks();
-                                if (byteBuffers != null) {
-                                    final int length = byteBuffers.length();
+                                tasks = clientTask.tasks();
+                                if (tasks != null) {
+                                    final int length = tasks.length();
                                     for (int i = 0; i < length; i++) {
-                                        final ByteBuffer byteBuffer = byteBuffers.get(i);
-                                        if (byteBuffer != null) {
-                                            wsListener.push(byteBuffer);
+                                        final ByteBuffer task = tasks.get(i);
+                                        if (task != null) {
+                                            wsListener.push(buildPayloadForClient(task));
+                                            final int capacity = task.capacity();
+                                            totalBytesPushed += capacity;
+                                            clientTask.nullifyTask(capacity, tasks, i);
                                         }
-                                        byteBuffers.set(i, null);
                                     }
                                     clientTask.nullifyTasks();
+                                } else {
+                                    totalBytesPushed = clientTask.getCurrentSize();
                                 }
-
                             } catch (final PushFailedException e) {
                                 if (pushQueueEnabled && wffBMBytesQueue.offerFirst(clientTask)) {
+                                    rollbackServerSidePayloadId();
                                     pushQueueSize.increment();
                                 }
 
                                 break;
                             } catch (final IllegalStateException | NullPointerException e) {
                                 if (wffBMBytesQueue.offerFirst(clientTask)) {
+                                    rollbackServerSidePayloadId();
                                     pushQueueSize.increment();
                                 }
                                 break;
+                            } finally {
+                                if (outputBufferLimitLock != null && totalBytesPushed > 0) {
+                                    outputBufferLimitLock.release(totalBytesPushed);
+                                }
                             }
 
                             if (pushWffBMBytesQueueLock.hasQueuedThreads()) {
@@ -621,20 +803,58 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      */
     public final void webSocketMessaged(final byte[] message) {
+        if (!checkLosslessCommunication(message)) {
+            return;
+        }
+        webSocketMessagedWithoutLosslessCheck(message);
+    }
+
+    /**
+     * @param message the bytes the received in onmessage
+     *
+     * @since 2.1.0
+     */
+    final void webSocketMessagedWithoutLosslessCheck(final byte[] message) {
+
+        // should be after checkLosslessCommunication
         lastClientAccessedTime = System.currentTimeMillis();
         // minimum number of an empty bm message length is 4
         // below that length is not a valid bm message so check
         // message.length < 4
         // later if there is such requirement
         if (message.length < 4) {
-            // message.length == 0 when client sends an empty message just
-            // for ping
             return;
         }
 
         // executeWffBMTask(message);
 
-        taskFromClientQ.offer(message);
+        if (inputBufferLimitLock != null) {
+            try {
+                // onPayloadLoss check should be second
+                if (inputBufferLimitLock.tryAcquire(message.length, settings.inputBufferTimeout, TimeUnit.NANOSECONDS)
+                        || onPayloadLoss == null) {
+                    taskFromClientQ.offer(message);
+                } else {
+                    losslessCommunicationCheckFailed = true;
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.severe(
+                                """
+                                        Buffer timeout reached while processing event from client so further client events will not be received at server side.
+                                         Increase Settings.inputBufferLimit or Settings.inputBufferTimeout to solve this issue.
+                                         NB: Settings.inputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                    }
+                    if (onPayloadLoss.serverSideAction != null) {
+                        onPayloadLoss.serverSideAction.perform();
+                    }
+                }
+            } catch (final InterruptedException e) {
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.log(Level.SEVERE, "Thread interrupted while preparing server event for client.", e);
+                }
+            }
+        } else {
+            taskFromClientQ.offer(message);
+        }
 
         if (!taskFromClientQ.isEmpty()) {
             final Executor executor = this.executor;
@@ -648,6 +868,26 @@ public abstract class BrowserPage implements Serializable {
             }
         }
 
+    }
+
+    final boolean checkLosslessCommunication(final byte[] message) {
+        if (losslessCommunicationCheckFailed) {
+            return false;
+        }
+        // if lossless communication is enabled
+        if (onPayloadLoss != null && message.length > PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length) {
+            final int payloadId = WffBinaryMessageUtil
+                    .getIntFromBytes(new byte[] { message[0], message[1], message[2], message[3] });
+            if (payloadId == getClientSidePayloadId()) {
+                losslessCommunicationCheckFailed = false;
+                return true;
+            }
+            losslessCommunicationCheckFailed = true;
+            onPayloadLoss.serverSideAction.perform();
+            return false;
+        }
+        losslessCommunicationCheckFailed = false;
+        return true;
     }
 
     /**
@@ -692,6 +932,10 @@ public abstract class BrowserPage implements Serializable {
                             if (LOGGER.isLoggable(Level.SEVERE)) {
                                 LOGGER.log(Level.SEVERE, "Could not process this data received from client.", e);
                             }
+                        } finally {
+                            if (inputBufferLimitLock != null) {
+                                inputBufferLimitLock.release(taskFromClient.length);
+                            }
                         }
 
                         if (taskFromClientQLock.hasQueuedThreads()) {
@@ -714,7 +958,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * Invokes just before {@link BrowserPage#render()} method. This is an empty
      * method in BrowserPage. Override and use. This method invokes only once per
-     * object in all of its life time.
+     * object in all of its lifetime.
      *
      * @since 3.0.1
      */
@@ -724,7 +968,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * Override and use this method to render html content to the client browser
-     * page. This method invokes only once per object in all of its life time.
+     * page. This method invokes only once per object in all of its lifetime.
      *
      * @return the object of {@link Html} class which needs to be displayed in the
      *         client browser page.
@@ -735,7 +979,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * Invokes after {@link BrowserPage#render()} method. This is an empty method in
      * BrowserPage. Override and use. This method invokes only once per object in
-     * all of its life time.
+     * all of its lifetime.
      *
      * @param rootTag the rootTag returned by {@link BrowserPage#render()} method.
      * @since 3.0.1
@@ -997,7 +1241,19 @@ public abstract class BrowserPage implements Serializable {
      */
     private void executeWffBMTask(final byte[] message) throws UnsupportedEncodingException {
 
-        final List<NameValue> nameValues = WffBinaryMessageUtil.VERSION_1.parse(message);
+        // message is a BM Message which never starts with 0, if it starts with 0 it
+        // means it is prepended by id placeholder
+        final int offset;
+        final int length;
+        if (onPayloadLoss != null) {
+            offset = PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length;
+            length = message.length - offset;
+        } else {
+            offset = 0;
+            length = message.length;
+        }
+
+        final List<NameValue> nameValues = WffBinaryMessageUtil.VERSION_1.parse(message, offset, length);
 
         final NameValue task = nameValues.get(0);
         final byte taskValue = task.getValues()[0][0];
@@ -1521,11 +1777,14 @@ public abstract class BrowserPage implements Serializable {
 
                     script.setDataWffId(wffScriptTagId);
 
+                    final boolean losslessCommunication = onPayloadLoss != null;
+                    final String onPayloadLossJS = losslessCommunication ? onPayloadLoss.javaScript : "";
+
                     final String wffJs = WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId, getInstanceId(),
                             removePrevFromBrowserContextOnTabInit, removeFromBrowserContextOnTabClose,
                             (wsHeartbeatInterval > 0 ? wsHeartbeatInterval : wsDefaultHeartbeatInterval),
                             (wsReconnectInterval > 0 ? wsReconnectInterval : wsDefaultReconnectInterval),
-                            autoremoveWffScript);
+                            autoremoveWffScript, losslessCommunication, onPayloadLossJS);
 
                     if (enableDeferOnWffScript) {
                         // byes are in UTF-8 so charset=utf-8 is explicitly
@@ -1566,10 +1825,13 @@ public abstract class BrowserPage implements Serializable {
 
             script.setDataWffId(wffScriptTagId);
 
+            final boolean losslessCommunication = onPayloadLoss != null;
+            final String onPayloadLossJS = losslessCommunication ? onPayloadLoss.javaScript : "";
             final String wffJs = WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId, getInstanceId(),
                     removePrevFromBrowserContextOnTabInit, removeFromBrowserContextOnTabClose,
                     (wsHeartbeatInterval > 0 ? wsHeartbeatInterval : wsDefaultHeartbeatInterval),
-                    (wsReconnectInterval > 0 ? wsReconnectInterval : wsDefaultReconnectInterval), autoremoveWffScript);
+                    (wsReconnectInterval > 0 ? wsReconnectInterval : wsDefaultReconnectInterval), autoremoveWffScript,
+                    losslessCommunication, onPayloadLossJS);
 
             if (enableDeferOnWffScript) {
                 // byes are in UTF-8 so charset=utf-8 is explicitly specified
@@ -2203,6 +2465,7 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      */
     public final void performBrowserPageAction(final ByteBuffer actionByteBuffer) {
+        // actionByteBuffer is already prepended by payloadId placeholder
         push(new ClientTasksWrapper(actionByteBuffer));
         if (holdPush.get() == 0) {
             pushWffBMBytesQueue();
@@ -2331,14 +2594,18 @@ public abstract class BrowserPage implements Serializable {
 
                     int index = 0;
                     for (final ByteBuffer eachWffBM : wffBMs) {
-                        values[index] = eachWffBM.array();
+                        values[index] = removePayloadIdPlaceholder(eachWffBM);
                         index++;
                     }
 
                     invokeMultipleTasks.setValues(values);
 
-                    wffBMBytesQueue.add(new ClientTasksWrapper(ByteBuffer
-                            .wrap(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(invokeMultipleTasks))));
+                    final ByteBuffer payload = buildPayload(
+                            WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(invokeMultipleTasks));
+
+                    // no need to call outputBufferLimitLock.tryAcquire as its caller methods do
+                    // this locking
+                    wffBMBytesQueue.add(new ClientTasksWrapper(payload));
 
                     pushQueueSize.increment();
 
@@ -2431,7 +2698,7 @@ public abstract class BrowserPage implements Serializable {
     /**
      * To check if the given tag exists in the UI. <br>
      * NB:- This method is valid only if {@code browserPage#toHtmlString} or
-     * {@code browserPage#toOutputStream} is called at least once in the life time.
+     * {@code browserPage#toOutputStream} is called at least once in the lifetime.
      *
      * @param tag the tag object to be checked.
      * @return true if the given tag contains in the BrowserPage i.e. UI. false if
@@ -2441,7 +2708,7 @@ public abstract class BrowserPage implements Serializable {
      *                              rendered. i.e. if
      *                              {@code browserPage#toHtmlString} or
      *                              {@code browserPage#toOutputStream} was NOT
-     *                              called at least once in the life time.
+     *                              called at least once in the lifetime.
      *
      * @since 2.1.7
      */
@@ -2453,16 +2720,16 @@ public abstract class BrowserPage implements Serializable {
 
         if (rootTag == null) {
             throw new NotRenderedException(
-                    "Could not check its existance. Make sure that you have called browserPage#toHtmlString method atleast once in the life time.");
+                    "Could not check its existence. Make sure that you have called browserPage#toHtmlString method at least once in the lifetime.");
         }
 
-        // this is better way to check, the rest of the code is old
+        // this is the better way of checking, the rest of the code is old
         return rootTag.getSharedObject().equals(tag.getSharedObject());
     }
 
     /**
      * Sets the heartbeat ping interval of webSocket client in milliseconds. Give -1
-     * to disable it. By default it's set with -1. It affects only for the
+     * to disable it. By default, it's set with -1. It affects only for the
      * corresponding {@code BrowserPage} instance from which it is called. <br>
      * NB:- This method has effect only if it is called before
      * {@code BrowserPage#render()} method return. This method can be called inside
@@ -2491,7 +2758,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * Sets the default heartbeat ping interval of webSocket client in milliseconds.
-     * Give -1 to disable it. It affects globally. By default it's set with -1 till
+     * Give -1 to disable it. It affects globally. By default, it's set with -1 till
      * wffweb-2.1.8 and Since wffweb-2.1.9 it's 25000ms i.e. 25 seconds.<br>
      * NB:- This method has effect only if it is called before
      * {@code BrowserPage#render()} invocation.
@@ -2518,7 +2785,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * Sets the default reconnect interval of webSocket client in milliseconds. It
-     * affects globally. By default it's set with 2000 ms.<br>
+     * affects globally. By default, it's set with 2000 ms.<br>
      * NB:- This method has effect only if it is called before
      * {@code BrowserPage#render()} invocation.
      *
@@ -2546,7 +2813,7 @@ public abstract class BrowserPage implements Serializable {
 
     /**
      * Sets the reconnect interval of webSocket client in milliseconds. Give -1 to
-     * disable it. By default it's set with -1. It affects only for the
+     * disable it. By default, it's set with -1. It affects only for the
      * corresponding {@code BrowserPage} instance from which it is called. <br>
      * NB:- This method has effect only if it is called before
      * {@code BrowserPage#render()} method return. This method can be called inside
@@ -3053,6 +3320,110 @@ public abstract class BrowserPage implements Serializable {
         }
 
         return tempDirPath;
+    }
+
+    protected final Settings defaultSettings() {
+        return defaultSettings;
+    }
+
+    private Settings useSettingsPvt() {
+        try {
+            final Settings settings = useSettings();
+            if (settings != null) {
+                return settings;
+            }
+        } catch (final InvalidValueException e) {
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+        } catch (final RuntimeException e) {
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.log(Level.SEVERE,
+                        "Exception while invoking the overridden useSettings method so default Settings will be applied",
+                        e);
+            }
+        }
+        return defaultSettings;
+    }
+
+    /**
+     * @return the settings for this browserPage instance
+     * @since 12.0.0-beta.8
+     */
+    protected Settings useSettings() {
+        return defaultSettings;
+    }
+
+    /**
+     * @return the Settings applied to this browserPage instance
+     * @since 12.0.0-beta.8
+     */
+    protected final Settings getSettings() {
+        return settings;
+    }
+
+    private ByteBuffer buildPayload(final byte[] bmMsg) {
+        if (onPayloadLoss != null) {
+            // 4 for id bytes
+            final ByteBuffer byteBuffer = ByteBuffer
+                    .allocate(bmMsg.length + PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length);
+            // bmMsg never starts with 0, if it starts with 0 it means it is already
+            // prepended by id placeholder
+            if (bmMsg[0] != 0) {
+                // placeholder for id bytes
+                byteBuffer.put(PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID);
+            }
+            byteBuffer.put(bmMsg);
+            byteBuffer.rewind();
+            return byteBuffer;
+        }
+
+        return ByteBuffer.wrap(bmMsg);
+    }
+
+    private byte[] removePayloadIdPlaceholder(final ByteBuffer bmMsg) {
+        final byte[] array = bmMsg.array();
+        if (onPayloadLoss != null) {
+            final byte[] bmMsgWithoutId = new byte[array.length - PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length];
+            System.arraycopy(array, PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length, bmMsgWithoutId, 0,
+                    bmMsgWithoutId.length);
+            bmMsg.position(PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length);
+            return bmMsgWithoutId;
+        }
+        return array;
+    }
+
+    private ByteBuffer buildPayloadForClient(final ByteBuffer bmMsgWithIdPlaceholder) {
+        if (onPayloadLoss != null) {
+            // id bytes should always be length 4
+            bmMsgWithIdPlaceholder.put(WffBinaryMessageUtil.getBytesFromInt(getServerSidePayloadId()));
+            bmMsgWithIdPlaceholder.rewind();
+        }
+
+        return bmMsgWithIdPlaceholder;
+    }
+
+    private int getServerSidePayloadId() {
+        int id = serverSidePayloadIdGenerator.incrementAndGet();
+        if (id == 0) {
+            id = serverSidePayloadIdGenerator.incrementAndGet();
+        }
+        return id;
+    }
+
+    private void rollbackServerSidePayloadId() {
+        final int id = serverSidePayloadIdGenerator.decrementAndGet();
+        if (id == 0) {
+            serverSidePayloadIdGenerator.decrementAndGet();
+        }
+    }
+
+    private int getClientSidePayloadId() {
+        int id = clientSidePayloadIdGenerator.incrementAndGet();
+        if (id == 0) {
+            id = clientSidePayloadIdGenerator.incrementAndGet();
+        }
+        return id;
     }
 
 }
