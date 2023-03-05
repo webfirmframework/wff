@@ -8,6 +8,9 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
  * should be kept in a package other than com.webfirmframework.wffweb.server.page
  */
 public class SampleBrowserPage extends BrowserPage {
+
+    private static final long serialVersionUID = 1L;
+
     @Override
     public String webSocketUrl() {
         // TODO Auto-generated method stub
@@ -41,5 +44,11 @@ public class SampleBrowserPage extends BrowserPage {
                 defaultSettings.outputBufferTimeout(),
                 onPayloadLoss);
         return settings;
+    }
+    
+    //the method is public just for testing, BrowserPage.Settings is not publicly accessible 
+    @SuppressWarnings("exports")
+    public BrowserPage.Settings getDefaultSettings() {     
+        return defaultSettings();
     }
 }

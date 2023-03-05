@@ -32,6 +32,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.webfirmframework.wffweb.common.SampleBrowserPage;
+import com.webfirmframework.wffweb.server.page.BrowserPage.Settings;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
 import org.junit.Assert;
 import org.junit.Test;
@@ -382,6 +383,16 @@ public class BrowserPageTest {
     @Test
     public void testSettings() {
         SampleBrowserPage sampleBrowserPage = new SampleBrowserPage();
+        Settings defaultSettings = sampleBrowserPage.getDefaultSettings();
+        assertEquals(defaultSettings.inputBufferLimit(), sampleBrowserPage.getSettings().inputBufferLimit());
+        assertEquals(defaultSettings.inputBufferTimeout(), sampleBrowserPage.getSettings().inputBufferTimeout());
+        assertEquals(defaultSettings.outputBufferLimit(), sampleBrowserPage.getSettings().outputBufferLimit());
+        assertEquals(defaultSettings.outputBufferTimeout(), sampleBrowserPage.getSettings().outputBufferTimeout());
+        
+        assertNotEquals(defaultSettings.onPayloadLoss(), sampleBrowserPage.getSettings().onPayloadLoss());
+        assertNotEquals(defaultSettings.onPayloadLoss().serverSideAction(), sampleBrowserPage.getSettings().onPayloadLoss().serverSideAction());
+        
+        assertEquals(defaultSettings.onPayloadLoss().javaScript(), sampleBrowserPage.getSettings().onPayloadLoss().javaScript());
     }
 
 }
