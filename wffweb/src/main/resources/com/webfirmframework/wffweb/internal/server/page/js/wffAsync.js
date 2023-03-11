@@ -140,6 +140,11 @@ window.wffAsync = new function() {
 		}
 
 		var uriBefore = window.location.pathname;
+
+		if (uri === uriBefore || uri === window.location.href) {
+			return;
+		}
+
 		if (replace) {
 			history.replaceState({}, document.title, uri);
 		} else {
