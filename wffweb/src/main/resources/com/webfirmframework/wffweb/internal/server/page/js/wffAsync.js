@@ -126,6 +126,12 @@ window.wffAsync = new function() {
 		"wffAsync.setURI('/sampleuri'); or " +
 		"wffAsync.setURI('/sampleuri', null, null, false);";
 	};
+	
+	//currentURI
+	var cURI = function() {
+		var l = window.location;
+		return l.pathname + l.search;
+	};
 
 	this.setURI = function(uri, onSetURI, afterSetURI, replace) {
 
@@ -139,19 +145,19 @@ window.wffAsync = new function() {
 			throwInvalidSetURIArgException();
 		}
 
-		var uriBefore = window.location.pathname;
+		var uriBefore = cURI();
 
 		if (uri === uriBefore || uri === window.location.href) {
 			return;
 		}
 
 		if (replace) {
-			history.replaceState({}, document.title, uri);
+			window.history.replaceState({}, document.title, uri);
 		} else {
-			history.pushState({}, document.title, uri);
+			window.history.pushState({}, document.title, uri);
 		}
 
-		var uriAfter = window.location.pathname;
+		var uriAfter = cURI();
 		if (uriBefore !== uriAfter) {
 			var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter, origin: "client", initiator: 'clientCode', replace: replace ? true : false };
 

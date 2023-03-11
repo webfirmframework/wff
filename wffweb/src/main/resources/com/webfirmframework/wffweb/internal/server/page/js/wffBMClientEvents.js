@@ -71,10 +71,12 @@ var wffBMClientEvents = new function() {
 
 		nameValues.push(tnv);
 
-		if (window.location && window.location.pathname) {
+		var l = window.location;
+
+		if (l) {
 			var pthNV = {
 				'name': [wffGlobal.taskValues.SET_URI],
-				'values': [[wffGlobal.uriEventInitiator.BROWSER], encoder.encode(window.location.pathname)]
+				'values': [[wffGlobal.uriEventInitiator.BROWSER], encoder.encode(l.pathname + l.search)]
 			};
 			nameValues.push(pthNV);
 		}

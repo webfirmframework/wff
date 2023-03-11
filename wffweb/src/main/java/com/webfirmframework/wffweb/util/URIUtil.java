@@ -75,11 +75,18 @@ public final class URIUtil {
      *         from the uri.
      * @since 12.0.0-beta.2
      * @since 12.0.0-beta.7 Supports [uriAsParam] type variables
+     * @since 12.0.0-beta.9 Supports query params in the uri, but it will not parse query params
      */
     public static Map<String, String> parseValues(final String pattern, final String uri) {
 
-        final String[] patternParts = StringUtil.split(pattern, '/');
-        final String[] urlParts = StringUtil.split(uri, '/');
+        final int indexOfPatternQ = pattern.indexOf('?');
+        final String patternWithoutQString = indexOfPatternQ != -1 ? pattern.substring(0, indexOfPatternQ) : pattern;
+
+        final int indexOfURIQ = uri.indexOf('?');
+        final String uriWithoutQString = indexOfURIQ != -1 ? uri.substring(0, indexOfURIQ) : uri;
+
+        final String[] patternParts = StringUtil.split(patternWithoutQString, '/');
+        final String[] urlParts = StringUtil.split(uriWithoutQString, '/');
 
         if (containsSquareParam(patternParts)) {
             if (patternParts.length > urlParts.length) {
@@ -90,7 +97,7 @@ public final class URIUtil {
                 throw new InvalidValueException("The pattern doesn't match with the uri");
             }
         }
-        if (startsWithSlash(uri) && !startsWithSlash(pattern)) {
+        if (startsWithSlash(uriWithoutQString) && !startsWithSlash(patternWithoutQString)) {
             throw new InvalidValueException("The pattern doesn't match with the uri");
         }
 
@@ -259,13 +266,24 @@ public final class URIUtil {
      * @return true if the path of the uri matches with the pattern
      * @since 12.0.0-beta.2
      * @since 12.0.0-beta.7 Supports [uriAsParam] type variables
+     * @since 12.0.0-beta.9 Supports query params in the uri
      */
     public static boolean patternMatches(final String pattern, final String uri) {
         if (pattern.equals(uri)) {
             return true;
         }
-        final String[] patternParts = StringUtil.split(pattern, '/');
-        final String[] urlParts = StringUtil.split(uri, '/');
+        final int indexOfPatternQ = pattern.indexOf('?');
+        final String patternWithoutQString = indexOfPatternQ != -1 ? pattern.substring(0, indexOfPatternQ) : pattern;
+        
+        final int indexOfURIQ = uri.indexOf('?');
+        final String uriWithoutQString = indexOfURIQ != -1 ? uri.substring(0, indexOfURIQ) : uri;
+        
+        if (patternWithoutQString.equals(uriWithoutQString)) {
+            return true;
+        }
+        
+        final String[] patternParts = StringUtil.split(patternWithoutQString, '/');
+        final String[] urlParts = StringUtil.split(uriWithoutQString, '/');
 
         if (containsSquareParam(patternParts)) {
             if (patternParts.length > urlParts.length) {
@@ -276,7 +294,7 @@ public final class URIUtil {
                 return false;
             }
         }
-        if (startsWithSlash(uri) && !startsWithSlash(pattern)) {
+        if (startsWithSlash(uriWithoutQString) && !startsWithSlash(patternWithoutQString)) {
             return false;
         }
 
@@ -390,6 +408,7 @@ public final class URIUtil {
      * @return true if the base path of the uri matches with the pattern
      * @since 12.0.0-beta.2
      * @since 12.0.0-beta.7 Supports [uriAsParam] type variables
+     * @since 12.0.0-beta.9 Supports query params in the uri
      */
     public static boolean patternMatchesBase(final String pattern, final String uri) {
 
@@ -397,11 +416,21 @@ public final class URIUtil {
             return true;
         }
 
-        final String[] patternParts = StringUtil.split(pattern, '/');
-        final String[] urlParts = StringUtil.split(uri, '/');
+        final int indexOfPatternQ = pattern.indexOf('?');
+        final String patternWithoutQString = indexOfPatternQ != -1 ? pattern.substring(0, indexOfPatternQ) : pattern;
+
+        final int indexOfURIQ = uri.indexOf('?');
+        final String uriWithoutQString = indexOfURIQ != -1 ? uri.substring(0, indexOfURIQ) : uri;
+
+        if (patternWithoutQString.equals(uriWithoutQString)) {
+            return true;
+        }
+
+        final String[] patternParts = StringUtil.split(patternWithoutQString, '/');
+        final String[] urlParts = StringUtil.split(uriWithoutQString, '/');
 
         if ((containsSquareParam(patternParts) && patternParts.length > urlParts.length)
-                || (startsWithSlash(uri) && !startsWithSlash(pattern))) {
+                || (startsWithSlash(uriWithoutQString) && !startsWithSlash(patternWithoutQString))) {
             return false;
         }
 

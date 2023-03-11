@@ -162,6 +162,34 @@ public class URIUtilTest {
         assertEquals("{}[]!@#$%^&*", variableNameValues.get("symbols"));
         
     }
+
+    @Test
+    public void testParseValuesWithQueryParams() {
+        Map<String, String> variableNameValues = URIUtil.parseValues("/some/uri/pathparam/{itemId}/yes", "/some/uri/pathparam/123/yes?name=wffweb");
+        assertEquals(1, variableNameValues.size());
+        assertEquals("123", variableNameValues.get("itemId"));
+
+        variableNameValues = URIUtil.parseValues("/some/uri/pathparam/{itemId}/{userId}", "/some/uri/pathparam/123/1?name=wffweb");
+        assertEquals(2, variableNameValues.size());
+        assertEquals("123", variableNameValues.get("itemId"));
+        assertEquals("1", variableNameValues.get("userId"));
+
+
+        variableNameValues = URIUtil.parseValues("/some/uri/pathparam/{itemId}/gap/{userId}", "/some/uri/pathparam/123/gap/1?name=wffweb");
+        assertEquals(2, variableNameValues.size());
+        assertEquals("123", variableNameValues.get("itemId"));
+        assertEquals("1", variableNameValues.get("userId"));
+
+        variableNameValues = URIUtil.parseValues("/some/uri/pathparam/{itemId}/gap/{userId}/", "/some/uri/pathparam/123/gap/1/?name=wffweb");
+        assertEquals(2, variableNameValues.size());
+        assertEquals("123", variableNameValues.get("itemId"));
+        assertEquals("1", variableNameValues.get("userId"));
+
+        variableNameValues = URIUtil.parseValues("/some/uri/pathparam/{symbols}/gap?name=wffweb",
+                "/some/uri/pathparam/" + URLEncoder.encode("{}[]!@#$%^&*", StandardCharsets.UTF_8) + "/gap");
+        assertEquals(1, variableNameValues.size());
+        assertEquals("{}[]!@#$%^&*", variableNameValues.get("symbols"));
+    }
     
     @Test(expected = InvalidValueException.class)
     public void testParseValuesException1() {
@@ -270,6 +298,27 @@ public class URIUtilTest {
     }
     
     @Test
+    public void testPatternMatchesBaseWithQueryParams() {
+        assertTrue(URIUtil.patternMatchesBase("/some/uri/user/{userId}", "/some/uri/user/123/item/456?name=wffweb"));
+        assertTrue(URIUtil.patternMatchesBase("/some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123/item/456?name=wffweb"));
+        assertTrue(URIUtil.patternMatchesBase("some/uri/user/{userId}/item/{itemId}", "some/uri/user/123/item/456?name=wffweb"));
+        assertTrue(URIUtil.patternMatchesBase("/some/uri/user", "/some/uri/user/123/item/456?name=wffweb"));
+
+        assertTrue(URIUtil.patternMatchesBase("someuri", "someuri?name=wffweb"));
+        assertTrue(URIUtil.patternMatchesBase("someuri", "someuri/some/uri/user/123/item/456?name=wffweb"));
+
+        assertFalse(URIUtil.patternMatchesBase("someuri", "some1uri/some/uri/user/123/item/456?name=wffweb"));
+        assertFalse(URIUtil.patternMatchesBase("/some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123?name=wffweb"));
+        assertFalse(URIUtil.patternMatchesBase("/some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123/item2/456?name=wffweb"));
+        assertFalse(URIUtil.patternMatchesBase("some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123/item/456?name=wffweb"));
+        assertFalse(URIUtil.patternMatchesBase("/some/uri/user/{userId}/item/{itemId}", "some/uri/user/123/item/456?name=wffweb"));
+
+        assertTrue(URIUtil.patternMatchesBase("/some/uri/pathparam/{userId}/[pathUri]/{itemId}", "/some/uri/pathparam/1/path1/path2/path3/2?name=wffweb"));
+        assertTrue(URIUtil.patternMatchesBase("/some/uri/pathparam/{userId}/[pathUri]", "/some/uri/pathparam/1/path1/path2/path3/2?name=wffweb"));
+
+    }
+
+    @Test
     public void testPatternMatches() {
         assertTrue(URIUtil.patternMatches("/some/uri/user/{userId}", "/some/uri/user/123"));
         assertTrue(URIUtil.patternMatches("/some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123/item/456"));
@@ -307,6 +356,47 @@ public class URIUtilTest {
         assertFalse(URIUtil.patternMatches("/some/uri/pathparam/{itemId}/[pathUri]/another", "/some/uri/pathparam/2/path1/path2/path3/2/"));
         assertFalse(URIUtil.patternMatches("/some/uri/pathparam/{userId}/[pathUri]/{itemId}/", "/some/uri/pathparam/1/path1/path2/path3/2"));
 
+
+    }
+    
+    @Test
+    public void testPatternMatchesWithQueryParams() {
+
+        assertTrue(URIUtil.patternMatches("/some/uri/user/{userId}", "/some/uri/user/123?name=wffweb"));
+        assertTrue(URIUtil.patternMatches("/some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123/item/456?name=wffweb"));
+        assertTrue(URIUtil.patternMatches("some/uri/user/{userId}/item/{itemId}", "some/uri/user/123/item/456?name=wffweb"));
+        assertTrue(URIUtil.patternMatches("/some/uri/user", "/some/uri/user?name=wffweb"));
+        assertTrue(URIUtil.patternMatches("someuri", "someuri?name=wffweb"));
+
+        assertFalse(URIUtil.patternMatches("/some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123?name=wffweb"));
+        assertFalse(URIUtil.patternMatches("/some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123/item2/456?name=wffweb"));
+        assertFalse(URIUtil.patternMatches("some/uri/user/{userId}/item/{itemId}", "/some/uri/user/123/item/456?name=wffweb"));
+        assertFalse(URIUtil.patternMatches("/some/uri/user/{userId}/item/{itemId}", "some/uri/user/123/item/456?name=wffweb"));
+
+        assertTrue(URIUtil.patternMatches("/some/uri/pathparam/[pathUri]/gap/{userId}/", "/some/uri/pathparam/path1/path2/path3/gap/1/?name=wffweb"));
+        assertTrue(URIUtil.patternMatches("/some/uri/pathparam/{userId}/gap/[pathUri]/{itemId}", "/some/uri/pathparam/1/gap/path1/path2/path3/2?name=wffweb"));
+        assertTrue(URIUtil.patternMatches("/some/uri/pathparam/{userId}/[pathUri]/{itemId}", "/some/uri/pathparam/1/path1/path2/path3/2?name=wffweb"));
+        assertTrue(URIUtil.patternMatches("/some/uri/pathparam/[pathUri]/{itemId}", "/some/uri/pathparam/1/path1/path2/path3/2?name=wffweb"));
+        assertTrue(URIUtil.patternMatches("/some/uri/pathparam/[pathUri]", "/some/uri/pathparam/1/path1/path2/path3/2?name=wffweb"));
+        assertTrue(URIUtil.patternMatches("/some/uri/pathparam/{itemId}/[pathUri]", "/some/uri/pathparam/2/path1/path2/path3/2?name=wffweb"));
+        assertTrue(URIUtil.patternMatches("/some/uri/pathparam/{itemId}/[pathUri]/", "/some/uri/pathparam/2/path1/path2/path3/2/?name=wffweb"));
+        assertTrue(URIUtil.patternMatches("/some/uri/pathparam/{userId}/[pathUri]/{itemId}/", "/some/uri/pathparam/1/path1/path2/path3/2/?name=wffweb"));
+
+
+        assertFalse(URIUtil.patternMatches("someuri", "someuri/?name=wffweb"));
+        assertFalse(URIUtil.patternMatches("someuri", "/someuri?name=wffweb"));
+        assertFalse(URIUtil.patternMatches("someuri", "/someuri/?name=wffweb"));
+        assertFalse(URIUtil.patternMatches("/some/uri/pathparam/[pathUri]/gap/{userId}/", "/some/uri/pathparam/path1/path2/path3/gap/1?name=wffweb"));
+        assertFalse(URIUtil.patternMatches("/some/uri/pathparam/[pathUri]/gap/{userId}", "/some/uri/pathparam/path1/path2/path3/gap/1/?name=wffweb"));
+        assertTrue(URIUtil.patternMatches("/some/uri/pathparam/{userId}/gap/[pathUri]/{itemId}", "/some/uri/pathparam/1/gap/path1/path2/path3/2/?name=wffweb"));
+
+
+        assertFalse(URIUtil.patternMatches("/some/uri/pathparam/{userId}/somethingelse/[pathUri]/{itemId}", "/some/uri/pathparam/1/path1/path2/path3/?name=wffweb"));
+        assertFalse(URIUtil.patternMatches("some/uri/pathparam/[pathUri]/{itemId}", "/some/uri/pathparam/1/path1/path2/path3/2?name=wffweb"));
+        assertFalse(URIUtil.patternMatches("/1some/uri/pathparam/[pathUri]", "/some/uri/pathparam/1/path1/path2/path3/2?name=wffweb"));
+        assertFalse(URIUtil.patternMatches("/some/uri/pathparam/{itemId}/[pathUri]", "/1some/uri/pathparam/2/path1/path2/path3/2?name=wffweb"));
+        assertFalse(URIUtil.patternMatches("/some/uri/pathparam/{itemId}/[pathUri]/another", "/some/uri/pathparam/2/path1/path2/path3/2/?name=wffweb"));
+        assertFalse(URIUtil.patternMatches("/some/uri/pathparam/{userId}/[pathUri]/{itemId}/", "/some/uri/pathparam/1/path1/path2/path3/2?name=wffweb"));
 
     }
 }
