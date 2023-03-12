@@ -436,5 +436,9 @@ public class URIUtilTest {
         assertEquals(List.of(""), parsedURI.queryParameters().get("name2"));
         assertEquals(List.of("", ""), parsedURI.queryParameters().get("name3"));
         assertEquals("hashpart", parsedURI.hash());
+        
+        parsedURI = URIUtil.parse("/some/uri/pathparam/{itemId}/yes", "/some/uri/pathparam/123/yes?name=wffweb&name2&name3=&name3#hashpart1#hashpart2");
+        //in Chrome the location.hash contains this value if multiple # symbol is found
+        assertEquals("hashpart1#hashpart2", parsedURI.hash());
     }
 }
