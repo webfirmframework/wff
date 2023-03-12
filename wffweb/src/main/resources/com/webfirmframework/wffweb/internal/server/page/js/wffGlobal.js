@@ -11,6 +11,8 @@ window.wffGlobal = new function() {
 	var MAX_INT_VALUE = 2147483647;
 	// onPayloadLossInvoked
 	var onPLI = false;
+	//current location
+	var cLoc = undefined;
 
 	this.getUniqueWffIntId = function() {
 		return ++wffId;
@@ -34,6 +36,12 @@ window.wffGlobal = new function() {
 		return id;
 	};
 
+	this.getAndUpdateLocation = function() {
+		var prevCLoc = cLoc;
+		var l = window.location;
+		cLoc = {pathname: l.pathname, search: l.search, hash: l.hash};
+		return prevCLoc;
+    };
 
 	//COMPRESSED WFF DATA
 	this.CPRSD_DATA = "${CPRSD_DATA}";

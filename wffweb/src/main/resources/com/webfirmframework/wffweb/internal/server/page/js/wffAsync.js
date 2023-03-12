@@ -158,10 +158,11 @@ window.wffAsync = new function() {
 		}
 
 		if (replace) {
-			window.history.replaceState({}, document.title, uri);
+			window.history.replaceState({by: 'setURI'}, document.title, uri);
 		} else {
-			window.history.pushState({}, document.title, uri);
+			window.history.pushState({by: 'setURI'}, document.title, uri);
 		}
+		wffGlobal.getAndUpdateLocation();
 
 		var uriAfter = cURI();
 		var uriAfterNoHash = cURINoHash();
