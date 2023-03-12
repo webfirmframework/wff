@@ -126,9 +126,14 @@ window.wffAsync = new function() {
 		"wffAsync.setURI('/sampleuri'); or " +
 		"wffAsync.setURI('/sampleuri', null, null, false);";
 	};
-	
+
 	//currentURI
 	var cURI = function() {
+		var l = window.location;
+		return l.pathname + l.search + l.hash;
+	};
+
+	var cURINoHash = function() {
 		var l = window.location;
 		return l.pathname + l.search;
 	};
@@ -146,6 +151,7 @@ window.wffAsync = new function() {
 		}
 
 		var uriBefore = cURI();
+		var uriBeforeNoHash = cURINoHash();
 
 		if (uri === uriBefore || uri === window.location.href) {
 			return;
@@ -158,7 +164,8 @@ window.wffAsync = new function() {
 		}
 
 		var uriAfter = cURI();
-		if (uriBefore !== uriAfter) {
+		var uriAfterNoHash = cURINoHash();
+		if (uriBeforeNoHash !== uriAfterNoHash) {
 			var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter, origin: "client", initiator: 'clientCode', replace: replace ? true : false };
 
 			var callbackWrapper = afterSetURI;

@@ -76,7 +76,7 @@ var wffBMClientEvents = new function() {
 		if (l) {
 			var pthNV = {
 				'name': [wffGlobal.taskValues.SET_URI],
-				'values': [[wffGlobal.uriEventInitiator.BROWSER], encoder.encode(l.pathname + l.search)]
+				'values': [[wffGlobal.uriEventInitiator.BROWSER], encoder.encode(l.pathname + l.search + l.hash)]
 			};
 			nameValues.push(pthNV);
 		}
