@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -398,5 +399,30 @@ public class URIUtilTest {
         assertFalse(URIUtil.patternMatches("/some/uri/pathparam/{itemId}/[pathUri]/another", "/some/uri/pathparam/2/path1/path2/path3/2/?name=wffweb"));
         assertFalse(URIUtil.patternMatches("/some/uri/pathparam/{userId}/[pathUri]/{itemId}/", "/some/uri/pathparam/1/path1/path2/path3/2?name=wffweb"));
 
+    }
+
+    @Test
+    public void testParse() {
+        ParsedURI parsedURI = URIUtil.parse("/some/uri/pathparam/{itemId}/yes", "/some/uri/pathparam/123/yes?name=wffweb&name2&name3=&name3");
+        assertNotNull(parsedURI);
+        assertEquals(1, parsedURI.pathParameters().size());
+        assertEquals(3, parsedURI.queryParameters().size());
+        assertEquals(List.of("wffweb"), parsedURI.queryParameters().get("name"));
+        assertEquals(List.of(""), parsedURI.queryParameters().get("name2"));
+        assertEquals(List.of("", ""), parsedURI.queryParameters().get("name3"));
+        
+        parsedURI = URIUtil.parse("/some/uri/pathparam/{itemId}/yes", "/some/uri/pathparam/123/yes?name=wffweb&name2&name3=&name3&");
+        assertNotNull(parsedURI);
+        assertEquals(1, parsedURI.pathParameters().size());
+        assertEquals(3, parsedURI.queryParameters().size());
+        assertEquals(List.of("wffweb"), parsedURI.queryParameters().get("name"));
+        assertEquals(List.of(""), parsedURI.queryParameters().get("name2"));
+        assertEquals(List.of("", ""), parsedURI.queryParameters().get("name3"));
+
+
+        parsedURI = URIUtil.parse("/some/uri/pathparam/{itemId}/yes", "/some/uri/pathparam/123/yes?");
+        assertNotNull(parsedURI);
+        assertEquals(1, parsedURI.pathParameters().size());
+        assertEquals(0, parsedURI.queryParameters().size());
     }
 }
