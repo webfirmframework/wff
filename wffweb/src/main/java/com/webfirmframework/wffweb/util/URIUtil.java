@@ -275,11 +275,8 @@ public final class URIUtil {
         if (pattern.equals(uri)) {
             return true;
         }
-        final int indexOfPatternQ = pattern.indexOf('?');
-        final String patternWithoutQString = indexOfPatternQ != -1 ? pattern.substring(0, indexOfPatternQ) : pattern;
-
-        final int indexOfURIQ = uri.indexOf('?');
-        final String uriWithoutQString = indexOfURIQ != -1 ? uri.substring(0, indexOfURIQ) : uri;
+        final String patternWithoutQString = toURIInfo(pattern).pathname;
+        final String uriWithoutQString = toURIInfo(uri).pathname;
 
         if (patternWithoutQString.equals(uriWithoutQString)) {
             return true;
@@ -419,11 +416,8 @@ public final class URIUtil {
             return true;
         }
 
-        final int indexOfPatternQ = pattern.indexOf('?');
-        final String patternWithoutQString = indexOfPatternQ != -1 ? pattern.substring(0, indexOfPatternQ) : pattern;
-
-        final int indexOfURIQ = uri.indexOf('?');
-        final String uriWithoutQString = indexOfURIQ != -1 ? uri.substring(0, indexOfURIQ) : uri;
+        final String patternWithoutQString = toURIInfo(pattern).pathname;
+        final String uriWithoutQString = toURIInfo(uri).pathname;
 
         if (patternWithoutQString.equals(uriWithoutQString)) {
             return true;
