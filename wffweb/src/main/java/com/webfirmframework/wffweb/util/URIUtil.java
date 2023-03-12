@@ -532,19 +532,7 @@ public final class URIUtil {
         return new URIInfo(uriWithoutQString, qString, hash);
     }
 
-    /**
-     * @param pattern
-     * @param uri
-     * @return the {@code ParsedURI} which contains parsed info of the uri.
-     * @since 12.0.0-beta.9
-     */
-    public static ParsedURI parse(final String pattern, final String uri) {
-
-        final URIInfo uriInfo = toURIInfo(uri);
-        final String uriWithoutQString = uriInfo.pathname;
-        final String qString = uriInfo.queryString;
-        final String hash = uriInfo.hash;
-
+    private static Map<String, List<String>> parseQueryString(final String qString) {
         final String[] splitByAmp = StringUtil.split(qString, '&');
         final List<Map.Entry<String, String>> entries = new ArrayList<>(splitByAmp.length);
         for (final String qParam : splitByAmp) {
@@ -566,9 +554,31 @@ public final class URIUtil {
         for (final Map.Entry<String, String> entry : entries) {
             queryParams.computeIfAbsent(entry.getKey(), s -> new ArrayList<>(1)).add(entry.getValue());
         }
+        return Map.copyOf(queryParams);
+    }
 
-        return new ParsedURI(uriWithoutQString, parsePathParams(pattern, uriWithoutQString), Map.copyOf(queryParams),
-                URLDecoder.decode(hash, StandardCharsets.UTF_8));
+    /**
+     * @param uri
+     * @return the map containing query parameters and its values
+     * @since 12.0.0-beta.9
+     */
+    public static Map<String, List<String>> parseQueryParameters(final String uri) {
+        return parseQueryString(toURIInfo(uri).queryString);
+    }
+
+    /**
+     * @param pattern
+     * @param uri
+     * @return the {@code ParsedURI} which contains parsed info of the uri.
+     * @since 12.0.0-beta.9
+     */
+    public static ParsedURI parse(final String pattern, final String uri) {
+
+        final URIInfo uriInfo = toURIInfo(uri);
+        final String uriWithoutQString = uriInfo.pathname;
+
+        return new ParsedURI(uriWithoutQString, parsePathParams(pattern, uriWithoutQString),
+                parseQueryString(uriInfo.queryString), URLDecoder.decode(uriInfo.hash, StandardCharsets.UTF_8));
     }
 
 }
