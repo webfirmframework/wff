@@ -81,14 +81,12 @@ public final class URIUtil {
      *        query params
      */
     public static Map<String, String> parseValues(final String pattern, final String uri) {
-        final int indexOfURIQ = uri.indexOf('?');
-        final String uriWithoutQString = indexOfURIQ != -1 ? uri.substring(0, indexOfURIQ) : uri;
-        return parsePathParams(pattern, uriWithoutQString);
+        return parsePathParams(pattern, toURIInfo(uri).pathname);
     }
 
     private static Map<String, String> parsePathParams(final String pattern, final String uriWithoutQString) {
-        final int indexOfPatternQ = pattern.indexOf('?');
-        final String patternWithoutQString = indexOfPatternQ != -1 ? pattern.substring(0, indexOfPatternQ) : pattern;
+
+        final String patternWithoutQString = toURIInfo(pattern).pathname;
 
         final String[] patternParts = StringUtil.split(patternWithoutQString, '/');
         final String[] urlParts = StringUtil.split(uriWithoutQString, '/');
@@ -499,6 +497,47 @@ public final class URIUtil {
         return true;
     }
 
+    record URIInfo(String pathname, String queryString, String hash) {
+
+    }
+
+    static URIInfo toURIInfo(final String uri) {
+        final int indexOfIQ = uri.indexOf('?');
+
+        final int indexOfHash = uri.indexOf('#');
+
+        final String uriWithoutQString;
+
+        final String qString;
+
+        if (indexOfIQ < indexOfHash) {
+            if (indexOfIQ != -1) {
+                uriWithoutQString = uri.substring(0, indexOfIQ);
+                qString = uri.substring(indexOfIQ + 1, indexOfHash);
+            } else {
+                uriWithoutQString = uri.substring(0, indexOfHash);
+                qString = "";
+            }
+        } else {
+            if (indexOfHash != -1) {
+                uriWithoutQString = uri.substring(0, indexOfHash);
+                qString = "";
+            } else {
+                if (indexOfIQ != -1) {
+                    uriWithoutQString = uri.substring(0, indexOfIQ);
+                    qString = uri.substring(indexOfIQ + 1);
+                } else {
+                    uriWithoutQString = uri;
+                    qString = "";
+                }
+            }
+        }
+
+        final String hash = indexOfHash != -1 ? uri.substring(indexOfHash + 1) : "";
+
+        return new URIInfo(uriWithoutQString, qString, hash);
+    }
+
     /**
      * @param pattern
      * @param uri
@@ -507,23 +546,10 @@ public final class URIUtil {
      */
     public static ParsedURI parse(final String pattern, final String uri) {
 
-        final int indexOfURIQ = uri.indexOf('?');
-
-        final int indexOfURIHash = uri.indexOf('#', indexOfURIQ);
-
-        final String uriWithoutQString = indexOfURIQ != -1 ? uri.substring(0, indexOfURIQ) : uri;
-        final String qString;
-        final String hash;
-
-        if (indexOfURIHash != -1) {
-            qString = indexOfURIQ != -1 && indexOfURIQ < (uri.length() - 1)
-                    ? uri.substring(indexOfURIQ + 1, indexOfURIHash)
-                    : "";
-            hash = indexOfURIHash < (uri.length() - 1) ? uri.substring(indexOfURIHash + 1) : "";
-        } else {
-            qString = indexOfURIQ != -1 && indexOfURIQ < (uri.length() - 1) ? uri.substring(indexOfURIQ + 1) : "";
-            hash = "";
-        }
+        final URIInfo uriInfo = toURIInfo(uri);
+        final String uriWithoutQString = uriInfo.pathname;
+        final String qString = uriInfo.queryString;
+        final String hash = uriInfo.hash;
 
         final String[] splitByAmp = StringUtil.split(qString, '&');
         final List<Map.Entry<String, String>> entries = new ArrayList<>(splitByAmp.length);

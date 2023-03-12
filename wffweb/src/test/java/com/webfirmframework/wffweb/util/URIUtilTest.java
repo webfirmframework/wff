@@ -437,8 +437,73 @@ public class URIUtilTest {
         assertEquals(List.of("", ""), parsedURI.queryParameters().get("name3"));
         assertEquals("hashpart", parsedURI.hash());
         
+        parsedURI = URIUtil.parse("/some/uri/pathparam/{itemId}/yes", "/some/uri/pathparam/123/yes#hashpart2");
+        assertEquals("/some/uri/pathparam/123/yes", parsedURI.pathname());
+        
         parsedURI = URIUtil.parse("/some/uri/pathparam/{itemId}/yes", "/some/uri/pathparam/123/yes?name=wffweb&name2&name3=&name3#hashpart1#hashpart2");
+        assertEquals("/some/uri/pathparam/123/yes", parsedURI.pathname());
         //in Chrome the location.hash contains this value if multiple # symbol is found
         assertEquals("hashpart1#hashpart2", parsedURI.hash());
+        
+        parsedURI = URIUtil.parse("/some/uri/pathparam/{itemId}/yes", "/some/uri/pathparam/123/yes#hashpart");
+        assertEquals("hashpart", parsedURI.hash());
+    }
+    
+    @Test
+    public void testToURIInfo() {
+        URIUtil.URIInfo uriInfo = null;
+
+        uriInfo = URIUtil.toURIInfo("/some/uri/pathparam/{itemId}/yes");
+        assertEquals("/some/uri/pathparam/{itemId}/yes", uriInfo.pathname());
+        assertEquals("", uriInfo.queryString());
+        assertEquals("", uriInfo.hash());
+
+        uriInfo = URIUtil.toURIInfo("/some/uri/pathparam/123/yes?name=wffweb&name2&name3=&name3");
+        assertEquals("/some/uri/pathparam/123/yes", uriInfo.pathname());
+        assertEquals("name=wffweb&name2&name3=&name3", uriInfo.queryString());
+        assertEquals("", uriInfo.hash());
+
+        uriInfo = URIUtil.toURIInfo("/some/uri/pathparam/123/yes#hashpart2");
+        assertEquals("/some/uri/pathparam/123/yes", uriInfo.pathname());
+        assertEquals("hashpart2", uriInfo.hash());
+        assertEquals("", uriInfo.queryString());
+
+        uriInfo = URIUtil.toURIInfo("/some/uri/pathparam/123/yes#");
+        assertEquals("/some/uri/pathparam/123/yes", uriInfo.pathname());
+        assertEquals("", uriInfo.hash());
+        assertEquals("", uriInfo.queryString());
+
+        uriInfo = URIUtil.toURIInfo("/some/uri/pathparam/123/yes?name=wffweb#");
+        assertEquals("/some/uri/pathparam/123/yes", uriInfo.pathname());
+        assertEquals("", uriInfo.hash());
+        assertEquals("name=wffweb", uriInfo.queryString());
+
+        uriInfo = URIUtil.toURIInfo("/some/uri/pathparam/123/yes?name=wffweb");
+        assertEquals("/some/uri/pathparam/123/yes", uriInfo.pathname());
+        assertEquals("", uriInfo.hash());
+        assertEquals("name=wffweb", uriInfo.queryString());
+
+        uriInfo = URIUtil.toURIInfo("/some/uri/pathparam/123/yes#?name=wffweb");
+        assertEquals("/some/uri/pathparam/123/yes", uriInfo.pathname());
+        assertEquals("?name=wffweb", uriInfo.hash());
+        assertEquals("", uriInfo.queryString());
+
+        uriInfo = URIUtil.toURIInfo("/some/uri/pathparam/123/yes?name=wffweb");
+
+        assertEquals("/some/uri/pathparam/123/yes", uriInfo.pathname());
+        assertEquals("", uriInfo.hash());
+        assertEquals("name=wffweb", uriInfo.queryString());
+
+        uriInfo = URIUtil.toURIInfo("/some/uri/pathparam/123/yes?name=wffweb#hashpart2");
+
+        assertEquals("/some/uri/pathparam/123/yes", uriInfo.pathname());
+        assertEquals("hashpart2", uriInfo.hash());
+        assertEquals("name=wffweb", uriInfo.queryString());
+
+        uriInfo = URIUtil.toURIInfo("/some/uri/pathparam/123/yes#hashpart2?name=wffweb");
+
+        assertEquals("/some/uri/pathparam/123/yes", uriInfo.pathname());
+        assertEquals("hashpart2?name=wffweb", uriInfo.hash());
+        assertEquals("", uriInfo.queryString());
     }
 }
