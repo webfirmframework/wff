@@ -581,4 +581,17 @@ public final class URIUtil {
                 parseQueryString(uriInfo.queryString), URLDecoder.decode(uriInfo.hash, StandardCharsets.UTF_8));
     }
 
+    /**
+     * @param uri
+     * @return the {@code ParsedURI} which contains parsed info of the uri.
+     * @since 12.0.0-beta.9
+     */
+    public static ParsedURI parse(final String uri) {
+
+        final URIInfo uriInfo = toURIInfo(uri);
+        final String uriWithoutQString = uriInfo.pathname;
+
+        return new ParsedURI(uriWithoutQString, null, parseQueryString(uriInfo.queryString),
+                URLDecoder.decode(uriInfo.hash, StandardCharsets.UTF_8));
+    }
 }
