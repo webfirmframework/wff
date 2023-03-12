@@ -499,12 +499,31 @@ public final class URIUtil {
         return true;
     }
 
+    /**
+     * @param pattern
+     * @param uri
+     * @return the {@code ParsedURI} which contains parsed info of the uri.
+     * @since 12.0.0-beta.9
+     */
     public static ParsedURI parse(final String pattern, final String uri) {
 
         final int indexOfURIQ = uri.indexOf('?');
+
+        final int indexOfURIHash = uri.indexOf('#', indexOfURIQ);
+
         final String uriWithoutQString = indexOfURIQ != -1 ? uri.substring(0, indexOfURIQ) : uri;
-        final String qString = indexOfURIQ != -1 && indexOfURIQ < (uri.length() - 1) ? uri.substring(indexOfURIQ + 1)
-                : "";
+        final String qString;
+        final String hash;
+
+        if (indexOfURIHash != -1) {
+            qString = indexOfURIQ != -1 && indexOfURIQ < (uri.length() - 1)
+                    ? uri.substring(indexOfURIQ + 1, indexOfURIHash)
+                    : "";
+            hash = indexOfURIHash < (uri.length() - 1) ? uri.substring(indexOfURIHash + 1) : "";
+        } else {
+            qString = indexOfURIQ != -1 && indexOfURIQ < (uri.length() - 1) ? uri.substring(indexOfURIQ + 1) : "";
+            hash = "";
+        }
 
         final String[] splitByAmp = StringUtil.split(qString, '&');
         final List<Map.Entry<String, String>> entries = new ArrayList<>(splitByAmp.length);
@@ -528,7 +547,8 @@ public final class URIUtil {
             queryParams.computeIfAbsent(entry.getKey(), s -> new ArrayList<>(1)).add(entry.getValue());
         }
 
-        return new ParsedURI(uriWithoutQString, parsePathParams(pattern, uriWithoutQString), Map.copyOf(queryParams));
+        return new ParsedURI(uriWithoutQString, parsePathParams(pattern, uriWithoutQString), Map.copyOf(queryParams),
+                URLDecoder.decode(hash, StandardCharsets.UTF_8));
     }
 
 }

@@ -410,6 +410,7 @@ public class URIUtilTest {
         assertEquals(List.of("wffweb"), parsedURI.queryParameters().get("name"));
         assertEquals(List.of(""), parsedURI.queryParameters().get("name2"));
         assertEquals(List.of("", ""), parsedURI.queryParameters().get("name3"));
+        assertEquals("", parsedURI.hash());
         
         parsedURI = URIUtil.parse("/some/uri/pathparam/{itemId}/yes", "/some/uri/pathparam/123/yes?name=wffweb&name2&name3=&name3&");
         assertNotNull(parsedURI);
@@ -418,11 +419,22 @@ public class URIUtilTest {
         assertEquals(List.of("wffweb"), parsedURI.queryParameters().get("name"));
         assertEquals(List.of(""), parsedURI.queryParameters().get("name2"));
         assertEquals(List.of("", ""), parsedURI.queryParameters().get("name3"));
+        assertEquals("", parsedURI.hash());
 
 
         parsedURI = URIUtil.parse("/some/uri/pathparam/{itemId}/yes", "/some/uri/pathparam/123/yes?");
         assertNotNull(parsedURI);
         assertEquals(1, parsedURI.pathParameters().size());
         assertEquals(0, parsedURI.queryParameters().size());
+        assertEquals("", parsedURI.hash());
+
+        parsedURI = URIUtil.parse("/some/uri/pathparam/{itemId}/yes", "/some/uri/pathparam/123/yes?name=wffweb&name2&name3=&name3#hashpart");
+        assertNotNull(parsedURI);
+        assertEquals(1, parsedURI.pathParameters().size());
+        assertEquals(3, parsedURI.queryParameters().size());
+        assertEquals(List.of("wffweb"), parsedURI.queryParameters().get("name"));
+        assertEquals(List.of(""), parsedURI.queryParameters().get("name2"));
+        assertEquals(List.of("", ""), parsedURI.queryParameters().get("name3"));
+        assertEquals("hashpart", parsedURI.hash());
     }
 }

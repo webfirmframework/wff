@@ -18,5 +18,13 @@ package com.webfirmframework.wffweb.util;
 import java.util.List;
 import java.util.Map;
 
-public record ParsedURI(String uriPath, Map<String, String> pathParameters, Map<String, List<String>> queryParameters) {
+/**
+ * @param pathname        the pathname of the uri i.e. uri without query string
+ * @param pathParameters  map of path parameters
+ * @param queryParameters map of query parameters
+ * @param hash            the hash part of uri
+ * @since 12.0.0-beta.9
+ */
+public record ParsedURI(String pathname, Map<String, String> pathParameters, Map<String, List<String>> queryParameters,
+        String hash) {
 }
