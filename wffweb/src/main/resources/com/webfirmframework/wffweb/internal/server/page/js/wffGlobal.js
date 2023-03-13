@@ -39,7 +39,8 @@ window.wffGlobal = new function() {
 	this.getAndUpdateLocation = function() {
 		var prevCLoc = cLoc;
 		var l = window.location;
-		cLoc = {pathname: l.pathname, search: l.search, hash: l.hash};
+		var h = l.href.endsWith('#') ? '#' : l.hash;
+		cLoc = {pathname: l.pathname, search: l.search, hash: h};
 		return prevCLoc;
     };
 

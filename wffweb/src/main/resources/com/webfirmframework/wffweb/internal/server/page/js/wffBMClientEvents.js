@@ -74,9 +74,10 @@ var wffBMClientEvents = new function() {
 		var l = window.location;
 
 		if (l) {
+			var h = l.href.endsWith('#') ? '#' : l.hash;
 			var pthNV = {
 				'name': [wffGlobal.taskValues.SET_URI],
-				'values': [[wffGlobal.uriEventInitiator.BROWSER], encoder.encode(l.pathname + l.search + l.hash)]
+				'values': [[wffGlobal.uriEventInitiator.BROWSER], encoder.encode(l.pathname + l.search + h)]
 			};
 			nameValues.push(pthNV);
 		}

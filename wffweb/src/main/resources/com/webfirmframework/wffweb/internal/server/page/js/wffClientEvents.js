@@ -53,26 +53,38 @@ document.addEventListener("DOMContentLoaded",
 			
 			if (isWffWindowEventSupported('popstate')) {
 				window.addEventListener('popstate', function(event) {
-					
+
 					var prevLoc = wffGlobal.getAndUpdateLocation();
-					
+
 					var uriBefore;
 					var uriBeforeNoHash;
 					if (prevLoc) {
 						uriBefore = prevLoc.pathname + prevLoc.search + prevLoc.hash;
 						uriBeforeNoHash = prevLoc.pathname + prevLoc.search;
 					}
-					
+
 					var l = window.location;
-					var uriAfter = l.pathname + l.search + l.hash;
+					var h = l.href.endsWith('#') ? '#' : l.hash;
+					var uriAfter = l.pathname + l.search + h;
 					var uriAfterNoHash = l.pathname + l.search;
+
+					var nvkSer = false;
+					if (prevLoc) {
+						if (uriBeforeNoHash === uriAfterNoHash) {
+							if (!(l.hash.startsWith('#') || l.href.endsWith('#'))) {
+								nvkSer = true;
+							}
+						} else {
+							nvkSer = true;
+						}
+					}					
 					
-					if (!prevLoc || uriBeforeNoHash !== uriAfterNoHash) {
+					if (nvkSer) {
 						if (typeof wffGlobalListeners !== "undefined") {
 
 							var wffEvent = { uriAfter: uriAfter, origin: "client", initiator: 'browser' };
 							if (uriBefore) {
-								wffEvent.wffEvent = wffEvent;
+								wffEvent.uriBefore = uriBefore;
 							}
 
 							if (wffGlobalListeners.onSetURI) {

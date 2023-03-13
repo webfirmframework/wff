@@ -126,16 +126,12 @@ window.wffAsync = new function() {
 		"wffAsync.setURI('/sampleuri'); or " +
 		"wffAsync.setURI('/sampleuri', null, null, false);";
 	};
-
+	
 	//currentURI
 	var cURI = function() {
 		var l = window.location;
-		return l.pathname + l.search + l.hash;
-	};
-
-	var cURINoHash = function() {
-		var l = window.location;
-		return l.pathname + l.search;
+		var h = l.href.endsWith('#') ? '#' : l.hash;
+		return l.pathname + l.search + h;
 	};
 
 	this.setURI = function(uri, onSetURI, afterSetURI, replace) {
@@ -151,22 +147,27 @@ window.wffAsync = new function() {
 		}
 
 		var uriBefore = cURI();
-		var uriBeforeNoHash = cURINoHash();
-
-		if (uri === uriBefore || uri === window.location.href) {
-			return;
-		}
-
-		if (replace) {
-			window.history.replaceState({by: 'setURI'}, document.title, uri);
+		
+		var l = window.location;
+        var nvkSer = false;
+		if (uri === uriBefore || uri === l.href) {
+			if (!(l.hash.startsWith('#') || l.href.endsWith('#'))) {
+				nvkSer = true;
+			}
 		} else {
-			window.history.pushState({by: 'setURI'}, document.title, uri);
+			nvkSer = true;
+			if (replace) {
+				window.history.replaceState({ by: 'setURI' }, document.title, uri);
+			} else {
+				window.history.pushState({ by: 'setURI' }, document.title, uri);
+			}
 		}
+		
 		wffGlobal.getAndUpdateLocation();
 
 		var uriAfter = cURI();
-		var uriAfterNoHash = cURINoHash();
-		if (uriBeforeNoHash !== uriAfterNoHash) {
+		
+		if (nvkSer) {
 			var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter, origin: "client", initiator: 'clientCode', replace: replace ? true : false };
 
 			var callbackWrapper = afterSetURI;
