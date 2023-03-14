@@ -3160,21 +3160,22 @@ public abstract class BrowserPage implements Serializable {
      */
     private void setURI(final boolean updateClientURI, final String uri, final URIEventInitiator initiator,
             final boolean replace) {
-        if (uri != null) {
-            final URIEvent uriEvent = this.uriEvent;
-            final String lastURI = uriEvent != null ? uriEvent.uriAfter() : null;
-
-            URIEvent event = new URIEvent(lastURI, uri, initiator, replace);
-            final URIEventMask uriEventMask = beforeURIChange(event);
-            event = uriEventMask != null && !Objects.equals(uriEventMask.uriBefore(), lastURI)
-                    ? new URIEvent(uriEventMask.uriBefore(), uri, initiator, replace)
-                    : event;
-            if (rootTag != null) {
-                changeInnerHtmlsOnTagsForURIChange(updateClientURI, event);
-            } else {
-                this.uriEvent = event;
+        final URIEvent uriEvent = this.uriEvent;
+        final String lastURI = uriEvent != null ? uriEvent.uriAfter() : null;
+        if (lastURI == null || !lastURI.equals(uri)) {
+            if (uri != null) {
+                URIEvent event = new URIEvent(lastURI, uri, initiator, replace);
+                final URIEventMask uriEventMask = beforeURIChange(event);
+                event = uriEventMask != null && !Objects.equals(uriEventMask.uriBefore(), lastURI)
+                        ? new URIEvent(uriEventMask.uriBefore(), uri, initiator, replace)
+                        : event;
+                if (rootTag != null) {
+                    changeInnerHtmlsOnTagsForURIChange(updateClientURI, event);
+                } else {
+                    this.uriEvent = event;
+                }
+                afterURIChange(event);
             }
-            afterURIChange(event);
         }
     }
 
