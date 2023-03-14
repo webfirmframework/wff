@@ -67,19 +67,8 @@ document.addEventListener("DOMContentLoaded",
 					var h = l.href.endsWith('#') ? '#' : l.hash;
 					var uriAfter = l.pathname + l.search + h;
 					var uriAfterNoHash = l.pathname + l.search;
-
-					var nvkSer = false;
-					if (prevLoc) {
-						if (uriBeforeNoHash === uriAfterNoHash) {
-							if (!(l.hash.startsWith('#') || l.href.endsWith('#'))) {
-								nvkSer = true;
-							}
-						} else {
-							nvkSer = true;
-						}
-					}					
 					
-					if (nvkSer) {
+					if (prevLoc && uriBeforeNoHash !== uriAfterNoHash) {
 						if (typeof wffGlobalListeners !== "undefined") {
 
 							var wffEvent = { uriAfter: uriAfter, origin: "client", initiator: 'browser' };

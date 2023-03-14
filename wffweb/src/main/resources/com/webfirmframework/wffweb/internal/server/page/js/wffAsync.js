@@ -134,6 +134,12 @@ window.wffAsync = new function() {
 		return l.pathname + l.search + h;
 	};
 
+	//currentURINoHash
+	var cURINoHsh = function() {
+		var l = window.location;
+		return l.pathname + l.search;
+	};
+
 	this.setURI = function(uri, onSetURI, afterSetURI, replace) {
 
 		if (typeof onSetURI !== "undefined" && onSetURI !== null && typeof onSetURI !== "function") {
@@ -147,15 +153,10 @@ window.wffAsync = new function() {
 		}
 
 		var uriBefore = cURI();
+		var uriBeforeNoHsh = cURINoHsh();
 		
-		var l = window.location;
-        var nvkSer = false;
-		if (uri === uriBefore || uri === l.href) {
-			if (!(l.hash.startsWith('#') || l.href.endsWith('#'))) {
-				nvkSer = true;
-			}
-		} else {
-			nvkSer = true;
+        var sameURI = uri === uriBefore || uri === window.location.href;
+		if (!sameURI) {
 			if (replace) {
 				window.history.replaceState({ by: 'setURI' }, document.title, uri);
 			} else {
@@ -166,8 +167,9 @@ window.wffAsync = new function() {
 		wffGlobal.getAndUpdateLocation();
 
 		var uriAfter = cURI();
+		var uriAfterNoHsh = cURINoHsh();
 		
-		if (nvkSer) {
+		if (uriBeforeNoHsh !== uriAfterNoHsh) {
 			var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter, origin: "client", initiator: 'clientCode', replace: replace ? true : false };
 
 			var callbackWrapper = afterSetURI;
