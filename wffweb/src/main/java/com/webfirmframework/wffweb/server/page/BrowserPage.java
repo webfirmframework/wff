@@ -3105,13 +3105,13 @@ public abstract class BrowserPage implements Serializable {
                 }
 
                 final int size = tagsForURIChange.size();
-                final List<AbstractHtml> tempCachToPreventGC = new ArrayList<>(size);
+                final List<AbstractHtml> tempCacheToPreventGC = new ArrayList<>(size);
                 final List<Reference<AbstractHtml>> initialList = new ArrayList<>(size);
                 for (final Reference<AbstractHtml> each : tagsForURIChange) {
                     final AbstractHtml tag = each.get();
                     if (tag != null) {
                         initialList.add(each);
-                        tempCachToPreventGC.add(tag);
+                        tempCacheToPreventGC.add(tag);
                     }
                 }
 
