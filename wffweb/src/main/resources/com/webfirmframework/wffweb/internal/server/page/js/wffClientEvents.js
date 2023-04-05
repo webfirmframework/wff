@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded",
 		function(event) {
 			console.log('DOMContentLoaded');
 			
+			wffGlobal.getAndUpdateLocation();
+
 			var encoder = wffGlobal.encoder;
 			
 			if (typeof window.wffInitialWSOpenInvoked === 'undefined') {
@@ -51,37 +53,56 @@ document.addEventListener("DOMContentLoaded",
 			
 			if (isWffWindowEventSupported('popstate')) {
 				window.addEventListener('popstate', function(event) {
-					var uriAfter = window.location.pathname;
 
-					if (typeof wffGlobalListeners !== "undefined") {
+					var prevLoc = wffGlobal.getAndUpdateLocation();
 
-						var wffEvent = { uriAfter: uriAfter, origin: "client", initiator: 'browser' };
-
-						if (wffGlobalListeners.onSetURI) {
-							try {
-								wffGlobalListeners.onSetURI(wffEvent);
-							} catch (e) {
-								wffLog("wffGlobalListeners.onSetURI threw exception on browser navigation", e);
-							}
-						}
-
-						//NB: should be copied before using inside callbackWrapper
-						var afterSetURIGlobal = wffGlobalListeners.afterSetURI;
-						var callbackWrapper = undefined;
-						if (afterSetURIGlobal) {
-							callbackWrapper = function() {
-								try {
-									afterSetURIGlobal(wffEvent);
-								} catch (e) {
-									wffLog("wffGlobalListeners.afterSetURI threw exception on browser navigation", e);
-								}
-							};
-						}
-
-						wffAsync.setServerURIWithCallback(uriAfter, callbackWrapper, wffGlobal.uriEventInitiator.BROWSER);
-					} else {
-						wffAsync.setServerURIWithCallback(uriAfter, undefined, wffGlobal.uriEventInitiator.BROWSER);
+					var uriBefore;
+					var uriBeforeNoHash;
+					if (prevLoc) {
+						uriBefore = prevLoc.pathname + prevLoc.search + prevLoc.hash;
+						uriBeforeNoHash = prevLoc.pathname + prevLoc.search;
 					}
+
+					var l = window.location;
+					var h = l.href.endsWith('#') ? '#' : l.hash;
+					var uriAfter = l.pathname + l.search + h;
+					var uriAfterNoHash = l.pathname + l.search;
+					
+					if (prevLoc && uriBeforeNoHash !== uriAfterNoHash) {
+						if (typeof wffGlobalListeners !== "undefined") {
+
+							var wffEvent = { uriAfter: uriAfter, origin: "client", initiator: 'browser' };
+							if (uriBefore) {
+								wffEvent.uriBefore = uriBefore;
+							}
+
+							if (wffGlobalListeners.onSetURI) {
+								try {
+									wffGlobalListeners.onSetURI(wffEvent);
+								} catch (e) {
+									wffLog("wffGlobalListeners.onSetURI threw exception on browser navigation", e);
+								}
+							}
+
+							//NB: should be copied before using inside callbackWrapper
+							var afterSetURIGlobal = wffGlobalListeners.afterSetURI;
+							var callbackWrapper = undefined;
+							if (afterSetURIGlobal) {
+								callbackWrapper = function() {
+									try {
+										afterSetURIGlobal(wffEvent);
+									} catch (e) {
+										wffLog("wffGlobalListeners.afterSetURI threw exception on browser navigation", e);
+									}
+								};
+							}
+
+							wffAsync.setServerURIWithCallback(uriAfter, callbackWrapper, wffGlobal.uriEventInitiator.BROWSER);
+						} else {
+							wffAsync.setServerURIWithCallback(uriAfter, undefined, wffGlobal.uriEventInitiator.BROWSER);
+						}
+					}
+
 				});
 			}
 			

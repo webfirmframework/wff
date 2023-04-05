@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 Web Firm Framework
+ * Copyright 2014-2023 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public class WffJsFileTest {
             A[k] = kValue;}
             k += 1;}
             A.length = len;return A;};}());}window.wffGlobal = new function() {
-            var wffId = -1;var serverPIdGen = 0;var clientPIdGen = 0;var MAX_INT_VALUE = 2147483647;var onPLI = false;this.getUniqueWffIntId = function() {
+            var wffId = -1;var serverPIdGen = 0;var clientPIdGen = 0;var MAX_INT_VALUE = 2147483647;var onPLI = false;var cLoc = undefined;this.getUniqueWffIntId = function() {
             return ++wffId;};this.getUniqueServerSidePayloadId = function() {
             var id = ++serverPIdGen;if (id == 0) {
             id = ++serverPIdGen;} else if (id > MAX_INT_VALUE) {
@@ -59,7 +59,8 @@ public class WffJsFileTest {
             var id = ++clientPIdGen;if (id == 0) {
             id = ++serverPIdGen;} else if (id > MAX_INT_VALUE) {
             id = id * -1;}
-            return id;};this.CPRSD_DATA = true;this.NDXD_TGS = ["#","@","a","b","i","p","q","s","u","br","dd","dl","dt","em","h1","h2","h3","h4","h5","h6","hr","li","ol","rp","rt","td","th","tr","ul","bdi","bdo","col","del","dfn","div","img","ins","kbd","map","nav","pre","qfn","sub","sup","svg","var","wbr","abbr","area","base","body","cite","code","data","form","head","html","line","link","main","mark","math","menu","meta","path","rect","ruby","samp","span","text","time","aside","audio","embed","input","label","meter","param","small","style","table","tbody","tfoot","thead","title","track","video","button","canvas","circle","dialog","figure","footer","header","hgroup","iframe","keygen","legend","object","option","output","script","select","source","strong","address","article","caption","details","ellipse","picture","polygon","section","summary","basefont","colgroup","datalist","fieldset","menuitem","noscript","optgroup","polyline","progress","template","textarea","blockquote","figcaption"];this.NDXD_ATRBS = ["id","alt","dir","for","low","max","min","rel","rev","src","cols","face","form","high","href","lang","list","loop","name","open","role","rows","size","step","type","wrap","align","async","class","color","defer","ismap","media","muted","nonce","oncut","scope","shape","sizes","style","title","value","width","accept","action","border","coords","height","hidden","method","nohref","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","poster","sorted","srcset","target","usemap","charset","checked","colspan","content","default","dirname","enctype","headers","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","optimum","pattern","preload","rowspan","sandbox","autoplay","controls","datetime","disabled","download","dropzone","hreflang","multiple","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","readonly","required","reversed","selected","tabindex","accesskey","autofocus","draggable","maxlength","minlength","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","translate","formaction","formmethod","formtarget","http-equiv","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","spellcheck","cellpadding","cellspacing","contextmenu","data-wff-id","formenctype","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","placeholder","animationend","autocomplete","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","transitionend","accept-charset","animationstart","formnovalidate","onbeforeunload","onvolumechange","contenteditable","oncanplaythrough","ondurationchange","onloadedmetadata","animationiteration"];this.NDXD_VNT_ATRBS = ["oncut","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","onbeforeunload","onvolumechange","oncanplaythrough","ondurationchange","onloadedmetadata"];this.NDXD_BLN_ATRBS = ["open","async","defer","ismap","hidden","checked","default","controls","disabled","multiple","readonly","reversed","selected"];this.taskValues = {INITIAL_WS_OPEN:0,INVOKE_ASYNC_METHOD:1,ATTRIBUTE_UPDATED:2,TASK:3,APPENDED_CHILD_TAG:4,REMOVED_TAGS:5,APPENDED_CHILDREN_TAGS:6,REMOVED_ALL_CHILDREN_TAGS:7,MOVED_CHILDREN_TAGS:8,INSERTED_BEFORE_TAG:9,INSERTED_AFTER_TAG:10,REPLACED_WITH_TAGS:11,REMOVED_ATTRIBUTES:12,ADDED_ATTRIBUTES:13,MANY_TO_ONE:14,ONE_TO_MANY:15,MANY_TO_MANY:16,ONE_TO_ONE:17,ADDED_INNER_HTML:18,INVOKE_POST_FUNCTION:19,EXEC_JS:20,RELOAD_BROWSER:21,RELOAD_BROWSER_FROM_CACHE:22,INVOKE_CALLBACK_FUNCTION:23,INVOKE_CUSTOM_SERVER_METHOD:24,TASK_OF_TASKS:25,COPY_INNER_TEXT_TO_VALUE:26,REMOVE_BROWSER_PAGE:27,SET_BM_OBJ_ON_TAG:28,SET_BM_ARR_ON_TAG:29,DEL_BM_OBJ_OR_ARR_FROM_TAG:30,CLIENT_PATHNAME_CHANGED:31,AFTER_SET_URI:32,SET_URI:33,SET_LS_ITEM:34,SET_LS_TOKEN:35,GET_LS_ITEM:36,REMOVE_LS_ITEM:37,REMOVE_LS_TOKEN:38,REMOVE_AND_GET_LS_ITEM:39,CLEAR_LS:40};this.uriEventInitiator = {SERVER_CODE:0,CLIENT_CODE:1,BROWSER:2,size:3};this.WS_URL = "ws://webfirmframework.com";this.INSTANCE_ID = "instance-id-1234585-451";this.NODE_ID = "c4c5a901-88d5-45e4-9c6f-a0d8059d85c0";this.REMOVE_PREV_BP_ON_INITTAB = true;this.REMOVE_PREV_BP_ON_TABCLOSE = true;this.WS_RECON = 2000;this.LOSSLESS_COMM = true;this.onPayloadLoss = function() {if (!this.onPLI) { this.onPLI = true; location.reload();}};if ((typeof TextEncoder) === "undefined") {
+            return id;};this.getAndUpdateLocation = function() {
+            var prevCLoc = cLoc;var l = window.location;var h = l.href.endsWith('#') ? '#' : l.hash;cLoc = {pathname: l.pathname, search: l.search, hash: h};return prevCLoc;};this.CPRSD_DATA = true;this.NDXD_TGS = ["#","@","a","b","i","p","q","s","u","br","dd","dl","dt","em","h1","h2","h3","h4","h5","h6","hr","li","ol","rp","rt","td","th","tr","ul","bdi","bdo","col","del","dfn","div","img","ins","kbd","map","nav","pre","qfn","sub","sup","svg","var","wbr","abbr","area","base","body","cite","code","data","form","head","html","line","link","main","mark","math","menu","meta","path","rect","ruby","samp","span","text","time","aside","audio","embed","input","label","meter","param","small","style","table","tbody","tfoot","thead","title","track","video","button","canvas","circle","dialog","figure","footer","header","hgroup","iframe","keygen","legend","object","option","output","script","select","source","strong","address","article","caption","details","ellipse","picture","polygon","section","summary","basefont","colgroup","datalist","fieldset","menuitem","noscript","optgroup","polyline","progress","template","textarea","blockquote","figcaption"];this.NDXD_ATRBS = ["id","alt","dir","for","low","max","min","rel","rev","src","cols","face","form","high","href","lang","list","loop","name","open","role","rows","size","step","type","wrap","align","async","class","color","defer","ismap","media","muted","nonce","oncut","scope","shape","sizes","style","title","value","width","accept","action","border","coords","height","hidden","method","nohref","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","poster","sorted","srcset","target","usemap","charset","checked","colspan","content","default","dirname","enctype","headers","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","optimum","pattern","preload","rowspan","sandbox","autoplay","controls","datetime","disabled","download","dropzone","hreflang","multiple","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","readonly","required","reversed","selected","tabindex","accesskey","autofocus","draggable","maxlength","minlength","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","translate","formaction","formmethod","formtarget","http-equiv","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","spellcheck","cellpadding","cellspacing","contextmenu","data-wff-id","formenctype","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","placeholder","animationend","autocomplete","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","transitionend","accept-charset","animationstart","formnovalidate","onbeforeunload","onvolumechange","contenteditable","oncanplaythrough","ondurationchange","onloadedmetadata","animationiteration"];this.NDXD_VNT_ATRBS = ["oncut","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","onbeforeunload","onvolumechange","oncanplaythrough","ondurationchange","onloadedmetadata"];this.NDXD_BLN_ATRBS = ["open","async","defer","ismap","hidden","checked","default","controls","disabled","multiple","readonly","reversed","selected"];this.taskValues = {INITIAL_WS_OPEN:0,INVOKE_ASYNC_METHOD:1,ATTRIBUTE_UPDATED:2,TASK:3,APPENDED_CHILD_TAG:4,REMOVED_TAGS:5,APPENDED_CHILDREN_TAGS:6,REMOVED_ALL_CHILDREN_TAGS:7,MOVED_CHILDREN_TAGS:8,INSERTED_BEFORE_TAG:9,INSERTED_AFTER_TAG:10,REPLACED_WITH_TAGS:11,REMOVED_ATTRIBUTES:12,ADDED_ATTRIBUTES:13,MANY_TO_ONE:14,ONE_TO_MANY:15,MANY_TO_MANY:16,ONE_TO_ONE:17,ADDED_INNER_HTML:18,INVOKE_POST_FUNCTION:19,EXEC_JS:20,RELOAD_BROWSER:21,RELOAD_BROWSER_FROM_CACHE:22,INVOKE_CALLBACK_FUNCTION:23,INVOKE_CUSTOM_SERVER_METHOD:24,TASK_OF_TASKS:25,COPY_INNER_TEXT_TO_VALUE:26,REMOVE_BROWSER_PAGE:27,SET_BM_OBJ_ON_TAG:28,SET_BM_ARR_ON_TAG:29,DEL_BM_OBJ_OR_ARR_FROM_TAG:30,CLIENT_PATHNAME_CHANGED:31,AFTER_SET_URI:32,SET_URI:33,SET_LS_ITEM:34,SET_LS_TOKEN:35,GET_LS_ITEM:36,REMOVE_LS_ITEM:37,REMOVE_LS_TOKEN:38,REMOVE_AND_GET_LS_ITEM:39,CLEAR_LS:40};this.uriEventInitiator = {SERVER_CODE:0,CLIENT_CODE:1,BROWSER:2,size:3};this.WS_URL = "ws://webfirmframework.com";this.INSTANCE_ID = "instance-id-1234585-451";this.NODE_ID = "20af65a2-b77d-43db-90ce-afe75813383f";this.REMOVE_PREV_BP_ON_INITTAB = true;this.REMOVE_PREV_BP_ON_TABCLOSE = true;this.WS_RECON = 2000;this.LOSSLESS_COMM = true;this.onPayloadLoss = function() {if (!this.onPLI) { this.onPLI = true; location.reload();}};if ((typeof TextEncoder) === "undefined") {
             this.encoder = new function TextEncoder(charset) {
             if (charset === "utf-8") {
             this.encode = function(text) {
@@ -906,17 +907,21 @@ public class WffJsFileTest {
             "wffAsync.setURI('/sampleuri', function(e){}, function(e){});, " +
             "wffAsync.setURI('/sampleuri', function(e){});, " +
             "wffAsync.setURI('/sampleuri'); or " +
-            "wffAsync.setURI('/sampleuri', null, null, false);";};this.setURI = function(uri, onSetURI, afterSetURI, replace){
+            "wffAsync.setURI('/sampleuri', null, null, false);";};var cURI = function(){
+            var l = window.location;var h = l.href.endsWith('#') ? '#' : l.hash;return l.pathname + l.search + h;};var cURINoHsh = function(){
+            var l = window.location;return l.pathname + l.search;};this.setURI = function(uri, onSetURI, afterSetURI, replace){
             if(typeof onSetURI !== "undefined" && onSetURI !== null && typeof onSetURI !== "function"){
             throwInvalidSetURIArgException();}
             if(typeof afterSetURI !== "undefined" && afterSetURI !== null && typeof afterSetURI !== "function"){
             throwInvalidSetURIArgException();}
             if(typeof replace !== "undefined" && replace !== null && typeof replace !== "boolean"){
             throwInvalidSetURIArgException();}
-            var uriBefore = window.location.pathname;if(replace){
-            history.replaceState({}, document.title, uri);}else{
-            history.pushState({}, document.title, uri);}
-            var uriAfter = window.location.pathname;if(uriBefore !== uriAfter){
+            var uriBefore = cURI();var uriBeforeNoHsh = cURINoHsh();var sameURI = uri === uriBefore || uri === window.location.href;if(!sameURI){
+            if(replace){
+            window.history.replaceState({ by: 'setURI' }, document.title, uri);}else{
+            window.history.pushState({ by: 'setURI' }, document.title, uri);}
+            }
+            wffGlobal.getAndUpdateLocation();var uriAfter = cURI();var uriAfterNoHsh = cURINoHsh();if(uriBeforeNoHsh !== uriAfterNoHsh){
             var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter, origin: "client", initiator: 'clientCode', replace: replace ? true : false };var callbackWrapper = afterSetURI;if(typeof wffGlobalListeners !== "undefined"){
             if(wffGlobalListeners.onSetURI){
             try {
@@ -959,10 +964,10 @@ public class WffJsFileTest {
             sessionStorage.setItem('WFF_INSTANCE_ID', wffGlobal.INSTANCE_ID);};this.f38 = function(){
             var v76 = [];var tnv = wffTaskUtil.f35(
             wffGlobal.taskValues.TASK,
-            wffGlobal.taskValues.INITIAL_WS_OPEN);v76.push(tnv);if(window.location && window.location.pathname){
-            var pthNV = {
+            wffGlobal.taskValues.INITIAL_WS_OPEN);v76.push(tnv);var l = window.location;if(l){
+            var h = l.href.endsWith('#') ? '#' : l.hash;var pthNV = {
             'name': [wffGlobal.taskValues.SET_URI],
-            'values': [[wffGlobal.uriEventInitiator.BROWSER], encoder.encode(window.location.pathname)]
+            'values': [[wffGlobal.uriEventInitiator.BROWSER], encoder.encode(l.pathname + l.search + h)]
             };v76.push(pthNV);}
             if(typeof localStorage !== "undefined"){
             var itms = [];for (var k in localStorage){
@@ -1063,7 +1068,7 @@ public class WffJsFileTest {
             return -1;};};
             document.addEventListener("DOMContentLoaded",
             function(event){
-            var encoder = wffGlobal.encoder;if(typeof window.f38Invoked === 'undefined'){
+            wffGlobal.getAndUpdateLocation();var encoder = wffGlobal.encoder;if(typeof window.f38Invoked === 'undefined'){
             window.f38Invoked = true;wffBMClientEvents.f38();}
             wffWS.openSocket(wffGlobal.WS_URL);window.v30 = false;var f37 = function(){
             if(!window.v30){
@@ -1077,8 +1082,13 @@ public class WffJsFileTest {
             window.addEventListener("unload", f37, false);}
             if(f12('popstate')){
             window.addEventListener('popstate', function(event){
-            var uriAfter = window.location.pathname;if(typeof wffGlobalListeners !== "undefined"){
-            var wffEvent = { uriAfter: uriAfter, origin: "client", initiator: 'browser' };if(wffGlobalListeners.onSetURI){
+            var prevLoc = wffGlobal.getAndUpdateLocation();var uriBefore;var uriBeforeNoHash;if(prevLoc){
+            uriBefore = prevLoc.pathname + prevLoc.search + prevLoc.hash;uriBeforeNoHash = prevLoc.pathname + prevLoc.search;}
+            var l = window.location;var h = l.href.endsWith('#') ? '#' : l.hash;var uriAfter = l.pathname + l.search + h;var uriAfterNoHash = l.pathname + l.search;if(prevLoc && uriBeforeNoHash !== uriAfterNoHash){
+            if(typeof wffGlobalListeners !== "undefined"){
+            var wffEvent = { uriAfter: uriAfter, origin: "client", initiator: 'browser' };if(uriBefore){
+            wffEvent.uriBefore = uriBefore;}
+            if(wffGlobalListeners.onSetURI){
             try {
             wffGlobalListeners.onSetURI(wffEvent);} catch (e){
             wffLog("wffGlobalListeners.onSetURI threw exception on browser navigation", e);}
@@ -1091,6 +1101,7 @@ public class WffJsFileTest {
             };}
             wffAsync.setServerURIWithCallback(uriAfter, callbackWrapper, wffGlobal.uriEventInitiator.BROWSER);}else{
             wffAsync.setServerURIWithCallback(uriAfter, undefined, wffGlobal.uriEventInitiator.BROWSER);}
+            }
             });}
             if(f12('storage') && typeof localStorage !== "undefined"){
             window.addEventListener('storage', function(event){

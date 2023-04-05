@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.css;
+package com.webfirmframework.wffweb.util;
 
-import static org.junit.Assert.*;
+import java.util.List;
+import java.util.Map;
 
-import org.junit.Test;
-
-public class SrcCssPropertyTest {
-
-    @Test
-    public void testSrcCssPropertyString() {
-        assertEquals("src:http://webfirmframework.com", new SrcCssProperty("http://webfirmframework.com").toCssString());
-    }
-
+/**
+ * @param pathname        the pathname of the uri i.e. uri without query string
+ * @param pathParameters  map of path parameters
+ * @param queryParameters map of query parameters
+ * @param hash            the hash part of uri
+ * @since 12.0.0-beta.9
+ */
+public record ParsedURI(String pathname, Map<String, String> pathParameters, Map<String, List<String>> queryParameters,
+        String hash) {
 }

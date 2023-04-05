@@ -126,6 +126,19 @@ window.wffAsync = new function() {
 		"wffAsync.setURI('/sampleuri'); or " +
 		"wffAsync.setURI('/sampleuri', null, null, false);";
 	};
+	
+	//currentURI
+	var cURI = function() {
+		var l = window.location;
+		var h = l.href.endsWith('#') ? '#' : l.hash;
+		return l.pathname + l.search + h;
+	};
+
+	//currentURINoHash
+	var cURINoHsh = function() {
+		var l = window.location;
+		return l.pathname + l.search;
+	};
 
 	this.setURI = function(uri, onSetURI, afterSetURI, replace) {
 
@@ -139,15 +152,24 @@ window.wffAsync = new function() {
 			throwInvalidSetURIArgException();
 		}
 
-		var uriBefore = window.location.pathname;
-		if (replace) {
-			history.replaceState({}, document.title, uri);
-		} else {
-			history.pushState({}, document.title, uri);
+		var uriBefore = cURI();
+		var uriBeforeNoHsh = cURINoHsh();
+		
+        var sameURI = uri === uriBefore || uri === window.location.href;
+		if (!sameURI) {
+			if (replace) {
+				window.history.replaceState({ by: 'setURI' }, document.title, uri);
+			} else {
+				window.history.pushState({ by: 'setURI' }, document.title, uri);
+			}
 		}
+		
+		wffGlobal.getAndUpdateLocation();
 
-		var uriAfter = window.location.pathname;
-		if (uriBefore !== uriAfter) {
+		var uriAfter = cURI();
+		var uriAfterNoHsh = cURINoHsh();
+		
+		if (uriBeforeNoHsh !== uriAfterNoHsh) {
 			var wffEvent = { uriBefore: uriBefore, uriAfter: uriAfter, origin: "client", initiator: 'clientCode', replace: replace ? true : false };
 
 			var callbackWrapper = afterSetURI;

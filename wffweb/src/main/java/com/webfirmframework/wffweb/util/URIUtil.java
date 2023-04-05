@@ -17,7 +17,9 @@ package com.webfirmframework.wffweb.util;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.webfirmframework.wffweb.InvalidValueException;
@@ -75,11 +77,19 @@ public final class URIUtil {
      *         from the uri.
      * @since 12.0.0-beta.2
      * @since 12.0.0-beta.7 Supports [uriAsParam] type variables
+     * @since 12.0.0-beta.9 Supports query params in the uri, but it will not parse
+     *        query params
      */
     public static Map<String, String> parseValues(final String pattern, final String uri) {
+        return parsePathParams(pattern, toURIInfo(uri).pathname);
+    }
 
-        final String[] patternParts = StringUtil.split(pattern, '/');
-        final String[] urlParts = StringUtil.split(uri, '/');
+    private static Map<String, String> parsePathParams(final String pattern, final String uriWithoutQString) {
+
+        final String patternWithoutQString = toURIInfo(pattern).pathname;
+
+        final String[] patternParts = StringUtil.split(patternWithoutQString, '/');
+        final String[] urlParts = StringUtil.split(uriWithoutQString, '/');
 
         if (containsSquareParam(patternParts)) {
             if (patternParts.length > urlParts.length) {
@@ -90,7 +100,7 @@ public final class URIUtil {
                 throw new InvalidValueException("The pattern doesn't match with the uri");
             }
         }
-        if (startsWithSlash(uri) && !startsWithSlash(pattern)) {
+        if (startsWithSlash(uriWithoutQString) && !startsWithSlash(patternWithoutQString)) {
             throw new InvalidValueException("The pattern doesn't match with the uri");
         }
 
@@ -259,13 +269,21 @@ public final class URIUtil {
      * @return true if the path of the uri matches with the pattern
      * @since 12.0.0-beta.2
      * @since 12.0.0-beta.7 Supports [uriAsParam] type variables
+     * @since 12.0.0-beta.9 Supports query params in the uri
      */
     public static boolean patternMatches(final String pattern, final String uri) {
         if (pattern.equals(uri)) {
             return true;
         }
-        final String[] patternParts = StringUtil.split(pattern, '/');
-        final String[] urlParts = StringUtil.split(uri, '/');
+        final String patternWithoutQString = toURIInfo(pattern).pathname;
+        final String uriWithoutQString = toURIInfo(uri).pathname;
+
+        if (patternWithoutQString.equals(uriWithoutQString)) {
+            return true;
+        }
+
+        final String[] patternParts = StringUtil.split(patternWithoutQString, '/');
+        final String[] urlParts = StringUtil.split(uriWithoutQString, '/');
 
         if (containsSquareParam(patternParts)) {
             if (patternParts.length > urlParts.length) {
@@ -276,7 +294,7 @@ public final class URIUtil {
                 return false;
             }
         }
-        if (startsWithSlash(uri) && !startsWithSlash(pattern)) {
+        if (startsWithSlash(uriWithoutQString) && !startsWithSlash(patternWithoutQString)) {
             return false;
         }
 
@@ -390,6 +408,7 @@ public final class URIUtil {
      * @return true if the base path of the uri matches with the pattern
      * @since 12.0.0-beta.2
      * @since 12.0.0-beta.7 Supports [uriAsParam] type variables
+     * @since 12.0.0-beta.9 Supports query params in the uri
      */
     public static boolean patternMatchesBase(final String pattern, final String uri) {
 
@@ -397,11 +416,18 @@ public final class URIUtil {
             return true;
         }
 
-        final String[] patternParts = StringUtil.split(pattern, '/');
-        final String[] urlParts = StringUtil.split(uri, '/');
+        final String patternWithoutQString = toURIInfo(pattern).pathname;
+        final String uriWithoutQString = toURIInfo(uri).pathname;
+
+        if (patternWithoutQString.equals(uriWithoutQString)) {
+            return true;
+        }
+
+        final String[] patternParts = StringUtil.split(patternWithoutQString, '/');
+        final String[] urlParts = StringUtil.split(uriWithoutQString, '/');
 
         if ((containsSquareParam(patternParts) && patternParts.length > urlParts.length)
-                || (startsWithSlash(uri) && !startsWithSlash(pattern))) {
+                || (startsWithSlash(uriWithoutQString) && !startsWithSlash(patternWithoutQString))) {
             return false;
         }
 
@@ -465,4 +491,107 @@ public final class URIUtil {
         return true;
     }
 
+    record URIInfo(String pathname, String queryString, String hash) {
+
+    }
+
+    static URIInfo toURIInfo(final String uri) {
+        final int indexOfIQ = uri.indexOf('?');
+
+        final int indexOfHash = uri.indexOf('#');
+
+        final String uriWithoutQString;
+
+        final String qString;
+
+        if (indexOfIQ < indexOfHash) {
+            if (indexOfIQ != -1) {
+                uriWithoutQString = uri.substring(0, indexOfIQ);
+                qString = uri.substring(indexOfIQ + 1, indexOfHash);
+            } else {
+                uriWithoutQString = uri.substring(0, indexOfHash);
+                qString = "";
+            }
+        } else {
+            if (indexOfHash != -1) {
+                uriWithoutQString = uri.substring(0, indexOfHash);
+                qString = "";
+            } else {
+                if (indexOfIQ != -1) {
+                    uriWithoutQString = uri.substring(0, indexOfIQ);
+                    qString = uri.substring(indexOfIQ + 1);
+                } else {
+                    uriWithoutQString = uri;
+                    qString = "";
+                }
+            }
+        }
+
+        final String hash = indexOfHash != -1 ? uri.substring(indexOfHash + 1) : "";
+
+        return new URIInfo(uriWithoutQString, qString, hash);
+    }
+
+    private static Map<String, List<String>> parseQueryString(final String qString) {
+        final String[] splitByAmp = StringUtil.split(qString, '&');
+        final List<Map.Entry<String, String>> entries = new ArrayList<>(splitByAmp.length);
+        for (final String qParam : splitByAmp) {
+            if (!qParam.isBlank()) {
+                final int indexOfEqual = qParam.indexOf('=');
+                final Map.Entry<String, String> entry;
+                if (indexOfEqual != -1 && indexOfEqual < qParam.length() - 1) {
+                    entry = Map.entry(URLDecoder.decode(qParam.substring(0, indexOfEqual), StandardCharsets.UTF_8),
+                            URLDecoder.decode(qParam.substring(indexOfEqual + 1), StandardCharsets.UTF_8));
+                } else if (indexOfEqual != -1) {
+                    entry = Map.entry(URLDecoder.decode(qParam.substring(0, indexOfEqual), StandardCharsets.UTF_8), "");
+                } else {
+                    entry = Map.entry(URLDecoder.decode(qParam, StandardCharsets.UTF_8), "");
+                }
+                entries.add(entry);
+            }
+        }
+        final Map<String, List<String>> queryParams = new HashMap<>();
+        for (final Map.Entry<String, String> entry : entries) {
+            queryParams.computeIfAbsent(entry.getKey(), s -> new ArrayList<>(1)).add(entry.getValue());
+        }
+        return Map.copyOf(queryParams);
+    }
+
+    /**
+     * @param uri
+     * @return the map containing query parameters and its values
+     * @since 12.0.0-beta.9
+     */
+    public static Map<String, List<String>> parseQueryParameters(final String uri) {
+        return parseQueryString(toURIInfo(uri).queryString);
+    }
+
+    /**
+     * @param pattern
+     * @param uri
+     * @return the {@code ParsedURI} which contains parsed info of the uri.
+     * @since 12.0.0-beta.9
+     */
+    public static ParsedURI parse(final String pattern, final String uri) {
+
+        final URIInfo uriInfo = toURIInfo(uri);
+        final String uriWithoutQString = uriInfo.pathname;
+
+        return new ParsedURI(uriWithoutQString, parsePathParams(pattern, uriWithoutQString),
+                parseQueryString(uriInfo.queryString), URLDecoder.decode(uriInfo.hash, StandardCharsets.UTF_8));
+    }
+
+    /**
+     * @param uri
+     * @return the {@code ParsedURI} which contains parsed info of the uri.
+     * @since 12.0.0-beta.9
+     */
+    public static ParsedURI parse(final String uri) {
+
+        final URIInfo uriInfo = toURIInfo(uri);
+        final String uriWithoutQString = uriInfo.pathname;
+
+        return new ParsedURI(uriWithoutQString, null, parseQueryString(uriInfo.queryString),
+                URLDecoder.decode(uriInfo.hash, StandardCharsets.UTF_8));
+    }
 }

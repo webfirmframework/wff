@@ -3105,13 +3105,13 @@ public abstract class BrowserPage implements Serializable {
                 }
 
                 final int size = tagsForURIChange.size();
-                final List<AbstractHtml> tempCachToPreventGC = new ArrayList<>(size);
+                final List<AbstractHtml> tempCacheToPreventGC = new ArrayList<>(size);
                 final List<Reference<AbstractHtml>> initialList = new ArrayList<>(size);
                 for (final Reference<AbstractHtml> each : tagsForURIChange) {
                     final AbstractHtml tag = each.get();
                     if (tag != null) {
                         initialList.add(each);
-                        tempCachToPreventGC.add(tag);
+                        tempCacheToPreventGC.add(tag);
                     }
                 }
 
@@ -3156,7 +3156,7 @@ public abstract class BrowserPage implements Serializable {
      * @param initiator
      * @param replace
      * @since 12.0.0-beta.1
-     * @since 12.0.0-beta.5 replace param added
+     * @since 12.0.0-beta.5 added replace param
      */
     private void setURI(final boolean updateClientURI, final String uri, final URIEventInitiator initiator,
             final boolean replace) {
