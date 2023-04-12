@@ -108,9 +108,9 @@ public class SharedTagContent<T> {
 
     private final Map<NoTag, InsertedTagData<T>> insertedTags = new WeakHashMap<>(4, 0.75F);
 
-    private final Queue<QueuedContent<T>> contentQ = new ConcurrentLinkedQueue<>();
+    private final Queue<QueuedMethodCall<T>> methodCallQ = new ConcurrentLinkedQueue<>();
 
-    private final Semaphore contentQLock = new Semaphore(1);
+    private final Semaphore methodCallQLock = new Semaphore(1);
 
     volatile Map<InternalId, Set<ContentChangeListener<T>>> contentChangeListeners;
 
@@ -215,8 +215,16 @@ public class SharedTagContent<T> {
 
     }
 
+    private static interface QueuedMethodCall<T> {
+    }
+
     private static record QueuedContent<T> (boolean updateClient, UpdateClientNature updateClientNature,
-            Set<AbstractHtml> exclusionTags, T content, boolean contentTypeHtml, boolean shared) {
+            Set<AbstractHtml> exclusionTags, T content, boolean contentTypeHtml, boolean shared)
+            implements QueuedMethodCall<T> {
+    }
+
+    private static record QueuedDetachCall<T> (boolean removeContent, Set<AbstractHtml> exclusionTags,
+            Set<AbstractHtml> exclusionClientUpdateTags) implements QueuedMethodCall<T> {
     }
 
     @FunctionalInterface
@@ -1190,38 +1198,49 @@ public class SharedTagContent<T> {
     }
 
     private void putContent(final QueuedContent<T> queuedContent) {
+        methodCallQ.add(queuedContent);
+        executeMethodCallsFromQ();
+    }
 
-        contentQ.add(queuedContent);
-
-        if (contentQLock.tryAcquire()) {
+    private void executeMethodCallsFromQ() {
+        if (methodCallQLock.tryAcquire()) {
             final Executor executor = this.executor;
             try {
-                QueuedContent<T> each;
-                while ((each = contentQ.poll()) != null) {
-                    setContent(each.updateClient, each.updateClientNature, each.exclusionTags, each.content,
-                            each.contentTypeHtml, each.shared, executor);
+                QueuedMethodCall<T> eachItem;
+                while ((eachItem = methodCallQ.poll()) != null) {
+                    if (eachItem instanceof final QueuedContent<T> each) {
+                        setContent(each.updateClient, each.updateClientNature, each.exclusionTags, each.content,
+                                each.contentTypeHtml, each.shared, executor);
+                    } else if (eachItem instanceof final QueuedDetachCall<T> each) {
+                        detachPvt(each.removeContent, each.exclusionTags, each.exclusionClientUpdateTags);
+                    }
                 }
             } finally {
-                contentQLock.release();
+                methodCallQLock.release();
             }
         } else {
-            if (!contentQLock.hasQueuedThreads()) {
+            if (!methodCallQLock.hasQueuedThreads()) {
                 final Executor activeExecutor = executor != null ? executor
                         : WffConfiguration.getVirtualThreadExecutor();
                 final Runnable runnable = () -> {
                     do {
-                        if (contentQLock.tryAcquire()) {
+                        if (methodCallQLock.tryAcquire()) {
                             try {
-                                QueuedContent<T> each;
-                                while ((each = contentQ.poll()) != null) {
-                                    setContent(each.updateClient, each.updateClientNature, each.exclusionTags,
-                                            each.content, each.contentTypeHtml, each.shared, activeExecutor);
+                                QueuedMethodCall<T> eachItem;
+                                while ((eachItem = methodCallQ.poll()) != null) {
+                                    if (eachItem instanceof final QueuedContent<T> each) {
+                                        setContent(each.updateClient, each.updateClientNature, each.exclusionTags,
+                                                each.content, each.contentTypeHtml, each.shared, activeExecutor);
+                                    } else if (eachItem instanceof final QueuedDetachCall<T> each) {
+                                        detachPvt(each.removeContent, each.exclusionTags,
+                                                each.exclusionClientUpdateTags);
+                                    }
                                 }
                             } finally {
-                                contentQLock.release();
+                                methodCallQLock.release();
                             }
                         }
-                    } while (!contentQ.isEmpty());
+                    } while (!methodCallQ.isEmpty());
                 };
                 if (activeExecutor != null) {
                     activeExecutor.execute(runnable);
@@ -1857,6 +1876,21 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void detach(final boolean removeContent, final Set<AbstractHtml> exclusionTags,
+            final Set<AbstractHtml> exclusionClientUpdateTags) {
+        methodCallQ.add(new QueuedDetachCall<>(removeContent, exclusionTags, exclusionClientUpdateTags));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * @param removeContent             true to remove content from the attached
+     *                                  tags or false not to remove but will detach
+     * @param exclusionTags             excluded tags from detachment of this
+     *                                  SharedTagConent object
+     * @param exclusionClientUpdateTags these tags will be excluded for client
+     *                                  update
+     * @since 3.0.6
+     */
+    private void detachPvt(final boolean removeContent, final Set<AbstractHtml> exclusionTags,
             final Set<AbstractHtml> exclusionClientUpdateTags) {
 
         final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(4);
