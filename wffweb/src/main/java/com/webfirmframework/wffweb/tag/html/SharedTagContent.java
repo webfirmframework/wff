@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -1192,8 +1193,8 @@ public class SharedTagContent<T> {
                 this.shared = shared;
                 // this.executor = executor;
 
-                final List<Map.Entry<NoTag, InsertedTagData<T>>> insertedTagsEntries = insertedTags.entrySet().stream()
-                        .sorted(Map.Entry.comparingByValue()).toList();
+                final List<Entry<NoTag, InsertedTagData<T>>> insertedTagsEntries = insertedTags.entrySet().stream()
+                        .sorted(Entry.comparingByValue()).toList();
 
                 insertedTags.clear();
 
@@ -1259,9 +1260,8 @@ public class SharedTagContent<T> {
 
                 for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySOEntries) {
 
-                    final AbstractHtml5SharedObject sharedObject = entry.getKey();
-
-                    final List<ParentNoTagData<T>> parentNoTagDatas = entry.getValue();
+                    // NB: never use sharedObject from key
+//                    final AbstractHtml5SharedObject sharedObject = entry.getKey();
 
                     // pushing using first parent object makes bug (got bug when
                     // singleton SharedTagContent object is used under multiple
@@ -1270,13 +1270,24 @@ public class SharedTagContent<T> {
                     // changed
                     // before lock
 
-                    final Lock parentLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-                    parentLock.lock();
-
+                    final List<ParentNoTagData<T>> dataList = entry.getValue();
+                    final Set<AbstractHtml5SharedObject> sharedObjectsTemp = new HashSet<>(4);
+                    final List<Lock> parentLocks = new ArrayList<>(2);
+                    final List<ParentNoTagData<T>> lockedParentNoTagDatas = new ArrayList<>(dataList.size());
+                    for (final ParentNoTagData<T> parentNoTagData : dataList) {
+                        final AbstractHtml parent = parentNoTagData.parent();
+                        final AbstractHtml5SharedObject sharedObject = parent.getSharedObject();
+                        if (!sharedObjectsTemp.contains(sharedObject)) {
+                            sharedObjectsTemp.add(sharedObject);
+                            final Lock writeLock = parent.lockAndGetWriteLock();
+                            parentLocks.add(writeLock);
+                        }
+                        lockedParentNoTagDatas.add(parentNoTagData);
+                    }
+                    Collections.reverse(parentLocks);
                     try {
 
-                        for (final ParentNoTagData<T> parentNoTagData : parentNoTagDatas) {
-
+                        for (final ParentNoTagData<T> parentNoTagData : lockedParentNoTagDatas) {
                             // parentNoTagData.getParent().getSharedObject().equals(sharedObject)
                             // is important here as it could be change just
                             // before
@@ -1295,6 +1306,7 @@ public class SharedTagContent<T> {
                             // changed
                             // at least once
                             final AbstractHtml previousNoTag = parentNoTagData.previousNoTag();
+                            final AbstractHtml5SharedObject sharedObject = previousNoTag.getSharedObject();
 
                             // to get safety of lock it is executed before
                             // addInnerHtmlsAndGetEventsLockless
@@ -1369,7 +1381,9 @@ public class SharedTagContent<T> {
 
                         }
                     } finally {
-                        parentLock.unlock();
+                        for (final Lock lock : parentLocks) {
+                            lock.unlock();
+                        }
                     }
                 }
 
