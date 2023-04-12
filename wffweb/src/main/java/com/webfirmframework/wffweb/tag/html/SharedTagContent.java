@@ -30,12 +30,15 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
 import java.util.logging.Level;
@@ -51,7 +54,7 @@ import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 /**
- * This class is highly thread-safe so you can even declare a static object to
+ * This class is highly thread-safe, so you can even declare a static object to
  * use under multiple threads. Changing the content of this object will be
  * reflected in all consuming tags if shared property of this object is true.
  * The shared property can be set as by passing constructor argument or by
@@ -104,6 +107,10 @@ public class SharedTagContent<T> {
     private volatile long ordinal = 0L;
 
     private final Map<NoTag, InsertedTagData<T>> insertedTags = new WeakHashMap<>(4, 0.75F);
+
+    private final Queue<QueuedContent<T>> contentQ = new ConcurrentLinkedQueue<>();
+
+    private final Semaphore contentQLock = new Semaphore(1);
 
     volatile Map<InternalId, Set<ContentChangeListener<T>>> contentChangeListeners;
 
@@ -208,6 +215,10 @@ public class SharedTagContent<T> {
 
     }
 
+    private static record QueuedContent<T> (boolean updateClient, UpdateClientNature updateClientNature,
+            Set<AbstractHtml> exclusionTags, T content, boolean contentTypeHtml, boolean shared) {
+    }
+
     @FunctionalInterface
     public static interface ContentFormatter<T> {
         public abstract Content<String> format(final Content<T> content);
@@ -304,7 +315,7 @@ public class SharedTagContent<T> {
          * write it inside the returning Runnable object (Runnable.run).
          *
          * @param detachEvent
-         * @return Write code to run after detached invoked. It doen't guarantee the
+         * @return Write code to run after detached invoked. It doesn't guarantee the
          *         order of execution as the order of detached method execution. This is
          *         just like a post function for this method. If any methods of this
          *         SharedTagContent object to be called it must be written inside this
@@ -1022,7 +1033,7 @@ public class SharedTagContent<T> {
 
     /**
      * @param noTag
-     * @return true if the object just exists in the set but it doesn't mean the
+     * @return true if the object just exists in the set, but it doesn't mean the
      *         NoTag is not changed from parent or parent is modified.
      * @since 3.0.6
      */
@@ -1101,8 +1112,8 @@ public class SharedTagContent<T> {
     /**
      * @param exclusionTags tags to be excluded only from client update. It means
      *                      that the content of all consumer tags will be kept
-     *                      updated at server side so their content content
-     *                      formatter and change listeners will be invoked.
+     *                      updated at server side so their content formatter and
+     *                      change listeners will be invoked.
      * @param content
      * @since 3.0.6
      */
@@ -1113,8 +1124,8 @@ public class SharedTagContent<T> {
     /**
      * @param exclusionTags   tags to be excluded only from client update. It means
      *                        that the content of all consumer tags will be kept
-     *                        updated at server side so their content content
-     *                        formatter and change listeners will be invoked.
+     *                        updated at server side so their content formatter and
+     *                        change listeners will be invoked.
      * @param content
      * @param contentTypeHtml
      * @since 3.0.6
@@ -1140,8 +1151,7 @@ public class SharedTagContent<T> {
      * @param exclusionTags      tags to be excluded only from client update. It
      *                           means that the content of all consumer tags will be
      *                           kept updated at server side so their content
-     *                           content formatter and change listeners will be
-     *                           invoked.
+     *                           formatter and change listeners will be invoked.
      * @param content
      * @param contentTypeHtml
      */
@@ -1167,8 +1177,7 @@ public class SharedTagContent<T> {
      * @param exclusionTags      tags to be excluded only from client update. It
      *                           means that the content of all consumer tags will be
      *                           kept updated at server side so their content
-     *                           content formatter and change listeners will be
-     *                           invoked.
+     *                           formatter and change listeners will be invoked.
      * @param content
      * @param contentTypeHtml
      * @param shared
@@ -1176,6 +1185,79 @@ public class SharedTagContent<T> {
     private void setContent(final boolean updateClient, final UpdateClientNature updateClientNature,
             final Set<AbstractHtml> exclusionTags, final T content, final boolean contentTypeHtml,
             final boolean shared) {
+        putContent(
+                new QueuedContent<>(updateClient, updateClientNature, exclusionTags, content, contentTypeHtml, shared));
+    }
+
+    private void putContent(final QueuedContent<T> queuedContent) {
+
+        contentQ.add(queuedContent);
+
+        if (contentQLock.tryAcquire()) {
+            final Executor executor = this.executor;
+            try {
+                QueuedContent<T> each;
+                while ((each = contentQ.poll()) != null) {
+                    setContent(each.updateClient, each.updateClientNature, each.exclusionTags, each.content,
+                            each.contentTypeHtml, each.shared, executor);
+                }
+            } finally {
+                contentQLock.release();
+            }
+        } else {
+            if (!contentQLock.hasQueuedThreads()) {
+                final Executor activeExecutor = executor != null ? executor
+                        : WffConfiguration.getVirtualThreadExecutor();
+                final Runnable runnable = () -> {
+                    do {
+                        if (contentQLock.tryAcquire()) {
+                            try {
+                                QueuedContent<T> each;
+                                while ((each = contentQ.poll()) != null) {
+                                    setContent(each.updateClient, each.updateClientNature, each.exclusionTags,
+                                            each.content, each.contentTypeHtml, each.shared, activeExecutor);
+                                }
+                            } finally {
+                                contentQLock.release();
+                            }
+                        }
+                    } while (!contentQ.isEmpty());
+                };
+                if (activeExecutor != null) {
+                    activeExecutor.execute(runnable);
+                } else {
+                    CompletableFuture.runAsync(runnable);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param updateClient       true or false
+     * @param updateClientNature
+     *
+     *                           If this SharedTagContent object has to update
+     *                           content of tags from multiple BrowserPage
+     *                           instances, UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                           will allow parallel operation in the background for
+     *                           pushing changes to client browser page and
+     *                           UpdateClientNature.ALLOW_PARALLEL will allow
+     *                           parallel operation but will wait for the push to
+     *                           finish to exit the setContent method.
+     *                           UpdateClientNature.SEQUENTIAL will sequentially do
+     *                           each browser page push operation.
+     * @param exclusionTags      tags to be excluded only from client update. It
+     *                           means that the content of all consumer tags will be
+     *                           kept updated at server side so their content
+     *                           formatter and change listeners will be invoked.
+     * @param content
+     * @param contentTypeHtml
+     * @param shared
+     * @param executor
+     */
+    private void setContent(final boolean updateClient, final UpdateClientNature updateClientNature,
+            final Set<AbstractHtml> exclusionTags, final T content, final boolean contentTypeHtml, final boolean shared,
+            final Executor executor) {
 
         if (shared) {
 
@@ -1457,21 +1539,21 @@ public class SharedTagContent<T> {
      *                           Eg: <br>
      *
      *                           <pre>
-     * <code>
+     *                                                     <code>
      *
-     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
-     * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>
+     *                                                     public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     *                                                     sharedTagContent.setExecutor(EXECUTOR);
+     *                                                     </code>
      *                           </pre>
-     *
+     *                           <p>
      *                           When Java releases Virtual Thread we may be able to
      *                           use as follows
      *
      *                           <pre>
-     * <code>
-     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
-     * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>
+     *                                                     <code>
+     *                                                     public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     *                                                     sharedTagContent.setExecutor(EXECUTOR);
+     *                                                     </code>
      *                           </pre>
      *
      * @param updateClientNature
@@ -1517,7 +1599,7 @@ public class SharedTagContent<T> {
                     for (final CompletableFuture<Boolean> each : cfList) {
                         try {
                             each.get();
-                        } catch (InterruptedException | ExecutionException e) {
+                        } catch (InterruptedException | ExecutionException ignore) {
                             // NOP
                         }
                     }
@@ -1828,9 +1910,21 @@ public class SharedTagContent<T> {
 
             for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySOEntries) {
 
-                final AbstractHtml5SharedObject sharedObject = entry.getKey();
-
-                final List<ParentNoTagData<T>> parentNoTagDatas = entry.getValue();
+                final List<ParentNoTagData<T>> dataList = entry.getValue();
+                final Set<AbstractHtml5SharedObject> sharedObjectsTemp = new HashSet<>(4);
+                final List<Lock> parentLocks = new ArrayList<>(2);
+                final List<ParentNoTagData<T>> lockedParentNoTagDatas = new ArrayList<>(dataList.size());
+                for (final ParentNoTagData<T> parentNoTagData : dataList) {
+                    final AbstractHtml parent = parentNoTagData.parent();
+                    final AbstractHtml5SharedObject sharedObject = parent.getSharedObject();
+                    if (!sharedObjectsTemp.contains(sharedObject)) {
+                        sharedObjectsTemp.add(sharedObject);
+                        final Lock writeLock = parent.lockAndGetWriteLock();
+                        parentLocks.add(writeLock);
+                    }
+                    lockedParentNoTagDatas.add(parentNoTagData);
+                }
+                Collections.reverse(parentLocks);
 
                 // pushing using first parent object makes bug (got bug when
                 // singleton SharedTagContent object is used under multiple
@@ -1838,12 +1932,8 @@ public class SharedTagContent<T> {
                 // may be because the sharedObject in the parent can be changed
                 // before lock
 
-                final Lock parentLock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-                parentLock.lock();
-
                 try {
-
-                    for (final ParentNoTagData<T> parentNoTagData : parentNoTagDatas) {
+                    for (final ParentNoTagData<T> parentNoTagData : lockedParentNoTagDatas) {
 
                         // parentNoTagData.getParent().getSharedObject().equals(sharedObject)
                         // is important here as it could be change just before
@@ -1860,6 +1950,7 @@ public class SharedTagContent<T> {
                         // means the parent of this tag has already been changed
                         // at least once
                         final AbstractHtml previousNoTag = parentNoTagData.previousNoTag();
+                        final AbstractHtml5SharedObject sharedObject = previousNoTag.getSharedObject();
 
                         if (parentNoTagData.parent().getSharedObject().equals(sharedObject)
                                 && parentNoTagData.parent().getChildrenSizeLockless() == 1
@@ -1910,7 +2001,9 @@ public class SharedTagContent<T> {
 
                     }
                 } finally {
-                    parentLock.unlock();
+                    for (final Lock lock : parentLocks) {
+                        lock.unlock();
+                    }
                 }
             }
 
