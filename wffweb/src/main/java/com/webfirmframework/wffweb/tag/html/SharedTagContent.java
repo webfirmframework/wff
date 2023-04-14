@@ -41,6 +41,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -218,13 +219,86 @@ public class SharedTagContent<T> {
     private static interface QueuedMethodCall<T> {
     }
 
-    private static record QueuedContent<T> (boolean updateClient, UpdateClientNature updateClientNature,
+    private static record SetContentCall<T> (boolean updateClient, UpdateClientNature updateClientNature,
             Set<AbstractHtml> exclusionTags, T content, boolean contentTypeHtml, boolean shared)
             implements QueuedMethodCall<T> {
     }
 
-    private static record QueuedDetachCall<T> (boolean removeContent, Set<AbstractHtml> exclusionTags,
+    private static record DetachCall<T> (boolean removeContent, Set<AbstractHtml> exclusionTags,
             Set<AbstractHtml> exclusionClientUpdateTags) implements QueuedMethodCall<T> {
+    }
+
+    private static record AddContentChangeListenerCall<T> (AbstractHtml tag,
+            ContentChangeListener<T> contentChangeListener) implements QueuedMethodCall<T> {
+
+    }
+
+    private static record AddDetachListenerCall<T> (AbstractHtml tag, DetachListener<T> detachListener)
+            implements QueuedMethodCall<T> {
+
+    }
+
+    private static record RemoveContentChangeListenerCall<T> (ContentChangeListener<T> contentChangeListener)
+            implements QueuedMethodCall<T> {
+
+    }
+
+    private static record RemoveContentChangeListenerCall2<T> (AbstractHtml tag,
+            ContentChangeListener<T> contentChangeListener) implements QueuedMethodCall<T> {
+
+    }
+
+    private static record RemoveDetachListenerCall<T> (DetachListener<T> detachListener)
+            implements QueuedMethodCall<T> {
+
+    }
+
+    private static record RemoveDetachListenerCall2<T> (AbstractHtml tag, DetachListener<T> detachListener)
+            implements QueuedMethodCall<T> {
+
+    }
+
+    private static record RemoveContentChangeListenersCall<T> (AbstractHtml tag,
+            Collection<ContentChangeListener<T>> contentChangeListeners) implements QueuedMethodCall<T> {
+
+    }
+
+    private static record RemoveDetachListenersCall<T> (AbstractHtml tag, Collection<DetachListener<T>> detachListeners)
+            implements QueuedMethodCall<T> {
+
+    }
+
+    private static record RemoveAllContentChangeListenersCall<T> (AbstractHtml tag) implements QueuedMethodCall<T> {
+
+    }
+
+    private static record RemoveAllContentChangeListenersNoArgCall<T> () implements QueuedMethodCall<T> {
+
+    }
+
+    private static record RemoveAllDetachListenersCall<T> (AbstractHtml tag) implements QueuedMethodCall<T> {
+
+    }
+
+    private static record RemoveAllDetachListenersNoArgCall<T> () implements QueuedMethodCall<T> {
+
+    }
+
+    private static record SetUpdateClientNatureCall<T> (UpdateClientNature updateClientNature)
+            implements QueuedMethodCall<T> {
+
+    }
+
+    private static record SetUpdateClientCall<T> (boolean updateClient) implements QueuedMethodCall<T> {
+
+    }
+
+    private static record SetSharedCall<T> (boolean shared) implements QueuedMethodCall<T> {
+
+    }
+
+    private static record SetExecutorCall<T> (Executor executor) implements QueuedMethodCall<T> {
+
     }
 
     @FunctionalInterface
@@ -928,6 +1002,26 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void setUpdateClientNature(final UpdateClientNature updateClientNature) {
+        methodCallQ.add(new SetUpdateClientNatureCall<>(updateClientNature));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * @param updateClientNature
+     *
+     *                           If this SharedTagContent object has to update
+     *                           content of tags from multiple BrowserPage
+     *                           instances, UpdateClientNature.ALLOW_ASYNC_PARALLEL
+     *                           will allow parallel operation in the background for
+     *                           pushing changes to client browser page and
+     *                           UpdateClientNature.ALLOW_PARALLEL will allow
+     *                           parallel operation but will wait for the push to
+     *                           finish to exit the setContent method.
+     *                           UpdateClientNature.SEQUENTIAL will sequentially do
+     *                           each browser page push operation.
+     * @since 3.0.6
+     */
+    private void setUpdateClientNatureForQ(final UpdateClientNature updateClientNature) {
 
         if (updateClientNature != null && !updateClientNature.equals(this.updateClientNature)) {
             final long stamp = lock.writeLock();
@@ -935,7 +1029,6 @@ public class SharedTagContent<T> {
                 this.updateClientNature = updateClientNature;
             } finally {
                 lock.unlockWrite(stamp);
-                cleanup();
             }
         }
     }
@@ -964,16 +1057,24 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void setUpdateClient(final boolean updateClient) {
+        methodCallQ.add(new SetUpdateClientCall<>(updateClient));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * @param updateClient true to turn on updating client browser page. By default
+     *                     it is true.
+     * @since 3.0.6
+     */
+    private void setUpdateClientForQ(final boolean updateClient) {
         if (this.updateClient != updateClient) {
             final long stamp = lock.writeLock();
             try {
                 this.updateClient = updateClient;
             } finally {
                 lock.unlockWrite(stamp);
-                cleanup();
             }
         }
-
     }
 
     /**
@@ -983,13 +1084,23 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void setShared(final boolean shared) {
+        methodCallQ.add(new SetSharedCall<>(shared));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * @param shared true to make content of this SharedTagContent object across all
+     *               consuming tags while
+     *               {@link SharedTagContent#setContent(Object)} is called.
+     * @since 3.0.6
+     */
+    private void setSharedForQ(final boolean shared) {
         if (this.shared != shared) {
             final long stamp = lock.writeLock();
             try {
                 this.shared = shared;
             } finally {
                 lock.unlockWrite(stamp);
-                cleanup();
             }
         }
     }
@@ -1027,13 +1138,49 @@ public class SharedTagContent<T> {
      * @since 3.0.15
      */
     public void setExecutor(final Executor executor) {
+        methodCallQ.add(new SetExecutorCall<>(executor));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * @param executor the executor object for async push or null if no preference.
+     *                 This executor object will be used only if the
+     *                 {@code updateClientNature} is
+     *                 {@link UpdateClientNature#ALLOW_ASYNC_PARALLEL} or
+     *                 {@link UpdateClientNature#ALLOW_PARALLEL}.
+     *
+     *                 <br>
+     *                 NB: You may need only one copy of executor object for all
+     *                 sharedTagContent instances in the project. So it could be
+     *                 declared as a static final object. Eg: <br>
+     *
+     *                 <pre>
+     * <code>
+     *
+     * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                 </pre>
+     *
+     *                 When Java releases Virtual Thread we may be able to use as
+     *                 follows
+     *
+     *                 <pre>
+     * <code>
+     * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
+     * sharedTagContent.setExecutor(EXECUTOR);
+     * </code>
+     *                 </pre>
+     *
+     * @since 3.0.15
+     */
+    private void setExecutorForQ(final Executor executor) {
         if (this.executor != executor) {
             final long stamp = lock.writeLock();
             try {
                 this.executor = executor;
             } finally {
                 lock.unlockWrite(stamp);
-                cleanup();
             }
         }
 
@@ -1193,12 +1340,12 @@ public class SharedTagContent<T> {
     private void setContent(final boolean updateClient, final UpdateClientNature updateClientNature,
             final Set<AbstractHtml> exclusionTags, final T content, final boolean contentTypeHtml,
             final boolean shared) {
-        putContent(
-                new QueuedContent<>(updateClient, updateClientNature, exclusionTags, content, contentTypeHtml, shared));
+        putContent(new SetContentCall<>(updateClient, updateClientNature, exclusionTags, content, contentTypeHtml,
+                shared));
     }
 
-    private void putContent(final QueuedContent<T> queuedContent) {
-        methodCallQ.add(queuedContent);
+    private void putContent(final SetContentCall<T> setContentCall) {
+        methodCallQ.add(setContentCall);
         executeMethodCallsFromQ();
     }
 
@@ -1206,15 +1353,7 @@ public class SharedTagContent<T> {
         if (methodCallQLock.tryAcquire()) {
             final Executor executor = this.executor;
             try {
-                QueuedMethodCall<T> eachItem;
-                while ((eachItem = methodCallQ.poll()) != null) {
-                    if (eachItem instanceof final QueuedContent<T> each) {
-                        setContentForQ(each.updateClient, each.updateClientNature, each.exclusionTags, each.content,
-                                each.contentTypeHtml, each.shared, executor);
-                    } else if (eachItem instanceof final QueuedDetachCall<T> each) {
-                        detachForQ(each.removeContent, each.exclusionTags, each.exclusionClientUpdateTags);
-                    }
-                }
+                processMethodCallQ(executor);
             } finally {
                 methodCallQLock.release();
             }
@@ -1225,15 +1364,7 @@ public class SharedTagContent<T> {
                 final Runnable runnable = () -> {
                     methodCallQLock.acquireUninterruptibly();
                     try {
-                        QueuedMethodCall<T> eachItem;
-                        while ((eachItem = methodCallQ.poll()) != null) {
-                            if (eachItem instanceof final QueuedContent<T> each) {
-                                setContentForQ(each.updateClient, each.updateClientNature, each.exclusionTags,
-                                        each.content, each.contentTypeHtml, each.shared, activeExecutor);
-                            } else if (eachItem instanceof final QueuedDetachCall<T> each) {
-                                detachForQ(each.removeContent, each.exclusionTags, each.exclusionClientUpdateTags);
-                            }
-                        }
+                        processMethodCallQ(activeExecutor);
                     } finally {
                         methodCallQLock.release();
                     }
@@ -1245,6 +1376,51 @@ public class SharedTagContent<T> {
                 }
             }
         }
+    }
+
+    private void processMethodCallQ(final Executor executor) {
+        QueuedMethodCall<T> eachItem;
+        while ((eachItem = methodCallQ.poll()) != null) {
+            if (eachItem instanceof final SetContentCall<T> each) {
+                setContentForQ(each.updateClient, each.updateClientNature, each.exclusionTags, each.content,
+                        each.contentTypeHtml, each.shared, executor);
+            } else if (eachItem instanceof final DetachCall<T> each) {
+                detachForQ(each.removeContent, each.exclusionTags, each.exclusionClientUpdateTags);
+            } else if (eachItem instanceof final AddContentChangeListenerCall<T> each) {
+                addContentChangeListenerForQ(each.tag, each.contentChangeListener);
+            } else if (eachItem instanceof final AddDetachListenerCall<T> each) {
+                addDetachListenerForQ(each.tag, each.detachListener);
+            } else if (eachItem instanceof final RemoveContentChangeListenerCall<T> each) {
+                removeContentChangeListenerForQ(each.contentChangeListener);
+            } else if (eachItem instanceof final RemoveContentChangeListenerCall2<T> each) {
+                removeContentChangeListenerForQ(each.tag, each.contentChangeListener);
+            } else if (eachItem instanceof final RemoveDetachListenerCall<T> each) {
+                removeDetachListenerForQ(each.detachListener);
+            } else if (eachItem instanceof final RemoveDetachListenerCall2<T> each) {
+                removeDetachListenerForQ(each.tag, each.detachListener);
+            } else if (eachItem instanceof final RemoveContentChangeListenersCall<T> each) {
+                removeContentChangeListenersForQ(each.tag, each.contentChangeListeners);
+            } else if (eachItem instanceof final RemoveDetachListenersCall<T> each) {
+                removeDetachListenersForQ(each.tag, each.detachListeners);
+            } else if (eachItem instanceof final RemoveAllContentChangeListenersCall<T> each) {
+                removeAllContentChangeListenersForQ(each.tag);
+            } else if (eachItem instanceof RemoveAllContentChangeListenersNoArgCall<T>) {
+                removeAllContentChangeListenersForQ();
+            } else if (eachItem instanceof final RemoveAllDetachListenersCall<T> each) {
+                removeAllDetachListenersForQ(each.tag);
+            } else if (eachItem instanceof RemoveAllDetachListenersNoArgCall<T>) {
+                removeAllDetachListenersForQ();
+            } else if (eachItem instanceof final SetUpdateClientNatureCall<T> each) {
+                setUpdateClientNatureForQ(each.updateClientNature);
+            } else if (eachItem instanceof final SetUpdateClientCall<T> each) {
+                setUpdateClientForQ(each.updateClient);
+            } else if (eachItem instanceof final SetSharedCall<T> each) {
+                setSharedForQ(each.shared);
+            } else if (eachItem instanceof final SetExecutorCall<T> each) {
+                setExecutorForQ(each.executor);
+            }
+        }
+        cleanup();
     }
 
     /**
@@ -1510,7 +1686,6 @@ public class SharedTagContent<T> {
                 }
             } finally {
                 lock.unlockWrite(stamp);
-                cleanup();
             }
 
             pushQueue(executor, updateClientNature, sharedObjects);
@@ -1535,7 +1710,6 @@ public class SharedTagContent<T> {
                 this.shared = shared;
             } finally {
                 lock.unlockWrite(stamp);
-                cleanup();
             }
         }
     }
@@ -1666,8 +1840,9 @@ public class SharedTagContent<T> {
         Reference<?> reference;
         while ((reference = tagGCTasksRQ.poll()) != null) {
             reference.clear();
-            final Runnable task = (Runnable) reference;
-            task.run();
+            if (reference instanceof final Runnable task) {
+                task.run();
+            }
         }
 //        while ((reference = insertedTagDataGCTasksRQ.poll()) != null) {
 //            reference.clear();
@@ -1873,7 +2048,7 @@ public class SharedTagContent<T> {
      */
     public void detach(final boolean removeContent, final Set<AbstractHtml> exclusionTags,
             final Set<AbstractHtml> exclusionClientUpdateTags) {
-        methodCallQ.add(new QueuedDetachCall<>(removeContent, exclusionTags, exclusionClientUpdateTags));
+        methodCallQ.add(new DetachCall<>(removeContent, exclusionTags, exclusionClientUpdateTags));
         executeMethodCallsFromQ();
     }
 
@@ -2067,7 +2242,6 @@ public class SharedTagContent<T> {
 
         } finally {
             lock.unlockWrite(stamp);
-            cleanup();
         }
 
         pushQueue(executor, updateClientNature, sharedObjects);
@@ -2093,6 +2267,20 @@ public class SharedTagContent<T> {
      *        SharedTagContent when the tag is detached from this SharedTagContent.
      */
     public void addContentChangeListener(final AbstractHtml tag, final ContentChangeListener<T> contentChangeListener) {
+        methodCallQ.add(new AddContentChangeListenerCall<>(tag, contentChangeListener));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * @param tag                   the tag on which the content change to be
+     *                              listened
+     * @param contentChangeListener to be added
+     * @since 3.0.6
+     * @since 3.0.18 the contentChangeListener object will be removed from this
+     *        SharedTagContent when the tag is detached from this SharedTagContent.
+     */
+    private void addContentChangeListenerForQ(final AbstractHtml tag,
+            final ContentChangeListener<T> contentChangeListener) {
         final long stamp = lock.writeLock();
 
         try {
@@ -2112,7 +2300,6 @@ public class SharedTagContent<T> {
             listeners.add(contentChangeListener);
         } finally {
             lock.unlockWrite(stamp);
-            cleanup();
         }
     }
 
@@ -2124,6 +2311,18 @@ public class SharedTagContent<T> {
      *        SharedTagContent when the tag is detached from this SharedTagContent.
      */
     public void addDetachListener(final AbstractHtml tag, final DetachListener<T> detachListener) {
+        methodCallQ.add(new AddDetachListenerCall<>(tag, detachListener));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * @param tag
+     * @param detachListener
+     * @since 3.0.6
+     * @since 3.0.18 the detachListener object will be removed from this
+     *        SharedTagContent when the tag is detached from this SharedTagContent.
+     */
+    public void addDetachListenerForQ(final AbstractHtml tag, final DetachListener<T> detachListener) {
         final long stamp = lock.writeLock();
 
         try {
@@ -2143,7 +2342,6 @@ public class SharedTagContent<T> {
             listeners.add(detachListener);
         } finally {
             lock.unlockWrite(stamp);
-            cleanup();
         }
     }
 
@@ -2155,6 +2353,18 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeContentChangeListener(final ContentChangeListener<T> contentChangeListener) {
+        methodCallQ.add(new RemoveContentChangeListenerCall<>(contentChangeListener));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * NB: this method will traverse through all consumer tags of this
+     * SharedTagContent instance.
+     *
+     * @param contentChangeListener to be removed from all linked tags
+     * @since 3.0.6
+     */
+    private void removeContentChangeListenerForQ(final ContentChangeListener<T> contentChangeListener) {
         final long stamp = lock.writeLock();
 
         try {
@@ -2169,7 +2379,6 @@ public class SharedTagContent<T> {
 
         } finally {
             lock.unlockWrite(stamp);
-            cleanup();
         }
     }
 
@@ -2179,6 +2388,17 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeContentChangeListener(final AbstractHtml tag,
+            final ContentChangeListener<T> contentChangeListener) {
+        methodCallQ.add(new RemoveContentChangeListenerCall2<>(tag, contentChangeListener));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * @param tag                   the tag from which the listener to be removed
+     * @param contentChangeListener to be removed
+     * @since 3.0.6
+     */
+    private void removeContentChangeListenerForQ(final AbstractHtml tag,
             final ContentChangeListener<T> contentChangeListener) {
         final long stamp = lock.writeLock();
 
@@ -2192,7 +2412,6 @@ public class SharedTagContent<T> {
 
         } finally {
             lock.unlockWrite(stamp);
-            cleanup();
         }
     }
 
@@ -2204,6 +2423,18 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeDetachListener(final DetachListener<T> detachListener) {
+        methodCallQ.add(new RemoveDetachListenerCall<>(detachListener));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * NB: this method will traverse through all consumer tags of this
+     * SharedTagContent instance.
+     *
+     * @param detachListener to be removed from all linked tags
+     * @since 3.0.6
+     */
+    private void removeDetachListenerForQ(final DetachListener<T> detachListener) {
         final long stamp = lock.writeLock();
 
         try {
@@ -2218,7 +2449,6 @@ public class SharedTagContent<T> {
 
         } finally {
             lock.unlockWrite(stamp);
-            cleanup();
         }
     }
 
@@ -2228,6 +2458,16 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeDetachListener(final AbstractHtml tag, final DetachListener<T> detachListener) {
+        methodCallQ.add(new RemoveDetachListenerCall2<>(tag, detachListener));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * @param tag
+     * @param detachListener
+     * @since 3.0.6
+     */
+    private void removeDetachListenerForQ(final AbstractHtml tag, final DetachListener<T> detachListener) {
         final long stamp = lock.writeLock();
 
         try {
@@ -2240,7 +2480,6 @@ public class SharedTagContent<T> {
 
         } finally {
             lock.unlockWrite(stamp);
-            cleanup();
         }
     }
 
@@ -2250,6 +2489,17 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeContentChangeListeners(final AbstractHtml tag,
+            final Collection<ContentChangeListener<T>> contentChangeListeners) {
+        methodCallQ.add(new RemoveContentChangeListenersCall<>(tag, contentChangeListeners));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * @param tag                    the tag from which the listener to be removed
+     * @param contentChangeListeners to be removed
+     * @since 3.0.6
+     */
+    private void removeContentChangeListenersForQ(final AbstractHtml tag,
             final Collection<ContentChangeListener<T>> contentChangeListeners) {
 
         final long stamp = lock.writeLock();
@@ -2268,7 +2518,6 @@ public class SharedTagContent<T> {
 
         } finally {
             lock.unlockWrite(stamp);
-            cleanup();
         }
     }
 
@@ -2278,6 +2527,17 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeDetachListeners(final AbstractHtml tag, final Collection<DetachListener<T>> detachListeners) {
+        methodCallQ.add(new RemoveDetachListenersCall<>(tag, detachListeners));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * @param tag
+     * @param detachListeners
+     * @since 3.0.6
+     */
+    private void removeDetachListenersForQ(final AbstractHtml tag,
+            final Collection<DetachListener<T>> detachListeners) {
 
         final long stamp = lock.writeLock();
 
@@ -2295,7 +2555,6 @@ public class SharedTagContent<T> {
 
         } finally {
             lock.unlockWrite(stamp);
-            cleanup();
         }
     }
 
@@ -2304,6 +2563,15 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeAllContentChangeListeners(final AbstractHtml tag) {
+        methodCallQ.add(new RemoveAllContentChangeListenersCall<>(tag));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * @param tag the tag from which all listeners to be removed
+     * @since 3.0.6
+     */
+    private void removeAllContentChangeListenersForQ(final AbstractHtml tag) {
         final long stamp = lock.writeLock();
 
         try {
@@ -2313,7 +2581,6 @@ public class SharedTagContent<T> {
 
         } finally {
             lock.unlockWrite(stamp);
-            cleanup();
         }
     }
 
@@ -2323,6 +2590,16 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeAllContentChangeListeners() {
+        methodCallQ.add(new RemoveAllContentChangeListenersNoArgCall<>());
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * all listeners will be removed from all tags
+     *
+     * @since 3.0.6
+     */
+    private void removeAllContentChangeListenersForQ() {
         final long stamp = lock.writeLock();
 
         try {
@@ -2332,7 +2609,6 @@ public class SharedTagContent<T> {
 
         } finally {
             lock.unlockWrite(stamp);
-            cleanup();
         }
     }
 
@@ -2341,6 +2617,15 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeAllDetachListeners(final AbstractHtml tag) {
+        methodCallQ.add(new RemoveAllDetachListenersCall<>(tag));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * @param tag the tag from which all listeners to be removed
+     * @since 3.0.6
+     */
+    private void removeAllDetachListenersForQ(final AbstractHtml tag) {
         final long stamp = lock.writeLock();
 
         try {
@@ -2350,7 +2635,6 @@ public class SharedTagContent<T> {
 
         } finally {
             lock.unlockWrite(stamp);
-            cleanup();
         }
     }
 
@@ -2360,8 +2644,17 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeAllDetachListeners() {
-        final long stamp = lock.writeLock();
+        methodCallQ.add(new RemoveAllDetachListenersNoArgCall<>());
+        executeMethodCallsFromQ();
+    }
 
+    /**
+     * all listeners will be removed from all tags
+     *
+     * @since 3.0.6
+     */
+    private void removeAllDetachListenersForQ() {
+        final long stamp = lock.writeLock();
         try {
             if (detachListeners != null) {
                 detachListeners.clear();
@@ -2369,11 +2662,15 @@ public class SharedTagContent<T> {
 
         } finally {
             lock.unlockWrite(stamp);
-            cleanup();
         }
     }
 
     /**
+     * Note: this method a may lead to deadlock if it is called under whenURI event
+     * thread while another thread is updating this SharedTagContent object so use
+     * {@link #getContentFormatter(AbstractHtml, Consumer)} method which is
+     * asynchronous.
+     *
      * @param tag the tag whose ContentFormatter to be got.
      * @return the ContentFormatter object set for the given tag.
      * @since 3.0.11
@@ -2395,6 +2692,32 @@ public class SharedTagContent<T> {
     }
 
     /**
+     * This method is safe to use under whenURI event thread.
+     *
+     * @param tag      the tag whose ContentFormatter to be got.
+     * @param consumer the consumer to catch ContentFormatter
+     * @return the ContentFormatter object set for the given tag.
+     * @since 12.0.0-beta.10
+     */
+    public void getContentFormatter(final AbstractHtml tag, final Consumer<ContentFormatter<T>> consumer) {
+        final AbstractHtml firstChild = tag.getFirstChild();
+        if (firstChild != null && consumer != null) {
+            final Executor activeExecutor = executor != null ? executor : WffConfiguration.getVirtualThreadExecutor();
+            final Runnable runnable = () -> consumer.accept(getContentFormatter(tag));
+            if (activeExecutor != null) {
+                activeExecutor.execute(runnable);
+            } else {
+                CompletableFuture.runAsync(runnable);
+            }
+        }
+    }
+
+    /**
+     * Note: this method a may lead to deadlock if it is called under whenURI event
+     * thread while another thread is updating this SharedTagContent object so use
+     * {@link #getContentChangeListeners(AbstractHtml, Consumer)} method which is
+     * asynchronous.
+     *
      * @param tag tag from which the listeners to be got.
      * @return the ContentChangeListeners for the given tag.
      * @since 3.0.11
@@ -2404,8 +2727,7 @@ public class SharedTagContent<T> {
         try {
             final Set<ContentChangeListener<T>> listeners = contentChangeListeners.get(tag.internalId());
             if (listeners != null) {
-                final Set<ContentChangeListener<T>> unmodifiableSet = Collections.unmodifiableSet(listeners);
-                return unmodifiableSet;
+                return Set.copyOf(listeners);
             }
 
         } finally {
@@ -2415,6 +2737,32 @@ public class SharedTagContent<T> {
     }
 
     /**
+     * This method is safe to use under whenURI event thread.
+     *
+     * @param tag      tag from which the listeners to be got.
+     * @param consumer the consumer to catch ContentChangeListeners
+     * @return the ContentChangeListeners for the given tag.
+     * @since 12.0.0-beta.10
+     */
+    public void getContentChangeListeners(final AbstractHtml tag,
+            final Consumer<Set<ContentChangeListener<T>>> consumer) {
+        if (tag != null && consumer != null) {
+            final Executor activeExecutor = executor != null ? executor : WffConfiguration.getVirtualThreadExecutor();
+            final Runnable runnable = () -> consumer.accept(getContentChangeListeners(tag));
+            if (activeExecutor != null) {
+                activeExecutor.execute(runnable);
+            } else {
+                CompletableFuture.runAsync(runnable);
+            }
+        }
+    }
+
+    /**
+     * Note: this method a may lead to deadlock if it is called under whenURI event
+     * thread while another thread is updating this SharedTagContent object so use
+     * {@link #getDetachListeners(AbstractHtml, Consumer)} method which is
+     * asynchronous.
+     *
      * @param tag tag from which the listeners to be got.
      * @return the DetachListeners for the given tag.
      * @since 3.0.11
@@ -2424,13 +2772,32 @@ public class SharedTagContent<T> {
         try {
             final Set<DetachListener<T>> listeners = detachListeners.get(tag.internalId());
             if (listeners != null) {
-                final Set<DetachListener<T>> unmodifiableSet = Collections.unmodifiableSet(listeners);
-                return unmodifiableSet;
+                return Set.copyOf(listeners);
             }
         } finally {
             lock.unlockRead(stamp);
         }
         return null;
+    }
+
+    /**
+     * This method is safe to use under whenURI event thread.
+     *
+     * @param tag      tag from which the listeners to be got.
+     * @param consumer the consumer to catch DetachListeners
+     * @return the DetachListeners for the given tag.
+     * @since 12.0.0-beta.10
+     */
+    public void getDetachListeners(final AbstractHtml tag, final Consumer<Set<DetachListener<T>>> consumer) {
+        if (tag != null && consumer != null) {
+            final Executor activeExecutor = executor != null ? executor : WffConfiguration.getVirtualThreadExecutor();
+            final Runnable runnable = () -> consumer.accept(getDetachListeners(tag));
+            if (activeExecutor != null) {
+                activeExecutor.execute(runnable);
+            } else {
+                CompletableFuture.runAsync(runnable);
+            }
+        }
     }
 
     /**
