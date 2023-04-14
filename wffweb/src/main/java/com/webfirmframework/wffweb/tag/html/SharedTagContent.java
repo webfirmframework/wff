@@ -1209,10 +1209,10 @@ public class SharedTagContent<T> {
                 QueuedMethodCall<T> eachItem;
                 while ((eachItem = methodCallQ.poll()) != null) {
                     if (eachItem instanceof final QueuedContent<T> each) {
-                        setContent(each.updateClient, each.updateClientNature, each.exclusionTags, each.content,
+                        setContentForQ(each.updateClient, each.updateClientNature, each.exclusionTags, each.content,
                                 each.contentTypeHtml, each.shared, executor);
                     } else if (eachItem instanceof final QueuedDetachCall<T> each) {
-                        detachPvt(each.removeContent, each.exclusionTags, each.exclusionClientUpdateTags);
+                        detachForQ(each.removeContent, each.exclusionTags, each.exclusionClientUpdateTags);
                     }
                 }
             } finally {
@@ -1223,24 +1223,20 @@ public class SharedTagContent<T> {
                 final Executor activeExecutor = executor != null ? executor
                         : WffConfiguration.getVirtualThreadExecutor();
                 final Runnable runnable = () -> {
-                    do {
-                        if (methodCallQLock.tryAcquire()) {
-                            try {
-                                QueuedMethodCall<T> eachItem;
-                                while ((eachItem = methodCallQ.poll()) != null) {
-                                    if (eachItem instanceof final QueuedContent<T> each) {
-                                        setContent(each.updateClient, each.updateClientNature, each.exclusionTags,
-                                                each.content, each.contentTypeHtml, each.shared, activeExecutor);
-                                    } else if (eachItem instanceof final QueuedDetachCall<T> each) {
-                                        detachPvt(each.removeContent, each.exclusionTags,
-                                                each.exclusionClientUpdateTags);
-                                    }
-                                }
-                            } finally {
-                                methodCallQLock.release();
+                    methodCallQLock.acquireUninterruptibly();
+                    try {
+                        QueuedMethodCall<T> eachItem;
+                        while ((eachItem = methodCallQ.poll()) != null) {
+                            if (eachItem instanceof final QueuedContent<T> each) {
+                                setContentForQ(each.updateClient, each.updateClientNature, each.exclusionTags,
+                                        each.content, each.contentTypeHtml, each.shared, activeExecutor);
+                            } else if (eachItem instanceof final QueuedDetachCall<T> each) {
+                                detachForQ(each.removeContent, each.exclusionTags, each.exclusionClientUpdateTags);
                             }
                         }
-                    } while (!methodCallQ.isEmpty());
+                    } finally {
+                        methodCallQLock.release();
+                    }
                 };
                 if (activeExecutor != null) {
                     activeExecutor.execute(runnable);
@@ -1274,7 +1270,7 @@ public class SharedTagContent<T> {
      * @param shared
      * @param executor
      */
-    private void setContent(final boolean updateClient, final UpdateClientNature updateClientNature,
+    private void setContentForQ(final boolean updateClient, final UpdateClientNature updateClientNature,
             final Set<AbstractHtml> exclusionTags, final T content, final boolean contentTypeHtml, final boolean shared,
             final Executor executor) {
 
@@ -1890,7 +1886,7 @@ public class SharedTagContent<T> {
      *                                  update
      * @since 3.0.6
      */
-    private void detachPvt(final boolean removeContent, final Set<AbstractHtml> exclusionTags,
+    private void detachForQ(final boolean removeContent, final Set<AbstractHtml> exclusionTags,
             final Set<AbstractHtml> exclusionClientUpdateTags) {
 
         final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(4);
