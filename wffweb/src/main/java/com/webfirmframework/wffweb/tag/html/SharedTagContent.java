@@ -2695,8 +2695,8 @@ public class SharedTagContent<T> {
      * This method is safe to use under whenURI event thread.
      *
      * @param tag      the tag whose ContentFormatter to be got.
-     * @param consumer the consumer to catch ContentFormatter
-     * @return the ContentFormatter object set for the given tag.
+     * @param consumer the consumer to catch the ContentFormatter object set for the
+     *                 given tag.
      * @since 12.0.0-beta.10
      */
     public void getContentFormatter(final AbstractHtml tag, final Consumer<ContentFormatter<T>> consumer) {
@@ -2740,8 +2740,8 @@ public class SharedTagContent<T> {
      * This method is safe to use under whenURI event thread.
      *
      * @param tag      tag from which the listeners to be got.
-     * @param consumer the consumer to catch ContentChangeListeners
-     * @return the ContentChangeListeners for the given tag.
+     * @param consumer the consumer to catch the ContentChangeListeners for the
+     *                 given tag.
      * @since 12.0.0-beta.10
      */
     public void getContentChangeListeners(final AbstractHtml tag,
@@ -2784,8 +2784,7 @@ public class SharedTagContent<T> {
      * This method is safe to use under whenURI event thread.
      *
      * @param tag      tag from which the listeners to be got.
-     * @param consumer the consumer to catch DetachListeners
-     * @return the DetachListeners for the given tag.
+     * @param consumer the consumer to catch the DetachListeners for the given tag.
      * @since 12.0.0-beta.10
      */
     public void getDetachListeners(final AbstractHtml tag, final Consumer<Set<DetachListener<T>>> consumer) {
