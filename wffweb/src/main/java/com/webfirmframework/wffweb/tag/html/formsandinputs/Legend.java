@@ -37,13 +37,7 @@ public class Legend extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Legend.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.LEGEND);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.LEGEND;
 
     {
 

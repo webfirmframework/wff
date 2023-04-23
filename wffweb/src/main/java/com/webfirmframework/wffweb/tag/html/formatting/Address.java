@@ -37,13 +37,7 @@ public class Address extends AbstractHtml implements AddressAttributable {
 
     private static final Logger LOGGER = Logger.getLogger(Address.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.ADDRESS);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.ADDRESS;
 
     {
 

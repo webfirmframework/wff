@@ -37,13 +37,7 @@ public class Data extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Data.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.DATA);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.DATA;
 
     {
 

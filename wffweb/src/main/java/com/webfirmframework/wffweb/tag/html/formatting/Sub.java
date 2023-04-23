@@ -37,13 +37,7 @@ public class Sub extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Sub.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.SUB);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.SUB;
 
     {
 

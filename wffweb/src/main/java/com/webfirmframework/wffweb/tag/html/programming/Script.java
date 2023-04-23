@@ -37,13 +37,7 @@ public class Script extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Script.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.SCRIPT);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.SCRIPT;
 
     {
 

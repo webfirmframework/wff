@@ -37,13 +37,7 @@ public class Small extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Small.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.SMALL);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.SMALL;
 
     {
 

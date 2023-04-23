@@ -37,13 +37,7 @@ public class Progress extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Progress.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.PROGRESS);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.PROGRESS;
 
     {
 

@@ -37,13 +37,7 @@ public class Wbr extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Wbr.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.WBR);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.WBR;
 
     {
 

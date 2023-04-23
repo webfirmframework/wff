@@ -41,13 +41,7 @@ public class Link extends AbstractHtml {
 
     private static TagType tagType = TagType.SELF_CLOSING;
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.LINK);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.LINK;
 
     {
 

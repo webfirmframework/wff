@@ -39,13 +39,7 @@ public class Footer extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Footer.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.FOOTER);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.FOOTER;
 
     {
 

@@ -39,13 +39,7 @@ public class Col extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Col.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.COL);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.COL;
 
     {
 

@@ -39,13 +39,7 @@ public class TBody extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(TBody.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.TBODY);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.TBODY;
 
     {
 

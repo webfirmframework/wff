@@ -39,13 +39,7 @@ public class Input extends AbstractHtml {
 
     private static TagType tagType = TagType.NON_CLOSING;
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.INPUT);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.INPUT;
 
     {
 

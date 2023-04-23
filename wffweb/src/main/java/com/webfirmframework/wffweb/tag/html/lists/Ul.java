@@ -39,11 +39,11 @@ public class Ul extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Ul.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.UL;
 
     static {
 
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.UL);
+        PRE_INDEXED_TAG_NAME = ();
 
     }
 
