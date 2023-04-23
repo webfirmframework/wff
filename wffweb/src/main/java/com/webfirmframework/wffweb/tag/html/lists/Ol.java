@@ -38,13 +38,7 @@ public class Ol extends AbstractHtml {
     private static final long serialVersionUID = 1_0_0L;
     private static final Logger LOGGER = Logger.getLogger(Ol.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.OL);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.OL;
 
     {
 
