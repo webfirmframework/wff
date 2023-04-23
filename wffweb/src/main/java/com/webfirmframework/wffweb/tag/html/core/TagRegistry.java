@@ -172,7 +172,7 @@ public class TagRegistry {
 
     private static final List<Class<?>> INDEXED_TAG_CLASSES = new ArrayList<>();
 
-    private static volatile Map<String, Class<?>> tagClassByTagNameTmp;
+    private static volatile Map<String, Class<?>> tagClassByTagNameTmp = new ConcurrentHashMap<>();
 
     static {
 
@@ -180,8 +180,7 @@ public class TagRegistry {
         final int initialCapacity = fields.length;
 
         final Map<String, Class<?>> tagClassByTagName = new ConcurrentHashMap<>(initialCapacity);
-        tagClassByTagNameTmp = new ConcurrentHashMap<>(initialCapacity);
-
+        
         tagClassByTagName.put(TagNameConstants.A, A.class);
         tagClassByTagName.put(TagNameConstants.ABBR, Abbr.class);
         tagClassByTagName.put(TagNameConstants.ADDRESS, Address.class);

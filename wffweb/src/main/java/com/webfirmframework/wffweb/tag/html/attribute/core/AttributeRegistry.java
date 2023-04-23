@@ -228,7 +228,8 @@ public class AttributeRegistry {
 
     private static final List<Class<?>> INDEXED_ATTR_CLASSES = new ArrayList<>();
 
-    private static volatile Map<String, Class<?>> attributeClassByAttrNameTmp;
+    //it should not be initialized in static as it could fail test case in circleci java 17 test, it's strange!
+    private static volatile Map<String, Class<?>> attributeClassByAttrNameTmp = new ConcurrentHashMap<>();
 
     private static final List<String> SORTED_BOOLEAN_ATTR_NAMES;
 
@@ -241,7 +242,7 @@ public class AttributeRegistry {
 
         Map<String, Class<?>> attributeClassByAttrName = new ConcurrentHashMap<>(initialCapacity);
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME = new ConcurrentHashMap<>(initialCapacity);
-        attributeClassByAttrNameTmp = new ConcurrentHashMap<>(initialCapacity);
+        
         attributeClassByAttrName = new ConcurrentHashMap<>(initialCapacity);
 
         attributeClassByAttrName.put(DataWffId.ATTRIBUTE_NAME, DataWffId.class);
