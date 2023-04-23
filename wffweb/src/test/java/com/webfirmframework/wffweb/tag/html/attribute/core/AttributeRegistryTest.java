@@ -41,7 +41,7 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 public class AttributeRegistryTest {
     
     @Test
-    public void testLoadAllAttributeClasses() throws Exception {
+    public void testTestMethods() throws Exception {
         try {
             //loadAllTagClasses must be after test
             //not possible to write a separate test case for test() method
@@ -52,6 +52,10 @@ public class AttributeRegistryTest {
             e.printStackTrace();
             fail(e.getMessage());
         }
+    }
+
+    @Test
+    public void testLoadAllAttributeClasses() throws Exception {
         AttributeRegistry.loadAllAttributeClasses();
     }
     

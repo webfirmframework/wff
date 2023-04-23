@@ -33,9 +33,9 @@ import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 
 public class TagRegistryTest {
-
+    
     @Test
-    public void testLoadAllTagClasses() throws Exception {
+    public void testTestMethods() throws Exception {
         try {
             //loadAllTagClasses must be after test
             //not possible to write a separate test case for test() method
@@ -43,7 +43,11 @@ public class TagRegistryTest {
             TagRegistry.test();            
         } catch (InvalidValueException e) {
             fail(e.getMessage());
-        }
+        } 
+    }
+
+    @Test
+    public void testLoadAllTagClasses() throws Exception {
         TagRegistry.loadAllTagClasses();    
     }
 
