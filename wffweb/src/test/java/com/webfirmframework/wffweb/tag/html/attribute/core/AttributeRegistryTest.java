@@ -41,6 +41,21 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 public class AttributeRegistryTest {
     
     @Test
+    public void testLoadAllAttributeClasses() throws Exception {
+        try {
+            //loadAllTagClasses must be after test
+            //not possible to write a separate test case for test() method
+            //as the internal map will be nullified in loadAllTagClasses
+            AttributeRegistry.test();      
+            AttributeRegistry.test1();       
+        } catch (InvalidValueException e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+        AttributeRegistry.loadAllAttributeClasses();
+    }
+    
+    @Test
     public void testEventAttr() throws Exception {
         final Map<String, Class<?>> attributeClassByAttrName = AttributeRegistry.getAttributeClassByAttrName();
         for (final PreIndexedAttributeName each : PreIndexedAttributeName
@@ -78,21 +93,7 @@ public class AttributeRegistryTest {
         }
     }
     
-    @Test
-    public void testLoadAllAttributeClasses() throws Exception {
-        try {
-            //loadAllTagClasses must be after test
-            //not possible to write a separate test case for test() method
-            //as the internal map will be nullified in loadAllTagClasses
-            AttributeRegistry.test();      
-            AttributeRegistry.test1();       
-        } catch (InvalidValueException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-        AttributeRegistry.loadAllAttributeClasses();
-    }
-    
+
     @Test
     public void testGetNewTagInstance() {
         final Map<String, Class<?>> attrClassNameByAttrName = AttributeRegistry

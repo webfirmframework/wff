@@ -35,6 +35,19 @@ import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 public class TagRegistryTest {
 
     @Test
+    public void testLoadAllTagClasses() throws Exception {
+        try {
+            //loadAllTagClasses must be after test
+            //not possible to write a separate test case for test() method
+            //as the internal map will be nullified in loadAllTagClasses
+            TagRegistry.test();            
+        } catch (InvalidValueException e) {
+            fail(e.getMessage());
+        }
+        TagRegistry.loadAllTagClasses();    
+    }
+
+    @Test
     public void testIfAllTagNamesAreReffered() throws Exception {
         Field[] fields = TagNameConstants.class.getFields();
         for (Field field : fields) {
@@ -53,20 +66,7 @@ public class TagRegistryTest {
             }
         }
     }
-    
-    @Test
-    public void testLoadAllTagClasses() throws Exception {
-        try {
-            //loadAllTagClasses must be after test
-            //not possible to write a separate test case for test() method
-            //as the internal map will be nullified in loadAllTagClasses
-            TagRegistry.test();            
-        } catch (InvalidValueException e) {
-            fail(e.getMessage());
-        }
-        TagRegistry.loadAllTagClasses();    
-    }   
-    
+
     @Test
     public void testGetNewTagInstance() {
         final Map<String, Class<?>> tagClassNameByTagName = TagRegistry
