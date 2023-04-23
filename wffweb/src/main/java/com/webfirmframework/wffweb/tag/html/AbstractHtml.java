@@ -133,7 +133,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     // should be initialized with empty string
     private final String closingTag;
 
-    private StringBuilder htmlStartSB;
+    private volatile StringBuilder htmlStartSB;
 
     private volatile StringBuilder htmlMiddleSB;
 
@@ -150,7 +150,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     // NB never assign null, it should never be null
     private volatile AbstractHtml5SharedObject sharedObject;
 
-    private boolean htmlStartSBAsFirst;
+    private final boolean htmlStartSBAsFirst;
 
     // for future development
     private WffBinaryMessageOutputStreamer wffBinaryMessageOutputStreamer;
@@ -441,6 +441,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         tagType = TagType.OPENING_CLOSING;
         tagNameIndexBytes = null;
         noTagContentTypeHtml = false;
+        htmlStartSBAsFirst = false;
 
         final List<Lock> locks;
 
@@ -555,6 +556,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         tagType = TagType.OPENING_CLOSING;
         tagNameIndexBytes = null;
         noTagContentTypeHtml = false;
+        htmlStartSBAsFirst = false;
 
         final List<Lock> attrLocks = AttributeUtil.lockAndGetWriteLocks(ACCESS_OBJECT, attributes);
 
@@ -617,6 +619,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         tagType = TagType.OPENING_CLOSING;
         tagNameIndexBytes = preIndexedTagName.internalIndexBytes(ACCESS_OBJECT);
         noTagContentTypeHtml = false;
+        htmlStartSBAsFirst = false;
 
         final List<Lock> attrLocks = AttributeUtil.lockAndGetWriteLocks(ACCESS_OBJECT, attributes);
 
@@ -2848,6 +2851,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         this.tagName = tagName;
         this.tagNameIndexBytes = tagNameIndexBytes;
         noTagContentTypeHtml = false;
+        htmlStartSBAsFirst = false;
 
         final List<Lock> attrLocks = AttributeUtil.lockAndGetWriteLocks(ACCESS_OBJECT, attributes);
 
@@ -4343,7 +4347,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 1.0.0
      */
     private String buildClosingTag() {
-        final StringBuilder htmlEndSB = new StringBuilder(tagName == null ? 16 : tagName.length() + 3);        
+        final StringBuilder htmlEndSB = new StringBuilder(tagName == null ? 16 : tagName.length() + 3);
         if (tagName != null) {
             htmlEndSB.append(new char[] { '<', '/' }).append(tagName).append('>');
         } else {
@@ -4351,7 +4355,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 htmlEndSB.append(getHtmlMiddleSB());
             }
         }
-        htmlEndSB.trimToSize();
         return htmlEndSB.toString();
     }
 
