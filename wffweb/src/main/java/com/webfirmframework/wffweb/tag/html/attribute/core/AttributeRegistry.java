@@ -228,7 +228,6 @@ public class AttributeRegistry {
 
     private static final List<Class<?>> INDEXED_ATTR_CLASSES = new ArrayList<>();
 
-    //it should not be initialized in static as it could fail test case in circleci java 17 test, it's strange!
     private static volatile Map<String, Class<?>> attributeClassByAttrNameTmp = new ConcurrentHashMap<>();
 
     private static final List<String> SORTED_BOOLEAN_ATTR_NAMES;
