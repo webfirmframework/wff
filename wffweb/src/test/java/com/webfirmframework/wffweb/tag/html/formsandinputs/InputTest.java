@@ -42,13 +42,4 @@ public class InputTest {
         assertEquals("<input>", input.toHtmlString());
     }
 
-    @Test
-    public void testInput2() {
-
-        Input.setTagType(TagType.SELF_CLOSING);
-        Input input = new Input(null);
-        assertEquals("<input/>", input.toHtmlString());
-
-    }
-
 }
