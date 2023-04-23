@@ -17,16 +17,13 @@ package com.webfirmframework.wffweb.tag.html.images;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.OrderWith;
 import org.junit.runner.manipulation.Alphanumeric;
-import org.junit.runners.MethodSorters;
 
 import com.webfirmframework.wffweb.tag.html.AbstractHtml.TagType;
 
 @OrderWith(Alphanumeric.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ImgTest {
 
 
