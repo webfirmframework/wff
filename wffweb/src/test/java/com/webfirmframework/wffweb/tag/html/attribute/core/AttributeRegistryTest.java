@@ -53,6 +53,7 @@ public class AttributeRegistryTest {
             //loadAllTagClasses must be after test
             //not possible to write a separate test case for test() method
             //as the internal map will be nullified in loadAllTagClasses
+            Class.forName(AttributeRegistry.class.getName());
             AttributeRegistry.test();      
             AttributeRegistry.test1();       
         } catch (InvalidValueException e) {
