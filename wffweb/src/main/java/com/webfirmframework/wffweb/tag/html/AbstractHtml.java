@@ -133,7 +133,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     // should be initialized with empty string
     private final String closingTag;
 
-    private volatile StringBuilder htmlStartSB;
+    private final StringBuilder htmlStartSB;
 
     private volatile StringBuilder htmlMiddleSB;
 
@@ -456,6 +456,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         try {
 
+            htmlStartSB = new StringBuilder(
+                    tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
             initInConstructor();
 
             buildOpeningTag(false);
@@ -507,6 +509,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         try {
 
+            htmlStartSB = new StringBuilder(
+                    tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
             initInConstructor();
 
             htmlStartSBAsFirst = true;
@@ -573,6 +577,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             initAttributes(attributes);
 
+            htmlStartSB = new StringBuilder(
+                    tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
             initInConstructor();
 
             markOwnerTag(attributes);
@@ -643,6 +649,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             initAttributes(attributes);
 
+            htmlStartSB = new StringBuilder(
+                    tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
             initInConstructor();
 
             markOwnerTag(attributes);
@@ -2868,6 +2876,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             initAttributes(attributes);
 
+            htmlStartSB = new StringBuilder(
+                    tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
             initInConstructor();
 
             markOwnerTag(attributes);
@@ -2937,8 +2947,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 1.0.0
      */
     private void initInConstructor() {
-        htmlStartSB = new StringBuilder(
-                tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
+//        htmlStartSB = new StringBuilder(
+//                tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
 
 //        htmlEndSB = new StringBuilder(tagName == null ? 16 : tagName.length() + 3);
     }
