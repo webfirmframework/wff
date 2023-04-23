@@ -593,10 +593,11 @@ public class AttributeRegistry {
      */
     public static void loadAllAttributeClasses() {
 
-        if (attributeClassByAttrNameTmp != null) {
+        final Map<String, Class<?>> attributeClassByAttrNameTmpLocal = attributeClassByAttrNameTmp;
+        if (attributeClassByAttrNameTmpLocal != null) {
             final Map<String, Class<?>> unloadedClasses = new HashMap<>();
 
-            for (final Entry<String, Class<?>> entry : attributeClassByAttrNameTmp.entrySet()) {
+            for (final Entry<String, Class<?>> entry : attributeClassByAttrNameTmpLocal.entrySet()) {
                 try {
 
                     Class.forName(entry.getValue().getName());
@@ -609,9 +610,9 @@ public class AttributeRegistry {
 
                 }
             }
-            attributeClassByAttrNameTmp.clear();
+            attributeClassByAttrNameTmpLocal.clear();
             if (unloadedClasses.size() > 0) {
-                attributeClassByAttrNameTmp.putAll(unloadedClasses);
+                attributeClassByAttrNameTmpLocal.putAll(unloadedClasses);
             } else {
                 attributeClassByAttrNameTmp = null;
             }

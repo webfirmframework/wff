@@ -180,7 +180,7 @@ public class TagRegistry {
         final int initialCapacity = fields.length;
 
         final Map<String, Class<?>> tagClassByTagName = new ConcurrentHashMap<>(initialCapacity);
-        tagClassByTagNameTmp = new HashMap<>(initialCapacity);
+        tagClassByTagNameTmp = new ConcurrentHashMap<>(initialCapacity);
 
         tagClassByTagName.put(TagNameConstants.A, A.class);
         tagClassByTagName.put(TagNameConstants.ABBR, Abbr.class);
@@ -417,10 +417,11 @@ public class TagRegistry {
      */
     public static void loadAllTagClasses() {
 
-        if (tagClassByTagNameTmp != null) {
+        final Map<String, Class<?>> tagClassByTagNameTmpLocal = tagClassByTagNameTmp;
+        if (tagClassByTagNameTmpLocal != null) {
             final Map<String, Class<?>> unloadedClasses = new HashMap<>();
 
-            for (final Entry<String, Class<?>> entry : tagClassByTagNameTmp.entrySet()) {
+            for (final Entry<String, Class<?>> entry : tagClassByTagNameTmpLocal.entrySet()) {
                 try {
 
                     Class.forName(entry.getValue().getName());
@@ -433,9 +434,9 @@ public class TagRegistry {
 
                 }
             }
-            tagClassByTagNameTmp.clear();
+            tagClassByTagNameTmpLocal.clear();
             if (unloadedClasses.size() > 0) {
-                tagClassByTagNameTmp.putAll(unloadedClasses);
+                tagClassByTagNameTmpLocal.putAll(unloadedClasses);
             } else {
                 tagClassByTagNameTmp = null;
             }
