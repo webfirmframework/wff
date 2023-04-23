@@ -2870,7 +2870,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             buildOpeningTag(false);
 
-            closingTag = tagType == TagType.OPENING_CLOSING ? buildClosingTag() : "";
+            closingTag = TagType.OPENING_CLOSING.equals(tagType) ? buildClosingTag() : "";
 
             if (base != null) {
                 base.addChildLockless(this);
@@ -4320,9 +4320,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             // previously attributeHtmlString was used in append method
             // as argument.
             htmlStartSB.append('<').append(tagName).append(AttributeUtil.getAttributeHtmlString(rebuild, attributes));
-            if (tagType == TagType.OPENING_CLOSING) {
+            if (TagType.OPENING_CLOSING.equals(tagType)) {
                 htmlStartSB.append('>');
-            } else if (tagType == TagType.SELF_CLOSING) {
+            } else if (TagType.SELF_CLOSING.equals(tagType)) {
                 htmlStartSB.append(new char[] { '/', '>' });
             } else {
                 // here it will be tagType == TagType.NON_CLOSING as there are

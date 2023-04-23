@@ -115,7 +115,7 @@ public class Link extends AbstractHtml {
      * @author WFF
      */
     public static boolean isSelfClosing() {
-        return Link.tagType == TagType.SELF_CLOSING;
+        return TagType.SELF_CLOSING.equals(Link.tagType);
     }
 
     /**
@@ -124,7 +124,7 @@ public class Link extends AbstractHtml {
      * @author WFF
      */
     public static boolean isNonClosing() {
-        return Link.tagType == TagType.NON_CLOSING;
+        return TagType.NON_CLOSING.equals(Link.tagType);
     }
 
 }

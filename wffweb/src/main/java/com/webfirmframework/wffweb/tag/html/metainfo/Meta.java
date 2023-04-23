@@ -115,7 +115,7 @@ public class Meta extends AbstractHtml {
      * @author WFF
      */
     public static boolean isSelfClosing() {
-        return Meta.tagType == TagType.SELF_CLOSING;
+        return TagType.SELF_CLOSING.equals(Meta.tagType);
     }
 
     /**
@@ -124,7 +124,7 @@ public class Meta extends AbstractHtml {
      * @author WFF
      */
     public static boolean isNonClosing() {
-        return Meta.tagType == TagType.NON_CLOSING;
+        return TagType.NON_CLOSING.equals(Meta.tagType);
     }
 
 }
