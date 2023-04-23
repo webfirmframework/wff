@@ -39,7 +39,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.event.EventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
-@FixMethodOrder(MethodSorters.JVM)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AttributeRegistryTest {
     
     /**
@@ -47,7 +47,7 @@ public class AttributeRegistryTest {
      * @throws Exception
      */
     @Test
-    public void testTestMethods() throws Exception {
+    public void test0TestMethods() throws Exception {
         
         try {
             //loadAllTagClasses must be after test

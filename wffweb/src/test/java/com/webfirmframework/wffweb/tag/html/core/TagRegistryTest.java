@@ -34,7 +34,7 @@ import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 
-@FixMethodOrder(MethodSorters.JVM)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TagRegistryTest {
     
     /**
@@ -42,7 +42,7 @@ public class TagRegistryTest {
      * @throws Exception
      */
     @Test
-    public void testTestMethods() throws Exception {
+    public void test0TestMethods() throws Exception {
         try {
             //loadAllTagClasses must be after test
             //not possible to write a separate test case for test() method
