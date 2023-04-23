@@ -735,7 +735,8 @@ public class AttributeRegistry {
     // only for testing purpose
     static void test() throws InstantiationException, IllegalAccessException, NoSuchFieldException, SecurityException,
             IllegalArgumentException, InvocationTargetException, NoSuchMethodException, InvalidValueException {
-        for (final Entry<String, Class<?>> each : attributeClassByAttrNameTmp.entrySet()) {
+        final Map<String, Class<?>> attributeClassByAttrNameTmpLocal = attributeClassByAttrNameTmp;
+        for (final Entry<String, Class<?>> each : attributeClassByAttrNameTmpLocal.entrySet()) {
             final String expectedAttrName = each.getKey();
             final Class<?> attrClass = each.getValue();
 
@@ -766,7 +767,8 @@ public class AttributeRegistry {
     // only for testing purpose
     static void test1() throws InstantiationException, IllegalAccessException, NoSuchFieldException, SecurityException,
             IllegalArgumentException, InvocationTargetException, NoSuchMethodException, InvalidValueException {
-        for (final Entry<String, Class<?>> each : attributeClassByAttrNameTmp.entrySet()) {
+        final Map<String, Class<?>> attributeClassByAttrNameTmpLocal = attributeClassByAttrNameTmp;
+        for (final Entry<String, Class<?>> each : attributeClassByAttrNameTmpLocal.entrySet()) {
             String expectedHtmlString = each.getKey() + "=";
             final Class<?> attrClass = each.getValue();
 
