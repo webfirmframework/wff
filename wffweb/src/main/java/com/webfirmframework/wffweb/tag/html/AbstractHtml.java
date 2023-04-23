@@ -137,7 +137,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     private volatile StringBuilder htmlMiddleSB;
 
-    private StringBuilder htmlEndSB;
+//    private StringBuilder htmlEndSB;
 
     private final String tagName;
 
@@ -2936,7 +2936,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         htmlStartSB = new StringBuilder(
                 tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
 
-        htmlEndSB = new StringBuilder(tagName == null ? 16 : tagName.length() + 3);
+//        htmlEndSB = new StringBuilder(tagName == null ? 16 : tagName.length() + 3);
     }
 
     public AbstractHtml getParent() {
@@ -4343,9 +4343,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 1.0.0
      */
     private String buildClosingTag() {
-        if (htmlEndSB.length() > 0) {
-            htmlEndSB.delete(0, htmlEndSB.length());
-        }
+        final StringBuilder htmlEndSB = new StringBuilder(tagName == null ? 16 : tagName.length() + 3);        
         if (tagName != null) {
             htmlEndSB.append(new char[] { '<', '/' }).append(tagName).append('>');
         } else {
