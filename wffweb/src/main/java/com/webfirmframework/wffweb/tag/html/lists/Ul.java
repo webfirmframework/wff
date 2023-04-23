@@ -41,12 +41,6 @@ public class Ul extends AbstractHtml {
 
     private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.UL;
 
-    static {
-
-        PRE_INDEXED_TAG_NAME = ();
-
-    }
-
     {
 
         init();
