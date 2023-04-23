@@ -39,7 +39,7 @@ public class Img extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Img.class.getName());
 
-    private static volatile TagType tagType = TagType.NON_CLOSING;
+    private static TagType tagType = TagType.NON_CLOSING;
 
     private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
 
