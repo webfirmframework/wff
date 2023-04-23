@@ -25,10 +25,12 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
@@ -37,11 +39,16 @@ import com.webfirmframework.wffweb.tag.html.attribute.event.EventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
-
+@FixMethodOrder(MethodSorters.JVM)
 public class AttributeRegistryTest {
     
+    /**
+     * Note: this test case should be first
+     * @throws Exception
+     */
     @Test
     public void testTestMethods() throws Exception {
+        
         try {
             //loadAllTagClasses must be after test
             //not possible to write a separate test case for test() method

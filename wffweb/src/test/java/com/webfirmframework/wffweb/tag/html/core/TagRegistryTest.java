@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -32,8 +34,13 @@ import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 
+@FixMethodOrder(MethodSorters.JVM)
 public class TagRegistryTest {
     
+    /**
+     * Note: this test case should be first
+     * @throws Exception
+     */
     @Test
     public void testTestMethods() throws Exception {
         try {
