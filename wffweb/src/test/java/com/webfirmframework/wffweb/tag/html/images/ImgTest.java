@@ -27,7 +27,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml.TagType;
 public class ImgTest {
 
     @Test
-    public void atestImg1() {
+    public void testImg1() {
 
         Img img = new Img(null);
         assertEquals("<img>", img.toHtmlString());
@@ -48,9 +48,9 @@ public class ImgTest {
     @Test
     public void testImg2() {
 
-//        Img.setTagType(TagType.SELF_CLOSING);
-//        Img img = new Img(null);
-//        assertEquals("<img/>", img.toHtmlString());
+        Img.setTagType(TagType.SELF_CLOSING);
+        Img img = new Img(null);
+        assertEquals("<img/>", img.toHtmlString());
 
     }
 
