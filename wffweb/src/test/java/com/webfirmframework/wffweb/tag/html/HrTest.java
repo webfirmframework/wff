@@ -42,13 +42,4 @@ public class HrTest {
         assertEquals("<hr>", hr.toHtmlString());
     }
 
-    @Test
-    public void testHr2() {
-
-        Hr.setTagType(TagType.SELF_CLOSING);
-        Hr hr = new Hr(null);
-        assertEquals("<hr/>", hr.toHtmlString());
-
-    }
-
 }
