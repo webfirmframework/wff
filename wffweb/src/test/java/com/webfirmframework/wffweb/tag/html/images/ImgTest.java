@@ -52,6 +52,7 @@ public class ImgTest {
         Img.setTagType(TagType.SELF_CLOSING);
         Img img = new Img(null);
         assertEquals("<img/>", img.toHtmlString());
+        Img.setTagType(TagType.NON_CLOSING);
 
     }
 
