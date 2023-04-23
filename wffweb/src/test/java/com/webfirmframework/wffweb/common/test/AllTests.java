@@ -16,7 +16,11 @@
  */
 package com.webfirmframework.wffweb.common.test;
 
+import org.junit.FixMethodOrder;
+import org.junit.runner.OrderWith;
 import org.junit.runner.RunWith;
+import org.junit.runner.manipulation.Alphanumeric;
+import org.junit.runners.MethodSorters;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
@@ -184,6 +188,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
  * @since 1.0.0
  */
 @RunWith(Suite.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @SuiteClasses({ HtmlTest.class, TagPrintTest.class, CssPropertyEnumTests.class, AlignContentTest.class, StyleTest.class,
         CursorTest.class, ListStyleImageTest.class, WordSpacingTest.class, BorderBottomWidthTest.class,
         BorderLeftWidthTest.class, BorderRightWidthTest.class, BorderTopWidthTest.class, ColumnRuleWidthTest.class,
