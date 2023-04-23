@@ -85,8 +85,7 @@ public class OnMouseEnter extends AbstractEventAttribute implements AAttributabl
      */
     public OnMouseEnter(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
-        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
-                serverSideData);
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
     }
 
     /**

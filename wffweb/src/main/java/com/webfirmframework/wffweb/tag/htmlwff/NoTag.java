@@ -28,9 +28,9 @@ import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.common.URIEvent;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent;
+import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
 import com.webfirmframework.wffweb.tag.html.TagEvent;
 import com.webfirmframework.wffweb.tag.html.URIStateSwitch;
-import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
 import com.webfirmframework.wffweb.util.StringUtil;
 
 /**

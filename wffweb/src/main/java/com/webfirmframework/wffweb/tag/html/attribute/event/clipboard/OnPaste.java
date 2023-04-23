@@ -53,8 +53,8 @@ public class OnPaste extends AbstractEventAttribute {
         setServerMethod(null, serverMethod, null, null);
     }
 
-    public OnPaste(final String jsPreFunctionBody, final ServerMethod serverMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+    public OnPaste(final String jsPreFunctionBody, final ServerMethod serverMethod, final String jsFilterFunctionBody,
+            final String jsPostFunctionBody) {
         setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
@@ -79,10 +79,9 @@ public class OnPaste extends AbstractEventAttribute {
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnPaste(final String jsPreFunctionBody, final ServerMethod serverMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
-        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
-                serverSideData);
+    public OnPaste(final String jsPreFunctionBody, final ServerMethod serverMethod, final String jsFilterFunctionBody,
+            final String jsPostFunctionBody, final Object serverSideData) {
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
     }
 
     /**

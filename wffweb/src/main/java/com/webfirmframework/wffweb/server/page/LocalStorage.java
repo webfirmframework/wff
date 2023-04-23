@@ -64,7 +64,7 @@ public sealed interface LocalStorage permits LocalStorageImpl {
     /**
      * @since 12.0.0-beta.4
      */
-    sealed interface Item permits ItemData,TokenData {
+    sealed interface Item permits ItemData, TokenData {
 
         String value();
 

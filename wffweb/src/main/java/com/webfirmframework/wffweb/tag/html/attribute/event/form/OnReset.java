@@ -54,8 +54,8 @@ public class OnReset extends AbstractEventAttribute implements AAttributable {
         setServerMethod(null, serverMethod, null, null);
     }
 
-    public OnReset(final String jsPreFunctionBody, final ServerMethod serverMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+    public OnReset(final String jsPreFunctionBody, final ServerMethod serverMethod, final String jsFilterFunctionBody,
+            final String jsPostFunctionBody) {
         setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
@@ -80,10 +80,9 @@ public class OnReset extends AbstractEventAttribute implements AAttributable {
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnReset(final String jsPreFunctionBody, final ServerMethod serverMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
-        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
-                serverSideData);
+    public OnReset(final String jsPreFunctionBody, final ServerMethod serverMethod, final String jsFilterFunctionBody,
+            final String jsPostFunctionBody, final Object serverSideData) {
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
     }
 
     /**

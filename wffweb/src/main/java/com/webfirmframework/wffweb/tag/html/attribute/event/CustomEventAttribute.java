@@ -24,8 +24,7 @@ public class CustomEventAttribute extends AbstractEventAttribute {
     }
 
     public CustomEventAttribute(final String attributeName, final String jsPreFunctionBody,
-            final ServerMethod serverMethod, final String jsFilterFunctionBody,
-            final String jsPostFunctionBody) {
+            final ServerMethod serverMethod, final String jsFilterFunctionBody, final String jsPostFunctionBody) {
         super(attributeName, jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
@@ -50,10 +49,9 @@ public class CustomEventAttribute extends AbstractEventAttribute {
      * @since 3.0.2
      */
     public CustomEventAttribute(final String attributeName, final String jsPreFunctionBody,
-            final ServerMethod serverMethod, final String jsFilterFunctionBody,
-            final String jsPostFunctionBody, final Object serverSideData) {
-        super(attributeName, jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
-                serverSideData);
+            final ServerMethod serverMethod, final String jsFilterFunctionBody, final String jsPostFunctionBody,
+            final Object serverSideData) {
+        super(attributeName, jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
     }
 
     /**
@@ -69,10 +67,10 @@ public class CustomEventAttribute extends AbstractEventAttribute {
      * @since 3.0.15
      */
     public CustomEventAttribute(final String attributeName, final boolean preventDefault,
-            final String jsPreFunctionBody, final ServerMethod serverMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
-        super(attributeName, preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody,
-                jsPostFunctionBody, serverSideData);
+            final String jsPreFunctionBody, final ServerMethod serverMethod, final String jsFilterFunctionBody,
+            final String jsPostFunctionBody, final Object serverSideData) {
+        super(attributeName, preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
     }
 
     /**
@@ -87,10 +85,10 @@ public class CustomEventAttribute extends AbstractEventAttribute {
      * @since 3.0.15
      */
     public CustomEventAttribute(final String attributeName, final boolean preventDefault,
-            final String jsPreFunctionBody, final ServerMethod serverMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
-        super(attributeName, preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody,
-                jsPostFunctionBody, null);
+            final String jsPreFunctionBody, final ServerMethod serverMethod, final String jsFilterFunctionBody,
+            final String jsPostFunctionBody) {
+        super(attributeName, preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                null);
     }
 
     /*

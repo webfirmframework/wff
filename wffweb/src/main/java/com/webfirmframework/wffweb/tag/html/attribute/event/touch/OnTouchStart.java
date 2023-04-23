@@ -81,8 +81,7 @@ public class OnTouchStart extends AbstractEventAttribute {
      */
     public OnTouchStart(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
-        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
-                serverSideData);
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
     }
 
     /**

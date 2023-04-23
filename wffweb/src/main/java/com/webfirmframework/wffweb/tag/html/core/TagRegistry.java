@@ -180,7 +180,7 @@ public class TagRegistry {
         final int initialCapacity = fields.length;
 
         final Map<String, Class<?>> tagClassByTagName = new ConcurrentHashMap<>(initialCapacity);
-        
+
         tagClassByTagName.put(TagNameConstants.A, A.class);
         tagClassByTagName.put(TagNameConstants.ABBR, Abbr.class);
         tagClassByTagName.put(TagNameConstants.ADDRESS, Address.class);
@@ -347,8 +347,7 @@ public class TagRegistry {
     /**
      * @return the list of tag names sorted in the ascending order of its length
      * @since 1.1.3
-     * @since 12.0.0-beta.7
-     * immutable list
+     * @since 12.0.0-beta.7 immutable list
      * @author WFF
      */
     public static List<String> getTagNames() {

@@ -2263,7 +2263,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * browserPage.performBrowserPageAction(
      *         BrowserPageAction.getActionByteBufferForExecuteJS("alert('This is an alert');"));
      * </pre>
-     * 
+     *
      * <br>
      * <br>
      * Eg:-
@@ -2271,7 +2271,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * <pre>
      * tagRepository.executeJs("alert('This is an alert');");
      * </pre>
-     * 
+     *
      * This shows an alert in the browser: <b><i>This is an alert</i></b>.
      *
      * @param js the JavaScript to be executed at the client browser page.
@@ -2291,9 +2291,9 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * <pre>
      * browserPage.performBrowserPageAction(
      *         BrowserPageAction.getActionByteBufferForExecuteJS("alert('This is an alert');", true));
-     * 
+     *
      * </pre>
-     * 
+     *
      * <br>
      * <br>
      * Eg:-
@@ -2301,7 +2301,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * <pre>
      * tagRepository.executeJsInOtherBrowserPages("alert('This is an alert');");
      * </pre>
-     * 
+     *
      * This shows an alert in the browser: <b><i>This is an alert</i></b>.
      *
      * @param js the JavaScript to be executed at the client browser page. *

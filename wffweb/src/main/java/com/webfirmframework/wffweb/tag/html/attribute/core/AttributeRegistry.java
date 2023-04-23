@@ -241,7 +241,7 @@ public class AttributeRegistry {
 
         Map<String, Class<?>> attributeClassByAttrName = new ConcurrentHashMap<>(initialCapacity);
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME = new ConcurrentHashMap<>(initialCapacity);
-        
+
         attributeClassByAttrName = new ConcurrentHashMap<>(initialCapacity);
 
         attributeClassByAttrName.put(DataWffId.ATTRIBUTE_NAME, DataWffId.class);
@@ -523,8 +523,7 @@ public class AttributeRegistry {
      *         length
      * @author WFF
      * @since 1.1.3
-     * @since 12.0.0-beta.7
-     * immutable list
+     * @since 12.0.0-beta.7 immutable list
      */
     public static List<String> getAttributeNames() {
         return List.copyOf(IndexedAttributeName.INSTANCE.sortedAttrNames());

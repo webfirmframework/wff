@@ -10,6 +10,6 @@ import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
  * @since 12.0.0
  */
 public sealed interface SecurityObject extends
-        Serializable permits AbstractAttributeSecurity,AbstractHtmlSecurity,AbstractJsObjectSecurity,BrowserPageSecurity,SharedTagContentSecurity {
+        Serializable permits AbstractAttributeSecurity, AbstractHtmlSecurity, AbstractJsObjectSecurity, BrowserPageSecurity, SharedTagContentSecurity {
     IndexedClassType forClassType();
 }

@@ -19,6 +19,6 @@ package com.webfirmframework.wffweb.server.page;
  * @since 3.0.16
  */
 public record WebSocketOpenedRecord(BrowserPage browserPage, BrowserPageSession session,
-                                    HeartbeatManager heartbeatManager) {
+        HeartbeatManager heartbeatManager) {
 
 }

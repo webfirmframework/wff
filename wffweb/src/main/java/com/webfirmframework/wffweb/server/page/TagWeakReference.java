@@ -28,7 +28,7 @@ final class TagWeakReference extends WeakReference<AbstractHtml> {
 
     private final InternalId internalId;
 
-    public TagWeakReference(AbstractHtml referent) {
+    public TagWeakReference(final AbstractHtml referent) {
         super(referent);
         internalId = referent.internalId();
     }
@@ -39,14 +39,14 @@ final class TagWeakReference extends WeakReference<AbstractHtml> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
-        TagWeakReference other = (TagWeakReference) obj;
+        }
+        final TagWeakReference other = (TagWeakReference) obj;
         return Objects.equals(internalId, other.internalId);
     }
 

@@ -55,8 +55,8 @@ public class OnLoad extends AbstractEventAttribute implements InputAttributable,
         setServerMethod(null, serverMethod, null, null);
     }
 
-    public OnLoad(final String jsPreFunctionBody, final ServerMethod serverMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+    public OnLoad(final String jsPreFunctionBody, final ServerMethod serverMethod, final String jsFilterFunctionBody,
+            final String jsPostFunctionBody) {
         setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
@@ -81,10 +81,9 @@ public class OnLoad extends AbstractEventAttribute implements InputAttributable,
      * @param serverSideData
      * @since 3.0.2
      */
-    public OnLoad(final String jsPreFunctionBody, final ServerMethod serverMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
-        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
-                serverSideData);
+    public OnLoad(final String jsPreFunctionBody, final ServerMethod serverMethod, final String jsFilterFunctionBody,
+            final String jsPostFunctionBody, final Object serverSideData) {
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
     }
 
     /**

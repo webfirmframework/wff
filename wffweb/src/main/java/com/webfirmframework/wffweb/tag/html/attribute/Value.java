@@ -78,7 +78,7 @@ public class Value extends AbstractAttribute implements InputAttributable {
      */
     public void setValue(final boolean updateClient, final String value) {
         super.setAttributeValue(updateClient, value);
-    }   
+    }
 
     /**
      * @param value the value to set again even if the existing value is same at
