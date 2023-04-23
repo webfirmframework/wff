@@ -42,7 +42,7 @@ public class TagRegistryTest {
      * @throws Exception
      */
     @Test
-    public void test0TestMethods() throws Exception {
+    public void aTestTestMethods() throws Exception {
         try {
             //loadAllTagClasses must be after test
             //not possible to write a separate test case for test() method
