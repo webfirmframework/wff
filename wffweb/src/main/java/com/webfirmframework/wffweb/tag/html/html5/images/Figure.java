@@ -37,13 +37,7 @@ public class Figure extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Figure.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.FIGURE);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.FIGURE;
 
     {
 

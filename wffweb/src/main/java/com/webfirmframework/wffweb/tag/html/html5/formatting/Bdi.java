@@ -37,13 +37,7 @@ public class Bdi extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Bdi.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.BDI);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.BDI;
 
     {
 

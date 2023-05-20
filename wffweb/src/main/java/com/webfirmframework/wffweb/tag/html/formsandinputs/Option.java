@@ -37,13 +37,7 @@ public class Option extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Option.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.OPTION);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.OPTION;
 
     {
 

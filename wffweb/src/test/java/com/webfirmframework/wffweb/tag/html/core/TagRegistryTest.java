@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -32,7 +34,29 @@ import com.webfirmframework.wffweb.tag.html.TagNameConstants;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TagRegistryTest {
+    
+    /**
+     * Note: this test case should be first
+     * @throws Exception
+     */
+    @Test
+    public void aTestTestMethods() throws Exception {
+        try {
+            //loadAllTagClasses must be after test
+            //not possible to write a separate test case for test() method
+            //as the internal map will be nullified in loadAllTagClasses
+            TagRegistry.test();            
+        } catch (InvalidValueException e) {
+            fail(e.getMessage());
+        } 
+    }
+
+    @Test
+    public void testLoadAllTagClasses() throws Exception {
+        TagRegistry.loadAllTagClasses();    
+    }
 
     @Test
     public void testIfAllTagNamesAreReffered() throws Exception {
@@ -53,20 +77,7 @@ public class TagRegistryTest {
             }
         }
     }
-    
-    @Test
-    public void testLoadAllTagClasses() throws Exception {
-        try {
-            //loadAllTagClasses must be after test
-            //not possible to write a separate test case for test() method
-            //as the internal map will be nullified in loadAllTagClasses
-            TagRegistry.test();            
-        } catch (InvalidValueException e) {
-            fail(e.getMessage());
-        }
-        TagRegistry.loadAllTagClasses();    
-    }   
-    
+
     @Test
     public void testGetNewTagInstance() {
         final Map<String, Class<?>> tagClassNameByTagName = TagRegistry

@@ -39,13 +39,7 @@ public class Main extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.MAIN);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.MAIN;
 
     {
 

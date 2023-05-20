@@ -41,13 +41,7 @@ public class Link extends AbstractHtml {
 
     private static TagType tagType = TagType.SELF_CLOSING;
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.LINK);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.LINK;
 
     {
 
@@ -115,7 +109,7 @@ public class Link extends AbstractHtml {
      * @author WFF
      */
     public static boolean isSelfClosing() {
-        return Link.tagType == TagType.SELF_CLOSING;
+        return TagType.SELF_CLOSING.equals(Link.tagType);
     }
 
     /**
@@ -124,7 +118,7 @@ public class Link extends AbstractHtml {
      * @author WFF
      */
     public static boolean isNonClosing() {
-        return Link.tagType == TagType.NON_CLOSING;
+        return TagType.NON_CLOSING.equals(Link.tagType);
     }
 
 }

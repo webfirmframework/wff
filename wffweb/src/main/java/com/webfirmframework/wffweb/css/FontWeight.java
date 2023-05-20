@@ -31,7 +31,11 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  * font-weight: normal|bold|bolder|lighter|<i>number</i>|initial|inherit;
  * <i>number : 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900</i>
  *
- * <i>font-weight: 100</i> is {@code FontWeight.ONE_HUNDRED}, <i>font-weight: 200</i> is {@code FontWeight.TWO_HUNDRED} and so on.
+ * <i>font-weight: 100</i> is {@code
+ * FontWeight.ONE_HUNDRED
+ * }, <i>font-weight: 200</i> is {@code
+ * FontWeight.TWO_HUNDRED
+ * } and so on.
  * </pre>
  *
  * @author WFF

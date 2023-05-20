@@ -37,13 +37,7 @@ public class Nav extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Nav.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.NAV);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.NAV;
 
     {
 

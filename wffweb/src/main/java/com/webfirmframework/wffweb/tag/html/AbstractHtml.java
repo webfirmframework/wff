@@ -133,11 +133,11 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     // should be initialized with empty string
     private final String closingTag;
 
-    private StringBuilder htmlStartSB;
+    private final StringBuilder htmlStartSB;
 
     private volatile StringBuilder htmlMiddleSB;
 
-    private StringBuilder htmlEndSB;
+//    private StringBuilder htmlEndSB;
 
     private final String tagName;
 
@@ -150,7 +150,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     // NB never assign null, it should never be null
     private volatile AbstractHtml5SharedObject sharedObject;
 
-    private boolean htmlStartSBAsFirst;
+    private final boolean htmlStartSBAsFirst;
 
     // for future development
     private WffBinaryMessageOutputStreamer wffBinaryMessageOutputStreamer;
@@ -441,6 +441,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         tagType = TagType.OPENING_CLOSING;
         tagNameIndexBytes = null;
         noTagContentTypeHtml = false;
+        htmlStartSBAsFirst = false;
 
         final List<Lock> locks;
 
@@ -455,6 +456,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         try {
 
+            htmlStartSB = new StringBuilder(
+                    tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
             initInConstructor();
 
             buildOpeningTag(false);
@@ -506,6 +509,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         try {
 
+            htmlStartSB = new StringBuilder(
+                    tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
             initInConstructor();
 
             htmlStartSBAsFirst = true;
@@ -555,6 +560,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         tagType = TagType.OPENING_CLOSING;
         tagNameIndexBytes = null;
         noTagContentTypeHtml = false;
+        htmlStartSBAsFirst = false;
 
         final List<Lock> attrLocks = AttributeUtil.lockAndGetWriteLocks(ACCESS_OBJECT, attributes);
 
@@ -571,6 +577,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             initAttributes(attributes);
 
+            htmlStartSB = new StringBuilder(
+                    tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
             initInConstructor();
 
             markOwnerTag(attributes);
@@ -617,6 +625,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         tagType = TagType.OPENING_CLOSING;
         tagNameIndexBytes = preIndexedTagName.internalIndexBytes(ACCESS_OBJECT);
         noTagContentTypeHtml = false;
+        htmlStartSBAsFirst = false;
 
         final List<Lock> attrLocks = AttributeUtil.lockAndGetWriteLocks(ACCESS_OBJECT, attributes);
 
@@ -640,6 +649,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             initAttributes(attributes);
 
+            htmlStartSB = new StringBuilder(
+                    tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
             initInConstructor();
 
             markOwnerTag(attributes);
@@ -2848,6 +2859,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         this.tagName = tagName;
         this.tagNameIndexBytes = tagNameIndexBytes;
         noTagContentTypeHtml = false;
+        htmlStartSBAsFirst = false;
 
         final List<Lock> attrLocks = AttributeUtil.lockAndGetWriteLocks(ACCESS_OBJECT, attributes);
 
@@ -2864,13 +2876,15 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             initAttributes(attributes);
 
+            htmlStartSB = new StringBuilder(
+                    tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
             initInConstructor();
 
             markOwnerTag(attributes);
 
             buildOpeningTag(false);
 
-            closingTag = tagType == TagType.OPENING_CLOSING ? buildClosingTag() : "";
+            closingTag = TagType.OPENING_CLOSING.equals(tagType) ? buildClosingTag() : "";
 
             if (base != null) {
                 base.addChildLockless(this);
@@ -2933,10 +2947,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 1.0.0
      */
     private void initInConstructor() {
-        htmlStartSB = new StringBuilder(
-                tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
+//        htmlStartSB = new StringBuilder(
+//                tagName == null ? 0 : tagName.length() + 2 + ((attributes == null ? 0 : attributes.length) * 16));
 
-        htmlEndSB = new StringBuilder(tagName == null ? 16 : tagName.length() + 3);
+//        htmlEndSB = new StringBuilder(tagName == null ? 16 : tagName.length() + 3);
     }
 
     public AbstractHtml getParent() {
@@ -4320,9 +4334,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             // previously attributeHtmlString was used in append method
             // as argument.
             htmlStartSB.append('<').append(tagName).append(AttributeUtil.getAttributeHtmlString(rebuild, attributes));
-            if (tagType == TagType.OPENING_CLOSING) {
+            if (TagType.OPENING_CLOSING.equals(tagType)) {
                 htmlStartSB.append('>');
-            } else if (tagType == TagType.SELF_CLOSING) {
+            } else if (TagType.SELF_CLOSING.equals(tagType)) {
                 htmlStartSB.append(new char[] { '/', '>' });
             } else {
                 // here it will be tagType == TagType.NON_CLOSING as there are
@@ -4343,9 +4357,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 1.0.0
      */
     private String buildClosingTag() {
-        if (htmlEndSB.length() > 0) {
-            htmlEndSB.delete(0, htmlEndSB.length());
-        }
+        final StringBuilder htmlEndSB = new StringBuilder(tagName == null ? 16 : tagName.length() + 3);
         if (tagName != null) {
             htmlEndSB.append(new char[] { '<', '/' }).append(tagName).append('>');
         } else {
@@ -4353,7 +4365,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 htmlEndSB.append(getHtmlMiddleSB());
             }
         }
-        htmlEndSB.trimToSize();
         return htmlEndSB.toString();
     }
 

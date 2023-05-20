@@ -37,13 +37,7 @@ public class Strong extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Strong.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.STRONG);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.STRONG;
 
     {
 

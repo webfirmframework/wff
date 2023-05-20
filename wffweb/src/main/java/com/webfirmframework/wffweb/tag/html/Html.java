@@ -35,13 +35,7 @@ public class Html extends DocType {
 
     private static final Logger LOGGER = Logger.getLogger(Html.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.HTML);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.HTML;
 
     {
 

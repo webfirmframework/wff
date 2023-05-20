@@ -41,13 +41,7 @@ public class MapTag extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(MapTag.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.MAP);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.MAP;
 
     {
 

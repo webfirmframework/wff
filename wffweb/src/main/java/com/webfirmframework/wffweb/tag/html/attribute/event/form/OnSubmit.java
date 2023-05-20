@@ -48,11 +48,10 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
     }
 
     /**
-     * @param serverMethod This method will invoke at server side with an
-     *                          argument {@code wffBMObject}. The
-     *                          {@code wffBMObject} is the representational
-     *                          JavaScript object returned by
-     *                          {@code jsFilterFunctionBody}.
+     * @param serverMethod This method will invoke at server side with an argument
+     *                     {@code wffBMObject}. The {@code wffBMObject} is the
+     *                     representational JavaScript object returned by
+     *                     {@code jsFilterFunctionBody}.
      */
     public OnSubmit(final ServerMethod serverMethod) {
         setServerMethod(null, serverMethod, null, null);
@@ -77,7 +76,7 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
      *                                                                    return false;
      *                             </pre>
      *
-     * @param serverMethod    This method will invoke at server side with an
+     * @param serverMethod         This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             JavaScript object returned by
@@ -103,8 +102,8 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
      *                             in the scope. There are common implicit objects
      *                             {@code event} and {@code source} in the scope.
      */
-    public OnSubmit(final String jsPreFunctionBody, final ServerMethod serverMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+    public OnSubmit(final String jsPreFunctionBody, final ServerMethod serverMethod, final String jsFilterFunctionBody,
+            final String jsPostFunctionBody) {
         setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody);
     }
 
@@ -113,13 +112,12 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
     }
 
     /**
-     * @param serverMethod This method will invoke at server side with an
-     *                          argument {@code wffBMObject}. The
-     *                          {@code wffBMObject} is the representational
-     *                          JavaScript object returned by
-     *                          {@code jsFilterFunctionBody}.
-     * @param serverSideData    this data will be available in the Event object of
-     *                          ServerMethod.invoke method.
+     * @param serverMethod   This method will invoke at server side with an argument
+     *                       {@code wffBMObject}. The {@code wffBMObject} is the
+     *                       representational JavaScript object returned by
+     *                       {@code jsFilterFunctionBody}.
+     * @param serverSideData this data will be available in the Event object of
+     *                       ServerMethod.invoke method.
      * @since 3.0.2
      */
     public OnSubmit(final ServerMethod serverMethod, final Object serverSideData) {
@@ -145,7 +143,7 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
      *                                                                    return false;
      *                             </pre>
      *
-     * @param serverMethod    This method will invoke at server side with an
+     * @param serverMethod         This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             JavaScript object returned by
@@ -174,19 +172,17 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
      *                             of ServerMethod.invoke method.
      * @since 3.0.2
      */
-    public OnSubmit(final String jsPreFunctionBody, final ServerMethod serverMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
-        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
-                serverSideData);
+    public OnSubmit(final String jsPreFunctionBody, final ServerMethod serverMethod, final String jsFilterFunctionBody,
+            final String jsPostFunctionBody, final Object serverSideData) {
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
     }
 
     /**
-     * @param preventDefault    true to call event.preventDefault(); on event
-     * @param serverMethod This method will invoke at server side with an
-     *                          argument {@code wffBMObject}. The
-     *                          {@code wffBMObject} is the representational
-     *                          JavaScript object returned by
-     *                          {@code jsFilterFunctionBody}.
+     * @param preventDefault true to call event.preventDefault(); on event
+     * @param serverMethod   This method will invoke at server side with an argument
+     *                       {@code wffBMObject}. The {@code wffBMObject} is the
+     *                       representational JavaScript object returned by
+     *                       {@code jsFilterFunctionBody}.
      * @since 3.0.15
      */
     public OnSubmit(final boolean preventDefault, final ServerMethod serverMethod) {
@@ -213,7 +209,7 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
      *                                                                    return false;
      *                             </pre>
      *
-     * @param serverMethod    This method will invoke at server side with an
+     * @param serverMethod         This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             JavaScript object returned by
@@ -240,18 +236,17 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
      *                             {@code event} and {@code source} in the scope.
      * @since 3.0.15
      */
-    public OnSubmit(final boolean preventDefault, final String jsPreFunctionBody,
-            final ServerMethod serverMethod, final String jsFilterFunctionBody,
-            final String jsPostFunctionBody) {
-        setServerMethod(preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody,
-                jsPostFunctionBody, null);
+    public OnSubmit(final boolean preventDefault, final String jsPreFunctionBody, final ServerMethod serverMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+        setServerMethod(preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                null);
     }
 
     /**
      * @param preventDefault       true to call event.preventDefault(); on event
      *
      *
-     * @param serverMethod    This method will invoke at server side with an
+     * @param serverMethod         This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             JavaScript object returned by
@@ -278,24 +273,22 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
      *                             {@code event} and {@code source} in the scope.
      * @since 3.0.15
      */
-    public OnSubmit(final boolean preventDefault, final ServerMethod serverMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody) {
+    public OnSubmit(final boolean preventDefault, final ServerMethod serverMethod, final String jsFilterFunctionBody,
+            final String jsPostFunctionBody) {
         setServerMethod(preventDefault, null, serverMethod, jsFilterFunctionBody, jsPostFunctionBody, null);
     }
 
     /**
-     * @param preventDefault    true to call event.preventDefault(); on event
-     * @param serverMethod This method will invoke at server side with an
-     *                          argument {@code wffBMObject}. The
-     *                          {@code wffBMObject} is the representational
-     *                          JavaScript object returned by
-     *                          {@code jsFilterFunctionBody}.
-     * @param serverSideData    this data will be available in the Event object of
-     *                          ServerMethod.invoke method.
+     * @param preventDefault true to call event.preventDefault(); on event
+     * @param serverMethod   This method will invoke at server side with an argument
+     *                       {@code wffBMObject}. The {@code wffBMObject} is the
+     *                       representational JavaScript object returned by
+     *                       {@code jsFilterFunctionBody}.
+     * @param serverSideData this data will be available in the Event object of
+     *                       ServerMethod.invoke method.
      * @since 3.0.15
      */
-    public OnSubmit(final boolean preventDefault, final ServerMethod serverMethod,
-            final Object serverSideData) {
+    public OnSubmit(final boolean preventDefault, final ServerMethod serverMethod, final Object serverSideData) {
         setServerMethod(preventDefault, null, serverMethod, null, null, serverSideData);
     }
 
@@ -319,7 +312,7 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
      *                                                                    return false;
      *                             </pre>
      *
-     * @param serverMethod    This method will invoke at server side with an
+     * @param serverMethod         This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             JavaScript object returned by
@@ -348,11 +341,10 @@ public class OnSubmit extends AbstractEventAttribute implements AAttributable {
      *                             of ServerMethod.invoke method.
      * @since 3.0.15
      */
-    public OnSubmit(final boolean preventDefault, final String jsPreFunctionBody,
-            final ServerMethod serverMethod, final String jsFilterFunctionBody,
-            final String jsPostFunctionBody, final Object serverSideData) {
-        setServerMethod(preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody,
-                jsPostFunctionBody, serverSideData);
+    public OnSubmit(final boolean preventDefault, final String jsPreFunctionBody, final ServerMethod serverMethod,
+            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
+        setServerMethod(preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
     }
 
     /*

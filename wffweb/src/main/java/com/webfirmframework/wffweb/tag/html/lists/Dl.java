@@ -39,13 +39,7 @@ public class Dl extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(Dl.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.DL);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.DL;
 
     {
 

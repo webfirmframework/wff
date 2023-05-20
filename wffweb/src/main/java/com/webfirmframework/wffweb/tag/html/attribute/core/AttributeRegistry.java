@@ -228,7 +228,7 @@ public class AttributeRegistry {
 
     private static final List<Class<?>> INDEXED_ATTR_CLASSES = new ArrayList<>();
 
-    private static volatile Map<String, Class<?>> attributeClassByAttrNameTmp;
+    private static volatile Map<String, Class<?>> attributeClassByAttrNameTmp = new ConcurrentHashMap<>();
 
     private static final List<String> SORTED_BOOLEAN_ATTR_NAMES;
 
@@ -241,7 +241,7 @@ public class AttributeRegistry {
 
         Map<String, Class<?>> attributeClassByAttrName = new ConcurrentHashMap<>(initialCapacity);
         ATTRIBUTE_CLASS_NAME_BY_ATTR_NAME = new ConcurrentHashMap<>(initialCapacity);
-        attributeClassByAttrNameTmp = new ConcurrentHashMap<>(initialCapacity);
+
         attributeClassByAttrName = new ConcurrentHashMap<>(initialCapacity);
 
         attributeClassByAttrName.put(DataWffId.ATTRIBUTE_NAME, DataWffId.class);
@@ -523,8 +523,7 @@ public class AttributeRegistry {
      *         length
      * @author WFF
      * @since 1.1.3
-     * @since 12.0.0-beta.7
-     * immutable list
+     * @since 12.0.0-beta.7 immutable list
      */
     public static List<String> getAttributeNames() {
         return List.copyOf(IndexedAttributeName.INSTANCE.sortedAttrNames());
@@ -593,10 +592,11 @@ public class AttributeRegistry {
      */
     public static void loadAllAttributeClasses() {
 
-        if (attributeClassByAttrNameTmp != null) {
+        final Map<String, Class<?>> attributeClassByAttrNameTmpLocal = attributeClassByAttrNameTmp;
+        if (attributeClassByAttrNameTmpLocal != null) {
             final Map<String, Class<?>> unloadedClasses = new HashMap<>();
 
-            for (final Entry<String, Class<?>> entry : attributeClassByAttrNameTmp.entrySet()) {
+            for (final Entry<String, Class<?>> entry : attributeClassByAttrNameTmpLocal.entrySet()) {
                 try {
 
                     Class.forName(entry.getValue().getName());
@@ -609,9 +609,9 @@ public class AttributeRegistry {
 
                 }
             }
-            attributeClassByAttrNameTmp.clear();
+            attributeClassByAttrNameTmpLocal.clear();
             if (unloadedClasses.size() > 0) {
-                attributeClassByAttrNameTmp.putAll(unloadedClasses);
+                attributeClassByAttrNameTmpLocal.putAll(unloadedClasses);
             } else {
                 attributeClassByAttrNameTmp = null;
             }
@@ -734,7 +734,8 @@ public class AttributeRegistry {
     // only for testing purpose
     static void test() throws InstantiationException, IllegalAccessException, NoSuchFieldException, SecurityException,
             IllegalArgumentException, InvocationTargetException, NoSuchMethodException, InvalidValueException {
-        for (final Entry<String, Class<?>> each : attributeClassByAttrNameTmp.entrySet()) {
+        final Map<String, Class<?>> attributeClassByAttrNameTmpLocal = attributeClassByAttrNameTmp;
+        for (final Entry<String, Class<?>> each : attributeClassByAttrNameTmpLocal.entrySet()) {
             final String expectedAttrName = each.getKey();
             final Class<?> attrClass = each.getValue();
 
@@ -765,7 +766,8 @@ public class AttributeRegistry {
     // only for testing purpose
     static void test1() throws InstantiationException, IllegalAccessException, NoSuchFieldException, SecurityException,
             IllegalArgumentException, InvocationTargetException, NoSuchMethodException, InvalidValueException {
-        for (final Entry<String, Class<?>> each : attributeClassByAttrNameTmp.entrySet()) {
+        final Map<String, Class<?>> attributeClassByAttrNameTmpLocal = attributeClassByAttrNameTmp;
+        for (final Entry<String, Class<?>> each : attributeClassByAttrNameTmpLocal.entrySet()) {
             String expectedHtmlString = each.getKey() + "=";
             final Class<?> attrClass = each.getValue();
 

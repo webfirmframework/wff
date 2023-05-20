@@ -172,7 +172,7 @@ public class TagRegistry {
 
     private static final List<Class<?>> INDEXED_TAG_CLASSES = new ArrayList<>();
 
-    private static volatile Map<String, Class<?>> tagClassByTagNameTmp;
+    private static volatile Map<String, Class<?>> tagClassByTagNameTmp = new ConcurrentHashMap<>();
 
     static {
 
@@ -180,7 +180,6 @@ public class TagRegistry {
         final int initialCapacity = fields.length;
 
         final Map<String, Class<?>> tagClassByTagName = new ConcurrentHashMap<>(initialCapacity);
-        tagClassByTagNameTmp = new HashMap<>(initialCapacity);
 
         tagClassByTagName.put(TagNameConstants.A, A.class);
         tagClassByTagName.put(TagNameConstants.ABBR, Abbr.class);
@@ -348,8 +347,7 @@ public class TagRegistry {
     /**
      * @return the list of tag names sorted in the ascending order of its length
      * @since 1.1.3
-     * @since 12.0.0-beta.7
-     * immutable list
+     * @since 12.0.0-beta.7 immutable list
      * @author WFF
      */
     public static List<String> getTagNames() {
@@ -417,10 +415,11 @@ public class TagRegistry {
      */
     public static void loadAllTagClasses() {
 
-        if (tagClassByTagNameTmp != null) {
+        final Map<String, Class<?>> tagClassByTagNameTmpLocal = tagClassByTagNameTmp;
+        if (tagClassByTagNameTmpLocal != null) {
             final Map<String, Class<?>> unloadedClasses = new HashMap<>();
 
-            for (final Entry<String, Class<?>> entry : tagClassByTagNameTmp.entrySet()) {
+            for (final Entry<String, Class<?>> entry : tagClassByTagNameTmpLocal.entrySet()) {
                 try {
 
                     Class.forName(entry.getValue().getName());
@@ -433,9 +432,9 @@ public class TagRegistry {
 
                 }
             }
-            tagClassByTagNameTmp.clear();
+            tagClassByTagNameTmpLocal.clear();
             if (unloadedClasses.size() > 0) {
-                tagClassByTagNameTmp.putAll(unloadedClasses);
+                tagClassByTagNameTmpLocal.putAll(unloadedClasses);
             } else {
                 tagClassByTagNameTmp = null;
             }

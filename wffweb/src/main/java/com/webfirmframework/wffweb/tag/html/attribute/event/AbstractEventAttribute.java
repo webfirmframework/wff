@@ -109,9 +109,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             true/false. This function will invoke at client
      *                             side before {@code serverMethod}. If the
      *                             jsPrefunction returns true then only
-     *                             {@code serverMethod} method will invoke (if
-     *                             it is implemented). It has implicit objects in
-     *                             its scope. They are {@code event}, {@code source}
+     *                             {@code serverMethod} method will invoke (if it is
+     *                             implemented). It has implicit objects in its
+     *                             scope. They are {@code event}, {@code source}
      *                             which gives the reference of the current tag and
      *                             {@code action}. The {@code action} implicit
      *                             object has a function named {@code perform()}
@@ -139,7 +139,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             attribute will be harmful as it will make an
      *                             infinite recursive call.
      *
-     * @param serverMethod    This method will invoke at server side with an
+     * @param serverMethod         This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             javascript object returned by
@@ -168,8 +168,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @since 2.0.0
      */
     protected AbstractEventAttribute(final String attributeName, final String jsPreFunctionBody,
-            final ServerMethod serverMethod, final String jsFilterFunctionBody,
-            final String jsPostFunctionBody) {
+            final ServerMethod serverMethod, final String jsFilterFunctionBody, final String jsPostFunctionBody) {
         // NB: always trim attributeName to avoid starting with 0 value byte
         // because the first byte value is zero if sending its index bytes from
         // client.
@@ -184,9 +183,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             true/false. This function will invoke at client
      *                             side before {@code serverMethod}. If the
      *                             jsPrefunction returns true then only
-     *                             {@code serverMethod} method will invoke (if
-     *                             it is implemented). It has implicit objects in
-     *                             its scope. They are {@code event}, {@code source}
+     *                             {@code serverMethod} method will invoke (if it is
+     *                             implemented). It has implicit objects in its
+     *                             scope. They are {@code event}, {@code source}
      *                             which gives the reference of the current tag and
      *                             {@code action}. The {@code action} implicit
      *                             object has a function named {@code perform()}
@@ -214,7 +213,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             attribute will be harmful as it will make an
      *                             infinite recursive call.
      *
-     * @param serverMethod    This method will invoke at server side with an
+     * @param serverMethod         This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             javascript object returned by
@@ -245,14 +244,13 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @since 3.0.2
      */
     protected AbstractEventAttribute(final String attributeName, final String jsPreFunctionBody,
-            final ServerMethod serverMethod, final String jsFilterFunctionBody,
-            final String jsPostFunctionBody, final Object serverSideData) {
+            final ServerMethod serverMethod, final String jsFilterFunctionBody, final String jsPostFunctionBody,
+            final Object serverSideData) {
         // NB: always trim attributeName to avoid starting with 0 value byte
         // because the first byte value is zero if sending its index bytes from
         // client.
         super.setAttributeName(attributeName != null ? attributeName.trim() : attributeName);
-        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
-                serverSideData);
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
     }
 
     /**
@@ -264,9 +262,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             true/false. This function will invoke at client
      *                             side before {@code serverMethod}. If the
      *                             jsPrefunction returns true then only
-     *                             {@code serverMethod} method will invoke (if
-     *                             it is implemented). It has implicit objects in
-     *                             its scope. They are {@code event}, {@code source}
+     *                             {@code serverMethod} method will invoke (if it is
+     *                             implemented). It has implicit objects in its
+     *                             scope. They are {@code event}, {@code source}
      *                             which gives the reference of the current tag and
      *                             {@code action}. The {@code action} implicit
      *                             object has a function named {@code perform()}
@@ -294,7 +292,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             attribute will be harmful as it will make an
      *                             infinite recursive call.
      *
-     * @param serverMethod    This method will invoke at server side with an
+     * @param serverMethod         This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             javascript object returned by
@@ -325,14 +323,14 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @since 3.0.15
      */
     protected AbstractEventAttribute(final String attributeName, final boolean preventDefault,
-            final String jsPreFunctionBody, final ServerMethod serverMethod,
-            final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
+            final String jsPreFunctionBody, final ServerMethod serverMethod, final String jsFilterFunctionBody,
+            final String jsPostFunctionBody, final Object serverSideData) {
         // NB: always trim attributeName to avoid starting with 0 value byte
         // because the first byte value is zero if sending its index bytes from
         // client.
         super.setAttributeName(attributeName != null ? attributeName.trim() : attributeName);
-        setServerMethod(preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody,
-                jsPostFunctionBody, serverSideData);
+        setServerMethod(preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
     }
 
     /**
@@ -430,9 +428,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             true/false. This function will invoke at client
      *                             side before {@code serverMethod}. If the
      *                             jsPrefunction returns true then only
-     *                             {@code serverMethod} method will invoke (if
-     *                             it is implemented). It has implicit objects in
-     *                             its scope. They are {@code event}, {@code source}
+     *                             {@code serverMethod} method will invoke (if it is
+     *                             implemented). It has implicit objects in its
+     *                             scope. They are {@code event}, {@code source}
      *                             which gives the reference of the current tag and
      *                             {@code action}. The {@code action} implicit
      *                             object has a function named {@code perform()}
@@ -460,7 +458,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             attribute will be harmful as it will make an
      *                             infinite recursive call.
      *
-     * @param serverMethod    This method will invoke at server side with an
+     * @param serverMethod         This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             javascript object returned by
@@ -491,8 +489,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
     public void setServerMethod(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody) {
 
-        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
-                serverSideData);
+        setServerMethod(jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody, serverSideData);
     }
 
     /**
@@ -501,9 +498,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             true/false. This function will invoke at client
      *                             side before {@code serverMethod}. If the
      *                             jsPrefunction returns true then only
-     *                             {@code serverMethod} method will invoke (if
-     *                             it is implemented). It has implicit objects in
-     *                             its scope. They are {@code event}, {@code source}
+     *                             {@code serverMethod} method will invoke (if it is
+     *                             implemented). It has implicit objects in its
+     *                             scope. They are {@code event}, {@code source}
      *                             which gives the reference of the current tag and
      *                             {@code action}. The {@code action} implicit
      *                             object has a function named {@code perform()}
@@ -531,7 +528,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             attribute will be harmful as it will make an
      *                             infinite recursive call.
      *
-     * @param serverMethod    This method will invoke at server side with an
+     * @param serverMethod         This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             javascript object returned by
@@ -563,8 +560,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      */
     public void setServerMethod(final String jsPreFunctionBody, final ServerMethod serverMethod,
             final String jsFilterFunctionBody, final String jsPostFunctionBody, final Object serverSideData) {
-        setServerMethod(preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody,
-                jsPostFunctionBody, serverSideData);
+        setServerMethod(preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
     }
 
     /**
@@ -574,9 +571,9 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             true/false. This function will invoke at client
      *                             side before {@code serverMethod}. If the
      *                             jsPrefunction returns true then only
-     *                             {@code serverMethod} method will invoke (if
-     *                             it is implemented). It has implicit objects in
-     *                             its scope. They are {@code event}, {@code source}
+     *                             {@code serverMethod} method will invoke (if it is
+     *                             implemented). It has implicit objects in its
+     *                             scope. They are {@code event}, {@code source}
      *                             which gives the reference of the current tag and
      *                             {@code action}. The {@code action} implicit
      *                             object has a function named {@code perform()}
@@ -604,7 +601,7 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      *                             attribute will be harmful as it will make an
      *                             infinite recursive call.
      *
-     * @param serverMethod    This method will invoke at server side with an
+     * @param serverMethod         This method will invoke at server side with an
      *                             argument {@code wffBMObject}. The
      *                             {@code wffBMObject} is the representational
      *                             javascript object returned by
@@ -635,8 +632,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * @since 3.0.15
      */
     protected void setServerMethod(final boolean preventDefault, final String jsPreFunctionBody,
-            final ServerMethod serverMethod, final String jsFilterFunctionBody,
-            final String jsPostFunctionBody, final Object serverSideData) {
+            final ServerMethod serverMethod, final String jsFilterFunctionBody, final String jsPostFunctionBody,
+            final Object serverSideData) {
 
         this.serverSideData = serverSideData;
 
@@ -750,16 +747,16 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
 
     /**
      * true to call event.preventDefault(); on event. It will set only if there is
-     * {@code ServerMethod}. This is applicable for some special attributes
-     * like OnSubmit.
+     * {@code ServerMethod}. This is applicable for some special attributes like
+     * OnSubmit.
      *
      * @param preventDefault true to call event.preventDefault(); on event otherwise
      *                       false.
      * @since 3.0.15
      */
     protected void setPreventDefault(final boolean preventDefault) {
-        setServerMethod(preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody,
-                jsPostFunctionBody, serverSideData);
+        setServerMethod(preventDefault, jsPreFunctionBody, serverMethod, jsFilterFunctionBody, jsPostFunctionBody,
+                serverSideData);
     }
 
     /**
@@ -776,8 +773,8 @@ public abstract class AbstractEventAttribute extends AbstractAttribute implement
      * Sets the pre function body JavaScript. It is the body part of JavaScript
      * function (without function declaration). It must return true/false. This
      * function will invoke at client side before {@code serverMethod}. If the
-     * jsPrefunction returns true then only {@code serverMethod} method will
-     * invoke (if it is implemented). It has implicit objects in its scope. They are
+     * jsPrefunction returns true then only {@code serverMethod} method will invoke
+     * (if it is implemented). It has implicit objects in its scope. They are
      * {@code event}, {@code source} which gives the reference of the current tag
      * and {@code action}. The {@code action} implicit object has a function named
      * {@code perform()} which can be used to invoke {@code jsFilterFunctionBody}

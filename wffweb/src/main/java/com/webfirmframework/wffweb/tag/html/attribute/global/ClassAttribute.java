@@ -189,6 +189,6 @@ public class ClassAttribute extends AbstractValueSetAttribute implements GlobalA
      */
     public void assignValue(final String value) {
         super.assignAttributeValue(value);
-    }    
+    }
 
 }

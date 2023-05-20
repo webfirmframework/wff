@@ -38,13 +38,7 @@ public class Hr extends AbstractHtml {
 
     private static TagType tagType = TagType.NON_CLOSING;
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.HR);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.HR;
 
     {
 

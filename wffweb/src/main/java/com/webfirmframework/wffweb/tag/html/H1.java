@@ -38,13 +38,7 @@ public class H1 extends AbstractHtml {
 
     private static final Logger LOGGER = Logger.getLogger(H1.class.getName());
 
-    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME;
-
-    static {
-
-        PRE_INDEXED_TAG_NAME = (PreIndexedTagName.H1);
-
-    }
+    private static final PreIndexedTagName PRE_INDEXED_TAG_NAME = PreIndexedTagName.H1;
 
     {
 
