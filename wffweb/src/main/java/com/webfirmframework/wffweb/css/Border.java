@@ -357,7 +357,7 @@ public class Border extends AbstractCssProperty<Border> implements StateChangeIn
      */
     public Border setBorderStyle(final BorderStyle borderStyle) {
 
-        if (borderStyle == BorderStyle.INITIAL || borderStyle == BorderStyle.INHERIT) {
+        if (BorderStyle.INITIAL.equals(borderStyle) || BorderStyle.INHERIT.equals(borderStyle)) {
             throw new InvalidValueException("the given borderStyle cannot be " + borderStyle.getCssValue());
         }
 
