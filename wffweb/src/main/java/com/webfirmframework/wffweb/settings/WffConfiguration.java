@@ -18,7 +18,6 @@ package com.webfirmframework.wffweb.settings;
 import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -34,23 +33,43 @@ public class WffConfiguration {
     private static final Executor VIRTUAL_THREAD_EXECUTOR;
 
     static {
-        ExecutorService tempExecutor = null;
+        Executor tempExecutor = null;
         try {
-            // TODO ManagementFactory requires java.management module so remove this line
-            // later and the module entry from module-info.java as well
-            final List<String> inputArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
-            if (Integer.parseInt(System.getProperty("java.vm.specification.version", "17")) >= 19
-                    && (inputArguments.contains("--enable-preview")
-                            || inputArguments.contains("--enable-virtual-thread")
-                            || "true".equals(System.getProperty("virtualThread.enable")))
-                    && Executors.class.getMethod("newVirtualThreadPerTaskExecutor")
-                            .invoke(null) instanceof final ExecutorService executor) {
+            final int javaSpecVersion = Integer
+                    .parseInt(parseFirstDigits(System.getProperty("java.vm.specification.version", "17")));
+            if (javaSpecVersion >= 21 && Executors.class.getMethod("newVirtualThreadPerTaskExecutor")
+                    .invoke(null) instanceof final Executor executor) {
                 tempExecutor = executor;
+            } else if (javaSpecVersion >= 19) {
+                // TODO ManagementFactory requires java.management module so remove this line
+                // later and the module entry from module-info.java as well
+                final List<String> inputArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
+                if ((inputArguments.contains("--enable-preview") || inputArguments.contains("--enable-virtual-thread")
+                        || "true".equals(System.getProperty("virtualThread.enable")))
+                        && Executors.class.getMethod("newVirtualThreadPerTaskExecutor")
+                                .invoke(null) instanceof final Executor executor) {
+                    tempExecutor = executor;
+                }
             }
         } catch (final Exception e) {
             // NOP
+            e.printStackTrace();
         }
         VIRTUAL_THREAD_EXECUTOR = tempExecutor;
+    }
+
+    static String parseFirstDigits(final String s) {
+        if (s == null || s.length() == 0) {
+            return s;
+        }
+        final StringBuilder builder = new StringBuilder(s.length());
+        for (final int codePoint : s.codePoints().toArray()) {
+            if (!Character.isDigit(codePoint)) {
+                break;
+            }
+            builder.appendCodePoint(codePoint);
+        }
+        return builder.toString();
     }
 
     /**
