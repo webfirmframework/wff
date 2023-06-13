@@ -22,10 +22,8 @@ import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -1550,24 +1548,13 @@ public class SharedTagContent<T> {
                             // changed
                             // before lock
 
-                            final List<ParentNoTagData<T>> dataList = entry.getValue();
-                            final Set<AbstractHtml5SharedObject> sharedObjectsTemp = new HashSet<>(4);
-                            final List<Lock> parentLocks = new ArrayList<>(2);
-                            final List<ParentNoTagData<T>> lockedParentNoTagDatas = new ArrayList<>(dataList.size());
-                            for (final ParentNoTagData<T> parentNoTagData : dataList) {
-                                final AbstractHtml parent = parentNoTagData.parent();
-                                final AbstractHtml5SharedObject sharedObject = parent.getSharedObject();
-                                if (!sharedObjectsTemp.contains(sharedObject)) {
-                                    sharedObjectsTemp.add(sharedObject);
-                                    final Lock writeLock = parent.lockAndGetWriteLock();
-                                    parentLocks.add(writeLock);
-                                }
-                                lockedParentNoTagDatas.add(parentNoTagData);
-                            }
-                            Collections.reverse(parentLocks);
-                            try {
+                            for (final ParentNoTagData<T> parentNoTagData : entry.getValue()) {
+                                // individual locking is better here, if multi-locking is used then it should be
+                                // atomic which might be slow
+                                // if multi-locking is not atomic it leads to deadlock as this runnable is async
+                                final Lock writeLock = parentNoTagData.parent().lockAndGetWriteLock();
+                                try {
 
-                                for (final ParentNoTagData<T> parentNoTagData : lockedParentNoTagDatas) {
                                     // parentNoTagData.getParent().getSharedObject().equals(sharedObject)
                                     // is important here as it could be change just
                                     // before
@@ -1615,7 +1602,8 @@ public class SharedTagContent<T> {
                                                     .addInnerHtmlsAndGetEventsLockless(updateClientTagSpecific,
                                                             parentNoTagData.getNoTag());
 
-//                                    insertedTags.put(parentNoTagData.getNoTag(), parentNoTagData.insertedTagData());
+                                            // insertedTags.put(parentNoTagData.getNoTag(),
+                                            // parentNoTagData.insertedTagData());
                                             forInsertedTags.add(Map.entry(parentNoTagData.getNoTag(),
                                                     parentNoTagData.insertedTagData()));
 
@@ -1651,7 +1639,8 @@ public class SharedTagContent<T> {
                                             }
 
                                         } else {
-//                                    insertedTags.put(parentNoTagData.getNoTag(), parentNoTagData.insertedTagData());
+                                            // insertedTags.put(parentNoTagData.getNoTag(),
+                                            // parentNoTagData.insertedTagData());
                                             forInsertedTags.add(Map.entry(parentNoTagData.getNoTag(),
                                                     parentNoTagData.insertedTagData()));
 
@@ -1663,13 +1652,12 @@ public class SharedTagContent<T> {
                                         final AbstractHtml noTagAsBase = parentNoTagData.getNoTag();
                                         noTagAsBase.setCacheSTCFormatter(null, ACCESS_OBJECT);
                                     }
+                                } finally {
+                                    writeLock.unlock();
+                                }
 
-                                }
-                            } finally {
-                                for (final Lock lock : parentLocks) {
-                                    lock.unlock();
-                                }
                             }
+
                         } finally {
                             countDownLatch.countDown();
                         }
@@ -2156,30 +2144,18 @@ public class SharedTagContent<T> {
 
                 final Runnable runnable = () -> {
                     try {
-                        final List<ParentNoTagData<T>> dataList = entry.getValue();
-                        final Set<AbstractHtml5SharedObject> sharedObjectsTemp = new HashSet<>(4);
-                        final List<Lock> parentLocks = new ArrayList<>(2);
-                        final List<ParentNoTagData<T>> lockedParentNoTagDatas = new ArrayList<>(dataList.size());
-                        for (final ParentNoTagData<T> parentNoTagData : dataList) {
-                            final AbstractHtml parent = parentNoTagData.parent();
-                            final AbstractHtml5SharedObject sharedObject = parent.getSharedObject();
-                            if (!sharedObjectsTemp.contains(sharedObject)) {
-                                sharedObjectsTemp.add(sharedObject);
-                                final Lock writeLock = parent.lockAndGetWriteLock();
-                                parentLocks.add(writeLock);
-                            }
-                            lockedParentNoTagDatas.add(parentNoTagData);
-                        }
-                        Collections.reverse(parentLocks);
-
                         // pushing using first parent object makes bug (got bug when
                         // singleton SharedTagContent object is used under multiple
                         // BrowserPage instances)
                         // may be because the sharedObject in the parent can be changed
                         // before lock
 
-                        try {
-                            for (final ParentNoTagData<T> parentNoTagData : lockedParentNoTagDatas) {
+                        for (final ParentNoTagData<T> parentNoTagData : entry.getValue()) {
+                            // individual locking is better here, if multi-locking is used then it should be
+                            // atomic which might be slow
+                            // if multi-locking is not atomic it leads to deadlock as this runnable is async
+                            final Lock writeLock = parentNoTagData.parent().lockAndGetWriteLock();
+                            try {
 
                                 // parentNoTagData.getParent().getSharedObject().equals(sharedObject)
                                 // is important here as it could be change just before
@@ -2247,13 +2223,12 @@ public class SharedTagContent<T> {
                                     }
 
                                 }
+                            } finally {
+                                writeLock.unlock();
+                            }
 
-                            }
-                        } finally {
-                            for (final Lock lock : parentLocks) {
-                                lock.unlock();
-                            }
                         }
+
                     } finally {
                         countDownLatch.countDown();
                     }
