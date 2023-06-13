@@ -1534,6 +1534,10 @@ public class SharedTagContent<T> {
                 final int countDownLatchSize = tagsGroupedBySOEntries.size();
                 final CountDownLatch countDownLatch = new CountDownLatch(countDownLatchSize);
 
+                final Executor virtualThreadExecutor = countDownLatchSize > 1
+                        ? WffConfiguration.getVirtualThreadExecutor()
+                        : null;
+
                 for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySOEntries) {
 
                     final Runnable runnable = () -> {
@@ -1663,9 +1667,7 @@ public class SharedTagContent<T> {
                         }
                     };
 
-                    Executor virtualThreadExecutor;
-                    if (countDownLatchSize > 1
-                            && (virtualThreadExecutor = WffConfiguration.getVirtualThreadExecutor()) != null) {
+                    if (virtualThreadExecutor != null) {
                         virtualThreadExecutor.execute(runnable);
                     } else {
                         runnable.run();
@@ -2140,6 +2142,9 @@ public class SharedTagContent<T> {
             final int countDownLatchSize = tagsGroupedBySOEntries.size();
             final CountDownLatch countDownLatch = new CountDownLatch(countDownLatchSize);
 
+            final Executor virtualThreadExecutor = countDownLatchSize > 1 ? WffConfiguration.getVirtualThreadExecutor()
+                    : null;
+
             for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySOEntries) {
 
                 final Runnable runnable = () -> {
@@ -2235,9 +2240,7 @@ public class SharedTagContent<T> {
 
                 };
 
-                Executor virtualThreadExecutor;
-                if (countDownLatchSize > 1
-                        && (virtualThreadExecutor = WffConfiguration.getVirtualThreadExecutor()) != null) {
+                if (virtualThreadExecutor != null) {
                     virtualThreadExecutor.execute(runnable);
                 } else {
                     runnable.run();
