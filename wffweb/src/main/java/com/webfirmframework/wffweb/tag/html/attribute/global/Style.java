@@ -1209,6 +1209,24 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
     }
 
     /**
+     * Removes all css properties
+     *
+     * @param force true to forcefully remove all values and also to update client
+     *              even if it is already empty
+     * @since 12.0.0
+     */
+    public void removeAllCssProperties(final boolean force) {
+        final long stamp = lock.writeLock();
+        try {
+            cssProperties.clear();
+            abstractCssPropertyClassObjects.clear();
+            super.removeAllFromAttributeValueMap(force);
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
      * Checks if the given cssProperty object exists in this style object.
      *
      * @return

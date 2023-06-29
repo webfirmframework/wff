@@ -375,6 +375,17 @@ public class AutoComplete extends AbstractValueSetAttribute implements InputAttr
     }
 
     /**
+     * Removes all values
+     *
+     * @param force true to forcefully remove all values and also to update client
+     *              even if it is already empty
+     * @since 12.0.0
+     */
+    public void removeAllValues(final boolean force) {
+        super.removeAllFromAttributeValueSet(force);
+    }
+
+    /**
      * adds the values to the last
      *
      * @param values

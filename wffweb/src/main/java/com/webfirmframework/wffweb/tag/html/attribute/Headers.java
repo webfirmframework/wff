@@ -175,4 +175,15 @@ public class Headers extends AbstractValueSetAttribute implements ThAttributable
     public void removeAllHeaderIds() {
         super.removeAllFromAttributeValueSet();
     }
+
+    /**
+     * Removes all header ids
+     *
+     * @param force true to forcefully remove all values and also to update client
+     *              even if it is already empty
+     * @since 12.0.0
+     */
+    public void removeAllHeaderIds(final boolean force) {
+        super.removeAllFromAttributeValueSet(force);
+    }
 }

@@ -821,7 +821,12 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     }
 
     protected void removeAllFromAttributeValueMap() {
-        if (attributeValueMap != null && getAttributeValueMap().size() > 0) {
+        removeAllFromAttributeValueMap(false);
+    }
+
+    protected void removeAllFromAttributeValueMap(final boolean force) {
+        final Map<String, String> attributeValueMap = this.attributeValueMap;
+        if (attributeValueMap != null && (force || attributeValueMap.size() > 0)) {
 
             boolean listenerInvoked = false;
 
@@ -830,7 +835,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
             // should be after lockAndGetWriteLocks
             final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
             try {
-                getAttributeValueMap().clear();
+                attributeValueMap.clear();
                 setModifiedLockless(true);
 
                 invokeValueChangeListeners(ownerTagsRecord);
@@ -1328,26 +1333,41 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
      * @since 1.0.0
      */
     protected void removeAllFromAttributeValueSet() {
+        removeAllFromAttributeValueSet(false);
+    }
 
-        boolean listenerInvoked = false;
+    /**
+     * clears all values from the value set.
+     *
+     * @since 12.0.0
+     */
+    protected void removeAllFromAttributeValueSet(final boolean force) {
 
-        final Collection<Lock> writeLocks = lockAndGetWriteLocksWithAttrLock();
+        final Set<String> attributeValueSet = this.attributeValueSet;
 
-        // should be after lockAndGetWriteLocks
-        final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
-        try {
-            getAttributeValueSet().clear();
-            setModifiedLockless(true);
+        if (attributeValueSet != null && (force || attributeValueSet.size() > 0)) {
+            boolean listenerInvoked = false;
 
-            invokeValueChangeListeners(ownerTagsRecord);
-            listenerInvoked = true;
-        } finally {
-            for (final Lock lock : writeLocks) {
-                lock.unlock();
+            final Collection<Lock> writeLocks = lockAndGetWriteLocksWithAttrLock();
+
+            // should be after lockAndGetWriteLocks
+            final OwnerTagsRecord ownerTagsRecord = getOwnerTagsRecord();
+            try {
+
+                attributeValueSet.clear();
+                setModifiedLockless(true);
+
+                invokeValueChangeListeners(ownerTagsRecord);
+                listenerInvoked = true;
+            } finally {
+                for (final Lock lock : writeLocks) {
+                    lock.unlock();
+                }
+
             }
-
+            pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
         }
-        pushQueues(ownerTagsRecord.sharedObjects, listenerInvoked);
+
     }
 
     /**
