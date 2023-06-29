@@ -23,6 +23,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoComplete;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 public class ClassAttributeTest {
 
@@ -78,7 +79,23 @@ public class ClassAttributeTest {
 
     @Test
     public void testRemoveAllClassNames() {
-        // fail("Not yet implemented");
+        
+        ClassAttribute attribute = new ClassAttribute("one two three");
+        assertEquals("class=\"one two three\"", attribute.toHtmlString());
+        attribute.removeAllClassNames(Arrays.asList("two", "three"));
+        assertEquals("class=\"one\"", attribute.toHtmlString());
+        
+        attribute = new ClassAttribute("one two");
+        
+        attribute.removeAllClassNames();
+        Assert.assertEquals("", attribute.getAttributeValue());
+        
+        attribute.addClassNames(StringUtil.splitBySpace("one two three four five six"));
+        
+        Assert.assertEquals("one two three four five six", attribute.getAttributeValue());
+        
+        attribute.removeAllClassNames();
+        Assert.assertEquals("", attribute.getAttributeValue());
     }
 
     @Test

@@ -130,6 +130,15 @@ public class ClassAttribute extends AbstractValueSetAttribute implements GlobalA
     }
 
     /**
+     * removes all class names from the class attribute
+     *
+     * @since 12.0.0
+     */
+    public void removeAllClassNames() {
+        super.removeAllFromAttributeValueSet();
+    }
+
+    /**
      * removes the given class name
      *
      * @param className the class name to remove
@@ -178,6 +187,5 @@ public class ClassAttribute extends AbstractValueSetAttribute implements GlobalA
     public void setValue(final boolean updateClient, final String value) {
         super.setAttributeValue(updateClient, value);
     }
-    
 
 }

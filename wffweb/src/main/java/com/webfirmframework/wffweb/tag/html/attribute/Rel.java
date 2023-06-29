@@ -244,6 +244,15 @@ public class Rel extends AbstractValueSetAttribute implements AAttributable, Are
     }
 
     /**
+     * removes the all values
+     *
+     * @since 12.0.0
+     */
+    public void removeAllValues() {
+        super.removeAllFromAttributeValueSet();
+    }
+
+    /**
      * adds the values to the last
      *
      * @param values

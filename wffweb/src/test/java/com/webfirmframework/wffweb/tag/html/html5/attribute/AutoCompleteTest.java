@@ -24,6 +24,8 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.webfirmframework.wffweb.util.StringUtil;
+
 public class AutoCompleteTest {
 
     @Test
@@ -65,6 +67,22 @@ public class AutoCompleteTest {
         assertEquals("autocomplete=\"name email username\"", autoComplete.toHtmlString());
         autoComplete.removeValues(Arrays.asList(AutoComplete.EMAIL, AutoComplete.USERNAME));
         assertEquals("autocomplete=\"name\"", autoComplete.toHtmlString());
+    }
+    
+    @Test
+    public void testRemoveAllValues() {
+        
+        AutoComplete attribute = new AutoComplete("one two");
+        
+        attribute.removeAllValues();
+        Assert.assertEquals("", attribute.getAttributeValue());
+        
+        attribute.addValues(Arrays.asList(StringUtil.splitBySpace("one two three four five six")));
+        
+        Assert.assertEquals("one two three four five six", attribute.getAttributeValue());
+        
+        attribute.removeAllValues();
+        Assert.assertEquals("", attribute.getAttributeValue());
     }
 
     @Test
