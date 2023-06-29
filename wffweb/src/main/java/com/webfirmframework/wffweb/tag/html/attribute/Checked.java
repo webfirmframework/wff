@@ -44,7 +44,6 @@ public class Checked extends AbstractAttribute implements InputAttributable, Boo
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.CHECKED;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

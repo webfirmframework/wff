@@ -41,7 +41,6 @@ public class Default extends AbstractAttribute implements BooleanAttribute, Trac
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.DEFAULT;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

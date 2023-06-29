@@ -50,7 +50,6 @@ public class Lang extends AbstractAttribute implements GlobalAttributable {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.LANG;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

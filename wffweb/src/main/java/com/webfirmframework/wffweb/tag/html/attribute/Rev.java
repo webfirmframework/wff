@@ -124,7 +124,6 @@ public class Rev extends AbstractAttribute implements AAttributable {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.REV;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

@@ -44,7 +44,6 @@ public class Pattern extends AbstractAttribute implements InputAttributable {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.PATTERN;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

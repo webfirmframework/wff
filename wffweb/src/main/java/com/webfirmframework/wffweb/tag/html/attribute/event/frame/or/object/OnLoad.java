@@ -37,7 +37,6 @@ public class OnLoad extends AbstractEventAttribute implements InputAttributable,
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONLOAD;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

@@ -38,7 +38,6 @@ public class OnRateChange extends AbstractEventAttribute {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONRATECHANGE;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

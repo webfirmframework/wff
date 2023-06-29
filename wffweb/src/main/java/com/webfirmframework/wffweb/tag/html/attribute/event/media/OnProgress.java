@@ -38,7 +38,6 @@ public class OnProgress extends AbstractEventAttribute {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONPROGRESS;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

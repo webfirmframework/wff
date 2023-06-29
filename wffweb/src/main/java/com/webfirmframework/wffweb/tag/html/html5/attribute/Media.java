@@ -36,7 +36,6 @@ public class Media extends AbstractAttribute implements AAttributable {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.MEDIA;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

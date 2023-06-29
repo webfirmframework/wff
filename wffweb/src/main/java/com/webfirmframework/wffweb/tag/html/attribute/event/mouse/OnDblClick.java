@@ -36,7 +36,6 @@ public class OnDblClick extends AbstractEventAttribute implements AAttributable 
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONDBLCLICK;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

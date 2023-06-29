@@ -39,7 +39,6 @@ public class RowSpan extends AbstractAttribute implements ThAttributable, TdAttr
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ROWSPAN;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

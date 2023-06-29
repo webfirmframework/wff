@@ -37,7 +37,6 @@ public class Min extends AbstractAttribute implements InputAttributable {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.MIN;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

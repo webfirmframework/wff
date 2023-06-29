@@ -40,7 +40,6 @@ public class Required extends AbstractAttribute implements AudioAttributable, In
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.REQUIRED;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

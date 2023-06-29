@@ -42,7 +42,6 @@ public class Open extends AbstractAttribute implements BooleanAttribute, Details
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.OPEN;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

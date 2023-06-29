@@ -52,7 +52,6 @@ public class Preload extends AbstractAttribute implements AudioAttributable {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.PRELOAD;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

@@ -44,7 +44,6 @@ public class FormMethod extends AbstractAttribute implements InputAttributable {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.FORMMETHOD;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

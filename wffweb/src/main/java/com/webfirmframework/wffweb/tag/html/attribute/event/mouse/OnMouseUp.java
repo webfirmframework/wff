@@ -36,7 +36,6 @@ public class OnMouseUp extends AbstractEventAttribute implements AAttributable {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONMOUSEUP;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

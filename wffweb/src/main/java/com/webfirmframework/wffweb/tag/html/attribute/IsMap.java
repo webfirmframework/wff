@@ -32,7 +32,6 @@ public class IsMap extends AbstractAttribute implements ImgAttributable, Boolean
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ISMAP;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

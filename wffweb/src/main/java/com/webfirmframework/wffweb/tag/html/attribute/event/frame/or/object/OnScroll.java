@@ -37,7 +37,6 @@ public class OnScroll extends AbstractEventAttribute implements InputAttributabl
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONSCROLL;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

@@ -37,7 +37,6 @@ public class OnPageShow extends AbstractEventAttribute implements InputAttributa
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONPAGESHOW;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

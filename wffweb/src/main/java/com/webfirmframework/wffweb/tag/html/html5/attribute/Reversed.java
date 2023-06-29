@@ -39,7 +39,6 @@ public class Reversed extends AbstractAttribute implements BooleanAttribute, OlA
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.REVERSED;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

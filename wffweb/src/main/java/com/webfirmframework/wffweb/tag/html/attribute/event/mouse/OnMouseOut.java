@@ -36,7 +36,6 @@ public class OnMouseOut extends AbstractEventAttribute implements AAttributable 
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONMOUSEOUT;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

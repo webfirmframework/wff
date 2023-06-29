@@ -39,7 +39,6 @@ public class OnMouseLeave extends AbstractEventAttribute implements AAttributabl
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONMOUSELEAVE;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

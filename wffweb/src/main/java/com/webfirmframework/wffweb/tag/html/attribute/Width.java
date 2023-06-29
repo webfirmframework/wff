@@ -42,7 +42,6 @@ public class Width extends AbstractAttribute implements InputAttributable, RectA
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.WIDTH;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

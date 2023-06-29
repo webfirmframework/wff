@@ -38,7 +38,6 @@ public class OnLoadedData extends AbstractEventAttribute {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONLOADEDDATA;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

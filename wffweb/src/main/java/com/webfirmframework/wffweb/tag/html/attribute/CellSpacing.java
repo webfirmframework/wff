@@ -42,7 +42,6 @@ public class CellSpacing extends AbstractAttribute implements TableAttributable 
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.CELLSPACING;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

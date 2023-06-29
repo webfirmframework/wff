@@ -41,7 +41,6 @@ public class AutoFocus extends AbstractAttribute implements InputAttributable {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.AUTOFOCUS;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

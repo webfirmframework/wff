@@ -45,7 +45,6 @@ public class Disabled extends AbstractAttribute implements InputAttributable, Bo
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.DISABLED;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

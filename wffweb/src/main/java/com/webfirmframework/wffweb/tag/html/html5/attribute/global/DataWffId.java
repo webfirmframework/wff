@@ -35,7 +35,6 @@ public class DataWffId extends DataAttribute {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.DATA_WFF_ID;
 
-
     /**
      * @param value the value for the attribute
      * @since 2.0.0

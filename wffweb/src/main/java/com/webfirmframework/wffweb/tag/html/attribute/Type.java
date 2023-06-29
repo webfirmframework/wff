@@ -160,7 +160,6 @@ public class Type extends AbstractAttribute implements AAttributable, AreaAttrib
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.TYPE;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

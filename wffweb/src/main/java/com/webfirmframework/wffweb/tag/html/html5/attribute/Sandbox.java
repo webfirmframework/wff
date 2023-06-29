@@ -63,7 +63,6 @@ public class Sandbox extends AbstractAttribute implements IFrameAttributable {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.SANDBOX;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

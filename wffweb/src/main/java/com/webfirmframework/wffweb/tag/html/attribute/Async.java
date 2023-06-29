@@ -36,7 +36,6 @@ public class Async extends AbstractAttribute implements ScriptAttributable, Bool
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ASYNC;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

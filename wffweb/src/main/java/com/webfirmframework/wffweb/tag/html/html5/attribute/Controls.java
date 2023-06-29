@@ -39,7 +39,6 @@ public class Controls extends AbstractAttribute implements AudioAttributable, Bo
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.CONTROLS;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

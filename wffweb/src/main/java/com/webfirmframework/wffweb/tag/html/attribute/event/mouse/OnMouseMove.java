@@ -36,7 +36,6 @@ public class OnMouseMove extends AbstractEventAttribute implements AAttributable
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONMOUSEMOVE;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

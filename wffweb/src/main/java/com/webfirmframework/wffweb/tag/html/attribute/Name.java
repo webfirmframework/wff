@@ -40,7 +40,6 @@ public class Name extends AbstractAttribute implements AAttributable, MapTagAttr
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.NAME;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

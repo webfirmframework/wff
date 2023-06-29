@@ -37,7 +37,6 @@ public class Defer extends AbstractAttribute implements BooleanAttribute, Script
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.DEFER;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

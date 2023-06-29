@@ -40,7 +40,6 @@ public class Multiple extends AbstractAttribute implements BooleanAttribute, Inp
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.MULTIPLE;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

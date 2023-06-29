@@ -32,7 +32,6 @@ public class SrcSet extends AbstractAttribute implements ImgAttributable, Source
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.SRCSET;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

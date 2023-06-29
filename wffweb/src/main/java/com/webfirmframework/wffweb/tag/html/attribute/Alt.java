@@ -40,7 +40,6 @@ public class Alt extends AbstractAttribute implements AreaAttributable, InputAtt
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ALT;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

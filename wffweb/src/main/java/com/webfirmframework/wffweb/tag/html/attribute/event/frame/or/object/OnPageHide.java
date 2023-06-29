@@ -37,7 +37,6 @@ public class OnPageHide extends AbstractEventAttribute implements InputAttributa
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONPAGEHIDE;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

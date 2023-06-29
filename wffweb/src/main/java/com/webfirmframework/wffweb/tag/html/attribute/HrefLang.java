@@ -39,7 +39,6 @@ public class HrefLang extends AbstractAttribute implements AAttributable, AreaAt
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.HREFLANG;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

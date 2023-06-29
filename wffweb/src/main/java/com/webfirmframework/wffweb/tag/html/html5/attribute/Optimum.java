@@ -33,7 +33,6 @@ public class Optimum extends AbstractAttribute implements MeterAttributable {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.OPTIMUM;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);

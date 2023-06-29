@@ -43,7 +43,6 @@ public class Draggable extends AbstractAttribute implements GlobalAttributable {
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.DRAGGABLE;
 
-
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
