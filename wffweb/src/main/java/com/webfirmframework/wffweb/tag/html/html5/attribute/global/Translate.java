@@ -38,12 +38,8 @@ public class Translate extends AbstractAttribute implements GlobalAttributable {
 
     private boolean translation;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.TRANSLATE;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.TRANSLATE);
-
-    }
 
     {
 

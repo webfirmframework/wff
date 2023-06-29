@@ -44,12 +44,8 @@ public class SpellCheck extends AbstractAttribute implements GlobalAttributable 
 
     private boolean check;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.SPELLCHECK;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.SPELLCHECK);
-
-    }
 
     {
 

@@ -61,12 +61,8 @@ public class Sandbox extends AbstractAttribute implements IFrameAttributable {
      */
     public static final String ALLOW_TOP_NAVIGATION = "allow-top-navigation";
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.SANDBOX;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.SANDBOX);
-
-    }
 
     {
 

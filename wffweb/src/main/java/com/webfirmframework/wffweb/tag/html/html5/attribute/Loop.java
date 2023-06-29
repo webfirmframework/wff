@@ -36,12 +36,8 @@ public class Loop extends AbstractAttribute implements AudioAttributable {
 
     private Boolean loop;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.LOOP;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.LOOP);
-
-    }
 
     {
 

@@ -41,11 +41,8 @@ public class Draggable extends AbstractAttribute implements GlobalAttributable {
 
     private Boolean draggable;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.DRAGGABLE;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.DRAGGABLE);
-    }
 
     {
 

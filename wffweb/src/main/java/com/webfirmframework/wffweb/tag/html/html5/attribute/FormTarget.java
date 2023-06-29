@@ -47,12 +47,8 @@ public class FormTarget extends AbstractAttribute implements InputAttributable {
 
     public static final String TOP = "_top";
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.FORMTARGET;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.FORMTARGET);
-
-    }
 
     {
 

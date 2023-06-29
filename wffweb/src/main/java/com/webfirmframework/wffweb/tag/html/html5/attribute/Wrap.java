@@ -42,12 +42,8 @@ public class Wrap extends AbstractAttribute implements TextAreaAttributable {
      */
     public static final String HARD = "hard";
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.WRAP;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.WRAP);
-
-    }
 
     {
 

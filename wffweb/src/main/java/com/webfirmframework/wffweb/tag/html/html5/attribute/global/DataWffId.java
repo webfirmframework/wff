@@ -33,11 +33,8 @@ public class DataWffId extends DataAttribute {
     // must be kept final to provide atomic consistency across multiple threads
     private final String attributeValue;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.DATA_WFF_ID;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.DATA_WFF_ID);
-    }
 
     /**
      * @param value the value for the attribute

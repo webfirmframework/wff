@@ -51,12 +51,8 @@ public class Dropzone extends AbstractAttribute implements GlobalAttributable {
      */
     public static final String LINK = "link";
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.DROPZONE;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.DROPZONE);
-
-    }
 
     {
 

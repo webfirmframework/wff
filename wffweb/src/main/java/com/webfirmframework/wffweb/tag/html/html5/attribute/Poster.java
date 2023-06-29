@@ -31,12 +31,8 @@ public class Poster extends AbstractAttribute implements VideoAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.POSTER;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.POSTER);
-
-    }
 
     {
 
