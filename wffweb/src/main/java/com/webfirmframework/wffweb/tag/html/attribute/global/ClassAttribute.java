@@ -35,12 +35,7 @@ public class ClassAttribute extends AbstractValueSetAttribute implements GlobalA
      */
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
-
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.CLASS);
-
-    }
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.CLASS;
 
     {
 
@@ -197,6 +192,22 @@ public class ClassAttribute extends AbstractValueSetAttribute implements GlobalA
 
     public void setValue(final boolean updateClient, final String value) {
         super.setAttributeValue(updateClient, value);
+    }
+
+    /**
+     * @param value the value to set again even if the existing value is same at
+     *              server side, the assigned value will be reflected in the UI.
+     *              Sometimes we may modify the value only at client side (not
+     *              server side), {@code setValue} will change only if the passed
+     *              value is different from existing value at server side. Note:
+     *              Currently, {@code setValue} doesn't check if the passed argument
+     *              is different from the existing value but it will be improved in
+     *              future so calling {@code assignValue} is similar to calling
+     *              {@code setValue}.
+     * @since 12.0.0-beta.7
+     */
+    public void assignValue(final String value) {
+        setValue(value);
     }
 
 }
