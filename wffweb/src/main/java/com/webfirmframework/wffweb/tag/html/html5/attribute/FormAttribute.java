@@ -43,7 +43,6 @@ public class FormAttribute extends AbstractAttribute implements InputAttributabl
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.FORM;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

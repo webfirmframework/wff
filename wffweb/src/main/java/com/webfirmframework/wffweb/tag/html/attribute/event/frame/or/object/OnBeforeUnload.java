@@ -38,7 +38,6 @@ public class OnBeforeUnload extends AbstractEventAttribute implements InputAttri
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONBEFOREUNLOAD;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

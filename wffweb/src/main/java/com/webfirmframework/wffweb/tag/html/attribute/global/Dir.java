@@ -42,7 +42,6 @@ public class Dir extends AbstractAttribute implements GlobalAttributable {
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.DIR;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

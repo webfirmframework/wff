@@ -35,7 +35,6 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ID;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

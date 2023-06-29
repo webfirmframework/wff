@@ -41,7 +41,6 @@ public class NoHref extends AbstractAttribute implements AreaAttributable {
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.NOHREF;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

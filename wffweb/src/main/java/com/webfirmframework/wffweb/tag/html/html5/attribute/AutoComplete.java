@@ -305,7 +305,6 @@ public class AutoComplete extends AbstractValueSetAttribute implements InputAttr
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.AUTOCOMPLETE;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

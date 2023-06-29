@@ -36,7 +36,6 @@ public class OnDragEnd extends AbstractEventAttribute {
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONDRAGEND;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

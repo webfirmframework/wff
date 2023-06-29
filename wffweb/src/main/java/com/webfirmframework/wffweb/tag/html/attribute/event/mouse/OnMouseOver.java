@@ -40,7 +40,6 @@ public class OnMouseOver extends AbstractEventAttribute implements AAttributable
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONMOUSEOVER;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

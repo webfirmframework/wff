@@ -36,7 +36,6 @@ public class OnTouchMove extends AbstractEventAttribute {
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONTOUCHMOVE;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

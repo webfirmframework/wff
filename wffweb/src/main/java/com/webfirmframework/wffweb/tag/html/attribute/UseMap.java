@@ -42,7 +42,6 @@ public class UseMap extends AbstractAttribute implements ImgAttributable, InputA
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.USEMAP;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

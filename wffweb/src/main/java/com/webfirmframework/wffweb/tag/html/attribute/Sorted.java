@@ -32,7 +32,6 @@ public class Sorted extends AbstractAttribute implements ThAttributable {
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.SORTED;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

@@ -38,7 +38,6 @@ public class Headers extends AbstractValueSetAttribute implements ThAttributable
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.HEADERS;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

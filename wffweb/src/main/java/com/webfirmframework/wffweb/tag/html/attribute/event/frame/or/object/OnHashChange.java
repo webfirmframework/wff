@@ -38,7 +38,6 @@ public class OnHashChange extends AbstractEventAttribute implements InputAttribu
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONHASHCHANGE;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

@@ -36,7 +36,6 @@ public class OnBeforePrint extends AbstractEventAttribute {
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONBEFOREPRINT;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

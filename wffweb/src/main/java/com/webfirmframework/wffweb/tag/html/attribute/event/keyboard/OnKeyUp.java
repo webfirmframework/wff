@@ -38,7 +38,6 @@ public class OnKeyUp extends AbstractEventAttribute implements InputAttributable
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONKEYUP;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

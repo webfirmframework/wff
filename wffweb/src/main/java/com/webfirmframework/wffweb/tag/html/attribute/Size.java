@@ -35,7 +35,6 @@ public class Size extends AbstractAttribute implements BaseFontAttributable, Inp
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.SIZE;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

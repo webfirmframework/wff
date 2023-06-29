@@ -43,7 +43,6 @@ public class Download extends AbstractAttribute implements AAttributable, AreaAt
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.DOWNLOAD;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

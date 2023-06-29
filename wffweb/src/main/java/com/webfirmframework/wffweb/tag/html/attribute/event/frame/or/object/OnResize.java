@@ -38,7 +38,6 @@ public class OnResize extends AbstractEventAttribute implements InputAttributabl
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONRESIZE;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

@@ -38,7 +38,6 @@ public class OnKeyDown extends AbstractEventAttribute implements InputAttributab
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONKEYDOWN;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

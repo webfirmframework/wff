@@ -71,7 +71,6 @@ public class Shape extends AbstractAttribute implements AAttributable, AreaAttri
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.SHAPE;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

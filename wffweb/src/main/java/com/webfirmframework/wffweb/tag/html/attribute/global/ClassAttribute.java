@@ -38,7 +38,6 @@ public class ClassAttribute extends AbstractValueSetAttribute implements GlobalA
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.CLASS;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

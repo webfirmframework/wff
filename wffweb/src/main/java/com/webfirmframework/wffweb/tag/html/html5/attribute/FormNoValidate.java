@@ -39,7 +39,6 @@ public class FormNoValidate extends AbstractAttribute implements InputAttributab
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.FORMNOVALIDATE;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

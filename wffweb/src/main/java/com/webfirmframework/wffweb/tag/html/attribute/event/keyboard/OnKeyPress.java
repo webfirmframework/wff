@@ -38,7 +38,6 @@ public class OnKeyPress extends AbstractEventAttribute implements InputAttributa
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONKEYPRESS;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

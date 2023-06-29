@@ -43,7 +43,6 @@ public class Selected extends AbstractAttribute implements OptionAttributable, B
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.SELECTED;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

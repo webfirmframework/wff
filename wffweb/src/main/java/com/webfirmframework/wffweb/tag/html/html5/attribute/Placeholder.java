@@ -41,7 +41,6 @@ public class Placeholder extends AbstractAttribute implements InputAttributable 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.PLACEHOLDER;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

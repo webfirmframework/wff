@@ -38,7 +38,6 @@ public class ColorAttribute extends AbstractAttribute implements BaseFontAttribu
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.COLOR;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
