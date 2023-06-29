@@ -33,13 +33,7 @@ public class AnimationEnd extends AbstractEventAttribute {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
-
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ANIMATIONEND);
-
-    }
-
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ANIMATIONEND;
     {
 
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
