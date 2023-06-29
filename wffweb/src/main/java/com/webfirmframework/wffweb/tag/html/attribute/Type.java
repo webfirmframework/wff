@@ -158,12 +158,8 @@ public class Type extends AbstractAttribute implements AAttributable, AreaAttrib
 
     public static final String TEXT_CSS = "text/css";
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.TYPE;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.TYPE);
-
-    }
 
     {
 

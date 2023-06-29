@@ -381,12 +381,8 @@ public class Role extends AbstractAttribute implements GlobalAttributable {
      */
     public static final String TREEITEM = "treeitem";
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ROLE;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ROLE);
-
-    }
 
     {
 

@@ -46,12 +46,8 @@ public class Method extends AbstractAttribute implements FormAttributable {
 
     public static final String TRACE = "trace";
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.METHOD;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.METHOD);
-
-    }
 
     {
 

@@ -122,12 +122,8 @@ public class Rev extends AbstractAttribute implements AAttributable {
 
     public static final String FRIEND = "friend";
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.REV;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.REV);
-
-    }
 
     {
 

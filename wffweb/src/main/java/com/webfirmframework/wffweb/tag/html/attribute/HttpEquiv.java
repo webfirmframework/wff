@@ -32,12 +32,8 @@ public class HttpEquiv extends AbstractAttribute implements MetaAttributable {
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.HTTP_EQUIV;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.HTTP_EQUIV);
-
-    }
 
     {
 

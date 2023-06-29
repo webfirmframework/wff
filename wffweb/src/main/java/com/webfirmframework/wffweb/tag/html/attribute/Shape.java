@@ -68,12 +68,8 @@ public class Shape extends AbstractAttribute implements AAttributable, AreaAttri
      */
     public static final String poly = "poly";
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.SHAPE;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.SHAPE);
-
-    }
 
     {
 

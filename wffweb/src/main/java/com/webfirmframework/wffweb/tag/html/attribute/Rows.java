@@ -37,12 +37,8 @@ public class Rows extends AbstractAttribute implements TextAreaAttributable {
 
     private int value = 2;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ROWS;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ROWS);
-
-    }
 
     {
 

@@ -43,12 +43,8 @@ public class Height extends AbstractAttribute implements InputAttributable, Rect
     private float value;
     private LengthUnit cssLengthUnit;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.HEIGHT;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.HEIGHT);
-
-    }
 
     {
 

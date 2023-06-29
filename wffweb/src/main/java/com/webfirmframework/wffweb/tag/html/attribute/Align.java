@@ -49,12 +49,8 @@ public class Align extends AbstractAttribute implements InputAttributable {
 
     public static final String BOTTOM = "bottom";
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ALIGN;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ALIGN);
-
-    }
 
     {
 

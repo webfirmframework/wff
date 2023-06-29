@@ -37,12 +37,8 @@ public class HrefLang extends AbstractAttribute implements AAttributable, AreaAt
 
     private Locale locale;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.HREFLANG;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.HREFLANG);
-
-    }
 
     {
 

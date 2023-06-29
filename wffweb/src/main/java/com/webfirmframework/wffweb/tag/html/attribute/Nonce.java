@@ -35,12 +35,8 @@ public class Nonce extends AbstractAttribute implements ScriptAttributable {
     @Serial
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.NONCE;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.NONCE);
-
-    }
 
     {
 

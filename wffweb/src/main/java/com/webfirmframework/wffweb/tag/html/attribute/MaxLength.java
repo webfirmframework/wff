@@ -49,12 +49,8 @@ public class MaxLength extends AbstractAttribute implements InputAttributable {
 
     private int value;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.MAXLENGTH;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.MAXLENGTH);
-
-    }
 
     {
 

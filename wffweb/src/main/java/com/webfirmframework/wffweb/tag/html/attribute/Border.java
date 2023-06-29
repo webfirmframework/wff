@@ -40,12 +40,8 @@ public class Border extends AbstractAttribute implements TableAttributable {
 
     private int value;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.BORDER;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.BORDER);
-
-    }
 
     {
 

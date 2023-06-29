@@ -38,12 +38,8 @@ public class Scope extends AbstractAttribute implements ThAttributable {
 
     public static final String ROWGROUP = "rowgroup";
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.SCOPE;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.SCOPE);
-
-    }
 
     {
 
