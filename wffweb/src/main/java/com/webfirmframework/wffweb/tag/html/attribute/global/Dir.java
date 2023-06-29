@@ -39,12 +39,8 @@ public class Dir extends AbstractAttribute implements GlobalAttributable {
     public static final String LTR = "ltr";
     public static final String RTL = "rtl";
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.DIR;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.DIR);
-
-    }
 
     {
 

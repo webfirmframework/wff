@@ -433,10 +433,9 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
     // for internal use
     private final Set<CssProperty> cssProperties = ConcurrentHashMap.newKeySet();
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.STYLE;
 
     static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.STYLE);
 
         CSSPROPERTY_CLASSES.put(CssNameConstants.ALIGN_CONTENT, AlignContent.class);
         CSSPROPERTY_CLASSES.put(CssNameConstants.ALIGN_ITEMS, AlignItems.class);

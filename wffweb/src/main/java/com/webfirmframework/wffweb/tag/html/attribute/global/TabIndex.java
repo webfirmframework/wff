@@ -36,12 +36,8 @@ public class TabIndex extends AbstractAttribute implements GlobalAttributable {
 
     private int index;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.TABINDEX;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.TABINDEX);
-
-    }
 
     {
 

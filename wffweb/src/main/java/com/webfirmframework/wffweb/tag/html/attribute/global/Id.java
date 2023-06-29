@@ -32,12 +32,8 @@ public class Id extends AbstractAttribute implements GlobalAttributable {
 
     private UUID uuid;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ID;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ID);
-
-    }
 
     {
 
