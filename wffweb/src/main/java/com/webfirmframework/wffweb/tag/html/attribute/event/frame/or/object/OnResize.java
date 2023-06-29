@@ -35,12 +35,8 @@ public class OnResize extends AbstractEventAttribute implements InputAttributabl
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONRESIZE;
 
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.ONRESIZE);
-
-    }
 
     {
 
