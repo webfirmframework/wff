@@ -433,7 +433,7 @@ public class TagRegistry {
                 }
             }
             tagClassByTagNameTmpLocal.clear();
-            if (unloadedClasses.size() > 0) {
+            if (!unloadedClasses.isEmpty()) {
                 tagClassByTagNameTmpLocal.putAll(unloadedClasses);
             } else {
                 tagClassByTagNameTmp = null;

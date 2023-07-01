@@ -610,7 +610,7 @@ public class AttributeRegistry {
                 }
             }
             attributeClassByAttrNameTmpLocal.clear();
-            if (unloadedClasses.size() > 0) {
+            if (!unloadedClasses.isEmpty()) {
                 attributeClassByAttrNameTmpLocal.putAll(unloadedClasses);
             } else {
                 attributeClassByAttrNameTmp = null;

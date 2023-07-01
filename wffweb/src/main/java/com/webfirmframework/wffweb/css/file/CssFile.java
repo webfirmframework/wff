@@ -126,7 +126,7 @@ public abstract class CssFile implements Serializable, Cloneable {
                 if (optimizeCssString) {
                     for (final Entry<String, Set<AbstractCssFileBlock>> entry : selectorCssFileBlocks.entrySet()) {
                         final Set<AbstractCssFileBlock> cssFileBlocks = entry.getValue();
-                        if (cssFileBlocks.size() > 0) {
+                        if (!cssFileBlocks.isEmpty()) {
 
                             boolean exclude = true;
 
@@ -202,7 +202,7 @@ public abstract class CssFile implements Serializable, Cloneable {
                     final CssFile cssFile = (CssFile) field.get(this);
 
                     // adding empty set will remove all of the objects.
-                    if (cssFile.getCssBlocks().size() > 0) {
+                    if (!cssFile.getCssBlocks().isEmpty()) {
                         cssBlocks.addAll(cssFile.getCssBlocks());
                     }
                     field.setAccessible(accessible);
@@ -299,7 +299,7 @@ public abstract class CssFile implements Serializable, Cloneable {
         if (isOptimizeCssString()) {
             for (final Entry<String, Set<AbstractCssFileBlock>> entry : selectorCssFileBlocks.entrySet()) {
                 final Set<AbstractCssFileBlock> cssFileBlocks = entry.getValue();
-                if (cssFileBlocks.size() > 0) {
+                if (!cssFileBlocks.isEmpty()) {
 
                     boolean exclude = true;
 

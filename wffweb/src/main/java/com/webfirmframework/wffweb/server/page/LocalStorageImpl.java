@@ -74,7 +74,7 @@ final class LocalStorageImpl implements LocalStorage {
         }
         ObjectUtil.requireNonNull(key, "key cannot be null");
         final Collection<BrowserPage> bps = browserPages.values();
-        if (bps.size() == 0) {
+        if (bps.isEmpty()) {
             throw new BrowserPageNotFoundException("There is no active browser page in the session to set item");
         }
         final int id = itemIdGenerator.incrementAndGet();
@@ -96,7 +96,7 @@ final class LocalStorageImpl implements LocalStorage {
         ObjectUtil.requireNonNull(key, "key cannot be null");
         ObjectUtil.requireNonNull(consumer, "consumer cannot be null");
         final Collection<BrowserPage> bps = browserPages.values();
-        if (bps.size() == 0) {
+        if (bps.isEmpty()) {
             throw new BrowserPageNotFoundException("There is no active browser page in the session to get item");
         }
         final int id = itemIdGenerator.incrementAndGet();
@@ -119,7 +119,7 @@ final class LocalStorageImpl implements LocalStorage {
         ObjectUtil.requireNonNull(key, "key cannot be null");
 
         final Collection<BrowserPage> bps = browserPages.values();
-        if (bps.size() == 0) {
+        if (bps.isEmpty()) {
             throw new BrowserPageNotFoundException("There is no active browser page in the session to remove item");
         }
 
@@ -143,7 +143,7 @@ final class LocalStorageImpl implements LocalStorage {
         ObjectUtil.requireNonNull(key, "key cannot be null");
         ObjectUtil.requireNonNull(consumer, "consumer cannot be null");
         final Collection<BrowserPage> bps = browserPages.values();
-        if (bps.size() == 0) {
+        if (bps.isEmpty()) {
             throw new BrowserPageNotFoundException(
                     "There is no active browser page in the session to remove and get item");
         }
@@ -175,7 +175,7 @@ final class LocalStorageImpl implements LocalStorage {
     @Override
     public void clear(final Consumer<Event> consumer) {
         final Collection<BrowserPage> bps = browserPages.values();
-        if (bps.size() == 0) {
+        if (bps.isEmpty()) {
             throw new BrowserPageNotFoundException(
                     "There is no active browser page in the session to clear items and tokens");
         }
@@ -220,7 +220,7 @@ final class LocalStorageImpl implements LocalStorage {
     @Override
     public void clearItems(final Consumer<Event> consumer) {
         final Collection<BrowserPage> bps = browserPages.values();
-        if (bps.size() == 0) {
+        if (bps.isEmpty()) {
             throw new BrowserPageNotFoundException("There is no active browser page in the session to clear items");
         }
         final int id = itemIdGenerator.incrementAndGet();
@@ -239,7 +239,7 @@ final class LocalStorageImpl implements LocalStorage {
     @Override
     public void clearTokens(final Consumer<Event> consumer) {
         final Collection<BrowserPage> bps = browserPages.values();
-        if (bps.size() == 0) {
+        if (bps.isEmpty()) {
             throw new BrowserPageNotFoundException("There is no active browser page in the session to clear tokens");
         }
         final int id = itemIdGenerator.incrementAndGet();
@@ -271,7 +271,7 @@ final class LocalStorageImpl implements LocalStorage {
                 final String localToken = tokenWrapper.getValue();
                 if (!value.equals(localToken)) {
                     final Collection<BrowserPage> bps = browserPages.values();
-                    if (bps.size() == 0) {
+                    if (bps.isEmpty()) {
                         throw new BrowserPageNotFoundException(
                                 "There is no active browser page in the session to remove the token");
                     }
@@ -294,7 +294,7 @@ final class LocalStorageImpl implements LocalStorage {
                 final long stamp = tokenWrapper.lock.writeLock();
                 try {
                     final Collection<BrowserPage> bps = browserPages.values();
-                    if (bps.size() == 0) {
+                    if (bps.isEmpty()) {
                         throw new BrowserPageNotFoundException(
                                 "There is no active browser page in the session to remove the token");
                     }

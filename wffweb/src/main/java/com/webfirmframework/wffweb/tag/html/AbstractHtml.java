@@ -327,7 +327,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             @Override
             public void clear() {
-                if (super.size() > 0) {
+                if (!super.isEmpty()) {
                     sharedObject.setChildModified(true, ACCESS_OBJECT);
                 }
                 super.clear();
@@ -1718,7 +1718,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     }
 
                     final Set<AbstractHtml> subChildren = child.children;
-                    if (subChildren != null && subChildren.size() > 0) {
+                    if (subChildren != null && !subChildren.isEmpty()) {
                         childrenStack.push(subChildren);
                     }
 
@@ -1787,7 +1787,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 child.removeDataWffId();
 
                 final Set<AbstractHtml> subChildren = child.children;
-                if (subChildren != null && subChildren.size() > 0) {
+                if (subChildren != null && !subChildren.isEmpty()) {
                     childrenStack.push(subChildren);
                 }
 
@@ -1819,7 +1819,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     applicableTags.add(child);
                 } else {
                     final Set<AbstractHtml> subChildren = child.children;
-                    if (subChildren != null && subChildren.size() > 0) {
+                    if (subChildren != null && !subChildren.isEmpty()) {
                         childrenStack.push(subChildren);
                     }
                 }
@@ -1878,7 +1878,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                 final Set<AbstractHtml> subChildren = eachChild.children;
 
-                if (subChildren != null && subChildren.size() > 0) {
+                if (subChildren != null && !subChildren.isEmpty()) {
                     childrenStack.push(subChildren);
                 }
 
@@ -1923,7 +1923,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                             updateClient);
                     if (innerHtmls != null && innerHtmls.length > 0) {
                         childrenStack.push(List.of(innerHtmls));
-                    } else if (eachChild.children != null && eachChild.children.size() > 0) {
+                    } else if (eachChild.children != null && !eachChild.children.isEmpty()) {
                         childrenStack.push(List.copyOf(eachChild.children));
                     }
                     if (eachChild.uriChangeContents != null) {
@@ -2609,7 +2609,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             }
 
-            removed = removedAttributes.size() > 0;
+            removed = !removedAttributes.isEmpty();
 
             if (removed) {
                 this.attributes = attributesMap.values().toArray(new AbstractAttribute[attributesMap.size()]);
@@ -2757,7 +2757,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             lock.unlock();
         }
 
-        if (attributesToRemove.size() == 0) {
+        if (attributesToRemove.isEmpty()) {
             return false;
         }
 
@@ -2785,7 +2785,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 }
             }
 
-            removed = removedAttributeNames.size() > 0;
+            removed = !removedAttributeNames.isEmpty();
 
             if (removed) {
                 attributes = attributesMap.values().toArray(new AbstractAttribute[attributesMap.size()]);
@@ -3001,7 +3001,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 2.1.12 proper implementation is available since 2.1.12
      */
     public void setChildren(final Set<AbstractHtml> children) {
-        if (children == null || children.size() == 0) {
+        if (children == null || children.isEmpty()) {
             removeAllChildren();
         } else {
             addInnerHtmls(children.toArray(new AbstractHtml[children.size()]));
@@ -3426,7 +3426,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      */
     private static void recurChildren(final StringBuilder tagBuilder, final Set<AbstractHtml> children,
             final boolean rebuild) {
-        if (children != null && children.size() > 0) {
+        if (children != null && !children.isEmpty()) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
                 tagBuilder.append(child.getOpeningTag());
@@ -3858,7 +3858,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 bottomChild = child;
 
                 final Set<AbstractHtml> subChildren = child.children;
-                if (subChildren != null && subChildren.size() > 0) {
+                if (subChildren != null && !subChildren.isEmpty()) {
                     current = subChildren;
                 }
 
@@ -3896,7 +3896,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 bottomChild = child;
 
                 final Set<AbstractHtml> subChildren = child.children;
-                if (subChildren != null && subChildren.size() > 0) {
+                if (subChildren != null && !subChildren.isEmpty()) {
                     current = subChildren;
                 }
             }
@@ -3986,7 +3986,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             final OutputStream os, final Set<AbstractHtml> children, final boolean rebuild, final boolean flushOnWrite)
             throws IOException {
 
-        if (children != null && children.size() > 0) {
+        if (children != null && !children.isEmpty()) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
 
@@ -4032,7 +4032,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      */
     private void recurChildrenToWffBinaryMessageOutputStream(final Set<AbstractHtml> children, final boolean rebuild,
             final Charset charset) throws IOException {
-        if (children != null && children.size() > 0) {
+        if (children != null && !children.isEmpty()) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
                 // wffBinaryMessageOutputStreamer
@@ -4610,7 +4610,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     child.removeAttributes(excludeAttributes);
 
                     final Set<AbstractHtml> subChildren = child.children;
-                    if (subChildren != null && subChildren.size() > 0) {
+                    if (subChildren != null && !subChildren.isEmpty()) {
                         childrenStack.push(subChildren);
                     }
                 }
@@ -4713,7 +4713,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                 final Set<AbstractHtml> subChildren = stackChild.children;
 
-                if (subChildren != null && subChildren.size() > 0) {
+                if (subChildren != null && !subChildren.isEmpty()) {
                     removedTagsStack.push(subChildren);
                 }
             }
@@ -4858,7 +4858,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                     final Set<AbstractHtml> subChildren = tag.children;
 
-                    if (subChildren != null && subChildren.size() > 0) {
+                    if (subChildren != null && !subChildren.isEmpty()) {
                         childrenStack.push(subChildren);
                     }
 
@@ -4998,7 +4998,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                     final Set<AbstractHtml> subChildren = tag.children;
 
-                    if (subChildren != null && subChildren.size() > 0) {
+                    if (subChildren != null && !subChildren.isEmpty()) {
                         childrenStack.push(subChildren);
                     }
 
@@ -5172,7 +5172,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                     final Set<AbstractHtml> subChildren = tag.children;
 
-                    if (subChildren != null && subChildren.size() > 0) {
+                    if (subChildren != null && !subChildren.isEmpty()) {
                         childrenStack.push(subChildren);
                     }
 
@@ -6270,7 +6270,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                 final Set<AbstractHtml> subChildren = eachChild.children;
 
-                if (subChildren != null && subChildren.size() > 0) {
+                if (subChildren != null && !subChildren.isEmpty()) {
                     childrenStack.push(subChildren);
                 }
             }
@@ -7308,7 +7308,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                         final AbstractHtml[] innerHtmls = eachChild.changeInnerHtmlsForURIChange(uriEvent, true);
                         if (innerHtmls != null && innerHtmls.length > 0) {
                             childrenStack.push(List.of(innerHtmls));
-                        } else if (eachChild.children != null && eachChild.children.size() > 0) {
+                        } else if (eachChild.children != null && !eachChild.children.isEmpty()) {
                             childrenStack.push(List.copyOf(eachChild.children));
                         }
                         if (eachChild.uriChangeContents != null) {

@@ -119,7 +119,7 @@ public class TextArea extends AbstractHtml {
      */
     public String getChildText() {
         final List<AbstractHtml> children = getChildren();
-        if (children.size() > 0) {
+        if (!children.isEmpty()) {
             final StringBuilder builder = new StringBuilder();
             for (final AbstractHtml child : children) {
                 builder.append(child.toHtmlString());
