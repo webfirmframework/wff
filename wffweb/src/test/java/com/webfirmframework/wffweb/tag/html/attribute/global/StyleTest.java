@@ -88,6 +88,18 @@ public class StyleTest {
          fail("Not yet implemented");
     }
     
+    @Test
+    public void testAddCssProperties() {
+        final Style style = new Style();
+        style.addCssProperties(true, AlignContent.CENTER);
+        assertEquals("style=\"align-content:center !important;\"", style.toHtmlString());
+        style.assignCssProperties("color:blue;text-align:center");
+        
+        assertEquals("style=\"color:blue;text-align:center;\"", style.toHtmlString());
+        style.addCssProperties("align-content:center !important;");
+        assertEquals("style=\"color:blue;text-align:center;align-content:center !important;\"", style.toHtmlString());
+    }
+    
   @Test
   public void testAddCssPropertiesImportantCssProperties() {
       final Style style = new Style();
