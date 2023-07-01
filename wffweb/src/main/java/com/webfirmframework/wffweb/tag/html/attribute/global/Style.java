@@ -782,13 +782,33 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
     }
 
     /**
-     * adds the given css properties after removing all existing css properties
+     * replaces all existing css properties with the given css properties only if
+     * the given css properties are different from the existing.
      *
      * @param cssProperties styles separated by semicolon.<br>
      *                      eg :- {@code color:blue;text-align:center }
      *
      * @since 12.0.0
-     * @author WFF
+     */
+    public void setCssProperties(final String cssProperties) {
+        final long stamp = lock.writeLock();
+        try {
+            extractStylesAndAddToAttributeValueMap(cssProperties, true, false);
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
+     * replaces all existing css properties with the given css properties event if
+     * the given css properties are same as the existing. This method may be used to
+     * force to sync the given css properties with client browser page if the style
+     * property is changed at client side by custom JavaScript.
+     *
+     * @param cssProperties styles separated by semicolon.<br>
+     *                      eg :- {@code color:blue;text-align:center }
+     *
+     * @since 12.0.0
      */
     public void assignCssProperties(final String cssProperties) {
         final long stamp = lock.writeLock();
