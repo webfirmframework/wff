@@ -308,7 +308,7 @@ public class TagRegistry {
         tagClassByTagName.put(TagNameConstants.PATH, Path.class);
         tagClassByTagName.put(TagNameConstants.TEXT, Text.class);
 
-        TAG_CLASS_BY_TAG_NAME = Collections.unmodifiableMap(tagClassByTagName);
+        TAG_CLASS_BY_TAG_NAME = Map.copyOf(tagClassByTagName);
 
         tagClassByTagNameTmp.putAll(tagClassByTagName);
 
@@ -318,7 +318,7 @@ public class TagRegistry {
             tagClassNameByTagName.put(entry.getKey(), entry.getValue().getSimpleName());
         }
 
-        TAG_CLASS_NAME_BY_TAG_NAME = Collections.unmodifiableMap(tagClassNameByTagName);
+        TAG_CLASS_NAME_BY_TAG_NAME = Map.copyOf(tagClassNameByTagName);
 
         TAG_NAMES_SET = ConcurrentHashMap.newKeySet(initialCapacity);
 
@@ -404,7 +404,7 @@ public class TagRegistry {
      * @since 3.0.2
      */
     public static Map<String, Class<?>> getTagClassByTagName() {
-        return Collections.unmodifiableMap(TAG_CLASS_BY_TAG_NAME);
+        return Map.copyOf(TAG_CLASS_BY_TAG_NAME);
     }
 
     /**

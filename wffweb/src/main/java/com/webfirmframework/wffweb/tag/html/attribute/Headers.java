@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Set;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
@@ -210,14 +211,19 @@ public class Headers extends AbstractValueSetAttribute implements ThAttributable
      *              server side, the assigned value will be reflected in the UI.
      *              Sometimes we may modify the value only at client side (not
      *              server side), {@code setValue} will change only if the passed
-     *              value is different from existing value at server side. Note:
-     *              Currently, {@code setValue} doesn't check if the passed argument
-     *              is different from the existing value but it will be improved in
-     *              future so calling {@code assignValue} is similar to calling
-     *              {@code setValue}.
+     *              value is different from existing value at server side.
      * @since 12.0.0
      */
     public void assignValue(final String value) {
-        setValue(value);
+        assignAttributeValue(value);
     }
+
+    /**
+     * @return the header ids
+     * @since 12.0.0
+     */
+    public Set<String> getHeaderIds() {
+        return super.getCopyOfAttributeValueSet();
+    }
+
 }

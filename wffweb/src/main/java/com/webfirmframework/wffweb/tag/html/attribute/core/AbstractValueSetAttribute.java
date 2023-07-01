@@ -18,6 +18,9 @@ package com.webfirmframework.wffweb.tag.html.attribute.core;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.concurrent.locks.Lock;
 
 import com.webfirmframework.wffweb.util.StringUtil;
 
@@ -43,7 +46,11 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
     protected void setAttributeValue(final boolean updateClient, final String value) {
         if (value != null) {
             final Collection<String> allValues = extractValues(value);
-            super.replaceAllInAttributeValueSet(updateClient, allValues);
+            if (allValues.isEmpty()) {
+                super.removeAllFromAttributeValueSet();
+            } else {
+                super.replaceAllInAttributeValueSet(updateClient, allValues);
+            }
         }
     }
 
@@ -56,7 +63,10 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
         for (final String each : inputValues) {
             // As per Collections.addAll's doc it is faster than
             // allValues.addAll(Arrays.asList(values));
-            Collections.addAll(allValues, StringUtil.strip(each));
+            final String striped = StringUtil.strip(each);
+            if (!striped.isBlank()) {
+                Collections.addAll(allValues, striped);
+            }
         }
         return allValues;
     }
@@ -76,6 +86,32 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
         }
     }
 
+    @Override
+    protected void assignAttributeValue(final String value) {
+        if (value != null) {
+            replaceAllInAttributeValueSet(true, true, value);
+        }
+    }
+
+    /**
+     * @return the copy of attributeValueSet in thread-safe way
+     * @since 12.0.0
+     */
+    protected Set<String> getCopyOfAttributeValueSet() {
+        final Collection<Lock> readLocks = lockAndGetReadLocksWithAttrLock();
+        try {
+            final Set<String> attributeValueSet = super.getAttributeValueSetNoInit();
+            if (attributeValueSet != null) {
+                return new LinkedHashSet<>(attributeValueSet);
+            }
+        } finally {
+            for (final Lock lock : readLocks) {
+                lock.unlock();
+            }
+        }
+        return Set.of();
+    }
+
     /**
      * Checks if the value is a part of this attribute value.
      *
@@ -86,7 +122,18 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
      * @author WFF
      */
     public boolean contains(final String value) {
-        return super.getAttributeValueSet().contains(value);
+        final Collection<Lock> readLocks = lockAndGetReadLocksWithAttrLock();
+        try {
+            final Set<String> attributeValueSet = super.getAttributeValueSetNoInit();
+            if (attributeValueSet != null) {
+                return attributeValueSet.contains(value);
+            }
+        } finally {
+            for (final Lock lock : readLocks) {
+                lock.unlock();
+            }
+        }
+        return false;
     }
 
     /**
@@ -99,12 +146,73 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
      * @author WFF
      */
     public boolean containsAll(final Collection<String> values) {
-        return super.getAttributeValueSet().containsAll(values);
+        final Collection<Lock> readLocks = lockAndGetReadLocksWithAttrLock();
+        try {
+            final Set<String> attributeValueSet = super.getAttributeValueSetNoInit();
+            if (attributeValueSet != null) {
+                return attributeValueSet.containsAll(values);
+            }
+        } finally {
+            for (final Lock lock : readLocks) {
+                lock.unlock();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return true if empty otherwise false
+     * @since 12.0.0
+     */
+    public boolean isEmpty() {
+        final Collection<Lock> readLocks = lockAndGetReadLocksWithAttrLock();
+        try {
+            final Set<String> attributeValueSet = super.getAttributeValueSetNoInit();
+            if (attributeValueSet != null) {
+                return attributeValueSet.isEmpty();
+            }
+        } finally {
+            for (final Lock lock : readLocks) {
+                lock.unlock();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return the size
+     * @since 12.0.0
+     */
+    public int size() {
+        final Collection<Lock> readLocks = lockAndGetReadLocksWithAttrLock();
+        try {
+            final Set<String> attributeValueSet = super.getAttributeValueSetNoInit();
+            if (attributeValueSet != null) {
+                return attributeValueSet.size();
+            }
+        } finally {
+            for (final Lock lock : readLocks) {
+                lock.unlock();
+            }
+        }
+        return 0;
     }
 
     @Override
     public String getAttributeValue() {
-        return StringUtil.join(' ', getAttributeValueSet());
+        final Collection<Lock> readLocks = lockAndGetReadLocksWithAttrLock();
+        try {
+            final Set<String> attributeValueSet = super.getAttributeValueSetNoInit();
+            if (attributeValueSet != null) {
+                return StringUtil.join(' ', attributeValueSet);
+            }
+
+        } finally {
+            for (final Lock lock : readLocks) {
+                lock.unlock();
+            }
+        }
+        return "";
     }
 
     /**
@@ -149,16 +257,31 @@ public abstract class AbstractValueSetAttribute extends AbstractAttribute {
      * @since 3.0.1
      */
     protected void replaceAllInAttributeValueSet(final boolean updateClient, final String... attrValues) {
-        if (attrValues != null) {
+        replaceAllInAttributeValueSet(false, updateClient, attrValues);
+    }
 
+    /**
+     * Removes all values from the attributeValueSet and adds the given attribute
+     * values.
+     *
+     * @param force
+     * @param updateClient
+     * @param attrValues
+     * @since 12.0.0
+     */
+    private void replaceAllInAttributeValueSet(final boolean force, final boolean updateClient,
+            final String... attrValues) {
+        if (attrValues != null) {
             final Collection<String> allValues = new ArrayDeque<>();
             for (final String attrValue : attrValues) {
-                if (attrValue != null) {
-                    allValues.addAll(extractValues(attrValue));
+                if (attrValue != null && !attrValue.isBlank()) {
+                    final Collection<String> values = extractValues(attrValue);
+                    if (!values.isEmpty()) {
+                        allValues.addAll(values);
+                    }
                 }
             }
-
-            super.replaceAllInAttributeValueSet(updateClient, allValues);
+            super.replaceAllInAttributeValueSet(force, updateClient, allValues);
         }
     }
 

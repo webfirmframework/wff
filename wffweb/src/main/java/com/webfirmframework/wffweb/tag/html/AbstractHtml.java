@@ -2464,7 +2464,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         try {
             attributesMap = this.attributesMap;
             if (attributesMap != null) {
-                final Collection<AbstractAttribute> result = Collections.unmodifiableCollection(attributesMap.values());
+                final Collection<AbstractAttribute> result = List.copyOf(attributesMap.values());
                 return result;
             }
         } finally {
@@ -2483,7 +2483,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         final Map<String, AbstractAttribute> attributesMap = this.attributesMap;
 
         if (attributesMap != null) {
-            final Collection<AbstractAttribute> result = Collections.unmodifiableCollection(attributesMap.values());
+            final Collection<AbstractAttribute> result = List.copyOf(attributesMap.values());
             return result;
         }
         return null;
@@ -6323,7 +6323,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 2.1.8
      */
     public Map<String, WffBMData> getWffObjects() {
-        return Collections.unmodifiableMap(wffBMDatas);
+        return Map.copyOf(wffBMDatas);
     }
 
     /**

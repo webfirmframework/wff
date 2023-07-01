@@ -438,7 +438,7 @@ public class AttributeRegistry {
         attributeClassByAttrName.put(AttributeNameConstants.USEMAP, UseMap.class);
         attributeClassByAttrName.put(AttributeNameConstants.NONCE, Nonce.class);
 
-        ATTRIBUTE_CLASS_BY_ATTR_NAME = Collections.unmodifiableMap(attributeClassByAttrName);
+        ATTRIBUTE_CLASS_BY_ATTR_NAME = Map.copyOf(attributeClassByAttrName);
 
         attributeClassByAttrNameTmp.putAll(attributeClassByAttrName);
 
@@ -460,7 +460,7 @@ public class AttributeRegistry {
         // in some machines multiple,selected comes as selected,multiple
         tmpSortedBooleanAttrNames.sort(Comparator.comparingInt(String::length).thenComparing(String::compareTo));
 
-        SORTED_BOOLEAN_ATTR_NAMES = Collections.unmodifiableList(tmpSortedBooleanAttrNames);
+        SORTED_BOOLEAN_ATTR_NAMES = List.copyOf(tmpSortedBooleanAttrNames);
 
         final List<String> tmpSortedEventAttrNames = new ArrayList<>(8);
 
@@ -494,7 +494,7 @@ public class AttributeRegistry {
             tmpSortedEventAttrNames.add(each.attrName());
         }
 
-        SORTED_EVENT_ATTR_NAMES = Collections.unmodifiableList(tmpSortedEventAttrNames);
+        SORTED_EVENT_ATTR_NAMES = List.copyOf(tmpSortedEventAttrNames);
     }
 
     /**
