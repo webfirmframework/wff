@@ -98,6 +98,9 @@ public class StyleTest {
         assertEquals("style=\"color:blue;text-align:center;\"", style.toHtmlString());
         style.addCssProperties("align-content:center !important;");
         assertEquals("style=\"color:blue;text-align:center;align-content:center !important;\"", style.toHtmlString());
+        
+        style.assignCssProperties("");
+        assertEquals("style", style.toHtmlString());
     }
 
     @Test
@@ -110,6 +113,9 @@ public class StyleTest {
         assertEquals("style=\"color:blue;text-align:center;\"", style.toHtmlString());
         style.addCssProperties("align-content:center !important;");
         assertEquals("style=\"color:blue;text-align:center;align-content:center !important;\"", style.toHtmlString());
+        
+        style.setCssProperties("");
+        assertEquals("style", style.toHtmlString());
     }
 
   @Test
