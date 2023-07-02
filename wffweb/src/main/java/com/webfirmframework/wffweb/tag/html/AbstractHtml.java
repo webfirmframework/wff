@@ -83,6 +83,7 @@ import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
+import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
@@ -135,6 +136,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     private final StringBuilder htmlStartSB;
 
+    /**
+     * NB: it should never be nullified after initialization
+     */
     private volatile StringBuilder htmlMiddleSB;
 
 //    private StringBuilder htmlEndSB;
@@ -4393,9 +4397,12 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
+     * Note: Only for internal use
+     *
      * @return the htmlMiddleSB
      * @author WFF
      * @since 1.0.0
+     *
      */
     protected StringBuilder getHtmlMiddleSB() {
         if (htmlMiddleSB == null) {
@@ -4409,6 +4416,43 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             }
         }
         return htmlMiddleSB;
+    }
+
+    /**
+     * @return the string value of htmlMiddleSB or empty
+     * @since 12.0.0
+     */
+    protected String getHtmlMiddleString() {
+        final StringBuilder htmlMiddleSB = this.htmlMiddleSB;
+        if (htmlMiddleSB != null) {
+            final Lock lock = lockAndGetReadLock();
+            try {
+                return htmlMiddleSB.toString();
+            } finally {
+                lock.unlock();
+            }
+        }
+        return "";
+    }
+
+    /**
+     * @param child the string to be removed from htmlMiddleSB
+     * @since 12.0.0
+     */
+    protected void removeFromHtmlMiddleSB(final String child) {
+        final StringBuilder htmlMiddleSB = this.htmlMiddleSB;
+        if (htmlMiddleSB != null) {
+            final Lock lock = lockAndGetWriteLock();
+            try {
+                final String sb = htmlMiddleSB.toString();
+                final String replaced = StringUtil.replace(sb, child, "");
+                final int lastIndex = htmlMiddleSB.length() - 1;
+                htmlMiddleSB.delete(0, lastIndex);
+                htmlMiddleSB.append(replaced);
+            } finally {
+                lock.unlock();
+            }
+        }
     }
 
     /**
