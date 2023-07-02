@@ -46,13 +46,36 @@ public enum TagContent {
      * Adds inner content for the given parent object, children of parent will be
      * removed if already exists.
      *
-     * @param parent
-     * @param content
+     * @param parent  parent the tag on which the given content to be added as text
+     *                content type
+     * @param content content the content to be added
      * @return parent
      * @since 3.0.13
      */
     public static <R extends AbstractHtml> R text(final R parent, final String content) {
         TagContent.TEXT.addInnerContent(parent, content);
+        return parent;
+    }
+
+    /**
+     * Adds inner content for the given parent tag and its existing children will be
+     * removed on if existing content of the parent tag is different from then given
+     * one.
+     *
+     * @param parent  the tag on which the given content to be added as text content
+     *                type
+     * @param content the content to be added
+     * @return parent
+     * @since 12.0.0
+     */
+    public static <R extends AbstractHtml> R textIfRequired(final R parent, final String content) {
+        if (parent.getFirstChild() instanceof final NoTag noTag) {
+            if (noTag.isChildContentTypeHtml() || !String.valueOf(content).equals(noTag.getChildContent())) {
+                TagContent.TEXT.addInnerContent(parent, content);
+            }
+        } else {
+            TagContent.TEXT.addInnerContent(parent, content);
+        }
         return parent;
     }
 
@@ -85,12 +108,39 @@ public enum TagContent {
      * removed if already exists. It internally marks the given content type as
      * html.
      *
-     * @param parent
+     * @param parent  the tag on which the given content to be added as html content
+     *                type
+     * @param content the content to be added
      * @return parent
      * @since 3.0.13
      */
     public static <R extends AbstractHtml> R html(final R parent, final String content) {
         TagContent.HTML.addInnerContent(parent, content);
+        return parent;
+    }
+
+    /**
+     * Adds inner content for the given parent tag, its children will be removed if
+     * already exists. It internally marks the given content type as html. The
+     * operation will be done only if the existing content of the given parent tag
+     * is different from the given content.
+     *
+     * @param parent  the tag on which the given content to be added as html content
+     *                type
+     * @param content the content to be added
+     * @return parent
+     * @since 12.0.0
+     */
+    public static <R extends AbstractHtml> R htmlIfRequired(final R parent, final String content) {
+
+        if (parent.getFirstChild() instanceof final NoTag noTag) {
+            if (!noTag.isChildContentTypeHtml() || !String.valueOf(content).equals(noTag.getChildContent())) {
+                TagContent.HTML.addInnerContent(parent, content);
+            }
+        } else {
+            TagContent.HTML.addInnerContent(parent, content);
+        }
+
         return parent;
     }
 
