@@ -63,8 +63,14 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
     private volatile String attributeValue;
 
+    /**
+     * NB: it should never be nullified after initialization
+     */
     private volatile Map<String, String> attributeValueMap;
 
+    /**
+     * NB: it should never be nullified after initialization
+     */
     private volatile Set<String> attributeValueSet;
 
     private transient final Set<AbstractHtml> ownerTags;
