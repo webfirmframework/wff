@@ -17,27 +17,48 @@ public class TagContentTest {
         
         div.give(TagContent::textIfRequired, "content1");
         assertEquals("<div>content1</div>", div.toHtmlString());
+        assertEquals(1, div.getChildrenSize());
         assertTrue(div.getFirstChild() instanceof NoTag noTag && !noTag.isChildContentTypeHtml());
         
         div.give(TagContent::textIfRequired, "content1");
         assertEquals("<div>content1</div>", div.toHtmlString());
+        assertEquals(1, div.getChildrenSize());
         assertTrue(div.getFirstChild() instanceof NoTag noTag && !noTag.isChildContentTypeHtml());
         
         div.give(TagContent::textIfRequired, "content2");
         assertEquals("<div>content2</div>", div.toHtmlString());
+        assertEquals(1, div.getChildrenSize());
         assertTrue(div.getFirstChild() instanceof NoTag noTag && !noTag.isChildContentTypeHtml());
         
         div.give(TagContent::textIfRequired, (String) null);
         assertEquals("<div>null</div>", div.toHtmlString());
+        assertEquals(1, div.getChildrenSize());
         assertTrue(div.getFirstChild() instanceof NoTag noTag && !noTag.isChildContentTypeHtml());
         
         div.give(TagContent::textIfRequired, "content1");
         assertEquals("<div>content1</div>", div.toHtmlString());
+        assertEquals(1, div.getChildrenSize());
         assertTrue(div.getFirstChild() instanceof NoTag noTag && !noTag.isChildContentTypeHtml());
         
         div.give(TagContent::htmlIfRequired, "content1");
         assertEquals("<div>content1</div>", div.toHtmlString());
+        assertEquals(1, div.getChildrenSize());
         assertTrue(div.getFirstChild() instanceof NoTag noTag && noTag.isChildContentTypeHtml());
+        
+        div.give(TagContent::textIfRequired, "content1");
+        assertEquals("<div>content1</div>", div.toHtmlString());
+        assertEquals(1, div.getChildrenSize());
+        assertTrue(div.getFirstChild() instanceof NoTag noTag && !noTag.isChildContentTypeHtml());
+        
+        div.give(TagContent::appendText, "");
+        assertEquals("<div>content1</div>", div.toHtmlString());
+        assertEquals(2, div.getChildrenSize());
+        assertTrue(div.getFirstChild() instanceof NoTag noTag && !noTag.isChildContentTypeHtml());
+        
+        div.give(TagContent::textIfRequired, "content1");
+        assertEquals("<div>content1</div>", div.toHtmlString());
+        assertEquals(1, div.getChildrenSize());
+        assertTrue(div.getFirstChild() instanceof NoTag noTag && !noTag.isChildContentTypeHtml());
         
     }
 
@@ -71,6 +92,21 @@ public class TagContentTest {
         div.give(TagContent::textIfRequired, "content1");
         assertEquals("<div>content1</div>", div.toHtmlString());
         assertTrue(div.getFirstChild() instanceof NoTag noTag && !noTag.isChildContentTypeHtml());
+        
+        div.give(TagContent::htmlIfRequired, "content1");
+        assertEquals("<div>content1</div>", div.toHtmlString());
+        assertEquals(1, div.getChildrenSize());
+        assertTrue(div.getFirstChild() instanceof NoTag noTag && noTag.isChildContentTypeHtml());
+        
+        div.give(TagContent::appendHtml, "");
+        assertEquals("<div>content1</div>", div.toHtmlString());
+        assertEquals(2, div.getChildrenSize());
+        assertTrue(div.getFirstChild() instanceof NoTag noTag && noTag.isChildContentTypeHtml());
+        
+        div.give(TagContent::htmlIfRequired, "content1");
+        assertEquals("<div>content1</div>", div.toHtmlString());
+        assertEquals(1, div.getChildrenSize());
+        assertTrue(div.getFirstChild() instanceof NoTag noTag && noTag.isChildContentTypeHtml());
         
     }
 
