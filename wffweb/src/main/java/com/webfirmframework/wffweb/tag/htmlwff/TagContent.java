@@ -70,7 +70,8 @@ public enum TagContent {
      */
     public static <R extends AbstractHtml> R textIfRequired(final R parent, final String content) {
         if (parent.getFirstChild() instanceof final NoTag noTag) {
-            if (noTag.isChildContentTypeHtml() || !String.valueOf(content).equals(noTag.getChildContent())) {
+            if (noTag.isChildContentTypeHtml() || !String.valueOf(content).equals(noTag.getChildContent())
+                    || parent.getChildrenSize() > 1) {
                 TagContent.TEXT.addInnerContent(parent, content);
             }
         } else {
@@ -134,7 +135,8 @@ public enum TagContent {
     public static <R extends AbstractHtml> R htmlIfRequired(final R parent, final String content) {
 
         if (parent.getFirstChild() instanceof final NoTag noTag) {
-            if (!noTag.isChildContentTypeHtml() || !String.valueOf(content).equals(noTag.getChildContent())) {
+            if (!noTag.isChildContentTypeHtml() || !String.valueOf(content).equals(noTag.getChildContent())
+                    || parent.getChildrenSize() > 1) {
                 TagContent.HTML.addInnerContent(parent, content);
             }
         } else {
