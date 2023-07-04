@@ -2997,6 +2997,26 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 12.0.0
      */
     protected String toInnerHtmlString() {
+        final Lock readLock = lockAndGetReadLock();
+        try {
+            final Set<AbstractHtml> children = this.children;
+            if (children.isEmpty()) {
+                return "";
+            }
+
+            final Iterator<AbstractHtml> iterator;
+            if (children.size() == 1 && (iterator = children.iterator()).hasNext()
+                    && iterator.next() instanceof final NoTag firstChild) {
+                final StringBuilder htmlMiddleSB = ((AbstractHtml) firstChild).htmlMiddleSB;
+                if (htmlMiddleSB != null) {
+                    return htmlMiddleSB.toString();
+                }
+                return "";
+            }
+        } finally {
+            readLock.unlock();
+        }
+
         // should be WriteLock as toHtmlStringLockless requires WriteLock
         final Lock lock = lockAndGetWriteLock();
         try {
