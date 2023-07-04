@@ -2978,6 +2978,43 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
+     * @return true if it contains children
+     * @since 12.0.0
+     */
+    public boolean hasChildren() {
+        final Lock lock = lockAndGetReadLock();
+        try {
+            return !children.isEmpty();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * gets inner html string
+     *
+     * @return inner html string.
+     * @since 12.0.0
+     */
+    protected String toInnerHtmlString() {
+        // should be WriteLock as toHtmlStringLockless requires WriteLock
+        final Lock lock = lockAndGetWriteLock();
+        try {
+            final Set<AbstractHtml> children = this.children;
+            if (!children.isEmpty()) {
+                final StringBuilder builder = new StringBuilder();
+                for (final AbstractHtml child : children) {
+                    builder.append(child.toHtmlStringLockless());
+                }
+                return builder.toString();
+            }
+        } finally {
+            lock.unlock();
+        }
+        return "";
+    }
+
+    /**
      * NB: this method is for internal use. The returned object should not be
      * modified.
      *
@@ -4118,17 +4155,25 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     public String toHtmlString() {
         final Lock lock = lockAndGetWriteLock();
         try {
-
-            final String printStructure = getPrintStructure(getSharedObject().isChildModified());
-
-            if (parent == null) {
-                sharedObject.setChildModified(false, ACCESS_OBJECT);
-            }
-
-            return printStructure;
+            return toHtmlStringLockless();
         } finally {
             lock.unlock();
         }
+    }
+
+    /**
+     * NB: use write lock instead of read lock when using this method
+     *
+     * @return the html string
+     */
+    private String toHtmlStringLockless() {
+        final String printStructure = getPrintStructure(getSharedObject().isChildModified());
+
+        if (parent == null) {
+            sharedObject.setChildModified(false, ACCESS_OBJECT);
+        }
+
+        return printStructure;
     }
 
     /*
