@@ -301,6 +301,11 @@ public class SharedTagContent<T> {
 
     }
 
+    private static record RemoveCall<T> (AbstractHtml insertedTag, AbstractHtml parentTag)
+            implements QueuedMethodCall<T> {
+
+    }
+
     @FunctionalInterface
     public static interface ContentFormatter<T> {
         public abstract Content<String> format(final Content<T> content);
@@ -1418,6 +1423,8 @@ public class SharedTagContent<T> {
                 setSharedForQ(each.shared);
             } else if (eachItem instanceof final SetExecutorCall<T> each) {
                 setExecutorForQ(each.executor);
+            } else if (eachItem instanceof final RemoveCall<T> each) {
+                removeForQ(each.insertedTag, each.parentTag);
             }
         }
         cleanup();
@@ -1947,9 +1954,22 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     boolean remove(final AbstractHtml insertedTag, final AbstractHtml parentTag) {
+        methodCallQ.add(new RemoveCall<>(insertedTag, parentTag));
+        executeMethodCallsFromQ();
+        return true;
+    }
+
+    /**
+     * NB: Only for internal use
+     *
+     * @param insertedTag instance of NoTag
+     * @param parentTag   parent tag of NoTag
+     * @return true if removed otherwise false
+     * @since 3.0.6
+     */
+    private boolean removeForQ(final AbstractHtml insertedTag, final AbstractHtml parentTag) {
         final long stamp = lock.writeLock();
         try {
-
             final boolean removed = insertedTags.remove(insertedTag) != null;
             if (removed) {
                 if (detachListeners != null) {
@@ -1964,7 +1984,6 @@ public class SharedTagContent<T> {
             return removed;
         } finally {
             lock.unlockWrite(stamp);
-            cleanup();
         }
     }
 
