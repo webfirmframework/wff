@@ -2889,8 +2889,8 @@ public class SharedTagContent<T> {
      * when there are millions of consumer tags. If it is enabled all update methods
      * will be fully asynchronous. However, it will strictly keep the order of
      * update, in FIFO order. Note: Java Virtual Thread should be enabled (only if
-     * the Java version is < 21) to support this feature. Even if this method is set
-     * as false internal operations may still be done in asynchronous only when
+     * the Java version is &lt; 21) to support this feature. Even if this method is
+     * set as false internal operations may still be done in asynchronous only when
      * appropriate to improve performance.
      *
      * @since 12.0.0
