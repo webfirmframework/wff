@@ -1589,12 +1589,6 @@ public class SharedTagContent<T> {
                                     final AbstractHtml previousNoTag = parentNoTagData.previousNoTag();
                                     final AbstractHtml5SharedObject sharedObject = previousNoTag.getSharedObject();
 
-                                    // to get safety of lock it is executed before
-                                    // addInnerHtmlsAndGetEventsLockless
-                                    // However lock safety is irrelevant here as the
-                                    // SharedTagContent will not reuse the same NoTag
-                                    previousNoTag.setSharedTagContent(null);
-
                                     if (parentNoTagData.parent().getSharedObject().equals(sharedObject)
                                             && parentNoTagData.parent().getChildrenSizeLockless() == 1
                                             && !previousNoTag.isParentNullifiedOnce()) {
@@ -1610,6 +1604,13 @@ public class SharedTagContent<T> {
                                                     && exclusionTags.contains(parentNoTagData.parent())) {
                                                 updateClientTagSpecific = false;
                                             }
+
+                                            // to get safety of lock it is executed before
+                                            // addInnerHtmlsAndGetEventsLockless
+                                            // However lock safety is irrelevant here as the
+                                            // SharedTagContent will not reuse the same NoTag
+                                            previousNoTag.setSharedTagContent(null);
+                                            previousNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
 
                                             // insertedTags.put should be after this stmt
                                             final InnerHtmlListenerData listenerData = parentNoTagData.parent()
@@ -1663,6 +1664,8 @@ public class SharedTagContent<T> {
                                                     parentNoTagData.insertedTagData().formatter()));
                                         }
                                     } else {
+                                        previousNoTag.setSharedTagContent(null);
+                                        previousNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
                                         final AbstractHtml noTagAsBase = parentNoTagData.getNoTag();
                                         noTagAsBase.setCacheSTCFormatter(null, ACCESS_OBJECT);
                                     }
@@ -2005,6 +2008,7 @@ public class SharedTagContent<T> {
                 if (contentChangeListeners != null) {
                     contentChangeListeners.remove(parentTag.internalId());
                 }
+                insertedTag.setSharedTagContent(null);
                 insertedTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
             }
 
@@ -2226,6 +2230,7 @@ public class SharedTagContent<T> {
                                         // SharedTagContent will not reuse the same
                                         // NoTag
                                         previousNoTag.setSharedTagContent(null);
+                                        previousNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
 
                                         if (removeContent) {
                                             final ChildTagRemoveListenerData listenerData = parentNoTagData.parent()
@@ -2250,6 +2255,11 @@ public class SharedTagContent<T> {
 
                                     }
 
+                                } else {
+                                    previousNoTag.setSharedTagContent(null);
+                                    previousNoTag.setCacheSTCFormatter(null, ACCESS_OBJECT);
+                                    final AbstractHtml noTagAsBase = parentNoTagData.getNoTag();
+                                    noTagAsBase.setCacheSTCFormatter(null, ACCESS_OBJECT);
                                 }
                             } finally {
                                 writeLock.unlock();
