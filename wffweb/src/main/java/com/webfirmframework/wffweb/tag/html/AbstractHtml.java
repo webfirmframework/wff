@@ -175,6 +175,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     @SuppressWarnings("rawtypes")
     private transient volatile SharedTagContent sharedTagContent;
 
+    private transient volatile Boolean sharedTagContentSubscribed;
+
     private final InternalId internalId = new InternalId();
 
     private volatile URIEvent lastURIEvent;
@@ -743,6 +745,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             if (sharedTagContent != null && firstChild instanceof NoTag) {
                 sharedTagContent.removeListenersLockless(internalId);
                 firstChild.sharedTagContent = null;
+                firstChild.sharedTagContentSubscribed = null;
                 firstChild.cachedStcFormatter = null;
             }
         }
@@ -1260,6 +1263,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                                     && firstChild.sharedTagContent != null) {
                                 firstChild.sharedTagContent.remove(firstChild, this);
                                 firstChild.sharedTagContent = null;
+                                firstChild.sharedTagContentSubscribed = null;
                                 firstChild.cachedStcFormatter = null;
                             }
                         }
@@ -1283,6 +1287,14 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
+     * @param sharedTagContentSubscribed
+     * @since 12.0.0-beta.12
+     */
+    void setSharedTagContentSubscribed(final Boolean sharedTagContentSubscribed) {
+        this.sharedTagContentSubscribed = sharedTagContentSubscribed;
+    }
+
+    /**
      * @return the object of SharedTagContent which created the NoTag in the child
      *         or null if the child NoTag is not created by any SharedTagContent
      *         object.
@@ -1297,7 +1309,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 if (iterator.hasNext()) {
                     final AbstractHtml firstChild = iterator.next();
                     if (firstChild != null && !firstChild.parentNullifiedOnce && firstChild.sharedTagContent != null
-                            && firstChild instanceof NoTag && firstChild.sharedTagContent.contains(firstChild)) {
+                            && firstChild instanceof NoTag) {
+                        // && firstChild.sharedTagContent.contains(firstChild) may lead to deadlock bug
+                        // when using under whenURI thread
                         return firstChild.sharedTagContent;
                     }
 
@@ -1324,9 +1338,12 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 final Iterator<AbstractHtml> iterator = children.iterator();
                 if (iterator.hasNext()) {
                     final AbstractHtml firstChild = iterator.next();
-                    if (firstChild != null && !firstChild.parentNullifiedOnce && firstChild.sharedTagContent != null
-                            && firstChild instanceof NoTag) {
-                        return firstChild.sharedTagContent.isSubscribed(firstChild);
+                    if (firstChild != null && !firstChild.parentNullifiedOnce
+                            && firstChild.sharedTagContentSubscribed != null && firstChild instanceof NoTag) {
+                        // firstChild.sharedTagContent.isSubscribed(firstChild) may lead to deadlock bug
+                        // when using under whenURI thread fix it later
+                        final Boolean subscribed = firstChild.sharedTagContentSubscribed;
+                        return subscribed != null && subscribed;
                     }
 
                 }
@@ -1362,6 +1379,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                         removed = firstChild.sharedTagContent.remove(firstChild, this);
                         firstChild.sharedTagContent = null;
+                        firstChild.sharedTagContentSubscribed = null;
                         firstChild.cachedStcFormatter = null;
                         if (removed && removeContent) {
 
@@ -4778,6 +4796,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         if (TagUtil.isTagless(abstractHtml) && abstractHtml instanceof NoTag) {
             abstractHtml.sharedTagContent = null;
+            abstractHtml.sharedTagContentSubscribed = null;
             abstractHtml.cachedStcFormatter = null;
         }
 
@@ -6832,16 +6851,13 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     /**
      * Only for internal use
      *
-     * @param contentFormatter
-     * @param accessObject
      * @param <T>
+     * @param contentFormatter
      * @since 3.0.18
+     * @since 12.0.0-beta.12 removed accessObject as the visibility of this method
+     *        is limited to package level
      */
-    final <T> void setCacheSTCFormatter(final SharedTagContent.ContentFormatter<T> contentFormatter,
-            final SecurityObject accessObject) {
-        if (!IndexedClassType.SHARED_TAG_CONTENT.equals(accessObject.forClassType())) {
-            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
-        }
+    final <T> void setCacheSTCFormatter(final SharedTagContent.ContentFormatter<T> contentFormatter) {
         cachedStcFormatter = contentFormatter;
     }
 
