@@ -173,7 +173,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     private Object cachedStcFormatter;
 
     @SuppressWarnings("rawtypes")
-    private transient volatile SharedTagContent sharedTagContent;
+    transient volatile SharedTagContent sharedTagContent;
 
     private transient volatile Boolean sharedTagContentSubscribed;
 
@@ -743,10 +743,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             @SuppressWarnings("rawtypes")
             final SharedTagContent sharedTagContent = firstChild.sharedTagContent;
             if (sharedTagContent != null && firstChild instanceof NoTag) {
-                sharedTagContent.removeListenersLockless(internalId);
                 firstChild.sharedTagContent = null;
                 firstChild.sharedTagContentSubscribed = null;
                 firstChild.cachedStcFormatter = null;
+                sharedTagContent.removeListenersLockless(internalId);
             }
         }
     }
@@ -1256,18 +1256,17 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             } else {
                 if (children.size() == 1) {
                     final Iterator<AbstractHtml> iterator = children.iterator();
-                    if (iterator.hasNext()) {
-                        final AbstractHtml firstChild = iterator.next();
-                        if (firstChild != null) {
-                            if (firstChild instanceof NoTag && !firstChild.parentNullifiedOnce
-                                    && firstChild.sharedTagContent != null) {
-                                firstChild.sharedTagContent.remove(firstChild, this);
-                                firstChild.sharedTagContent = null;
-                                firstChild.sharedTagContentSubscribed = null;
-                                firstChild.cachedStcFormatter = null;
-                            }
+                    final AbstractHtml firstChild;
+                    if (iterator.hasNext() && (firstChild = iterator.next()) != null) {
+                        final SharedTagContent sharedTagContentLocal = firstChild.sharedTagContent;
+                        if (firstChild instanceof NoTag && !firstChild.parentNullifiedOnce
+                                && sharedTagContentLocal != null) {
+                            firstChild.sharedTagContent = null;
+                            firstChild.sharedTagContentSubscribed = null;
+                            firstChild.cachedStcFormatter = null;
+                            // nullifying should be before remove as remove is async
+                            sharedTagContentLocal.remove(firstChild, this);
                         }
-
                     }
 
                 }
@@ -1372,15 +1371,17 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         try {
             if (children.size() == 1) {
                 final Iterator<AbstractHtml> iterator = children.iterator();
-                if (iterator.hasNext()) {
-                    final AbstractHtml firstChild = iterator.next();
-                    if (firstChild != null && !firstChild.parentNullifiedOnce && firstChild.sharedTagContent != null
-                            && firstChild instanceof NoTag) {
+                final AbstractHtml firstChild;
+                if (iterator.hasNext() && (firstChild = iterator.next()) != null) {
+                    final SharedTagContent sharedTagContent = firstChild.sharedTagContent;
+                    if (!firstChild.parentNullifiedOnce && sharedTagContent != null && firstChild instanceof NoTag) {
 
-                        removed = firstChild.sharedTagContent.remove(firstChild, this);
                         firstChild.sharedTagContent = null;
                         firstChild.sharedTagContentSubscribed = null;
                         firstChild.cachedStcFormatter = null;
+                        // nullifying should be before remove as remove is async
+                        removed = sharedTagContent.remove(firstChild, this);
+
                         if (removed && removeContent) {
 
                             final AbstractHtml[] removedAbstractHtmls = children

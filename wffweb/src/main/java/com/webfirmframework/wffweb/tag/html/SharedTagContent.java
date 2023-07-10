@@ -1498,7 +1498,8 @@ public class SharedTagContent<T> {
 
                     // the condition isParentNullifiedOnce true means the parent
                     // of this tag has already been changed at least once
-                    if ((parentTag == null) || ((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
+                    if (parentTag == null || prevNoTagAsBase.isParentNullifiedOnce()
+                            || prevNoTagAsBase.sharedTagContent == null) {
                         prevNoTagAsBase.setCacheSTCFormatter(null);
                         prevNoTagAsBase.setSharedTagContent(null);
                         prevNoTagAsBase.setSharedTagContentSubscribed(null);
@@ -1516,8 +1517,6 @@ public class SharedTagContent<T> {
                         contentApplied = formatter.format(contentAfter);
                         if (contentApplied != null) {
                             prevNoTagAsBase.setCacheSTCFormatter(null);
-                            prevNoTagAsBase.setSharedTagContent(null);
-                            prevNoTagAsBase.setSharedTagContentSubscribed(null);
                             noTag = new NoTag(null, contentApplied.content, contentApplied.contentTypeHtml);
                         } else {
                             noTag = prevNoTag;
@@ -1525,8 +1524,6 @@ public class SharedTagContent<T> {
                     } catch (final Exception e) {
                         contentApplied = new Content<>("", false);
                         prevNoTagAsBase.setCacheSTCFormatter(null);
-                        prevNoTagAsBase.setSharedTagContent(null);
-                        prevNoTagAsBase.setSharedTagContentSubscribed(null);
                         noTag = new NoTag(null, contentApplied.content, contentApplied.contentTypeHtml);
                         LOGGER.log(Level.SEVERE, "Exception while ContentFormatter.format", e);
                     }
@@ -2014,6 +2011,10 @@ public class SharedTagContent<T> {
     private boolean removeForQ(final AbstractHtml insertedTag, final AbstractHtml parentTag) {
         final long stamp = lock.writeLock();
         try {
+            insertedTag.setCacheSTCFormatter(null);
+            insertedTag.setSharedTagContent(null);
+            insertedTag.setSharedTagContentSubscribed(null);
+
             final boolean removed = insertedTags.remove(insertedTag) != null;
             if (detachListeners != null) {
                 detachListeners.remove(parentTag.internalId());
@@ -2021,11 +2022,6 @@ public class SharedTagContent<T> {
             if (contentChangeListeners != null) {
                 contentChangeListeners.remove(parentTag.internalId());
             }
-
-            insertedTag.setSharedTagContent(null);
-            insertedTag.setSharedTagContentSubscribed(null);
-            insertedTag.setCacheSTCFormatter(null);
-
             return removed;
         } finally {
             lock.unlockWrite(stamp);
@@ -2149,11 +2145,12 @@ public class SharedTagContent<T> {
                 }
                 final InsertedTagData<T> insertedTagData = entry.getValue();
                 final AbstractHtml parentTag = prevNoTag.getParent();
+                final AbstractHtml prevNoTagAsBase = prevNoTag;
 
                 // the condition isParentNullifiedOnce true means the parent of
                 // this tag has already been changed at least once
-                if ((parentTag == null) || ((AbstractHtml) prevNoTag).isParentNullifiedOnce()) {
-                    final AbstractHtml prevNoTagAsBase = prevNoTag;
+                if (parentTag == null || prevNoTagAsBase.isParentNullifiedOnce()
+                        || prevNoTagAsBase.sharedTagContent == null) {
                     prevNoTagAsBase.setCacheSTCFormatter(null);
                     prevNoTagAsBase.setSharedTagContent(null);
                     prevNoTagAsBase.setSharedTagContentSubscribed(null);
@@ -2274,9 +2271,10 @@ public class SharedTagContent<T> {
                                     }
 
                                 } else {
+                                    previousNoTag.setCacheSTCFormatter(null);
                                     previousNoTag.setSharedTagContent(null);
                                     previousNoTag.setSharedTagContentSubscribed(null);
-                                    previousNoTag.setCacheSTCFormatter(null);
+
                                     final AbstractHtml noTagAsBase = parentNoTagData.getNoTag();
                                     noTagAsBase.setCacheSTCFormatter(null);
                                     noTagAsBase.setSharedTagContent(null);
