@@ -1253,6 +1253,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 final AbstractHtml noTagInserted = sharedTagContent.addInnerHtml(updateClient, this, formatter,
                         subscribe);
                 noTagInserted.sharedTagContent = sharedTagContent;
+                noTagInserted.sharedTagContentSubscribed = subscribe;
             } else {
                 if (children.size() == 1) {
                     final Iterator<AbstractHtml> iterator = children.iterator();

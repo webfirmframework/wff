@@ -38,6 +38,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
 import java.util.function.Consumer;
@@ -303,6 +304,12 @@ public class SharedTagContent<T> {
     }
 
     private static record RemoveCall<T> (AbstractHtml insertedTag, AbstractHtml parentTag)
+            implements QueuedMethodCall<T> {
+
+    }
+
+    private static record AddInnerHtml<T> (boolean updateClient, AbstractHtml applicableTag,
+            ContentFormatter<T> formatter, boolean subscribe, AtomicReference<AbstractHtml> methodResult)
             implements QueuedMethodCall<T> {
 
     }
@@ -1427,6 +1434,10 @@ public class SharedTagContent<T> {
                 setExecutorForQ(each.executor);
             } else if (eachItem instanceof final RemoveCall<T> each) {
                 removeForQ(each.insertedTag, each.parentTag);
+            } else if (eachItem instanceof final AddInnerHtml<T> each) {
+                final AbstractHtml result = addInnerHtmlForQ(each.updateClient, each.applicableTag, each.formatter,
+                        each.subscribe);
+                each.methodResult.set(result);
             }
         }
         cleanup();
@@ -1909,6 +1920,35 @@ public class SharedTagContent<T> {
     AbstractHtml addInnerHtml(final boolean updateClient, final AbstractHtml applicableTag,
             final ContentFormatter<T> formatter, final boolean subscribe) {
 
+        // NB: codes inside this method should be running with the current thread as the
+        // addInnerHtml method methodResult is returned in this method
+
+        final AtomicReference<AbstractHtml> methodResult = new AtomicReference<>();
+        methodCallQ.add(new AddInnerHtml<>(updateClient, applicableTag, formatter, subscribe, methodResult));
+
+        methodCallQLock.acquireUninterruptibly();
+        try {
+            processMethodCallQ(this.executor, false);
+        } finally {
+            methodCallQLock.release();
+        }
+
+        return methodResult.get();
+    }
+
+    /**
+     * @param updateClient
+     * @param applicableTag
+     * @param formatter
+     * @param subscribe     if true then updateClient will be true only if
+     *                      activeWSListener is true otherwise updateClient will be
+     *                      false at the time of content update.
+     * @return the NoTag inserted
+     * @since 3.0.6
+     */
+    private AbstractHtml addInnerHtmlForQ(final boolean updateClient, final AbstractHtml applicableTag,
+            final ContentFormatter<T> formatter, final boolean subscribe) {
+
         final ContentFormatter<T> cFormatter = formatter != null ? formatter : DEFAULT_CONTENT_FORMATTER;
 
         final long stamp = lock.writeLock();
@@ -1977,7 +2017,6 @@ public class SharedTagContent<T> {
 
         } finally {
             lock.unlockWrite(stamp);
-            cleanup();
         }
         if (listenerInvoked) {
             pushQueue(sharedObject);
