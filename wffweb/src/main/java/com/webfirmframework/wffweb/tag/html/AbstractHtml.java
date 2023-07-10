@@ -1258,6 +1258,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     final Iterator<AbstractHtml> iterator = children.iterator();
                     final AbstractHtml firstChild;
                     if (iterator.hasNext() && (firstChild = iterator.next()) != null) {
+                        @SuppressWarnings("rawtypes")
                         final SharedTagContent sharedTagContentLocal = firstChild.sharedTagContent;
                         if (firstChild instanceof NoTag && !firstChild.parentNullifiedOnce
                                 && sharedTagContentLocal != null) {
@@ -1373,6 +1374,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 final Iterator<AbstractHtml> iterator = children.iterator();
                 final AbstractHtml firstChild;
                 if (iterator.hasNext() && (firstChild = iterator.next()) != null) {
+                    @SuppressWarnings("rawtypes")
                     final SharedTagContent sharedTagContent = firstChild.sharedTagContent;
                     if (!firstChild.parentNullifiedOnce && sharedTagContent != null && firstChild instanceof NoTag) {
 
