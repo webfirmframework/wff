@@ -1250,10 +1250,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         final Lock lock = lockAndGetWriteLock();
         try {
             if (sharedTagContent != null) {
-                final AbstractHtml noTagInserted = sharedTagContent.addInnerHtml(updateClient, this, formatter,
-                        subscribe);
-                noTagInserted.sharedTagContent = sharedTagContent;
-                noTagInserted.sharedTagContentSubscribed = subscribe;
+                sharedTagContent.addInnerHtml(updateClient, this, formatter, subscribe);
             } else {
                 if (children.size() == 1) {
                     final Iterator<AbstractHtml> iterator = children.iterator();
