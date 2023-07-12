@@ -110,11 +110,7 @@ public class SharedTagContent<T> {
 
     private final Queue<QueuedMethodCall<T>> updateMethodCallQ = new ConcurrentLinkedQueue<>();
 
-    private final Queue<QueuedMethodCall<T>> addRemoveMethodCallQ = new ConcurrentLinkedQueue<>();
-
     private final Semaphore updateMethodCallQLock = new Semaphore(1);
-
-    private final Semaphore addRemoveMethodCallQLock = new Semaphore(1);
 
     volatile Map<InternalId, Set<ContentChangeListener<T>>> contentChangeListeners;
 
@@ -303,16 +299,6 @@ public class SharedTagContent<T> {
     }
 
     private static record SetExecutorCall<T> (Executor executor) implements QueuedMethodCall<T> {
-
-    }
-
-    private static record RemoveCall<T> (AbstractHtml insertedTag, AbstractHtml parentTag)
-            implements QueuedMethodCall<T> {
-
-    }
-
-    private static record AddInnerHtml<T> (boolean updateClient, AbstractHtml applicableTag,
-            ContentFormatter<T> formatter, boolean subscribe) implements QueuedMethodCall<T> {
 
     }
 
@@ -1439,18 +1425,6 @@ public class SharedTagContent<T> {
         cleanup();
     }
 
-    private void processAddRemoveMethodCallQ() {
-        QueuedMethodCall<T> eachItem;
-        while ((eachItem = addRemoveMethodCallQ.poll()) != null) {
-            if (eachItem instanceof final RemoveCall<T> each) {
-                removeForQ(each.insertedTag, each.parentTag);
-            } else if (eachItem instanceof final AddInnerHtml<T> each) {
-                addInnerHtmlForQ(each.updateClient, each.applicableTag, each.formatter, each.subscribe);
-            }
-        }
-        cleanup();
-    }
-
     /**
      * @param updateClient         true or false
      * @param updateClientNature   If this SharedTagContent object has to update
@@ -1922,34 +1896,14 @@ public class SharedTagContent<T> {
      * @param subscribe     if true then updateClient will be true only if
      *                      activeWSListener is true otherwise updateClient will be
      *                      false at the time of content update.
+     * @return the inserted NoTag
      * @since 3.0.6
      */
-    void addInnerHtml(final boolean updateClient, final AbstractHtml applicableTag, final ContentFormatter<T> formatter,
-            final boolean subscribe) {
-
-        // NB: never use thread to run processAddRemoveMethodCallQ as it leads to
-        // deadlock bug (tested and found)
-        addRemoveMethodCallQ.add(new AddInnerHtml<>(updateClient, applicableTag, formatter, subscribe));
-        addRemoveMethodCallQLock.acquireUninterruptibly();
-        try {
-            processAddRemoveMethodCallQ();
-        } finally {
-            addRemoveMethodCallQLock.release();
-        }
-    }
-
-    /**
-     * @param updateClient
-     * @param applicableTag
-     * @param formatter
-     * @param subscribe     if true then updateClient will be true only if
-     *                      activeWSListener is true otherwise updateClient will be
-     *                      false at the time of content update.
-     * @return the NoTag inserted
-     * @since 3.0.6
-     */
-    private AbstractHtml addInnerHtmlForQ(final boolean updateClient, final AbstractHtml applicableTag,
+    AbstractHtml addInnerHtml(final boolean updateClient, final AbstractHtml applicableTag,
             final ContentFormatter<T> formatter, final boolean subscribe) {
+        // NB: never add this method to updateMethodCallQ it leads to deadlock bug
+        // (tested and verified), it is already thread-safe as the relevant tag is
+        // locked before calling this method.
 
         final ContentFormatter<T> cFormatter = formatter != null ? formatter : DEFAULT_CONTENT_FORMATTER;
 
@@ -2036,27 +1990,10 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     boolean remove(final AbstractHtml insertedTag, final AbstractHtml parentTag) {
-        // NB: never use thread to run processAddRemoveMethodCallQ as it may lead to
-        // deadlock bug
-        addRemoveMethodCallQ.add(new RemoveCall<>(insertedTag, parentTag));
-        addRemoveMethodCallQLock.acquireUninterruptibly();
-        try {
-            processAddRemoveMethodCallQ();
-        } finally {
-            addRemoveMethodCallQLock.release();
-        }
-        return true;
-    }
+        // NB: never add this method to updateMethodCallQ it leads to deadlock bug
+        // (tested and verified with addInnerHtml), it is already thread-safe as the
+        // relevant tag is locked before calling this method.
 
-    /**
-     * NB: Only for internal use
-     *
-     * @param insertedTag instance of NoTag
-     * @param parentTag   parent tag of NoTag
-     * @return true if removed otherwise false
-     * @since 3.0.6
-     */
-    private boolean removeForQ(final AbstractHtml insertedTag, final AbstractHtml parentTag) {
         final long stamp = lock.writeLock();
         try {
             insertedTag.setCacheSTCFormatter(null);
