@@ -361,7 +361,7 @@ public class AutoComplete extends AbstractValueSetAttribute implements InputAttr
     /**
      * removes the all values
      *
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public void removeAllValues() {
         super.removeAllFromAttributeValueSet();
@@ -372,7 +372,7 @@ public class AutoComplete extends AbstractValueSetAttribute implements InputAttr
      *
      * @param force true to forcefully remove all values and also to update client
      *              even if it is already empty
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public void removeAllValues(final boolean force) {
         super.removeAllFromAttributeValueSet(force);
@@ -458,7 +458,7 @@ public class AutoComplete extends AbstractValueSetAttribute implements InputAttr
      *              Sometimes we may modify the value only at client side (not
      *              server side), {@code setValue} will change only if the passed
      *              value is different from existing value at server side.
-     * @since 12.0.0-beta.7
+     * @since 12.0.0-beta.12
      */
     public void assignValue(final String value) {
         assignAttributeValue(value);

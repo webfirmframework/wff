@@ -66,7 +66,7 @@ public enum TagContent {
      *                type
      * @param content the content to be added
      * @return parent
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public static <R extends AbstractHtml> R textIfRequired(final R parent, final String content) {
         if (parent.getFirstChild() instanceof final NoTag noTag) {
@@ -130,7 +130,7 @@ public enum TagContent {
      *                type
      * @param content the content to be added
      * @return parent
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public static <R extends AbstractHtml> R htmlIfRequired(final R parent, final String content) {
 

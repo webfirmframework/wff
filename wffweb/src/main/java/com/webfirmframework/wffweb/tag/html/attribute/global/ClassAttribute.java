@@ -125,7 +125,7 @@ public class ClassAttribute extends AbstractValueSetAttribute implements GlobalA
     /**
      * removes all class names from the class attribute
      *
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public void removeAllClassNames() {
         super.removeAllFromAttributeValueSet();
@@ -136,7 +136,7 @@ public class ClassAttribute extends AbstractValueSetAttribute implements GlobalA
      *
      * @param force true to forcefully remove all values and also to update client
      *              even if it is already empty
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public void removeAllClassNames(final boolean force) {
         super.removeAllFromAttributeValueSet(force);

@@ -240,7 +240,7 @@ public class Rel extends AbstractValueSetAttribute implements AAttributable, Are
     /**
      * removes the all values
      *
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public void removeAllValues() {
         super.removeAllFromAttributeValueSet();
@@ -251,7 +251,7 @@ public class Rel extends AbstractValueSetAttribute implements AAttributable, Are
      *
      * @param force true to forcefully remove all values and also to update client
      *              even if it is already empty
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public void removeAllValues(final boolean force) {
         super.removeAllFromAttributeValueSet(force);

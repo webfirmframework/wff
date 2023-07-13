@@ -176,7 +176,7 @@ public class Headers extends AbstractValueSetAttribute implements ThAttributable
      *
      * @param force true to forcefully remove all values and also to update client
      *              even if it is already empty
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public void removeAllHeaderIds(final boolean force) {
         super.removeAllFromAttributeValueSet(force);
@@ -186,7 +186,7 @@ public class Headers extends AbstractValueSetAttribute implements ThAttributable
      * sets the value for this attribute
      *
      * @param value the value for the attribute.
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public void setValue(final String value) {
         super.setAttributeValue(value);
@@ -199,7 +199,7 @@ public class Headers extends AbstractValueSetAttribute implements ThAttributable
      *                       The default value is true but it will be ignored if
      *                       there is no client browser page.
      * @param attributeValue the value for the attribute.
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      * @author WFF
      */
     public void setValue(final boolean updateClient, final String attributeValue) {
@@ -212,7 +212,7 @@ public class Headers extends AbstractValueSetAttribute implements ThAttributable
      *              Sometimes we may modify the value only at client side (not
      *              server side), {@code setValue} will change only if the passed
      *              value is different from existing value at server side.
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public void assignValue(final String value) {
         assignAttributeValue(value);
@@ -220,7 +220,7 @@ public class Headers extends AbstractValueSetAttribute implements ThAttributable
 
     /**
      * @return the header ids
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public Set<String> getHeaderIds() {
         return super.getCopyOfAttributeValueSet();

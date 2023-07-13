@@ -788,7 +788,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
      * @param cssProperties styles separated by semicolon.<br>
      *                      eg :- {@code color:blue;text-align:center }
      *
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public void setCssProperties(final String cssProperties) {
         final long stamp = lock.writeLock();
@@ -808,7 +808,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
      * @param cssProperties styles separated by semicolon.<br>
      *                      eg :- {@code color:blue;text-align:center }
      *
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public void assignCssProperties(final String cssProperties) {
         final long stamp = lock.writeLock();
@@ -1246,7 +1246,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
      *
      * @param force true to forcefully remove all values and also to update client
      *              even if it is already empty
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public void removeAllCssProperties(final boolean force) {
         final long stamp = lock.writeLock();
