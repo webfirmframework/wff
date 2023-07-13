@@ -38,6 +38,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
 import java.util.function.Consumer;
@@ -104,11 +105,11 @@ public class SharedTagContent<T> {
     // java.lang.IllegalMonitorStateException in production app
     private final transient StampedLock lock = new StampedLock();
 
-    private volatile long ordinal = 0L;
+    private final AtomicLong ordinal = new AtomicLong(0L);
 
     private final Map<NoTag, InsertedTagData<T>> insertedTags = new WeakHashMap<>(4, 0.75F);
 
-    private final Queue<QueuedMethodCall<T>> updateMethodCallQ = new ConcurrentLinkedQueue<>();
+    private final Queue<QueuedMethodCall<T>> methodCallQ = new ConcurrentLinkedQueue<>();
 
     private final Semaphore updateMethodCallQLock = new Semaphore(1);
 
@@ -116,9 +117,7 @@ public class SharedTagContent<T> {
 
     volatile Map<InternalId, Set<DetachListener<T>>> detachListeners;
 
-    private volatile T content;
-
-    private volatile boolean contentTypeHtml;
+    private volatile Content<T> contentWithType = new Content<>(null, false);
 
     private volatile boolean shared = true;
 
@@ -302,6 +301,16 @@ public class SharedTagContent<T> {
 
     }
 
+    private static record RemoveNoTagCall<T> (AbstractHtml insertedTag, AbstractHtml parentTag)
+            implements QueuedMethodCall<T> {
+
+    }
+
+    private static record AddNoTagCall<T> (NoTag noTag, InsertedTagData<T> insertedTagData)
+            implements QueuedMethodCall<T> {
+
+    }
+
     @FunctionalInterface
     public static interface ContentFormatter<T> {
         public abstract Content<String> format(final Content<T> content);
@@ -481,8 +490,7 @@ public class SharedTagContent<T> {
         }
         this.shared = shared;
         this.executor = executor;
-        this.content = content;
-        this.contentTypeHtml = contentTypeHtml;
+        this.contentWithType = new Content<>(content, contentTypeHtml);
     }
 
     /**
@@ -957,7 +965,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public T getContent() {
-        return content;
+        return contentWithType.content;
     }
 
     /**
@@ -965,7 +973,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public boolean isContentTypeHtml() {
-        return contentTypeHtml;
+        return contentWithType.contentTypeHtml;
     }
 
     /**
@@ -1003,7 +1011,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void setUpdateClientNature(final UpdateClientNature updateClientNature) {
-        updateMethodCallQ.add(new SetUpdateClientNatureCall<>(updateClientNature));
+        methodCallQ.add(new SetUpdateClientNatureCall<>(updateClientNature));
         executeMethodCallsFromQ();
     }
 
@@ -1058,7 +1066,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void setUpdateClient(final boolean updateClient) {
-        updateMethodCallQ.add(new SetUpdateClientCall<>(updateClient));
+        methodCallQ.add(new SetUpdateClientCall<>(updateClient));
         executeMethodCallsFromQ();
     }
 
@@ -1085,7 +1093,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void setShared(final boolean shared) {
-        updateMethodCallQ.add(new SetSharedCall<>(shared));
+        methodCallQ.add(new SetSharedCall<>(shared));
         executeMethodCallsFromQ();
     }
 
@@ -1139,7 +1147,7 @@ public class SharedTagContent<T> {
      * @since 3.0.15
      */
     public void setExecutor(final Executor executor) {
-        updateMethodCallQ.add(new SetExecutorCall<>(executor));
+        methodCallQ.add(new SetExecutorCall<>(executor));
         executeMethodCallsFromQ();
     }
 
@@ -1207,7 +1215,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void setContent(final T content) {
-        setContent(updateClient, updateClientNature, null, content, contentTypeHtml);
+        setContent(updateClient, updateClientNature, null, content, contentWithType.contentTypeHtml);
     }
 
     /**
@@ -1228,7 +1236,7 @@ public class SharedTagContent<T> {
      */
     public void setContent(final UpdateClientNature updateClientNature, final T content) {
         setContent(updateClient, (updateClientNature != null ? updateClientNature : this.updateClientNature), null,
-                content, contentTypeHtml);
+                content, contentWithType.contentTypeHtml);
     }
 
     /**
@@ -1274,7 +1282,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void setContent(final Set<AbstractHtml> exclusionTags, final T content) {
-        setContent(updateClient, updateClientNature, exclusionTags, content, contentTypeHtml);
+        setContent(updateClient, updateClientNature, exclusionTags, content, contentWithType.contentTypeHtml);
     }
 
     /**
@@ -1346,7 +1354,7 @@ public class SharedTagContent<T> {
     }
 
     private void putContent(final SetContentCall<T> setContentCall) {
-        updateMethodCallQ.add(setContentCall);
+        methodCallQ.add(setContentCall);
         executeMethodCallsFromQ();
     }
 
@@ -1381,7 +1389,7 @@ public class SharedTagContent<T> {
 
     private void processMethodCallQ(final Executor executor, final boolean parallelUpdateOnTags) {
         QueuedMethodCall<T> eachItem;
-        while ((eachItem = updateMethodCallQ.poll()) != null) {
+        while ((eachItem = methodCallQ.poll()) != null) {
             if (eachItem instanceof final SetContentCall<T> each) {
                 setContentForQ(each.updateClient, each.updateClientNature, each.exclusionTags, each.content,
                         each.contentTypeHtml, each.shared, executor, parallelUpdateOnTags);
@@ -1420,6 +1428,15 @@ public class SharedTagContent<T> {
                 setSharedForQ(each.shared);
             } else if (eachItem instanceof final SetExecutorCall<T> each) {
                 setExecutorForQ(each.executor);
+            } else if (eachItem instanceof final AddNoTagCall<T> each) {
+                final long stamp = lock.writeLock();
+                try {
+                    insertedTags.put(each.noTag, each.insertedTagData);
+                } finally {
+                    lock.unlockWrite(stamp);
+                }
+            } else if (eachItem instanceof final RemoveNoTagCall<T> each) {
+                removeForQ(each.insertedTag, each.parentTag);
             }
         }
         cleanup();
@@ -1459,12 +1476,11 @@ public class SharedTagContent<T> {
             final long stamp = lock.writeLock();
             try {
 
-                final Content<T> contentBefore = new Content<>(this.content, this.contentTypeHtml);
+                final Content<T> contentBefore = this.contentWithType;
                 final Content<T> contentAfter = new Content<>(content, contentTypeHtml);
 
                 this.updateClientNature = updateClientNature;
-                this.content = content;
-                this.contentTypeHtml = contentTypeHtml;
+                this.contentWithType = new Content<>(content, contentTypeHtml);
                 this.shared = shared;
                 // this.executor = executor;
 
@@ -1743,8 +1759,7 @@ public class SharedTagContent<T> {
             final long stamp = lock.writeLock();
             try {
                 this.updateClientNature = updateClientNature;
-                this.content = content;
-                this.contentTypeHtml = contentTypeHtml;
+                this.contentWithType = new Content<>(content, contentTypeHtml);
                 this.shared = shared;
             } finally {
                 lock.unlockWrite(stamp);
@@ -1907,76 +1922,70 @@ public class SharedTagContent<T> {
 
         final ContentFormatter<T> cFormatter = formatter != null ? formatter : DEFAULT_CONTENT_FORMATTER;
 
-        final long stamp = lock.writeLock();
         final AbstractHtml5SharedObject sharedObject = applicableTag.getSharedObject();
 
         boolean listenerInvoked = false;
         NoTag noTagInserted = null;
+
+        final Content<T> contentLocal = this.contentWithType;
+
+        NoTag noTag;
         try {
-
-            final Content<T> contentLocal = new Content<>(content, contentTypeHtml);
-
-            NoTag noTag;
-            try {
-                final Content<String> formattedContent = cFormatter.format(contentLocal);
-                if (formattedContent != null) {
-                    noTag = new NoTag(null, formattedContent.content, formattedContent.contentTypeHtml);
-                } else {
-                    noTag = new NoTag(null, "", false);
-                }
-
-            } catch (final Exception e) {
+            final Content<String> formattedContent = cFormatter.format(contentLocal);
+            if (formattedContent != null) {
+                noTag = new NoTag(null, formattedContent.content, formattedContent.contentTypeHtml);
+            } else {
                 noTag = new NoTag(null, "", false);
-                LOGGER.log(Level.SEVERE, "Exception while ContentFormatter.format", e);
             }
 
-            // insertedTags.put should be after this stmt
-            final InnerHtmlListenerData listenerData = applicableTag.addInnerHtmlsAndGetEventsLockless(updateClient,
-                    noTag);
+        } catch (final Exception e) {
+            noTag = new NoTag(null, "", false);
+            LOGGER.log(Level.SEVERE, "Exception while ContentFormatter.format", e);
+        }
 
-            noTagInserted = noTag;
+        // insertedTags.put should be after this stmt
+        final InnerHtmlListenerData listenerData = applicableTag.addInnerHtmlsAndGetEventsLockless(updateClient, noTag);
 
-            final InsertedTagData<T> insertedTagData = new InsertedTagData<>(ordinal, cFormatter, subscribe);
-            // for GC task, InsertedTagData contains WeakReference of cFormatter to prevent
-            // it from GC it is kept in noTag
-            final AbstractHtml noTagAsBase = noTag;
-            noTagAsBase.setCacheSTCFormatter(cFormatter);
-            noTagAsBase.setSharedTagContent(this);
-            noTagAsBase.setSharedTagContentSubscribed(subscribe);
+        noTagInserted = noTag;
 
-            // Note: if we are asynchronously remove listeners it will remove a valid
-            // applicableTag entry
-            // eg: stc.addListener for applicableTag then stc.subscribeTo(stc) then
-            // applicableTag.removeAllChildren() then
-            // after some time stc.addListener for applicableTag then stc.subscribeTo(stc),
-            // so if the previously created insertedTagData
-            // is enqueued after that then this valid entry for applicableTag will be
-            // removed from the map
+        final InsertedTagData<T> insertedTagData = new InsertedTagData<>(ordinal.getAndIncrement(), cFormatter,
+                subscribe);
+        // for GC task, InsertedTagData contains WeakReference of cFormatter to prevent
+        // it from GC it is kept in noTag
+        final AbstractHtml noTagAsBase = noTag;
+        noTagAsBase.setCacheSTCFormatter(cFormatter);
+        noTagAsBase.setSharedTagContent(this);
+        noTagAsBase.setSharedTagContentSubscribed(subscribe);
+
+        // Note: if we are asynchronously remove listeners it will remove a valid
+        // applicableTag entry
+        // eg: stc.addListener for applicableTag then stc.subscribeTo(stc) then
+        // applicableTag.removeAllChildren() then
+        // after some time stc.addListener for applicableTag then stc.subscribeTo(stc),
+        // so if the previously created insertedTagData
+        // is enqueued after that then this valid entry for applicableTag will be
+        // removed from the map
 
 //            final InsertedTagDataGCTask<T> insertedTagDataGCTask = new InsertedTagDataGCTask<>(insertedTagData,
 //                    insertedTagDataGCTasksRQ, this, applicableTag.internalId());
 //            insertedTagDataGCTasksCache.add(insertedTagDataGCTask);
 
-            insertedTags.put(noTag, insertedTagData);
+        methodCallQ.add(new AddNoTagCall<>(noTag, insertedTagData));
 
-            // AtomicLong is not required as it is under lock
-            ordinal++;
-
-            if (listenerData != null) {
-                // TODO declare new innerHtmlsAdded for multiple parents after
-                // verifying feasibility of considering rich notag content
-                final ClientTasksWrapper clientTask = listenerData.listener().innerHtmlsAdded(applicableTag,
-                        listenerData.events());
-                insertedTagData.lastClientTask(clientTask);
-                listenerInvoked = true;
-            }
-
-        } finally {
-            lock.unlockWrite(stamp);
+        if (listenerData != null) {
+            // TODO declare new innerHtmlsAdded for multiple parents after
+            // verifying feasibility of considering rich notag content
+            final ClientTasksWrapper clientTask = listenerData.listener().innerHtmlsAdded(applicableTag,
+                    listenerData.events());
+            insertedTagData.lastClientTask(clientTask);
+            listenerInvoked = true;
         }
+
         if (listenerInvoked) {
             pushQueue(sharedObject);
         }
+
+        executeMethodCallsFromQ();
 
         return noTagInserted;
     }
@@ -1990,6 +1999,22 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     boolean remove(final AbstractHtml insertedTag, final AbstractHtml parentTag) {
+
+        methodCallQ.add(new RemoveNoTagCall<>(insertedTag, parentTag));
+        executeMethodCallsFromQ();
+
+        return true;
+    }
+
+    /**
+     * NB: Only for internal use
+     *
+     * @param insertedTag instance of NoTag
+     * @param parentTag   parent tag of NoTag
+     * @return true if removed otherwise false
+     * @since 12.0.0-beta.12
+     */
+    private boolean removeForQ(final AbstractHtml insertedTag, final AbstractHtml parentTag) {
         // NB: never add this method to updateMethodCallQ it leads to deadlock bug
         // (tested and verified with addInnerHtml), it is already thread-safe as the
         // relevant tag is locked before calling this method.
@@ -2093,7 +2118,7 @@ public class SharedTagContent<T> {
      */
     public void detach(final boolean removeContent, final Set<AbstractHtml> exclusionTags,
             final Set<AbstractHtml> exclusionClientUpdateTags) {
-        updateMethodCallQ.add(new DetachCall<>(removeContent, exclusionTags, exclusionClientUpdateTags));
+        methodCallQ.add(new DetachCall<>(removeContent, exclusionTags, exclusionClientUpdateTags));
         executeMethodCallsFromQ();
     }
 
@@ -2116,7 +2141,7 @@ public class SharedTagContent<T> {
         final long stamp = lock.writeLock();
         try {
 
-            final Content<T> contentBefore = new Content<>(content, contentTypeHtml);
+            final Content<T> contentBefore = this.contentWithType;
 
             Map<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> tagsGroupedBySO = new HashMap<>();
 
@@ -2350,7 +2375,7 @@ public class SharedTagContent<T> {
      *        SharedTagContent when the tag is detached from this SharedTagContent.
      */
     public void addContentChangeListener(final AbstractHtml tag, final ContentChangeListener<T> contentChangeListener) {
-        updateMethodCallQ.add(new AddContentChangeListenerCall<>(tag, contentChangeListener));
+        methodCallQ.add(new AddContentChangeListenerCall<>(tag, contentChangeListener));
         executeMethodCallsFromQ();
     }
 
@@ -2394,7 +2419,7 @@ public class SharedTagContent<T> {
      *        SharedTagContent when the tag is detached from this SharedTagContent.
      */
     public void addDetachListener(final AbstractHtml tag, final DetachListener<T> detachListener) {
-        updateMethodCallQ.add(new AddDetachListenerCall<>(tag, detachListener));
+        methodCallQ.add(new AddDetachListenerCall<>(tag, detachListener));
         executeMethodCallsFromQ();
     }
 
@@ -2436,7 +2461,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeContentChangeListener(final ContentChangeListener<T> contentChangeListener) {
-        updateMethodCallQ.add(new RemoveContentChangeListenerCall<>(contentChangeListener));
+        methodCallQ.add(new RemoveContentChangeListenerCall<>(contentChangeListener));
         executeMethodCallsFromQ();
     }
 
@@ -2472,7 +2497,7 @@ public class SharedTagContent<T> {
      */
     public void removeContentChangeListener(final AbstractHtml tag,
             final ContentChangeListener<T> contentChangeListener) {
-        updateMethodCallQ.add(new RemoveContentChangeListenerCall2<>(tag, contentChangeListener));
+        methodCallQ.add(new RemoveContentChangeListenerCall2<>(tag, contentChangeListener));
         executeMethodCallsFromQ();
     }
 
@@ -2506,7 +2531,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeDetachListener(final DetachListener<T> detachListener) {
-        updateMethodCallQ.add(new RemoveDetachListenerCall<>(detachListener));
+        methodCallQ.add(new RemoveDetachListenerCall<>(detachListener));
         executeMethodCallsFromQ();
     }
 
@@ -2541,7 +2566,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeDetachListener(final AbstractHtml tag, final DetachListener<T> detachListener) {
-        updateMethodCallQ.add(new RemoveDetachListenerCall2<>(tag, detachListener));
+        methodCallQ.add(new RemoveDetachListenerCall2<>(tag, detachListener));
         executeMethodCallsFromQ();
     }
 
@@ -2573,7 +2598,7 @@ public class SharedTagContent<T> {
      */
     public void removeContentChangeListeners(final AbstractHtml tag,
             final Collection<ContentChangeListener<T>> contentChangeListeners) {
-        updateMethodCallQ.add(new RemoveContentChangeListenersCall<>(tag, contentChangeListeners));
+        methodCallQ.add(new RemoveContentChangeListenersCall<>(tag, contentChangeListeners));
         executeMethodCallsFromQ();
     }
 
@@ -2610,7 +2635,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeDetachListeners(final AbstractHtml tag, final Collection<DetachListener<T>> detachListeners) {
-        updateMethodCallQ.add(new RemoveDetachListenersCall<>(tag, detachListeners));
+        methodCallQ.add(new RemoveDetachListenersCall<>(tag, detachListeners));
         executeMethodCallsFromQ();
     }
 
@@ -2646,7 +2671,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeAllContentChangeListeners(final AbstractHtml tag) {
-        updateMethodCallQ.add(new RemoveAllContentChangeListenersCall<>(tag));
+        methodCallQ.add(new RemoveAllContentChangeListenersCall<>(tag));
         executeMethodCallsFromQ();
     }
 
@@ -2673,7 +2698,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeAllContentChangeListeners() {
-        updateMethodCallQ.add(new RemoveAllContentChangeListenersNoArgCall<>());
+        methodCallQ.add(new RemoveAllContentChangeListenersNoArgCall<>());
         executeMethodCallsFromQ();
     }
 
@@ -2700,7 +2725,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeAllDetachListeners(final AbstractHtml tag) {
-        updateMethodCallQ.add(new RemoveAllDetachListenersCall<>(tag));
+        methodCallQ.add(new RemoveAllDetachListenersCall<>(tag));
         executeMethodCallsFromQ();
     }
 
@@ -2727,7 +2752,7 @@ public class SharedTagContent<T> {
      * @since 3.0.6
      */
     public void removeAllDetachListeners() {
-        updateMethodCallQ.add(new RemoveAllDetachListenersNoArgCall<>());
+        methodCallQ.add(new RemoveAllDetachListenersNoArgCall<>());
         executeMethodCallsFromQ();
     }
 
@@ -2907,7 +2932,7 @@ public class SharedTagContent<T> {
      * set as false internal operations may still be done in asynchronous only when
      * appropriate to improve performance.
      *
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      * @param asyncUpdate true to enable and false to disable. Its default value is
      *                    false.
      */
@@ -2918,9 +2943,17 @@ public class SharedTagContent<T> {
 
     /**
      * @return true or false
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     public boolean isAsyncUpdate() {
         return asyncUpdate;
+    }
+
+    /**
+     * @return the current content with its type
+     * @since 12.0.0-beta.12
+     */
+    public Content<T> getContentWithType() {
+        return contentWithType;
     }
 }
