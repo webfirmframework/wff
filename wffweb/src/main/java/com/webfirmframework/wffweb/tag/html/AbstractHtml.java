@@ -1246,30 +1246,15 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     private <T> void addInnerHtml(final boolean updateClient, final SharedTagContent<T> sharedTagContent,
             final SharedTagContent.ContentFormatter<T> formatter, final boolean subscribe) {
 
-        final Lock lock = lockAndGetWriteLock();
-        try {
-            if (sharedTagContent != null) {
+        if (sharedTagContent != null) {
+            final Lock lock = lockAndGetWriteLock();
+            try {
                 sharedTagContent.addInnerHtml(updateClient, this, formatter, subscribe);
-            } else {
-                if (children.size() == 1) {
-                    final Iterator<AbstractHtml> iterator = children.iterator();
-                    final AbstractHtml firstChild;
-                    if (iterator.hasNext() && (firstChild = iterator.next()) != null) {
-                        final var sharedTagContentLocal = firstChild.sharedTagContent;
-                        if (firstChild instanceof NoTag && !firstChild.parentNullifiedOnce
-                                && sharedTagContentLocal != null) {
-                            firstChild.sharedTagContent = null;
-                            firstChild.sharedTagContentSubscribed = null;
-                            firstChild.cachedStcFormatter = null;
-                            // nullifying should be before remove as remove is async
-                            sharedTagContentLocal.remove(firstChild, this);
-                        }
-                    }
-
-                }
+            } finally {
+                lock.unlock();
             }
-        } finally {
-            lock.unlock();
+        } else {
+            removeSharedTagContent(false);
         }
 
     }
@@ -1364,7 +1349,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         boolean listenerInvoked = false;
         boolean removed = false;
-        final Lock lock = lockAndGetReadLock();
+        final Lock lock = lockAndGetWriteLock();
         try {
             if (children.size() == 1) {
                 final Iterator<AbstractHtml> iterator = children.iterator();
