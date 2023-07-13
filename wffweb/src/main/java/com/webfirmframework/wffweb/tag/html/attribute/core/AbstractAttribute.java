@@ -551,7 +551,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
     /**
      * @return the copy of attributeValueMap in thread-safe way
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     protected Map<String, String> getCopyOfAttributeValueMap() {
         final Collection<Lock> readLocks = lockAndGetReadLocksWithAttrLock();
@@ -572,7 +572,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     /**
      * @param key
      * @return the value
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     protected String getFromAttributeValueMap(final String key) {
         final Collection<Lock> readLocks = lockAndGetReadLocksWithAttrLock();
@@ -1168,7 +1168,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
     /**
      * @return the attributeValueSet
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     protected Set<String> getAttributeValueSetNoInit() {
         return attributeValueSet;
@@ -1294,7 +1294,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
      * @param force        true to force update client browser page
      * @param updateClient true to update client browser page
      * @param values       the values to add
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     protected void replaceAllInAttributeValueSet(final boolean force, final boolean updateClient,
             final Collection<String> values) {
@@ -1336,13 +1336,6 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
             }
 
         }
-    }
-
-    private boolean collectionsEquals(final Collection<String> values1, final Collection<String> values2) {
-        new ArrayList<>(values1);
-        new ArrayList<>(values2);
-
-        return new ArrayList<>(values1).equals(new ArrayList<>(values2));
     }
 
     /**
@@ -1467,7 +1460,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     /**
      * clears all values from the value set.
      *
-     * @since 12.0.0
+     * @since 12.0.0-beta.12
      */
     protected void removeAllFromAttributeValueSet(final boolean force) {
 
