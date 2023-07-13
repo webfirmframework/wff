@@ -111,7 +111,7 @@ public class SharedTagContent<T> {
 
     private final Queue<QueuedMethodCall<T>> methodCallQ = new ConcurrentLinkedQueue<>();
 
-    private final Semaphore updateMethodCallQLock = new Semaphore(1);
+    private final Semaphore methodCallQLock = new Semaphore(1);
 
     volatile Map<InternalId, Set<ContentChangeListener<T>>> contentChangeListeners;
 
@@ -1363,23 +1363,23 @@ public class SharedTagContent<T> {
     }
 
     private void executeMethodCallsFromQ() {
-        if (!asyncUpdate && updateMethodCallQLock.tryAcquire()) {
+        if (!asyncUpdate && methodCallQLock.tryAcquire()) {
             final Executor executor = this.executor;
             try {
                 processMethodCallQ(executor, false);
             } finally {
-                updateMethodCallQLock.release();
+                methodCallQLock.release();
             }
         } else {
-            if (!updateMethodCallQLock.hasQueuedThreads()) {
+            if (!methodCallQLock.hasQueuedThreads()) {
                 final Executor activeExecutor = executor != null ? executor
                         : WffConfiguration.getVirtualThreadExecutor();
                 final Runnable runnable = () -> {
-                    updateMethodCallQLock.acquireUninterruptibly();
+                    methodCallQLock.acquireUninterruptibly();
                     try {
                         processMethodCallQ(activeExecutor, true);
                     } finally {
-                        updateMethodCallQLock.release();
+                        methodCallQLock.release();
                     }
                 };
                 if (activeExecutor != null) {
@@ -2971,5 +2971,21 @@ public class SharedTagContent<T> {
      */
     public Content<T> getContentWithType() {
         return contentWithType;
+    }
+
+    /**
+     * @return true if it contains pending task
+     * @since 12.0.0-beta.12
+     */
+    public boolean hasPendingTask() {
+        return !methodCallQ.isEmpty();
+    }
+
+    /**
+     * @return the number of pending tasks in the queue
+     * @since 12.0.0-beta.12
+     */
+    public int pendingTasksSize() {
+        return methodCallQ.size();
     }
 }
