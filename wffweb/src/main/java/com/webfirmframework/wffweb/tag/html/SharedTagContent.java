@@ -311,6 +311,10 @@ public class SharedTagContent<T> {
 
     }
 
+    private static record RemoveListenersCall<T> (InternalId tagId) implements QueuedMethodCall<T> {
+
+    }
+
     @FunctionalInterface
     public static interface ContentFormatter<T> {
         public abstract Content<String> format(final Content<T> content);
@@ -1437,6 +1441,8 @@ public class SharedTagContent<T> {
                 }
             } else if (eachItem instanceof final RemoveNoTagCall<T> each) {
                 removeForQ(each.insertedTag, each.parentTag);
+            } else if (eachItem instanceof final RemoveListenersCall<T> each) {
+                removeListenersForQ(each.tagId);
             }
         }
         cleanup();
@@ -2043,7 +2049,18 @@ public class SharedTagContent<T> {
      *
      * @param tagId
      */
-    void removeListenersLockless(final InternalId tagId) {
+    void removeListeners(final InternalId tagId) {
+        methodCallQ.add(new RemoveListenersCall<>(tagId));
+        executeMethodCallsFromQ();
+    }
+
+    /**
+     * NB: Only for internal use
+     *
+     * @param tagId
+     * @since 12.0.0-beta.12
+     */
+    private void removeListenersForQ(final InternalId tagId) {
         final Map<InternalId, Set<DetachListener<T>>> detachListeners = this.detachListeners;
         if (detachListeners != null) {
             detachListeners.remove(tagId);
@@ -2052,7 +2069,6 @@ public class SharedTagContent<T> {
         if (contentChangeListeners != null) {
             contentChangeListeners.remove(tagId);
         }
-        cleanup();
     }
 
     /**

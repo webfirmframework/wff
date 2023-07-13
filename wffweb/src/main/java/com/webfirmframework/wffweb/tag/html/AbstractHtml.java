@@ -740,13 +740,12 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      */
     private void removeFromSharedTagContent(final AbstractHtml firstChild) {
         if (TagUtil.isTagless(firstChild) && !firstChild.parentNullifiedOnce) {
-            @SuppressWarnings("rawtypes")
-            final SharedTagContent sharedTagContent = firstChild.sharedTagContent;
+            final var sharedTagContent = firstChild.sharedTagContent;
             if (sharedTagContent != null && firstChild instanceof NoTag) {
                 firstChild.sharedTagContent = null;
                 firstChild.sharedTagContentSubscribed = null;
                 firstChild.cachedStcFormatter = null;
-                sharedTagContent.removeListenersLockless(internalId);
+                sharedTagContent.removeListeners(internalId);
             }
         }
     }
@@ -1256,8 +1255,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     final Iterator<AbstractHtml> iterator = children.iterator();
                     final AbstractHtml firstChild;
                     if (iterator.hasNext() && (firstChild = iterator.next()) != null) {
-                        @SuppressWarnings("rawtypes")
-                        final SharedTagContent sharedTagContentLocal = firstChild.sharedTagContent;
+                        final var sharedTagContentLocal = firstChild.sharedTagContent;
                         if (firstChild instanceof NoTag && !firstChild.parentNullifiedOnce
                                 && sharedTagContentLocal != null) {
                             firstChild.sharedTagContent = null;
@@ -1372,8 +1370,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 final Iterator<AbstractHtml> iterator = children.iterator();
                 final AbstractHtml firstChild;
                 if (iterator.hasNext() && (firstChild = iterator.next()) != null) {
-                    @SuppressWarnings("rawtypes")
-                    final SharedTagContent sharedTagContent = firstChild.sharedTagContent;
+                    final var sharedTagContent = firstChild.sharedTagContent;
                     if (!firstChild.parentNullifiedOnce && sharedTagContent != null && firstChild instanceof NoTag) {
 
                         firstChild.sharedTagContent = null;
