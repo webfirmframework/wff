@@ -19,7 +19,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -290,7 +289,7 @@ public enum BrowserPageContext {
 
         final BrowserPageSessionWrapper sessionWrapper = httpSessionIdSession.get(httpSessionId);
         if (sessionWrapper != null) {
-            return Collections.unmodifiableMap(sessionWrapper.browserPages);
+            return Map.copyOf(sessionWrapper.browserPages);
         }
         return null;
     }

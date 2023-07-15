@@ -140,7 +140,7 @@ public abstract class AbstractHtmlRepository {
     private static Collection<Lock> lockAndGetLocks(final boolean writeLock, final AbstractHtml... fromTags) {
 
         if (fromTags == null || fromTags.length == 0) {
-            return Collections.emptyList();
+            return List.of();
         }
 
         List<TagContractRecord> tagContractRecords;
@@ -198,7 +198,7 @@ public abstract class AbstractHtmlRepository {
             final AbstractHtml... fromTags) {
 
         if (fromTags == null || fromTags.length == 0) {
-            return Collections.emptyList();
+            return List.of();
         }
 
         if (fromTags.length == 1) {

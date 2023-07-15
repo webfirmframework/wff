@@ -65,7 +65,7 @@ public final class FileUtil {
                         if (Files.isDirectory(each)) {
                             try (Stream<Path> pathsOfEach = Files.list(each)) {
                                 final List<Path> paths = pathsOfEach.toList();
-                                if (paths.size() > 0) {
+                                if (!paths.isEmpty()) {
                                     for (final Path path : paths) {
                                         q.addFirst(path);
                                     }

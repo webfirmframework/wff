@@ -15,7 +15,6 @@
  */
 package com.webfirmframework.wffweb.tag.html.formsandinputs;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
@@ -118,15 +117,7 @@ public class TextArea extends AbstractHtml {
      * @since 2.1.4
      */
     public String getChildText() {
-        final List<AbstractHtml> children = getChildren();
-        if (children.size() > 0) {
-            final StringBuilder builder = new StringBuilder();
-            for (final AbstractHtml child : children) {
-                builder.append(child.toHtmlString());
-            }
-            return builder.toString();
-        }
-        return "";
+        return super.toInnerHtmlString();
     }
 
 }

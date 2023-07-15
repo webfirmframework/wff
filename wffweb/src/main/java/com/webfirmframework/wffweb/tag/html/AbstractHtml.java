@@ -83,6 +83,7 @@ import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
+import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
 import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
@@ -135,6 +136,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     private final StringBuilder htmlStartSB;
 
+    /**
+     * NB: it should never be nullified after initialization
+     */
     private volatile StringBuilder htmlMiddleSB;
 
 //    private StringBuilder htmlEndSB;
@@ -169,7 +173,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     private Object cachedStcFormatter;
 
     @SuppressWarnings("rawtypes")
-    private transient volatile SharedTagContent sharedTagContent;
+    transient volatile SharedTagContent sharedTagContent;
+
+    private transient volatile Boolean sharedTagContentSubscribed;
 
     private final InternalId internalId = new InternalId();
 
@@ -327,7 +333,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             @Override
             public void clear() {
-                if (super.size() > 0) {
+                if (!super.isEmpty()) {
                     sharedObject.setChildModified(true, ACCESS_OBJECT);
                 }
                 super.clear();
@@ -734,12 +740,12 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      */
     private void removeFromSharedTagContent(final AbstractHtml firstChild) {
         if (TagUtil.isTagless(firstChild) && !firstChild.parentNullifiedOnce) {
-            @SuppressWarnings("rawtypes")
-            final SharedTagContent sharedTagContent = firstChild.sharedTagContent;
+            final var sharedTagContent = firstChild.sharedTagContent;
             if (sharedTagContent != null && firstChild instanceof NoTag) {
-                sharedTagContent.removeListenersLockless(internalId);
                 firstChild.sharedTagContent = null;
+                firstChild.sharedTagContentSubscribed = null;
                 firstChild.cachedStcFormatter = null;
+                sharedTagContent.removeListeners(internalId);
             }
         }
     }
@@ -1240,32 +1246,15 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     private <T> void addInnerHtml(final boolean updateClient, final SharedTagContent<T> sharedTagContent,
             final SharedTagContent.ContentFormatter<T> formatter, final boolean subscribe) {
 
-        final Lock lock = lockAndGetWriteLock();
-        try {
-            if (sharedTagContent != null) {
-                final AbstractHtml noTagInserted = sharedTagContent.addInnerHtml(updateClient, this, formatter,
-                        subscribe);
-                noTagInserted.sharedTagContent = sharedTagContent;
-            } else {
-                if (children.size() == 1) {
-                    final Iterator<AbstractHtml> iterator = children.iterator();
-                    if (iterator.hasNext()) {
-                        final AbstractHtml firstChild = iterator.next();
-                        if (firstChild != null) {
-                            if (firstChild instanceof NoTag && !firstChild.parentNullifiedOnce
-                                    && firstChild.sharedTagContent != null) {
-                                firstChild.sharedTagContent.remove(firstChild, this);
-                                firstChild.sharedTagContent = null;
-                                firstChild.cachedStcFormatter = null;
-                            }
-                        }
-
-                    }
-
-                }
+        if (sharedTagContent != null) {
+            final Lock lock = lockAndGetWriteLock();
+            try {
+                sharedTagContent.addInnerHtml(updateClient, this, formatter, subscribe);
+            } finally {
+                lock.unlock();
             }
-        } finally {
-            lock.unlock();
+        } else {
+            removeSharedTagContent(false);
         }
 
     }
@@ -1276,6 +1265,14 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      */
     <T> void setSharedTagContent(final SharedTagContent<T> sharedTagContent) {
         this.sharedTagContent = sharedTagContent;
+    }
+
+    /**
+     * @param sharedTagContentSubscribed
+     * @since 12.0.0-beta.12
+     */
+    void setSharedTagContentSubscribed(final Boolean sharedTagContentSubscribed) {
+        this.sharedTagContentSubscribed = sharedTagContentSubscribed;
     }
 
     /**
@@ -1293,7 +1290,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 if (iterator.hasNext()) {
                     final AbstractHtml firstChild = iterator.next();
                     if (firstChild != null && !firstChild.parentNullifiedOnce && firstChild.sharedTagContent != null
-                            && firstChild instanceof NoTag && firstChild.sharedTagContent.contains(firstChild)) {
+                            && firstChild instanceof NoTag) {
+                        // && firstChild.sharedTagContent.contains(firstChild) may lead to deadlock bug
+                        // when using under whenURI thread
                         return firstChild.sharedTagContent;
                     }
 
@@ -1320,9 +1319,12 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 final Iterator<AbstractHtml> iterator = children.iterator();
                 if (iterator.hasNext()) {
                     final AbstractHtml firstChild = iterator.next();
-                    if (firstChild != null && !firstChild.parentNullifiedOnce && firstChild.sharedTagContent != null
-                            && firstChild instanceof NoTag) {
-                        return firstChild.sharedTagContent.isSubscribed(firstChild);
+                    if (firstChild != null && !firstChild.parentNullifiedOnce
+                            && firstChild.sharedTagContentSubscribed != null && firstChild instanceof NoTag) {
+                        // firstChild.sharedTagContent.isSubscribed(firstChild) may lead to deadlock bug
+                        // when using under whenURI thread fix it later
+                        final Boolean subscribed = firstChild.sharedTagContentSubscribed;
+                        return subscribed != null && subscribed;
                     }
 
                 }
@@ -1347,18 +1349,21 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         boolean listenerInvoked = false;
         boolean removed = false;
-        final Lock lock = lockAndGetReadLock();
+        final Lock lock = lockAndGetWriteLock();
         try {
             if (children.size() == 1) {
                 final Iterator<AbstractHtml> iterator = children.iterator();
-                if (iterator.hasNext()) {
-                    final AbstractHtml firstChild = iterator.next();
-                    if (firstChild != null && !firstChild.parentNullifiedOnce && firstChild.sharedTagContent != null
-                            && firstChild instanceof NoTag) {
+                final AbstractHtml firstChild;
+                if (iterator.hasNext() && (firstChild = iterator.next()) != null) {
+                    final var sharedTagContent = firstChild.sharedTagContent;
+                    if (!firstChild.parentNullifiedOnce && sharedTagContent != null && firstChild instanceof NoTag) {
 
-                        removed = firstChild.sharedTagContent.remove(firstChild, this);
                         firstChild.sharedTagContent = null;
+                        firstChild.sharedTagContentSubscribed = null;
                         firstChild.cachedStcFormatter = null;
+                        // nullifying should be before remove as remove is async
+                        removed = sharedTagContent.remove(firstChild, this);
+
                         if (removed && removeContent) {
 
                             final AbstractHtml[] removedAbstractHtmls = children
@@ -1718,7 +1723,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     }
 
                     final Set<AbstractHtml> subChildren = child.children;
-                    if (subChildren != null && subChildren.size() > 0) {
+                    if (subChildren != null && !subChildren.isEmpty()) {
                         childrenStack.push(subChildren);
                     }
 
@@ -1787,7 +1792,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 child.removeDataWffId();
 
                 final Set<AbstractHtml> subChildren = child.children;
-                if (subChildren != null && subChildren.size() > 0) {
+                if (subChildren != null && !subChildren.isEmpty()) {
                     childrenStack.push(subChildren);
                 }
 
@@ -1819,7 +1824,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     applicableTags.add(child);
                 } else {
                     final Set<AbstractHtml> subChildren = child.children;
-                    if (subChildren != null && subChildren.size() > 0) {
+                    if (subChildren != null && !subChildren.isEmpty()) {
                         childrenStack.push(subChildren);
                     }
                 }
@@ -1878,7 +1883,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                 final Set<AbstractHtml> subChildren = eachChild.children;
 
-                if (subChildren != null && subChildren.size() > 0) {
+                if (subChildren != null && !subChildren.isEmpty()) {
                     childrenStack.push(subChildren);
                 }
 
@@ -1923,7 +1928,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                             updateClient);
                     if (innerHtmls != null && innerHtmls.length > 0) {
                         childrenStack.push(List.of(innerHtmls));
-                    } else if (eachChild.children != null && eachChild.children.size() > 0) {
+                    } else if (eachChild.children != null && !eachChild.children.isEmpty()) {
                         childrenStack.push(List.copyOf(eachChild.children));
                     }
                     if (eachChild.uriChangeContents != null) {
@@ -2464,7 +2469,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         try {
             attributesMap = this.attributesMap;
             if (attributesMap != null) {
-                final Collection<AbstractAttribute> result = Collections.unmodifiableCollection(attributesMap.values());
+                final Collection<AbstractAttribute> result = List.copyOf(attributesMap.values());
                 return result;
             }
         } finally {
@@ -2483,7 +2488,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         final Map<String, AbstractAttribute> attributesMap = this.attributesMap;
 
         if (attributesMap != null) {
-            final Collection<AbstractAttribute> result = Collections.unmodifiableCollection(attributesMap.values());
+            final Collection<AbstractAttribute> result = List.copyOf(attributesMap.values());
             return result;
         }
         return null;
@@ -2609,7 +2614,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             }
 
-            removed = removedAttributes.size() > 0;
+            removed = !removedAttributes.isEmpty();
 
             if (removed) {
                 this.attributes = attributesMap.values().toArray(new AbstractAttribute[attributesMap.size()]);
@@ -2757,7 +2762,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             lock.unlock();
         }
 
-        if (attributesToRemove.size() == 0) {
+        if (attributesToRemove.isEmpty()) {
             return false;
         }
 
@@ -2785,7 +2790,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 }
             }
 
-            removed = removedAttributeNames.size() > 0;
+            removed = !removedAttributeNames.isEmpty();
 
             if (removed) {
                 attributes = attributesMap.values().toArray(new AbstractAttribute[attributesMap.size()]);
@@ -2974,6 +2979,63 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
+     * @return true if it contains children
+     * @since 12.0.0
+     */
+    public boolean hasChildren() {
+        final Lock lock = lockAndGetReadLock();
+        try {
+            return !children.isEmpty();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * gets inner html string
+     *
+     * @return inner html string.
+     * @since 12.0.0
+     */
+    protected String toInnerHtmlString() {
+        final Lock readLock = lockAndGetReadLock();
+        try {
+            final Set<AbstractHtml> children = this.children;
+            if (children.isEmpty()) {
+                return "";
+            }
+
+            final Iterator<AbstractHtml> iterator;
+            if (children.size() == 1 && (iterator = children.iterator()).hasNext()
+                    && iterator.next() instanceof final NoTag firstChild) {
+                final StringBuilder htmlMiddleSB = ((AbstractHtml) firstChild).htmlMiddleSB;
+                if (htmlMiddleSB != null) {
+                    return htmlMiddleSB.toString();
+                }
+                return "";
+            }
+        } finally {
+            readLock.unlock();
+        }
+
+        // should be WriteLock as toHtmlStringLockless requires WriteLock
+        final Lock lock = lockAndGetWriteLock();
+        try {
+            final Set<AbstractHtml> children = this.children;
+            if (!children.isEmpty()) {
+                final StringBuilder builder = new StringBuilder();
+                for (final AbstractHtml child : children) {
+                    builder.append(child.toHtmlStringLockless());
+                }
+                return builder.toString();
+            }
+        } finally {
+            lock.unlock();
+        }
+        return "";
+    }
+
+    /**
      * NB: this method is for internal use. The returned object should not be
      * modified.
      *
@@ -3001,7 +3063,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 2.1.12 proper implementation is available since 2.1.12
      */
     public void setChildren(final Set<AbstractHtml> children) {
-        if (children == null || children.size() == 0) {
+        if (children == null || children.isEmpty()) {
             removeAllChildren();
         } else {
             addInnerHtmls(children.toArray(new AbstractHtml[children.size()]));
@@ -3426,7 +3488,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      */
     private static void recurChildren(final StringBuilder tagBuilder, final Set<AbstractHtml> children,
             final boolean rebuild) {
-        if (children != null && children.size() > 0) {
+        if (children != null && !children.isEmpty()) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
                 tagBuilder.append(child.getOpeningTag());
@@ -3858,7 +3920,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 bottomChild = child;
 
                 final Set<AbstractHtml> subChildren = child.children;
-                if (subChildren != null && subChildren.size() > 0) {
+                if (subChildren != null && !subChildren.isEmpty()) {
                     current = subChildren;
                 }
 
@@ -3896,7 +3958,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 bottomChild = child;
 
                 final Set<AbstractHtml> subChildren = child.children;
-                if (subChildren != null && subChildren.size() > 0) {
+                if (subChildren != null && !subChildren.isEmpty()) {
                     current = subChildren;
                 }
             }
@@ -3986,7 +4048,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             final OutputStream os, final Set<AbstractHtml> children, final boolean rebuild, final boolean flushOnWrite)
             throws IOException {
 
-        if (children != null && children.size() > 0) {
+        if (children != null && !children.isEmpty()) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
 
@@ -4032,7 +4094,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      */
     private void recurChildrenToWffBinaryMessageOutputStream(final Set<AbstractHtml> children, final boolean rebuild,
             final Charset charset) throws IOException {
-        if (children != null && children.size() > 0) {
+        if (children != null && !children.isEmpty()) {
             for (final AbstractHtml child : children) {
                 child.setRebuild(rebuild);
                 // wffBinaryMessageOutputStreamer
@@ -4114,17 +4176,25 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     public String toHtmlString() {
         final Lock lock = lockAndGetWriteLock();
         try {
-
-            final String printStructure = getPrintStructure(getSharedObject().isChildModified());
-
-            if (parent == null) {
-                sharedObject.setChildModified(false, ACCESS_OBJECT);
-            }
-
-            return printStructure;
+            return toHtmlStringLockless();
         } finally {
             lock.unlock();
         }
+    }
+
+    /**
+     * NB: use write lock instead of read lock when using this method
+     *
+     * @return the html string
+     */
+    private String toHtmlStringLockless() {
+        final String printStructure = getPrintStructure(getSharedObject().isChildModified());
+
+        if (parent == null) {
+            sharedObject.setChildModified(false, ACCESS_OBJECT);
+        }
+
+        return printStructure;
     }
 
     /*
@@ -4393,9 +4463,12 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
+     * Note: Only for internal use
+     *
      * @return the htmlMiddleSB
      * @author WFF
      * @since 1.0.0
+     *
      */
     protected StringBuilder getHtmlMiddleSB() {
         if (htmlMiddleSB == null) {
@@ -4409,6 +4482,43 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             }
         }
         return htmlMiddleSB;
+    }
+
+    /**
+     * @return the string value of htmlMiddleSB or empty
+     * @since 12.0.0
+     */
+    protected String getHtmlMiddleString() {
+        final StringBuilder htmlMiddleSB = this.htmlMiddleSB;
+        if (htmlMiddleSB != null) {
+            final Lock lock = lockAndGetReadLock();
+            try {
+                return htmlMiddleSB.toString();
+            } finally {
+                lock.unlock();
+            }
+        }
+        return "";
+    }
+
+    /**
+     * @param child the string to be removed from htmlMiddleSB
+     * @since 12.0.0
+     */
+    protected void removeFromHtmlMiddleSB(final String child) {
+        final StringBuilder htmlMiddleSB = this.htmlMiddleSB;
+        if (htmlMiddleSB != null) {
+            final Lock lock = lockAndGetWriteLock();
+            try {
+                final String sb = htmlMiddleSB.toString();
+                final String replaced = StringUtil.replace(sb, child, "");
+                final int lastIndex = htmlMiddleSB.length() - 1;
+                htmlMiddleSB.delete(0, lastIndex);
+                htmlMiddleSB.append(replaced);
+            } finally {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -4610,7 +4720,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     child.removeAttributes(excludeAttributes);
 
                     final Set<AbstractHtml> subChildren = child.children;
-                    if (subChildren != null && subChildren.size() > 0) {
+                    if (subChildren != null && !subChildren.isEmpty()) {
                         childrenStack.push(subChildren);
                     }
                 }
@@ -4669,6 +4779,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         if (TagUtil.isTagless(abstractHtml) && abstractHtml instanceof NoTag) {
             abstractHtml.sharedTagContent = null;
+            abstractHtml.sharedTagContentSubscribed = null;
             abstractHtml.cachedStcFormatter = null;
         }
 
@@ -4713,7 +4824,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                 final Set<AbstractHtml> subChildren = stackChild.children;
 
-                if (subChildren != null && subChildren.size() > 0) {
+                if (subChildren != null && !subChildren.isEmpty()) {
                     removedTagsStack.push(subChildren);
                 }
             }
@@ -4858,7 +4969,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                     final Set<AbstractHtml> subChildren = tag.children;
 
-                    if (subChildren != null && subChildren.size() > 0) {
+                    if (subChildren != null && !subChildren.isEmpty()) {
                         childrenStack.push(subChildren);
                     }
 
@@ -4998,7 +5109,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                     final Set<AbstractHtml> subChildren = tag.children;
 
-                    if (subChildren != null && subChildren.size() > 0) {
+                    if (subChildren != null && !subChildren.isEmpty()) {
                         childrenStack.push(subChildren);
                     }
 
@@ -5172,7 +5283,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                     final Set<AbstractHtml> subChildren = tag.children;
 
-                    if (subChildren != null && subChildren.size() > 0) {
+                    if (subChildren != null && !subChildren.isEmpty()) {
                         childrenStack.push(subChildren);
                     }
 
@@ -6270,7 +6381,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                 final Set<AbstractHtml> subChildren = eachChild.children;
 
-                if (subChildren != null && subChildren.size() > 0) {
+                if (subChildren != null && !subChildren.isEmpty()) {
                     childrenStack.push(subChildren);
                 }
             }
@@ -6323,7 +6434,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 2.1.8
      */
     public Map<String, WffBMData> getWffObjects() {
-        return Collections.unmodifiableMap(wffBMDatas);
+        return Map.copyOf(wffBMDatas);
     }
 
     /**
@@ -6723,16 +6834,13 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     /**
      * Only for internal use
      *
-     * @param contentFormatter
-     * @param accessObject
      * @param <T>
+     * @param contentFormatter
      * @since 3.0.18
+     * @since 12.0.0-beta.12 removed accessObject as the visibility of this method
+     *        is limited to package level
      */
-    final <T> void setCacheSTCFormatter(final SharedTagContent.ContentFormatter<T> contentFormatter,
-            final SecurityObject accessObject) {
-        if (!IndexedClassType.SHARED_TAG_CONTENT.equals(accessObject.forClassType())) {
-            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
-        }
+    final <T> void setCacheSTCFormatter(final SharedTagContent.ContentFormatter<T> contentFormatter) {
         cachedStcFormatter = contentFormatter;
     }
 
@@ -7308,7 +7416,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                         final AbstractHtml[] innerHtmls = eachChild.changeInnerHtmlsForURIChange(uriEvent, true);
                         if (innerHtmls != null && innerHtmls.length > 0) {
                             childrenStack.push(List.of(innerHtmls));
-                        } else if (eachChild.children != null && eachChild.children.size() > 0) {
+                        } else if (eachChild.children != null && !eachChild.children.isEmpty()) {
                             childrenStack.push(List.copyOf(eachChild.children));
                         }
                         if (eachChild.uriChangeContents != null) {

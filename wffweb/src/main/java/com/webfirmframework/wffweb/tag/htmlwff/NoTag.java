@@ -31,7 +31,6 @@ import com.webfirmframework.wffweb.tag.html.SharedTagContent;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
 import com.webfirmframework.wffweb.tag.html.TagEvent;
 import com.webfirmframework.wffweb.tag.html.URIStateSwitch;
-import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * It's a tag which makes child content without any opening closing tag. <br>
@@ -163,12 +162,7 @@ public class NoTag extends AbstractHtml {
      * @author WFF
      */
     public void removeChild(final String child) {
-        final StringBuilder htmlMiddleSB = getHtmlMiddleSB();
-        final String sb = htmlMiddleSB.toString();
-        final String replaced = StringUtil.replace(sb, child, "");
-        final int lastIndex = htmlMiddleSB.length() - 1;
-        htmlMiddleSB.delete(0, lastIndex);
-        htmlMiddleSB.append(replaced);
+        super.removeFromHtmlMiddleSB(child);
     }
 
     /**
@@ -190,7 +184,7 @@ public class NoTag extends AbstractHtml {
      * @author WFF
      */
     public String getChildContent() {
-        return getHtmlMiddleSB().toString();
+        return super.getHtmlMiddleString();
     }
 
     /**
@@ -252,6 +246,7 @@ public class NoTag extends AbstractHtml {
     /**
      * @deprecated this method is not allowed in NoTag or Blank class.
      */
+    @Override
     @Deprecated(since = "12.0.0-beta.1")
     public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier) {
@@ -261,6 +256,7 @@ public class NoTag extends AbstractHtml {
     /**
      * @deprecated this method is not allowed in NoTag or Blank class.
      */
+    @Override
     @Deprecated(since = "12.0.0-beta.1")
     public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final int index) {
@@ -270,6 +266,7 @@ public class NoTag extends AbstractHtml {
     /**
      * @deprecated this method is not allowed in NoTag or Blank class.
      */
+    @Override
     @Deprecated(since = "12.0.0-beta.1")
     public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier) {
@@ -279,6 +276,7 @@ public class NoTag extends AbstractHtml {
     /**
      * @deprecated this method is not allowed in NoTag or Blank class.
      */
+    @Override
     @Deprecated(since = "12.0.0-beta.1")
     public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Supplier<AbstractHtml[]> failTagsSupplier,
@@ -289,6 +287,7 @@ public class NoTag extends AbstractHtml {
     /**
      * @deprecated this method is not allowed in NoTag or Blank class.
      */
+    @Override
     @Deprecated(since = "12.0.0-beta.1")
     public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Consumer<TagEvent> failConsumer,
@@ -299,6 +298,7 @@ public class NoTag extends AbstractHtml {
     /**
      * @deprecated this method is not allowed in NoTag or Blank class.
      */
+    @Override
     @Deprecated(since = "12.0.0-beta.1")
     public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate,
             final Supplier<AbstractHtml[]> successTagsSupplier, final Consumer<TagEvent> failConsumer) {
@@ -308,6 +308,7 @@ public class NoTag extends AbstractHtml {
     /**
      * @deprecated this method is not allowed in NoTag or Blank class.
      */
+    @Override
     @Deprecated(since = "12.0.0-beta.1")
     public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Consumer<TagEvent> successConsumer,
             final Supplier<AbstractHtml[]> failTagsSupplier, final int index) {
@@ -317,6 +318,7 @@ public class NoTag extends AbstractHtml {
     /**
      * @deprecated this method is not allowed in NoTag or Blank class.
      */
+    @Override
     @Deprecated(since = "12.0.0-beta.1")
     public URIStateSwitch whenURI(final Predicate<URIEvent> uriEventPredicate, final Consumer<TagEvent> successConsumer,
             final Supplier<AbstractHtml[]> failTagsSupplier) {

@@ -3003,4 +3003,18 @@ public class AbstractHtmlTest {
         assertTrue(div.getSharedObject().isWhenURIUsed());
     }
 
+    @Test()
+    public void testGetChildrenSize() {
+        Div parentDiv = new Div(null, new Id("parentDivId"));
+        Div childDiv1 = new Div(parentDiv, new Id("child1"));
+        Div childDiv2 = new Div(parentDiv, new Id("child2"));
+        assertEquals(2, parentDiv.getChildrenSize());
+        assertEquals(0, childDiv1.getChildrenSize());
+        assertEquals(0, childDiv2.getChildrenSize());
+
+        assertTrue(parentDiv.hasChildren());
+        assertFalse(childDiv1.hasChildren());
+        assertFalse(childDiv2.hasChildren());
+    }
+
 }
