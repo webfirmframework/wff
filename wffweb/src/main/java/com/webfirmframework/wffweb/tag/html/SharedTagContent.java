@@ -40,6 +40,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.StampedLock;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -1561,11 +1562,17 @@ public class SharedTagContent<T> {
                 final Queue<Map.Entry<NoTag, InsertedTagData<T>>> forInsertedTags = new ConcurrentLinkedQueue<>();
 
                 final int countDownLatchSize = tagsGroupedBySOEntries.size();
-                final CountDownLatch countDownLatch = new CountDownLatch(countDownLatchSize);
 
-                final Executor virtualThreadExecutor = parallelUpdateOnTags && countDownLatchSize > 1
-                        ? WffConfiguration.getVirtualThreadExecutor()
-                        : null;
+                final CountDownLatch countDownLatch;
+                final Executor virtualThreadExecutor;
+
+                if (parallelUpdateOnTags && countDownLatchSize > 1) {
+                    virtualThreadExecutor = WffConfiguration.getVirtualThreadExecutor();
+                    countDownLatch = new CountDownLatch(countDownLatchSize);
+                } else {
+                    virtualThreadExecutor = null;
+                    countDownLatch = null;
+                }
 
                 for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySOEntries) {
 
@@ -1699,7 +1706,9 @@ public class SharedTagContent<T> {
                             }
 
                         } finally {
-                            countDownLatch.countDown();
+                            if (countDownLatch != null) {
+                                countDownLatch.countDown();
+                            }
                         }
                     };
 
@@ -1710,39 +1719,47 @@ public class SharedTagContent<T> {
                     }
                 }
 
-                try {
-                    countDownLatch.await();
-                } catch (final InterruptedException e) {
-                    throw new RuntimeException(e);
+                if (countDownLatch != null) {
+                    try {
+                        countDownLatch.await();
+                    } catch (final InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
                 for (final Entry<NoTag, InsertedTagData<T>> insertedTag : forInsertedTags) {
                     insertedTags.put(insertedTag.getKey(), insertedTag.getValue());
                 }
 
-                if (contentChangeListeners != null) {
-                    for (final ModifiedParentData<T> modifiedParentData : modifiedParents) {
-                        final AbstractHtml modifiedParent = modifiedParentData.parent();
-                        final Set<ContentChangeListener<T>> listeners = contentChangeListeners
-                                .get(modifiedParent.internalId());
-                        if (listeners != null) {
-                            runnables = new ArrayList<>(listeners.size());
-                            for (final ContentChangeListener<T> listener : listeners) {
-                                final ChangeEvent<T> changeEvent = new ChangeEvent<>(modifiedParent, listener,
-                                        contentBefore, contentAfter, modifiedParentData.contentApplied(),
-                                        modifiedParentData.formatter());
-                                try {
-                                    final Runnable runnable = listener.contentChanged(changeEvent);
-                                    if (runnable != null) {
-                                        runnables.add(runnable);
+                if (contentChangeListeners != null && countDownLatchSize > 0) {
+                    final ReentrantLock forMonitorEnterExit = new ReentrantLock();
+                    forMonitorEnterExit.lock();
+                    try {
+                        for (final ModifiedParentData<T> modifiedParentData : modifiedParents) {
+                            final AbstractHtml modifiedParent = modifiedParentData.parent();
+                            final Set<ContentChangeListener<T>> listeners = contentChangeListeners
+                                    .get(modifiedParent.internalId());
+                            if (listeners != null) {
+                                runnables = new ArrayList<>(listeners.size());
+                                for (final ContentChangeListener<T> listener : listeners) {
+                                    final ChangeEvent<T> changeEvent = new ChangeEvent<>(modifiedParent, listener,
+                                            contentBefore, contentAfter, modifiedParentData.contentApplied(),
+                                            modifiedParentData.formatter());
+                                    try {
+                                        final Runnable runnable = listener.contentChanged(changeEvent);
+                                        if (runnable != null) {
+                                            runnables.add(runnable);
+                                        }
+                                    } catch (final Exception e) {
+                                        LOGGER.log(Level.SEVERE, "Exception while ContentChangeListener.contentChanged",
+                                                e);
                                     }
-                                } catch (final Exception e) {
-                                    LOGGER.log(Level.SEVERE, "Exception while ContentChangeListener.contentChanged", e);
                                 }
                             }
                         }
+                    } finally {
+                        forMonitorEnterExit.unlock();
                     }
-
                 }
             } finally {
                 lock.unlockWrite(stamp);
@@ -2206,11 +2223,17 @@ public class SharedTagContent<T> {
             final Queue<Map.Entry<NoTag, InsertedTagData<T>>> forInsertedTags = new ConcurrentLinkedQueue<>();
 
             final int countDownLatchSize = tagsGroupedBySOEntries.size();
-            final CountDownLatch countDownLatch = new CountDownLatch(countDownLatchSize);
 
-            final Executor virtualThreadExecutor = parallelUpdateOnTags && countDownLatchSize > 1
-                    ? WffConfiguration.getVirtualThreadExecutor()
-                    : null;
+            final CountDownLatch countDownLatch;
+            final Executor virtualThreadExecutor;
+
+            if (parallelUpdateOnTags && countDownLatchSize > 1) {
+                virtualThreadExecutor = WffConfiguration.getVirtualThreadExecutor();
+                countDownLatch = new CountDownLatch(countDownLatchSize);
+            } else {
+                virtualThreadExecutor = null;
+                countDownLatch = null;
+            }
 
             for (final Entry<AbstractHtml5SharedObject, List<ParentNoTagData<T>>> entry : tagsGroupedBySOEntries) {
 
@@ -2313,7 +2336,9 @@ public class SharedTagContent<T> {
                         }
 
                     } finally {
-                        countDownLatch.countDown();
+                        if (countDownLatch != null) {
+                            countDownLatch.countDown();
+                        }
                     }
 
                 };
@@ -2326,37 +2351,44 @@ public class SharedTagContent<T> {
 
             }
 
-            try {
-                countDownLatch.await();
-            } catch (final InterruptedException e) {
-                throw new RuntimeException(e);
+            if (countDownLatch != null) {
+                try {
+                    countDownLatch.await();
+                } catch (final InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             for (final Entry<NoTag, InsertedTagData<T>> insertedTag : forInsertedTags) {
                 insertedTags.put(insertedTag.getKey(), insertedTag.getValue());
             }
 
-            if (detachListeners != null) {
-                for (final AbstractHtml modifiedParent : modifiedParents) {
-                    final Set<DetachListener<T>> listeners = detachListeners.remove(modifiedParent.internalId());
-                    if (listeners != null) {
-                        runnables = new ArrayList<>(listeners.size());
-                        for (final DetachListener<T> listener : listeners) {
-                            final DetachEvent<T> detachEvent = new DetachEvent<>(modifiedParent, listener,
-                                    contentBefore);
-                            try {
-                                final Runnable runnable = listener.detached(detachEvent);
-                                if (runnable != null) {
-                                    runnables.add(runnable);
+            if (detachListeners != null && countDownLatchSize > 0) {
+                final ReentrantLock forMonitorEnterExit = new ReentrantLock();
+                forMonitorEnterExit.lock();
+                try {
+                    for (final AbstractHtml modifiedParent : modifiedParents) {
+                        final Set<DetachListener<T>> listeners = detachListeners.remove(modifiedParent.internalId());
+                        if (listeners != null) {
+                            runnables = new ArrayList<>(listeners.size());
+                            for (final DetachListener<T> listener : listeners) {
+                                final DetachEvent<T> detachEvent = new DetachEvent<>(modifiedParent, listener,
+                                        contentBefore);
+                                try {
+                                    final Runnable runnable = listener.detached(detachEvent);
+                                    if (runnable != null) {
+                                        runnables.add(runnable);
+                                    }
+                                } catch (final Exception e) {
+                                    LOGGER.log(Level.SEVERE, "Exception while DetachListener.detached", e);
                                 }
-                            } catch (final Exception e) {
-                                LOGGER.log(Level.SEVERE, "Exception while DetachListener.detached", e);
                             }
+
                         }
-
                     }
+                } finally {
+                    forMonitorEnterExit.unlock();
                 }
-
             }
             if (contentChangeListeners != null) {
                 for (final AbstractHtml modifiedParent : modifiedParents) {
