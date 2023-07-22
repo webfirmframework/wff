@@ -20,9 +20,11 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -1479,7 +1481,7 @@ public class SharedTagContent<T> {
         if (shared) {
 
             final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(4);
-            List<Runnable> runnables = null;
+            Deque<Runnable> runnables = null;
             final long stamp = lock.writeLock();
             try {
 
@@ -1732,33 +1734,42 @@ public class SharedTagContent<T> {
                 }
 
                 if (contentChangeListeners != null && countDownLatchSize > 0) {
-                    final ReentrantLock forMonitorEnterExit = new ReentrantLock();
-                    forMonitorEnterExit.lock();
-                    try {
-                        for (final ModifiedParentData<T> modifiedParentData : modifiedParents) {
-                            final AbstractHtml modifiedParent = modifiedParentData.parent();
-                            final Set<ContentChangeListener<T>> listeners = contentChangeListeners
-                                    .get(modifiedParent.internalId());
-                            if (listeners != null) {
-                                runnables = new ArrayList<>(listeners.size());
-                                for (final ContentChangeListener<T> listener : listeners) {
-                                    final ChangeEvent<T> changeEvent = new ChangeEvent<>(modifiedParent, listener,
-                                            contentBefore, contentAfter, modifiedParentData.contentApplied(),
-                                            modifiedParentData.formatter());
-                                    try {
-                                        final Runnable runnable = listener.contentChanged(changeEvent);
-                                        if (runnable != null) {
-                                            runnables.add(runnable);
-                                        }
-                                    } catch (final Exception e) {
-                                        LOGGER.log(Level.SEVERE, "Exception while ContentChangeListener.contentChanged",
-                                                e);
-                                    }
-                                }
+
+                    final Deque<Map.Entry<ContentChangeListener<T>, ChangeEvent<T>>> listenerToEvent = new ArrayDeque<>(
+                            modifiedParents.size());
+
+                    for (final ModifiedParentData<T> modifiedParentData : modifiedParents) {
+                        final AbstractHtml modifiedParent = modifiedParentData.parent();
+                        final Set<ContentChangeListener<T>> listeners = contentChangeListeners
+                                .get(modifiedParent.internalId());
+                        if (listeners != null) {
+                            for (final ContentChangeListener<T> listener : listeners) {
+                                final ChangeEvent<T> changeEvent = new ChangeEvent<>(modifiedParent, listener,
+                                        contentBefore, contentAfter, modifiedParentData.contentApplied(),
+                                        modifiedParentData.formatter());
+                                listenerToEvent.add(Map.entry(listener, changeEvent));
                             }
                         }
-                    } finally {
-                        forMonitorEnterExit.unlock();
+                    }
+
+                    if (!listenerToEvent.isEmpty()) {
+                        runnables = new ArrayDeque<>(listenerToEvent.size());
+                        final ReentrantLock forMonitorEnterExit = new ReentrantLock();
+                        forMonitorEnterExit.lock();
+                        try {
+                            for (final Entry<ContentChangeListener<T>, ChangeEvent<T>> each : listenerToEvent) {
+                                try {
+                                    final Runnable runnable = each.getKey().contentChanged(each.getValue());
+                                    if (runnable != null) {
+                                        runnables.add(runnable);
+                                    }
+                                } catch (final Exception e) {
+                                    LOGGER.log(Level.SEVERE, "Exception while ContentChangeListener.contentChanged", e);
+                                }
+                            }
+                        } finally {
+                            forMonitorEnterExit.unlock();
+                        }
                     }
                 }
             } finally {
@@ -2169,7 +2180,7 @@ public class SharedTagContent<T> {
             final Set<AbstractHtml> exclusionClientUpdateTags, final boolean parallelUpdateOnTags) {
 
         final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(4);
-        List<Runnable> runnables = null;
+        Deque<Runnable> runnables = null;
 
         final long stamp = lock.writeLock();
         try {
@@ -2364,30 +2375,38 @@ public class SharedTagContent<T> {
             }
 
             if (detachListeners != null && countDownLatchSize > 0) {
-                final ReentrantLock forMonitorEnterExit = new ReentrantLock();
-                forMonitorEnterExit.lock();
-                try {
-                    for (final AbstractHtml modifiedParent : modifiedParents) {
-                        final Set<DetachListener<T>> listeners = detachListeners.remove(modifiedParent.internalId());
-                        if (listeners != null) {
-                            runnables = new ArrayList<>(listeners.size());
-                            for (final DetachListener<T> listener : listeners) {
-                                final DetachEvent<T> detachEvent = new DetachEvent<>(modifiedParent, listener,
-                                        contentBefore);
-                                try {
-                                    final Runnable runnable = listener.detached(detachEvent);
-                                    if (runnable != null) {
-                                        runnables.add(runnable);
-                                    }
-                                } catch (final Exception e) {
-                                    LOGGER.log(Level.SEVERE, "Exception while DetachListener.detached", e);
-                                }
-                            }
 
+                final Deque<Map.Entry<DetachListener<T>, DetachEvent<T>>> listenerToEvent = new ArrayDeque<>(
+                        modifiedParents.size());
+                for (final AbstractHtml modifiedParent : modifiedParents) {
+                    final Set<DetachListener<T>> listeners = detachListeners.remove(modifiedParent.internalId());
+                    if (listeners != null) {
+                        for (final DetachListener<T> listener : listeners) {
+                            final DetachEvent<T> detachEvent = new DetachEvent<>(modifiedParent, listener,
+                                    contentBefore);
+                            listenerToEvent.add(Map.entry(listener, detachEvent));
                         }
                     }
-                } finally {
-                    forMonitorEnterExit.unlock();
+                }
+
+                if (!listenerToEvent.isEmpty()) {
+                    runnables = new ArrayDeque<>(listenerToEvent.size());
+                    final ReentrantLock forMonitorEnterExit = new ReentrantLock();
+                    forMonitorEnterExit.lock();
+                    try {
+                        for (final Entry<DetachListener<T>, DetachEvent<T>> each : listenerToEvent) {
+                            try {
+                                final Runnable runnable = each.getKey().detached(each.getValue());
+                                if (runnable != null) {
+                                    runnables.add(runnable);
+                                }
+                            } catch (final Exception e) {
+                                LOGGER.log(Level.SEVERE, "Exception while DetachListener.detached", e);
+                            }
+                        }
+                    } finally {
+                        forMonitorEnterExit.unlock();
+                    }
                 }
             }
             if (contentChangeListeners != null) {
