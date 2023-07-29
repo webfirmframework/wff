@@ -22,7 +22,6 @@ import static com.webfirmframework.wffweb.css.CssConstants.IMPORTANT_UPPERCASE;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -433,10 +432,9 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
     // for internal use
     private final Set<CssProperty> cssProperties = ConcurrentHashMap.newKeySet();
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.STYLE;
 
     static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.STYLE);
 
         CSSPROPERTY_CLASSES.put(CssNameConstants.ALIGN_CONTENT, AlignContent.class);
         CSSPROPERTY_CLASSES.put(CssNameConstants.ALIGN_ITEMS, AlignItems.class);
@@ -672,7 +670,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
      *               eg :- {@code color:blue;text-align:center }
      */
     public Style(final String styles) {
-        extractStylesAndAddToAttributeValueMap(styles);
+        extractStylesAndAddToAttributeValueMap(styles, false, false);
     }
 
     /**
@@ -777,7 +775,45 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
     public void addCssProperties(final String cssProperties) {
         final long stamp = lock.writeLock();
         try {
-            extractStylesAndAddToAttributeValueMap(cssProperties);
+            extractStylesAndAddToAttributeValueMap(cssProperties, false, false);
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
+     * replaces all existing css properties with the given css properties only if
+     * the given css properties are different from the existing.
+     *
+     * @param cssProperties styles separated by semicolon.<br>
+     *                      eg :- {@code color:blue;text-align:center }
+     *
+     * @since 12.0.0-beta.12
+     */
+    public void setCssProperties(final String cssProperties) {
+        final long stamp = lock.writeLock();
+        try {
+            extractStylesAndAddToAttributeValueMap(cssProperties, true, false);
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
+     * replaces all existing css properties with the given css properties event if
+     * the given css properties are same as the existing. This method may be used to
+     * force to sync the given css properties with client browser page if the style
+     * property is changed at client side by custom JavaScript.
+     *
+     * @param cssProperties styles separated by semicolon.<br>
+     *                      eg :- {@code color:blue;text-align:center }
+     *
+     * @since 12.0.0-beta.12
+     */
+    public void assignCssProperties(final String cssProperties) {
+        final long stamp = lock.writeLock();
+        try {
+            extractStylesAndAddToAttributeValueMap(cssProperties, true, true);
         } finally {
             lock.unlockWrite(stamp);
         }
@@ -890,14 +926,11 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
 
         if (important) {
             for (final CssProperty cssProperty : cssProperties) {
-
                 cssPropertiesToAdd.put(cssProperty.getCssName(), cssProperty.getCssValue() + " " + IMPORTANT);
             }
         } else {
             for (final CssProperty cssProperty : cssProperties) {
-
                 cssPropertiesToAdd.put(cssProperty.getCssName(), cssProperty.getCssValue());
-
             }
         }
 
@@ -1102,7 +1135,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
         final String strippedCssName = StringUtil.strip(cssName);
         final String strippedCssValue = StringUtil.strip(cssValue);
 
-        final String value = super.getAttributeValueMap().get(strippedCssName);
+        final String value = super.getFromAttributeValueMap(strippedCssName);
         // the value may contain !important that's why startsWith method is used
         // here.
 
@@ -1209,6 +1242,24 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
     }
 
     /**
+     * Removes all css properties
+     *
+     * @param force true to forcefully remove all values and also to update client
+     *              even if it is already empty
+     * @since 12.0.0-beta.12
+     */
+    public void removeAllCssProperties(final boolean force) {
+        final long stamp = lock.writeLock();
+        try {
+            cssProperties.clear();
+            abstractCssPropertyClassObjects.clear();
+            super.removeAllFromAttributeValueMap(force);
+        } finally {
+            lock.unlockWrite(stamp);
+        }
+    }
+
+    /**
      * Checks if the given cssProperty object exists in this style object.
      *
      * @return
@@ -1242,7 +1293,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
         try {
 
             final String trimmedStyleName = StringUtil.strip(styleName);
-            final String value = super.getAttributeValueMap().get(trimmedStyleName);
+            final String value = super.getFromAttributeValueMap(trimmedStyleName);
             if (value != null && !value.isEmpty()) {
                 return super.addToAttributeValueMap(trimmedStyleName, value + " " + IMPORTANT);
             }
@@ -1270,7 +1321,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
         try {
 
             final String trimmedStyleName = StringUtil.strip(styleName);
-            final String value = super.getAttributeValueMap().get(trimmedStyleName);
+            final String value = super.getFromAttributeValueMap(trimmedStyleName);
             if (value != null && !value.isEmpty()) {
                 return super.addToAttributeValueMap(trimmedStyleName,
                         StringUtil.strip(StringUtil.replace(value, IMPORTANT, "")));
@@ -1281,44 +1332,54 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
         }
     }
 
-    private void extractStylesAndAddToAttributeValueMap(final String styles) {
-        if (styles == null || StringUtil.isBlank(styles)) {
-            return;
-        }
-        final String[] stylesArray = StringUtil.splitBySemicolon(styles);
+    private void extractStylesAndAddToAttributeValueMap(final String styles, final boolean clearExisting,
+            final boolean force) {
+        final Map<String, String> cssPropertiesToAdd;
+        if (styles != null && !StringUtil.isBlank(styles)) {
+            final String[] stylesArray = StringUtil.splitBySemicolon(styles);
 
-        final Map<String, String> cssPropertiesToAdd = new LinkedHashMap<>(stylesArray.length);
+            cssPropertiesToAdd = new LinkedHashMap<>(stylesArray.length);
 
-        for (final String each : stylesArray) {
-            if (!StringUtil.isBlank(each)) {
-                final String[] styleNameValue = StringUtil.splitByColon(each);
-                if (styleNameValue.length == 2) {
+            for (final String each : stylesArray) {
+                if (!StringUtil.isBlank(each)) {
+                    final String[] styleNameValue = StringUtil.splitByColon(each);
+                    if (styleNameValue.length == 2) {
 
-                    final String cssName = StringUtil.strip(styleNameValue[0]);
-                    final String cssValue = StringUtil.strip(styleNameValue[1]);
-                    if (!cssName.isEmpty() && !cssValue.isEmpty()) {
+                        final String cssName = StringUtil.strip(styleNameValue[0]);
+                        final String cssValue = StringUtil.strip(styleNameValue[1]);
+                        if (!cssName.isEmpty() && !cssValue.isEmpty()) {
 
-                        cssPropertiesToAdd.put(cssName, cssValue);
+                            cssPropertiesToAdd.put(cssName, cssValue);
 
-                        // super.addToAttributeValueMap(cssName,
-                        // cssValue);
-                        // getCssPropertyLockless(cssName);
+                            // super.addToAttributeValueMap(cssName,
+                            // cssValue);
+                            // getCssPropertyLockless(cssName);
+                        }
+
+                    } else {
+                        LOGGER.warning(
+                                "\"" + styles + "\" contains invalid value or no value for any style name in it.");
                     }
-
-                } else {
-                    LOGGER.warning("\"" + styles + "\" contains invalid value or no value for any style name in it.");
                 }
             }
+        } else {
+            cssPropertiesToAdd = Map.of();
         }
 
-        if (cssPropertiesToAdd.size() > 0) {
-            super.addAllToAttributeValueMap(cssPropertiesToAdd);
-
-            for (final String cssName : cssPropertiesToAdd.keySet()) {
-                // to save the
-                // corresponding object to
-                // abstractCssPropertyClassObjects
-                getCssPropertyLockless(cssName);
+        if (clearExisting || !cssPropertiesToAdd.isEmpty()) {
+            final boolean modified = clearExisting ? super.replaceAllInAttributeValueMap(cssPropertiesToAdd, force)
+                    : super.addAllToAttributeValueMap(cssPropertiesToAdd);
+            if (modified) {
+                if (clearExisting) {
+                    cssProperties.clear();
+                    abstractCssPropertyClassObjects.clear();
+                }
+                for (final String cssName : cssPropertiesToAdd.keySet()) {
+                    // to save the
+                    // corresponding object to
+                    // abstractCssPropertyClassObjects
+                    getCssPropertyLockless(cssName);
+                }
             }
         }
     }
@@ -1351,7 +1412,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
 
         final long stamp = lock.readLock();
         try {
-            String value = super.getAttributeValueMap().get(cssProperty.getCssName());
+            String value = super.getFromAttributeValueMap(cssProperty.getCssName());
             if (value != null) {
                 value = value.toUpperCase();
                 return value.contains(cssProperty.getCssValue().toUpperCase()) && value.contains(IMPORTANT_UPPERCASE);
@@ -1378,7 +1439,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
         final long stamp = lock.readLock();
         try {
 
-            String value = super.getAttributeValueMap().get(styleName);
+            String value = super.getFromAttributeValueMap(styleName);
             if (value != null) {
                 value = value.toUpperCase();
                 return value.contains(IMPORTANT_UPPERCASE);
@@ -1437,7 +1498,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
 
         String value = null;
         // given priority for optimization rather than coding standard
-        if (classClass != null && classClass.isEnum() && (value = super.getAttributeValueMap().get(cssName)) != null) {
+        if (classClass != null && classClass.isEnum() && (value = super.getFromAttributeValueMap(cssName)) != null) {
 
             final String tempValue = StringUtil.strip(StringUtil
                     .replace(StringUtil.replace(TagStringUtil.toUpperCase(value), IMPORTANT_UPPERCASE, ""), "-", "_"));
@@ -1479,7 +1540,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
             }
 
             // given priority for optimization rather than coding standard.
-        } else if (classClass != null && (value = super.getAttributeValueMap().get(cssName)) != null) {
+        } else if (classClass != null && (value = super.getFromAttributeValueMap(cssName)) != null) {
 
             // .toLowerCase() is removed, it could become a bug
             // eg: font-family: "Times New Roman", Times, serif
@@ -1523,7 +1584,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
                     | InvocationTargetException | NoSuchMethodException | SecurityException e) {
                 LOGGER.severe(String.valueOf(e));
             }
-        } else if ((value = super.getAttributeValueMap().get(cssName)) != null) {
+        } else if ((value = super.getFromAttributeValueMap(cssName)) != null) {
             // .toLowerCase() is removed, it seems could become a bug
             // eg: another new property similar to
             // font-family: "Times New Roman", Times, serif
@@ -1559,7 +1620,7 @@ public class Style extends AbstractAttribute implements GlobalAttributable, Stat
     public Collection<CssProperty> getCssProperties() {
         final long stamp = lock.readLock();
         try {
-            return Collections.unmodifiableSet(cssProperties);
+            return Set.copyOf(cssProperties);
         } finally {
             lock.unlockRead(stamp);
         }

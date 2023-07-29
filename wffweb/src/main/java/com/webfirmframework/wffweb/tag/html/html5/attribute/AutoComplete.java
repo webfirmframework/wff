@@ -17,7 +17,6 @@
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
@@ -302,15 +301,9 @@ public class AutoComplete extends AbstractValueSetAttribute implements InputAttr
 
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
-
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.AUTOCOMPLETE);
-
-    }
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.AUTOCOMPLETE;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
@@ -363,6 +356,26 @@ public class AutoComplete extends AbstractValueSetAttribute implements InputAttr
      */
     public void removeValues(final Collection<String> values) {
         super.removeAllFromAttributeValueSet(values);
+    }
+
+    /**
+     * removes the all values
+     *
+     * @since 12.0.0-beta.12
+     */
+    public void removeAllValues() {
+        super.removeAllFromAttributeValueSet();
+    }
+
+    /**
+     * Removes all values
+     *
+     * @param force true to forcefully remove all values and also to update client
+     *              even if it is already empty
+     * @since 12.0.0-beta.12
+     */
+    public void removeAllValues(final boolean force) {
+        super.removeAllFromAttributeValueSet(force);
     }
 
     /**
@@ -427,7 +440,7 @@ public class AutoComplete extends AbstractValueSetAttribute implements InputAttr
      * @author WFF
      */
     public Set<String> getValueSet() {
-        return new LinkedHashSet<>(super.getAttributeValueSet());
+        return super.getCopyOfAttributeValueSet();
     }
 
     /**
@@ -437,6 +450,18 @@ public class AutoComplete extends AbstractValueSetAttribute implements InputAttr
      */
     protected void init() {
         // to override and use this method
+    }
+
+    /**
+     * @param value the value to set again even if the existing value is same at
+     *              server side, the assigned value will be reflected in the UI.
+     *              Sometimes we may modify the value only at client side (not
+     *              server side), {@code setValue} will change only if the passed
+     *              value is different from existing value at server side.
+     * @since 12.0.0-beta.12
+     */
+    public void assignValue(final String value) {
+        assignAttributeValue(value);
     }
 
 }

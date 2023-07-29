@@ -37,15 +37,9 @@ public class DirName extends AbstractAttribute implements InputAttributable, Tex
     @Serial
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
-
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.DIRNAME);
-
-    }
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.DIRNAME;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

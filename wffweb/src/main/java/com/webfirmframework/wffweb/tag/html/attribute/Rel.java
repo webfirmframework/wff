@@ -18,7 +18,6 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 
 import java.io.Serial;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
@@ -152,12 +151,7 @@ public class Rel extends AbstractValueSetAttribute implements AAttributable, Are
      */
     public static final String EXTERNAL = "external";
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
-
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.REL);
-
-    }
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.REL;
 
     {
 
@@ -218,7 +212,7 @@ public class Rel extends AbstractValueSetAttribute implements AAttributable, Are
      * @author WFF
      */
     public Set<String> getValueSet() {
-        return new LinkedHashSet<>(super.getAttributeValueSet());
+        return super.getCopyOfAttributeValueSet();
     }
 
     /**
@@ -241,6 +235,26 @@ public class Rel extends AbstractValueSetAttribute implements AAttributable, Are
      */
     public void removeValues(final Collection<String> values) {
         super.removeAllFromAttributeValueSet(values);
+    }
+
+    /**
+     * removes the all values
+     *
+     * @since 12.0.0-beta.12
+     */
+    public void removeAllValues() {
+        super.removeAllFromAttributeValueSet();
+    }
+
+    /**
+     * Removes all values
+     *
+     * @param force true to forcefully remove all values and also to update client
+     *              even if it is already empty
+     * @since 12.0.0-beta.12
+     */
+    public void removeAllValues(final boolean force) {
+        super.removeAllFromAttributeValueSet(force);
     }
 
     /**
@@ -288,7 +302,7 @@ public class Rel extends AbstractValueSetAttribute implements AAttributable, Are
      * @since 12.0.0-beta.7
      */
     public void assignValue(final String value) {
-        super.assignAttributeValue(value);
+        assignAttributeValue(value);
     }
 
 }

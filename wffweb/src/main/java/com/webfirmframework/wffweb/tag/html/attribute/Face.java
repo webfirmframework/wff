@@ -34,15 +34,9 @@ public class Face extends AbstractAttribute implements BaseFontAttributable {
     @Serial
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
-
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.FACE);
-
-    }
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.FACE;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

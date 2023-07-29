@@ -39,15 +39,9 @@ public class UseMap extends AbstractAttribute implements ImgAttributable, InputA
     @Serial
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
-
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.USEMAP);
-
-    }
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.USEMAP;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

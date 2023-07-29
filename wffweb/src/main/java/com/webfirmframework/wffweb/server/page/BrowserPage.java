@@ -1735,7 +1735,7 @@ public abstract class BrowserPage implements Serializable {
 
                 final Set<AbstractHtml> subChildren = child.getChildren(ACCESS_OBJECT);
 
-                if (subChildren != null && subChildren.size() > 0) {
+                if (subChildren != null && !subChildren.isEmpty()) {
                     childrenStack.push(subChildren);
                 }
 
@@ -1811,7 +1811,7 @@ public abstract class BrowserPage implements Serializable {
 
                 final Set<AbstractHtml> subChildren = child.getChildren(ACCESS_OBJECT);
 
-                if (subChildren != null && subChildren.size() > 0) {
+                if (subChildren != null && !subChildren.isEmpty()) {
                     childrenStack.push(subChildren);
                 }
             }

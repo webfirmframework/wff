@@ -17,9 +17,7 @@
 package com.webfirmframework.wffweb.common.test;
 
 import org.junit.FixMethodOrder;
-import org.junit.runner.OrderWith;
 import org.junit.runner.RunWith;
-import org.junit.runner.manipulation.Alphanumeric;
 import org.junit.runners.MethodSorters;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -142,6 +140,7 @@ import com.webfirmframework.wffweb.server.page.ExternalDriveClientTasksWrapperDe
 import com.webfirmframework.wffweb.server.page.ExternalDriveClientTasksWrapperQueueTest;
 import com.webfirmframework.wffweb.server.page.TaskTest;
 import com.webfirmframework.wffweb.server.page.action.BrowserPageActionTest;
+import com.webfirmframework.wffweb.settings.WffConfigurationTest;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamerTest;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlRepositoryTest;
 import com.webfirmframework.wffweb.tag.html.AbstractHtmlTest;
@@ -170,6 +169,7 @@ import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObjectTest;
 import com.webfirmframework.wffweb.tag.html.model.SharedObjectIdGeneratorTest;
 import com.webfirmframework.wffweb.tag.htmlwff.BlankTest;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTagTest;
+import com.webfirmframework.wffweb.tag.htmlwff.TagContentTest;
 import com.webfirmframework.wffweb.tag.repository.TagRepositoryTest;
 import com.webfirmframework.wffweb.util.ByteBufferUtilTest;
 import com.webfirmframework.wffweb.util.CssLengthUtilTest;
@@ -228,7 +228,8 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
         UnicodeStringTest.class, ExternalDriveByteArrayQueueTest.class, ExternalDriveClientTasksWrapperDequeTest.class,
         ExternalDriveClientTasksWrapperQueueTest.class, AttributeIdGeneratorTest.class,
         SharedObjectIdGeneratorTest.class, WhenURIUseCaseTest.class, URIUtilTest.class, EventInitiatorTest.class,
-        ImmutableCustomAttributeTest.class, BrowserPageActionTest.class })
+        ImmutableCustomAttributeTest.class, BrowserPageActionTest.class, WffConfigurationTest.class,
+        TagContentTest.class })
 public class AllTests {
 
 }

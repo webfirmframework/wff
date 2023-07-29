@@ -89,7 +89,7 @@ public final class InnerHtmlAddListenerImpl implements InnerHtmlAddListener {
                 }
 
                 final Set<AbstractHtml> subChildren = child.getChildren(accessObject);
-                if (subChildren != null && subChildren.size() > 0) {
+                if (subChildren != null && !subChildren.isEmpty()) {
                     childrenStack.push(subChildren);
                 }
 

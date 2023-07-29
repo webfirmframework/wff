@@ -23,6 +23,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.tag.html.html5.attribute.AutoComplete;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 public class RelTest {
 
@@ -90,6 +91,30 @@ public class RelTest {
         Assert.assertFalse(rel.containsAll(Arrays.asList(AutoComplete.ADDRESS_LINE2)));
         Assert.assertFalse(rel.containsAll(Arrays.asList(AutoComplete.NAME, AutoComplete.ADDRESS_LINE2)));
         
+    }
+    
+    @Test
+    public void testRemoveValues() {
+        Rel attribute = new Rel(Rel.ALTERNATE + " " + Rel.AUTHOR + " " + Rel.BOOKMARK);
+        assertEquals("rel=\"alternative author bookmark\"", attribute.toHtmlString());
+        attribute.removeValues(Arrays.asList(Rel.AUTHOR, Rel.BOOKMARK));
+        assertEquals("rel=\"alternative\"", attribute.toHtmlString());
+    }
+    
+    @Test
+    public void testRemoveAllValues() {
+        
+        Rel attribute = new Rel("one two");
+        
+        attribute.removeAllValues();
+        Assert.assertEquals("", attribute.getAttributeValue());
+        
+        attribute.addValues(Arrays.asList(StringUtil.splitBySpace("one two three four five six")));
+        
+        Assert.assertEquals("one two three four five six", attribute.getAttributeValue());
+        
+        attribute.removeAllValues();
+        Assert.assertEquals("", attribute.getAttributeValue());
     }
 
 }

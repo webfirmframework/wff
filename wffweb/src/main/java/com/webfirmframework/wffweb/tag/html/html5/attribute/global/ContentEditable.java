@@ -38,15 +38,9 @@ public class ContentEditable extends AbstractAttribute implements GlobalAttribut
     private static final long serialVersionUID = 1_0_0L;
     private boolean editable;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
-
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.CONTENTEDITABLE);
-
-    }
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.CONTENTEDITABLE;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }

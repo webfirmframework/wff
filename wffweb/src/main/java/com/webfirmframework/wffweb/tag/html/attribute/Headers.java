@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.tag.html.attribute;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Set;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
@@ -35,15 +36,9 @@ public class Headers extends AbstractValueSetAttribute implements ThAttributable
      */
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
-
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.HEADERS);
-
-    }
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.HEADERS;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
@@ -175,4 +170,60 @@ public class Headers extends AbstractValueSetAttribute implements ThAttributable
     public void removeAllHeaderIds() {
         super.removeAllFromAttributeValueSet();
     }
+
+    /**
+     * Removes all header ids
+     *
+     * @param force true to forcefully remove all values and also to update client
+     *              even if it is already empty
+     * @since 12.0.0-beta.12
+     */
+    public void removeAllHeaderIds(final boolean force) {
+        super.removeAllFromAttributeValueSet(force);
+    }
+
+    /**
+     * sets the value for this attribute
+     *
+     * @param value the value for the attribute.
+     * @since 12.0.0-beta.12
+     */
+    public void setValue(final String value) {
+        super.setAttributeValue(value);
+    }
+
+    /**
+     * sets the value for this attribute
+     *
+     * @param updateClient   true to update client browser page if it is available.
+     *                       The default value is true but it will be ignored if
+     *                       there is no client browser page.
+     * @param attributeValue the value for the attribute.
+     * @since 12.0.0-beta.12
+     * @author WFF
+     */
+    public void setValue(final boolean updateClient, final String attributeValue) {
+        super.setAttributeValue(updateClient, attributeValue);
+    }
+
+    /**
+     * @param value the value to set again even if the existing value is same at
+     *              server side, the assigned value will be reflected in the UI.
+     *              Sometimes we may modify the value only at client side (not
+     *              server side), {@code setValue} will change only if the passed
+     *              value is different from existing value at server side.
+     * @since 12.0.0-beta.12
+     */
+    public void assignValue(final String value) {
+        assignAttributeValue(value);
+    }
+
+    /**
+     * @return the header ids
+     * @since 12.0.0-beta.12
+     */
+    public Set<String> getHeaderIds() {
+        return super.getCopyOfAttributeValueSet();
+    }
+
 }

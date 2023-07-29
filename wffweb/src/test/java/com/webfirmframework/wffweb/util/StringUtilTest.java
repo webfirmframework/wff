@@ -302,7 +302,7 @@ public class StringUtilTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.util.StringUtil#isEqual(java.lang.Object[])}.
+     * {@link com.webfirmframework.wffweb.util.StringUtil#isEqual(java.lang.String[])}.
      */
     @Test
     public void testIsEqualStringArray() {
@@ -332,7 +332,7 @@ public class StringUtilTest {
 
     /**
      * Test method for
-     * {@link com.webfirmframework.wffweb.util.StringUtil#isEqual(java.lang.Object, java.lang.Object)}.
+     * {@link com.webfirmframework.wffweb.util.StringUtil#isEqual(java.lang.String, java.lang.String)}.
      */
     @Test
     public void testIsEqualStringObject() {

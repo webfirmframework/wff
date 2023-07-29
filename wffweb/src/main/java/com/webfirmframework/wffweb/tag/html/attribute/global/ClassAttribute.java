@@ -17,7 +17,6 @@
 package com.webfirmframework.wffweb.tag.html.attribute.global;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
@@ -35,15 +34,9 @@ public class ClassAttribute extends AbstractValueSetAttribute implements GlobalA
      */
     private static final long serialVersionUID = 1_0_0L;
 
-    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME;
-
-    static {
-        PRE_INDEXED_ATTR_NAME = (PreIndexedAttributeName.CLASS);
-
-    }
+    private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.CLASS;
 
     {
-
         super.setPreIndexedAttribute(PRE_INDEXED_ATTR_NAME);
         init();
     }
@@ -130,6 +123,26 @@ public class ClassAttribute extends AbstractValueSetAttribute implements GlobalA
     }
 
     /**
+     * removes all class names from the class attribute
+     *
+     * @since 12.0.0-beta.12
+     */
+    public void removeAllClassNames() {
+        super.removeAllFromAttributeValueSet();
+    }
+
+    /**
+     * removes all class names from the class attribute
+     *
+     * @param force true to forcefully remove all values and also to update client
+     *              even if it is already empty
+     * @since 12.0.0-beta.12
+     */
+    public void removeAllClassNames(final boolean force) {
+        super.removeAllFromAttributeValueSet(force);
+    }
+
+    /**
      * removes the given class name
      *
      * @param className the class name to remove
@@ -160,7 +173,7 @@ public class ClassAttribute extends AbstractValueSetAttribute implements GlobalA
      * @author WFF
      */
     public Set<String> getClassNames() {
-        return new LinkedHashSet<>(super.getAttributeValueSet());
+        return super.getCopyOfAttributeValueSet();
     }
 
     /**
@@ -188,7 +201,7 @@ public class ClassAttribute extends AbstractValueSetAttribute implements GlobalA
      * @since 12.0.0-beta.7
      */
     public void assignValue(final String value) {
-        super.assignAttributeValue(value);
+        assignAttributeValue(value);
     }
 
 }

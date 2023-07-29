@@ -2,10 +2,7 @@ package com.webfirmframework.wffweb.tag.html;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -1608,7 +1605,7 @@ public class SharedTagContentTest {
         AbstractHtml firstChild = div.getFirstChild();
         div.addInnerHtml(new NoTag(null, ""));
         assertNull(firstChild.getCachedStcFormatter());
-        assertNotNull(stc.getContentChangeListeners(div));
+        assertNull(stc.getContentChangeListeners(div));
         formatter = new ContentFormatter<String>() {
 
             @Override
@@ -1713,7 +1710,7 @@ public class SharedTagContentTest {
         //scenario 6
         assertNotNull(stc.getContentChangeListeners(div));
         div.addInnerHtml(new NoTag(null, ""));
-        assertNotNull(stc.getContentChangeListeners(div));
+        assertNull(stc.getContentChangeListeners(div));
         
         formatter = new ContentFormatter<String>() {
 
@@ -1806,7 +1803,7 @@ public class SharedTagContentTest {
         //scenario 6
         assertNotNull(stc.getContentChangeListeners(div));
         div.removeSharedTagContent(true);
-        assertNotNull(stc.getContentChangeListeners(div));
+        assertNull(stc.getContentChangeListeners(div));
         
         formatter = new ContentFormatter<String>() {
 
@@ -1900,7 +1897,7 @@ public class SharedTagContentTest {
         //scenario 6
         assertNotNull(stc.getContentChangeListeners(div));
         div.removeChild(div.getFirstChild());
-        assertNotNull(stc.getContentChangeListeners(div));
+        assertNull(stc.getContentChangeListeners(div));
         
         formatter = new ContentFormatter<String>() {
 
@@ -2106,6 +2103,22 @@ public class SharedTagContentTest {
         assertEquals(formatter, div.getFirstChild().getCachedStcFormatter());
         assertEquals(firstChildBefore, div.getFirstChild());
         
+    }
+
+    @Test
+    public void testRemoveSharedTagContentOnContentChange() {
+        AbstractHtml span = new Span(null);
+        SharedTagContent<String> stc = new SharedTagContent<String>("initial content");
+        span.subscribeTo(stc, content -> null);
+
+        stc.addContentChangeListener(span, changeEvent -> {
+            return () -> span.removeSharedTagContent(false);
+        });
+        assertEquals(stc, span.getSharedTagContent());
+        stc.setContent("again changed");
+        assertNull(span.getSharedTagContent());
+        assertNull(stc.getContentChangeListeners(span));
+
     }
             
 

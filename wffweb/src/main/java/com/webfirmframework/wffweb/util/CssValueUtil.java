@@ -120,7 +120,7 @@ public final class CssValueUtil {
                 }
             }
 
-            if (startAndEndIndexes.size() == 0) {
+            if (startAndEndIndexes.isEmpty()) {
                 return Arrays.asList(StringUtil.splitBySpace(StringUtil.convertWhitespacesToSingleSpace(cssValue)));
             }
 
