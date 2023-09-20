@@ -583,7 +583,7 @@ public enum BrowserPageContext {
      *                       {@code maxIdleTimeout} of websocket session. It should
      *                       be greater than the minInterval given in the
      *                       {@code HeartbeatManager}. It should be equal to the
-     *                       http session timeout value (maxInvactiveInterval) in
+     *                       http session timeout value (maxInactiveInterval) in
      *                       its milliseconds if the session tracking is enabled and
      *                       the app depends on the session tracking.
      * @since 3.0.16
@@ -607,7 +607,7 @@ public enum BrowserPageContext {
      *                       {@code maxIdleTimeout} of websocket session. It should
      *                       be greater than the minInterval given in the
      *                       {@code HeartbeatManager}. It should be equal to the
-     *                       http session timeout value (maxInvactiveInterval) in
+     *                       http session timeout value (maxInactiveInterval) in
      *                       its milliseconds if the session tracking is enabled and
      *                       the app depends on the session tracking.
      * @param executor       the executor object from which the thread will be
