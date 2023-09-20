@@ -46,24 +46,6 @@ rootTag.setPrependDocType(true);
 System.out.println(rootTag.toHtmlString(true)); 
 ~~~
 
-or the same in another coding style
-~~~
-Html html = new Html(null) {
-       	 
-        	Head head = new Head(this);
-       	 
-        	Body body = new Body(this) {
-           	 
-            	new NoTag(this, "Hello World");
-           	 
-        	};
-       	 
-};
-// prepends the doc type <!DOCTYPE html>
-html.setPrependDocType(true);
-System.out.println(html.toHtmlString(true)); 
-~~~
-
 or the same in few lines
 
 ~~~
