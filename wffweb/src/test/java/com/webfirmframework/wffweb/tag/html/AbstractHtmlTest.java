@@ -3110,6 +3110,26 @@ public class AbstractHtmlTest {
         }
 
         {
+            Div tempChildDiv = new Div(null);
+            long listenerSlotId = tempChildDiv.addParentLostListener(event -> childDivListenerInvoked.incrementAndGet());
+            boolean listenerRemoved = tempChildDiv.removeParentLostListener(listenerSlotId);
+            assertTrue(listenerRemoved);
+            listenerRemoved = tempChildDiv.removeParentLostListener(listenerSlotId);
+            assertFalse(listenerRemoved);
+            final long childDivListenerSlotId = tempChildDiv.addParentLostListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(tempChildDiv, event.sourceTag());
+            });
+
+            assertEquals(2, childDivListenerSlotId);
+
+            parentDiv.removeChild(tempChildDiv);
+            assertEquals(1, childDivListenerInvoked.get());
+            parentDiv.removeChild(tempChildDiv);
+            assertEquals(1, childDivListenerInvoked.get());
+        }
+
+        {
             long childDivListenerSlotId = childDiv2.addParentLostListener(event -> {
                 childDivListenerInvoked.incrementAndGet();
                 assertEquals(childDiv2, event.sourceTag());
@@ -3278,6 +3298,30 @@ public class AbstractHtmlTest {
             int listenerCountBefore = childDivListenerInvoked.get();
             childDiv.addParentGainedListener(event -> childDivListenerInvoked.incrementAndGet());
             childDiv.removeAllParentGainedListeners();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(2, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 0);
+
+            parentDiv.appendChild(childDiv);
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long listenerSlotId = childDiv.addParentGainedListener(event -> childDivListenerInvoked.incrementAndGet());
+            boolean listenerRemoved = childDiv.removeParentGainedListener(listenerSlotId);
+            assertTrue(listenerRemoved);
+            listenerRemoved = childDiv.removeParentGainedListener(listenerSlotId);
+            assertFalse(listenerRemoved);
             long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
                 childDivListenerInvoked.incrementAndGet();
                 assertEquals(childDiv, event.sourceTag());
