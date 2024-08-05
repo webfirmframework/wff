@@ -28,11 +28,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.Set;
 
+import com.webfirmframework.wffweb.InvalidUsageException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -96,8 +99,6 @@ public class AbstractHtmlTest {
         System.out.println("html.toHtmlString().length() " + html.toHtmlString().length());
         // List<NameValue> parse =
         // WffBinaryMessageUtil.VERSION_1.parse(wffMessageBytes);
-
-        System.out.println(html.toHtmlString());
 
         // fail("Not yet implemented");
     }
@@ -357,7 +358,6 @@ public class AbstractHtmlTest {
         assertEquals(
                 "<div id=\"parentDivId\"><div id=\"inserted1BeforeChild1\"></div><div id=\"inserted2BeforeChild1\"></div><div id=\"child1\"></div></div>",
                 parentDiv.toHtmlString());
-        System.out.println(parentDiv.toHtmlString());
 
     }
 
@@ -3015,6 +3015,878 @@ public class AbstractHtmlTest {
         assertTrue(parentDiv.hasChildren());
         assertFalse(childDiv1.hasChildren());
         assertFalse(childDiv2.hasChildren());
+    }
+
+    @Test(expected = InvalidUsageException.class)
+    public void testRecurringException1() {
+        Div childDiv1 = new Div(null);
+        childDiv1.appendChild(childDiv1);
+    }
+
+    @Test(expected = InvalidUsageException.class)
+    public void testRecurringException2() {
+        Div childDiv1 = new Div(null);
+        childDiv1.appendChildren(childDiv1);
+    }
+
+    @Test(expected = InvalidUsageException.class)
+    public void testRecurringException3() {
+        Div childDiv1 = new Div(null);
+        childDiv1.appendChildren(List.of(childDiv1));
+    }
+
+    @Test(expected = InvalidUsageException.class)
+    public void testRecurringException4() {
+        Div parentDiv = new Div(null);
+        Div childDiv1 = new Div(parentDiv);
+        childDiv1.insertAfter(childDiv1);
+    }
+
+    @Test(expected = InvalidUsageException.class)
+    public void testRecurringException5() {
+        Div parentDiv = new Div(null);
+        Div childDiv1 = new Div(parentDiv);
+        childDiv1.insertBefore(childDiv1);
+    }
+
+    @Test(expected = InvalidUsageException.class)
+    public void testRecurringException6() {
+        Div parentDiv = new Div(null);
+        Div childDiv1 = new Div(parentDiv);
+        childDiv1.replaceWith(childDiv1);
+    }
+
+    @Test(expected = InvalidUsageException.class)
+    public void testRecurringException7() {
+        Div childDiv1 = new Div(null);
+        childDiv1.addInnerHtml(childDiv1);
+    }
+
+    @Test(expected = InvalidUsageException.class)
+    public void testRecurringException8() {
+        Div childDiv1 = new Div(null);
+        childDiv1.addInnerHtmls(childDiv1);
+    }
+
+    @Test()
+    public void testParentLostListener() {
+        Div parentDiv = new Div(null, new Id("parentDivId"));
+        Div childDiv1 = new Div(parentDiv, new Id("child1"));
+        Div childDiv2 = new Div(parentDiv, new Id("child2"));
+        Div childDiv3 = new Div(parentDiv, new Id("child3"));
+        Div childDiv4 = new Div(parentDiv, new Id("child3"));
+
+        AtomicInteger childDivListenerInvoked = new AtomicInteger();
+
+        {
+            long childDivListenerSlotId = childDiv1.addParentLostListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv1, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+
+            parentDiv.removeChild(childDiv1);
+            assertEquals(1, childDivListenerInvoked.get());
+            parentDiv.removeChild(childDiv1);
+            assertEquals(1, childDivListenerInvoked.get());
+        }
+
+        {
+            Div tempChildDiv = new Div(null);
+            tempChildDiv.addParentLostListener(event -> childDivListenerInvoked.incrementAndGet());
+            tempChildDiv.removeAllParentLostListeners();
+            final long childDivListenerSlotId = tempChildDiv.addParentLostListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(tempChildDiv, event.sourceTag());
+            });
+
+            assertEquals(2, childDivListenerSlotId);
+
+            parentDiv.removeChild(tempChildDiv);
+            assertEquals(1, childDivListenerInvoked.get());
+            parentDiv.removeChild(tempChildDiv);
+            assertEquals(1, childDivListenerInvoked.get());
+        }
+
+        {
+            long childDivListenerSlotId = childDiv2.addParentLostListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv2, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            parentDiv.removeAllChildren();
+            assertEquals(2, childDivListenerInvoked.get());
+            parentDiv.removeAllChildren();
+            assertEquals(2, childDivListenerInvoked.get());
+        }
+
+        {
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv3.addParentLostListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv3, event.sourceTag());
+            });
+
+            assertEquals(parentDiv.getChildrenSize(), 0);
+            parentDiv.appendChild(childDiv3);
+            assertEquals(parentDiv.getChildrenSize(), 1);
+            assertEquals(1, childDivListenerSlotId);
+            childDiv3.removeParentLostListener(childDivListenerSlotId);
+            parentDiv.removeAllChildren();
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+        }
+
+        {
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv4.addParentLostListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv4, event.sourceTag());
+            });
+
+            parentDiv.addInnerHtmls(childDiv4);
+            assertEquals(parentDiv.getChildrenSize(), 1);
+            assertEquals(1, childDivListenerSlotId);
+            parentDiv.addInnerHtmls(new Div(null));
+            final int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            parentDiv.addInnerHtmls(new Div(null));
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+        }
+
+        {
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId1 = childDiv.addParentLostListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+            long childDivListenerSlotId2 = childDiv.addParentLostListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            parentDiv.addInnerHtmls(childDiv);
+            assertEquals(parentDiv.getChildrenSize(), 1);
+            assertEquals(1, childDivListenerSlotId1);
+            assertEquals(2, childDivListenerSlotId2);
+            parentDiv.addInnerHtmls(new Div(null));
+            final int listenerCountAfterInvocation = listenerCountBefore + 2;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            parentDiv.addInnerHtmls(new Div(null));
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+        }
+
+        {
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentLostListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            parentDiv.addInnerHtmls(childDiv);
+            assertEquals(parentDiv.getChildrenSize(), 1);
+            assertEquals(1, childDivListenerSlotId);
+            childDiv.replaceWith(new Div(null));
+            final int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            parentDiv.addInnerHtmls(new Div(null));
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+        }
+
+        {
+            parentDiv.removeAllChildren();
+            Div childDiv = new Div(parentDiv);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentLostListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(parentDiv.getChildrenSize(), 1);
+            assertEquals(parentDiv, childDiv.getParent());
+
+            NoTag anotherParent = new NoTag(parentDiv, childDiv);
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+
+            anotherParent.addInnerHtmls(new Div(null));
+            listenerCountAfterInvocation++;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(anotherParent.getChildrenSize(), 1);
+
+            anotherParent.removeAllChildren();
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(anotherParent.getChildrenSize(), 0);
+        }
+
+        {
+            parentDiv.removeAllChildren();
+            Div childDiv = new Div(parentDiv);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentLostListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(parentDiv.getChildrenSize(), 1);
+            assertEquals(parentDiv, childDiv.getParent());
+
+            SharedTagContent<String> stc = new SharedTagContent<>("initialContent");
+            parentDiv.subscribeTo(stc);
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getFirstChild().toHtmlString(), "initialContent");
+
+            stc.setContent("anotherContent");
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getFirstChild().toHtmlString(), "anotherContent");
+        }
+
+    }
+
+    @Test()
+    public void testParentGainedListener() {
+        AtomicInteger childDivListenerInvoked = new AtomicInteger();
+
+        {
+            Div parentDiv = new Div(null);
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 0);
+
+            parentDiv.appendChild(childDiv);
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            childDiv.addParentGainedListener(event -> childDivListenerInvoked.incrementAndGet());
+            childDiv.removeAllParentGainedListeners();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(2, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 0);
+
+            parentDiv.appendChild(childDiv);
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId1 = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+            long childDivListenerSlotId2 = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId1);
+            assertEquals(2, childDivListenerSlotId2);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 0);
+
+            parentDiv.appendChild(childDiv);
+            int listenerCountAfterInvocation = listenerCountBefore + 2;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 0);
+
+            parentDiv.appendChildren(childDiv);
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+        }
+        {
+            Div parentDiv = new Div(null);
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 0);
+
+            parentDiv.appendChildren(List.of(childDiv));
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 0);
+
+            parentDiv.addInnerHtml(childDiv);
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 0);
+
+            parentDiv.addInnerHtmls(childDiv);
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 0);
+
+            parentDiv.addInnerHtmls(false, childDiv);
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 0);
+
+            parentDiv.addInnerHtmls(true, childDiv);
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 0);
+
+            parentDiv.prependChildren(childDiv);
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div existingChild = new Div(null);
+            parentDiv.appendChild(existingChild);
+
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+
+            existingChild.insertAfter(childDiv);
+
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 2);
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div existingChild = new Div(null);
+            parentDiv.appendChild(existingChild);
+
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+
+            existingChild.insertAfterIfPossible(childDiv);
+
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 2);
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div existingChild = new Div(null);
+            parentDiv.appendChild(existingChild);
+
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+
+            existingChild.insertBefore(childDiv);
+
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 2);
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div existingChild = new Div(null);
+            parentDiv.appendChild(existingChild);
+
+            Div childDiv = new Div(null);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+
+            existingChild.insertBeforeIfPossible(childDiv);
+
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 2);
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div existingChild = new Div(null, new Id("initialChild"));
+            parentDiv.appendChild(existingChild);
+
+            Div childDiv = new Div(null, new Id("newChild"));
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+
+            existingChild.insertBefore(childDiv);
+
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 2);
+            assertEquals(childDiv, parentDiv.getFirstChild());
+            assertEquals(existingChild, parentDiv.getLastChild());
+            final boolean added = parentDiv.appendChild(childDiv);
+
+            assertTrue(added);
+
+            // Note: parent is not changed so no need to invoke ParentGainedListener
+            // if there is any use case found this behaviour may be changed
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 2);
+
+            assertEquals(existingChild, parentDiv.getFirstChild());
+            assertEquals(childDiv, parentDiv.getLastChild());
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div existingChild = new Div(null, new Id("initialChild"));
+            parentDiv.appendChild(existingChild);
+
+            Div childDiv = new Div(null, new Id("newChild"));
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 1);
+
+            existingChild.insertAfter(childDiv);
+
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 2);
+            assertEquals(existingChild, parentDiv.getFirstChild());
+            assertEquals(childDiv, parentDiv.getLastChild());
+
+            parentDiv.prependChildren(childDiv);
+
+            // Note: parent is not changed so no need to invoke ParentGainedListener
+            // if there is any use case found this behaviour may be changed
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 2);
+            assertEquals(childDiv, parentDiv.getFirstChild());
+            assertEquals(existingChild, parentDiv.getLastChild());
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div existingChild1 = new Div(null, new Id("initialChild1"));
+            Div existingChild2 = new Div(null, new Id("initialChild2"));
+            parentDiv.appendChild(existingChild1);
+            parentDiv.appendChild(existingChild2);
+
+            Div childDiv = new Div(null, new Id("newChild"));
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 2);
+
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(existingChild2, parentDiv.getChildAt(1));
+
+            existingChild1.insertAfter(childDiv);
+
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 3);
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(childDiv, parentDiv.getChildAt(1));
+            assertEquals(existingChild2, parentDiv.getChildAt(2));
+
+            parentDiv.prependChildren(childDiv);
+
+            // Note: parent is not changed so no need to invoke ParentGainedListener
+            // if there is any use case found this behaviour may be changed
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 3);
+
+            assertEquals(childDiv, parentDiv.getChildAt(0));
+            assertEquals(existingChild1, parentDiv.getChildAt(1));
+            assertEquals(existingChild2, parentDiv.getChildAt(2));
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div existingChild1 = new Div(null, new Id("initialChild1"));
+            Div existingChild2 = new Div(null, new Id("initialChild2"));
+            parentDiv.appendChild(existingChild1);
+            parentDiv.appendChild(existingChild2);
+
+            Div childDiv = new Div(null, new Id("newChild"));
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 2);
+
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(existingChild2, parentDiv.getChildAt(1));
+
+            existingChild2.insertBefore(childDiv);
+
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 3);
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(childDiv, parentDiv.getChildAt(1));
+            assertEquals(existingChild2, parentDiv.getChildAt(2));
+
+            parentDiv.prependChildren(childDiv);
+
+            // Note: parent is not changed so no need to invoke ParentGainedListener
+            // if there is any use case found this behaviour may be changed
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 3);
+
+            assertEquals(childDiv, parentDiv.getChildAt(0));
+            assertEquals(existingChild1, parentDiv.getChildAt(1));
+            assertEquals(existingChild2, parentDiv.getChildAt(2));
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div existingChild1 = new Div(null, new Id("initialChild1"));
+            Div existingChild2 = new Div(null, new Id("initialChild2"));
+            parentDiv.appendChild(existingChild1);
+            parentDiv.appendChild(existingChild2);
+
+            Div childDiv = new Div(null, new Id("newChild"));
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 2);
+
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(existingChild2, parentDiv.getChildAt(1));
+
+            existingChild1.insertAfter(childDiv);
+
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 3);
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(childDiv, parentDiv.getChildAt(1));
+            assertEquals(existingChild2, parentDiv.getChildAt(2));
+
+            parentDiv.appendChildren(childDiv);
+
+            // Note: parent is not changed so no need to invoke ParentGainedListener
+            // if there is any use case found this behaviour may be changed
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 3);
+
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(existingChild2, parentDiv.getChildAt(1));
+            assertEquals(childDiv, parentDiv.getChildAt(2));
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div existingChild1 = new Div(null, new Id("initialChild1"));
+            Div existingChild2 = new Div(null, new Id("initialChild2"));
+            parentDiv.appendChild(existingChild1);
+            parentDiv.appendChild(existingChild2);
+
+            Div childDiv = new Div(null, new Id("newChild"));
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 2);
+
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(existingChild2, parentDiv.getChildAt(1));
+
+            existingChild2.insertBefore(childDiv);
+
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 3);
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(childDiv, parentDiv.getChildAt(1));
+            assertEquals(existingChild2, parentDiv.getChildAt(2));
+
+            parentDiv.appendChildren(childDiv);
+
+            // Note: parent is not changed so no need to invoke ParentGainedListener
+            // if there is any use case found this behaviour may be changed
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 3);
+
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(existingChild2, parentDiv.getChildAt(1));
+            assertEquals(childDiv, parentDiv.getChildAt(2));
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div existingChild1 = new Div(null, new Id("initialChild1"));
+            Div existingChild2 = new Div(null, new Id("initialChild2"));
+            parentDiv.appendChild(existingChild1);
+            parentDiv.appendChild(existingChild2);
+
+            Div childDiv = new Div(null, new Id("newChild"));
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 2);
+
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(existingChild2, parentDiv.getChildAt(1));
+
+            existingChild1.insertAfter(childDiv);
+
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 3);
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(childDiv, parentDiv.getChildAt(1));
+            assertEquals(existingChild2, parentDiv.getChildAt(2));
+
+            parentDiv.appendChildren(List.of(childDiv));
+
+            // Note: parent is not changed so no need to invoke ParentGainedListener
+            // if there is any use case found this behaviour may be changed
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 3);
+
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(existingChild2, parentDiv.getChildAt(1));
+            assertEquals(childDiv, parentDiv.getChildAt(2));
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div existingChild1 = new Div(null, new Id("initialChild1"));
+            Div existingChild2 = new Div(null, new Id("initialChild2"));
+            parentDiv.appendChild(existingChild1);
+            parentDiv.appendChild(existingChild2);
+
+            Div childDiv = new Div(null, new Id("newChild"));
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(listenerCountBefore, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 2);
+
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(existingChild2, parentDiv.getChildAt(1));
+
+            existingChild2.insertBefore(childDiv);
+
+            int listenerCountAfterInvocation = listenerCountBefore + 1;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 3);
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(childDiv, parentDiv.getChildAt(1));
+            assertEquals(existingChild2, parentDiv.getChildAt(2));
+
+            parentDiv.appendChildren(List.of(childDiv));
+
+            // Note: parent is not changed so no need to invoke ParentGainedListener
+            // if there is any use case found this behaviour may be changed
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getChildrenSize(), 3);
+
+            assertEquals(existingChild1, parentDiv.getChildAt(0));
+            assertEquals(existingChild2, parentDiv.getChildAt(1));
+            assertEquals(childDiv, parentDiv.getChildAt(2));
+        }
+
+        {
+            Div parentDiv = new Div(null);
+            Div childDiv = new Div(parentDiv);
+            int listenerCountBefore = childDivListenerInvoked.get();
+            long childDivListenerSlotId = childDiv.addParentGainedListener(event -> {
+                childDivListenerInvoked.incrementAndGet();
+                assertEquals(childDiv, event.sourceTag());
+            });
+
+            assertEquals(1, childDivListenerSlotId);
+            assertEquals(parentDiv.getChildrenSize(), 1);
+            assertEquals(parentDiv, childDiv.getParent());
+
+            SharedTagContent<String> stc = new SharedTagContent<>("initialContent");
+            parentDiv.subscribeTo(stc);
+            // Note: ParentGainedListener should not be invoked
+            int listenerCountAfterInvocation = listenerCountBefore;
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getFirstChild().toHtmlString(), "initialContent");
+
+            stc.setContent("anotherContent");
+            assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
+            assertEquals(parentDiv.getFirstChild().toHtmlString(), "anotherContent");
+        }
     }
 
 }

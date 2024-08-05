@@ -46,6 +46,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.InvalidUsageException;
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.NoParentException;
@@ -79,6 +80,8 @@ import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
 import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
+import com.webfirmframework.wffweb.tag.html.listener.ParentGainedListener;
+import com.webfirmframework.wffweb.tag.html.listener.ParentLostListener;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
@@ -193,7 +196,13 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     private long hierarchyOrderCounter;
 
+    private volatile boolean processedInHierarchicalLoop;
+
     private volatile List<URIChangeContent> uriChangeContents;
+
+    private volatile ParentLostListenerVariables parentLostListenerVariables;
+
+    private volatile ParentGainedListenerVariables parentGainedListenerVariables;
 
     public static enum TagType {
         OPENING_CLOSING, SELF_CLOSING, NON_CLOSING;
@@ -254,7 +263,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         children = new LinkedHashSet<AbstractHtml>() {
 
             @Serial
-            private static final long serialVersionUID = 1L;
+            private static final long serialVersionUID = 2L;
 
             @Override
             public boolean remove(final Object child) {
@@ -280,50 +289,49 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 return added;
             }
 
-            @Override
-            public boolean removeAll(final Collection<?> children) {
-
-                // NB: must be LinkedHashSet to keep order of removal
-                final Set<AbstractHtml> validChildren = new LinkedHashSet<>(calcCapacity(children.size()));
-
-                for (final Object each : children) {
-                    if (each instanceof AbstractHtml) {
-                        final AbstractHtml child = (AbstractHtml) each;
-                        if (AbstractHtml.this.equals(child.parent)) {
-                            validChildren.add(child);
-                        }
-                    }
-                }
-
-                final AbstractHtml[] removedAbstractHtmls = validChildren
-                        .toArray(new AbstractHtml[validChildren.size()]);
-                removeFromSharedTagContent(removedAbstractHtmls);
-
-                final boolean removedAll = super.removeAll(validChildren);
-
-                if (removedAll) {
-                    final List<Lock> newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
-                            removedAbstractHtmls);
-
-                    try {
-                        final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
-
-                        if (listener != null) {
-                            listener.childrenRemoved(
-                                    new ChildTagRemoveListener.Event(AbstractHtml.this, null, removedAbstractHtmls));
-                        }
-
-                        sharedObject.setChildModified(removedAll, ACCESS_OBJECT);
-                    } finally {
-                        for (final Lock newSOLock : newSOLocks) {
-                            newSOLock.unlock();
-                        }
-                    }
-
-                }
-
-                return removedAll;
-            }
+//            @Override
+//            public boolean removeAll(final Collection<?> children) {
+//
+//                // NB: must be LinkedHashSet to keep order of removal
+//                final Set<AbstractHtml> validChildren = new LinkedHashSet<>(calcCapacity(children.size()));
+//
+//                for (final Object each : children) {
+//                    if (each instanceof AbstractHtml child) {
+//                        if (AbstractHtml.this.equals(child.parent)) {
+//                            validChildren.add(child);
+//                        }
+//                    }
+//                }
+//
+//                final AbstractHtml[] removedAbstractHtmls = validChildren
+//                        .toArray(new AbstractHtml[validChildren.size()]);
+//                removeFromSharedTagContent(removedAbstractHtmls);
+//
+//                final boolean removedAll = super.removeAll(validChildren);
+//
+//                if (removedAll) {
+//                    final List<Lock> newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
+//                            removedAbstractHtmls);
+//
+//                    try {
+//                        final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
+//
+//                        if (listener != null) {
+//                            listener.childrenRemoved(
+//                                    new ChildTagRemoveListener.Event(AbstractHtml.this, null, removedAbstractHtmls));
+//                        }
+//
+//                        sharedObject.setChildModified(removedAll, ACCESS_OBJECT);
+//                    } finally {
+//                        for (final Lock newSOLock : newSOLocks) {
+//                            newSOLock.unlock();
+//                        }
+//                    }
+//
+//                }
+//
+//                return removedAll;
+//            }
 
             @Override
             public boolean retainAll(final Collection<?> c) {
@@ -460,6 +468,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                     : TagUtil.lockAndGetWriteLocks(base, ACCESS_OBJECT);
         }
 
+        final Deque<AbstractHtml> parentLostListenerTags = buildParentLostListenerTags(children);
         try {
 
             htmlStartSB = new StringBuilder(
@@ -490,6 +499,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 lock.unlock();
             }
         }
+
+        pollAndInvokeParentLostListeners(parentLostListenerTags);
+        // Note: GainedListener should be invoked after ParentLostListener
+        pollAndInvokeParentGainedListeners(buildParentGainedListenerTags((AbstractHtml[]) null, children));
     }
 
     /**
@@ -763,9 +776,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         // should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
         List<Lock> newSOLocks = null;
+        final AbstractHtml[] removedAbstractHtmls;
         try {
 
-            final AbstractHtml[] removedAbstractHtmls = children.toArray(new AbstractHtml[0]);
+            removedAbstractHtmls = children.toArray(new AbstractHtml[0]);
             children.clear();
 
             removeFromSharedTagContent(removedAbstractHtmls);
@@ -792,6 +806,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             if (pushQueue != null) {
                 pushQueue.push();
             }
+        }
+        for (final AbstractHtml tag : removedAbstractHtmls) {
+            tag.invokeParentLostListeners();
         }
     }
 
@@ -824,6 +841,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             for (final Lock newSOLock : newSOLocks) {
                 newSOLock.unlock();
             }
+        }
+
+        for (final AbstractHtml tag : removedAbstractHtmls) {
+            tag.invokeParentLostListeners();
         }
 
         return null;
@@ -887,8 +908,12 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
         List<Lock> newSOLocks = null;
-        try {
 
+        final Deque<AbstractHtml> parentGainedListenerTags;
+        final Deque<AbstractHtml> parentLostListenerTags;
+
+        try {
+            validateChildren(innerHtmls);
             if (!ignoreApplyURIChange) {
                 for (final AbstractHtml each : innerHtmls) {
                     each.applyURIChange(sharedObject);
@@ -897,6 +922,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             final Set<AbstractHtml> children = this.children;
             final AbstractHtml[] removedTags = children.toArray(new AbstractHtml[children.size()]);
+
+            parentGainedListenerTags = buildParentGainedListenerTags(innerHtmls);
+            parentLostListenerTags = buildParentLostListenerTags(innerHtmls, removedTags);
+
             children.clear();
 
             removeFromSharedTagContent(removedTags);
@@ -977,6 +1006,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             }
         }
 
+        pollAndInvokeParentLostListeners(parentLostListenerTags);
+        // Note: GainedListener should be invoked after ParentLostListener
+        pollAndInvokeParentGainedListeners(parentGainedListenerTags);
     }
 
     /**
@@ -1054,6 +1086,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                 addChild(innerHtml, false);
             }
+        }
+
+        for (final AbstractHtml tag : removedAbstractHtmls) {
+            tag.invokeParentLostListeners();
         }
 
         return innerHtmlListenerData;
@@ -1349,6 +1385,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         boolean listenerInvoked = false;
         boolean removed = false;
+        AbstractHtml[] removedAbstractHtmls = null;
         final Lock lock = lockAndGetWriteLock();
         try {
             if (children.size() == 1) {
@@ -1366,8 +1403,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                         if (removed && removeContent) {
 
-                            final AbstractHtml[] removedAbstractHtmls = children
-                                    .toArray(new AbstractHtml[children.size()]);
+                            removedAbstractHtmls = children.toArray(new AbstractHtml[children.size()]);
                             children.clear();
 
                             final List<Lock> newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
@@ -1403,7 +1439,54 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             }
         }
 
+        if (removedAbstractHtmls != null) {
+            for (final AbstractHtml tag : removedAbstractHtmls) {
+                tag.invokeParentLostListeners();
+            }
+        }
+
         return removed;
+    }
+
+    private AbstractHtml[] removeAllChildren(final Collection<AbstractHtml> children,
+            final Collection<AbstractHtml> childrenToBeRemoved) {
+// NB: must be LinkedHashSet to keep order of removal
+        final Set<AbstractHtml> validChildren = new LinkedHashSet<>(calcCapacity(childrenToBeRemoved.size()));
+
+        for (final Object each : childrenToBeRemoved) {
+            if (each instanceof final AbstractHtml child) {
+                if (AbstractHtml.this.equals(child.parent)) {
+                    validChildren.add(child);
+                }
+            }
+        }
+
+        final AbstractHtml[] removedAbstractHtmls = validChildren.toArray(new AbstractHtml[validChildren.size()]);
+        removeFromSharedTagContent(removedAbstractHtmls);
+
+        final boolean removedAll = children.removeAll(validChildren);
+
+        if (removedAll) {
+            final List<Lock> newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
+
+            try {
+                final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
+
+                if (listener != null) {
+                    listener.childrenRemoved(
+                            new ChildTagRemoveListener.Event(AbstractHtml.this, null, removedAbstractHtmls));
+                }
+
+                sharedObject.setChildModified(removedAll, ACCESS_OBJECT);
+            } finally {
+                for (final Lock newSOLock : newSOLocks) {
+                    newSOLock.unlock();
+                }
+            }
+
+        }
+
+        return removedAbstractHtmls;
     }
 
     /**
@@ -1422,11 +1505,11 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
-        boolean result = false;
-
+        final boolean removed;
+        final AbstractHtml[] removedChildren;
         try {
-
-            result = this.children.removeAll(children);
+            removedChildren = removeAllChildren(this.children, children);
+            removed = removedChildren.length > 0;
         } finally {
 //            lock.unlock();
             for (final Lock lck : locks) {
@@ -1437,7 +1520,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         if (pushQueue != null) {
             pushQueue.push();
         }
-        return result;
+        for (final AbstractHtml tag : removedChildren) {
+            tag.invokeParentLostListeners();
+        }
+        return removed;
     }
 
     /**
@@ -1505,6 +1591,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             if (pushQueue != null) {
                 pushQueue.push();
             }
+        }
+        if (removed) {
+            child.invokeParentLostListeners();
         }
         return removed;
     }
@@ -1626,7 +1715,11 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     private boolean addChild(final AbstractHtml child, final boolean invokeListener) {
 
-        final boolean added = children.add(child);
+        boolean added = children.add(child);
+        if (!added && !invokeListener) {
+            children.remove(child);
+            added = children.add(child);
+        }
         if (added) {
 
             // if alreadyHasParent = true then it means the child is moving
@@ -1664,7 +1757,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 //                initParentAndSharedObject(child);
 //            }
 
-            if (alreadyHasParent) {
+            if (alreadyHasParent && !AbstractHtml.this.equals(child.parent)) {
                 child.parent.children.remove(child);
             }
             initParentAndSharedObject(child);
@@ -1702,9 +1795,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         if (!tagByWffId.isEmpty()) {
             final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-            // passed 2 instead of 1 because the load factor is 0.75f
-            final Set<AbstractHtml> initialSet = new HashSet<>(2);
-            initialSet.add(tag);
+            final Set<AbstractHtml> initialSet = Set.of(tag);
             childrenStack.push(initialSet);
 
             Set<AbstractHtml> children;
@@ -1811,9 +1902,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         final Set<AbstractHtml> applicableTags = new HashSet<>(2);
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-        // passed 2 instead of 1 because the load factor is 0.75f
-        final Set<AbstractHtml> initialSet = new HashSet<>(2);
-        initialSet.add(tag);
+        final Set<AbstractHtml> initialSet = Set.of(tag);
         childrenStack.push(initialSet);
 
         Set<AbstractHtml> children;
@@ -1854,9 +1943,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     private static void initSharedObject(final AbstractHtml child, final AbstractHtml5SharedObject sharedObject) {
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-        // passed 2 instead of 1 because the load factor is 0.75f
-        final Set<AbstractHtml> initialSet = new HashSet<>(2);
-        initialSet.add(child);
+        final Set<AbstractHtml> initialSet = Set.of(child);
         childrenStack.push(initialSet);
 
         Set<AbstractHtml> children;
@@ -1892,6 +1979,25 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     }
 
+    private static void resetProcessedInHierarchicalLoopFlag(final Set<AbstractHtml> initialSet) {
+        // for future reference
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+        childrenStack.push(initialSet);
+        Set<AbstractHtml> children;
+        while ((children = childrenStack.poll()) != null) {
+            for (final AbstractHtml eachChild : children) {
+                if (!eachChild.processedInHierarchicalLoop) {
+                    continue;
+                }
+                eachChild.processedInHierarchicalLoop = false;
+                final Set<AbstractHtml> subChildren = eachChild.children;
+                if (subChildren != null && !subChildren.isEmpty()) {
+                    childrenStack.addLast(subChildren);
+                }
+            }
+        }
+    }
+
     /**
      * @param sharedObject
      * @since 12.0.0-beta.1 should be called only after lock and while
@@ -1918,12 +2024,18 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         final URIEvent currentURIEvent = uriChangeTagSupplier != null ? uriChangeTagSupplier.supply(null) : null;
 
         if (currentURIEvent != null || tagByWffId != null) {
+            final Deque<AbstractHtml> processedTags = new ArrayDeque<>();
             final Deque<List<AbstractHtml>> childrenStack = new ArrayDeque<>();
             childrenStack.push(List.of(this));
             List<AbstractHtml> children;
             while ((children = childrenStack.poll()) != null) {
 
                 for (final AbstractHtml eachChild : children) {
+                    if (eachChild.processedInHierarchicalLoop) {
+                        continue;
+                    }
+                    eachChild.processedInHierarchicalLoop = true;
+                    processedTags.addLast(eachChild);
                     final AbstractHtml[] innerHtmls = eachChild.changeInnerHtmlsForURIChange(currentURIEvent,
                             updateClient);
                     if (innerHtmls != null && innerHtmls.length > 0) {
@@ -1944,6 +2056,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                         }
                     }
                 }
+            }
+            AbstractHtml processedTag;
+            while ((processedTag = processedTags.poll()) != null) {
+                processedTag.processedInHierarchicalLoop = false;
             }
 
         } else if (uriChangeContents != null && uriChangeTagSupplier != null) {
@@ -1966,11 +2082,16 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+        final Deque<AbstractHtml> parentGainedListenerTags;
+        final Deque<AbstractHtml> parentLostListenerTags;
 
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
         try {
 
+            validateChildren(children);
+            parentGainedListenerTags = buildParentGainedListenerTags(children);
+            parentLostListenerTags = buildParentLostListenerTags(children);
             for (final AbstractHtml each : children) {
                 each.applyURIChange(sharedObject);
             }
@@ -2013,6 +2134,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 pushQueue.push();
             }
         }
+
+        pollAndInvokeParentLostListeners(parentLostListenerTags);
+        pollAndInvokeParentGainedListeners(parentGainedListenerTags);
     }
 
     /**
@@ -2036,13 +2160,18 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
+        final Deque<AbstractHtml> parentGainedListenerTags;
+        final Deque<AbstractHtml> parentLostListenerTags;
+
 //        List<Lock> foreignLocks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, children);
 //        List<Lock> attrLocks = TagUtil.lockAndGetNestedAttributeWriteLocks(ACCESS_OBJECT, children);
 
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
         try {
-
+            validateChildren(children);
+            parentLostListenerTags = buildParentLostListenerTags(children);
+            parentGainedListenerTags = buildParentGainedListenerTags(children);
             for (final AbstractHtml each : children) {
                 each.applyURIChange(sharedObject);
             }
@@ -2099,6 +2228,45 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 pushQueue.push();
             }
         }
+        pollAndInvokeParentLostListeners(parentLostListenerTags);
+        // Note: GainedListener should be invoked after ParentLostListener
+        pollAndInvokeParentGainedListeners(parentGainedListenerTags);
+    }
+
+    private void validateChildren(final AbstractHtml... children) {
+        for (final AbstractHtml child : children) {
+            if (child == null) {
+                throw new InvalidValueException("The child tag object cannot be null.");
+            }
+        }
+        validateChildren(Set.of(children));
+    }
+
+    private void validateChildren(final Collection<AbstractHtml> children) {
+        for (final AbstractHtml child : children) {
+            if (child == null) {
+                throw new InvalidValueException("The child tag object cannot be null.");
+            }
+        }
+        validateChildren(new LinkedHashSet<>(children));
+    }
+
+    private void validateChildren(final Set<AbstractHtml> initialSet) {
+        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+        childrenStack.push(initialSet);
+        Set<AbstractHtml> children;
+        while ((children = childrenStack.poll()) != null) {
+            for (final AbstractHtml eachChild : children) {
+                if (eachChild.equals(this)) {
+                    throw new InvalidUsageException(
+                            "Parent tag cannot be used as child or sub-child tag in any of its children hierarchy.");
+                }
+                final Set<AbstractHtml> subChildren = eachChild.children;
+                if (subChildren != null && !subChildren.isEmpty()) {
+                    childrenStack.push(subChildren);
+                }
+            }
+        }
     }
 
     /**
@@ -2150,11 +2318,16 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
+        final Deque<AbstractHtml> parentGainedListenerTags;
+        final Deque<AbstractHtml> parentLostListenerTags;
+
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
 
         try {
-
+            validateChildren(children);
+            parentGainedListenerTags = buildParentGainedListenerTags(children);
+            parentLostListenerTags = buildParentLostListenerTags(children);
             for (final AbstractHtml each : children) {
                 each.applyURIChange(sharedObject);
             }
@@ -2218,6 +2391,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             }
         }
 
+        pollAndInvokeParentLostListeners(parentLostListenerTags);
+        // Note: GainedListener should be invoked after ParentLostListener
+        pollAndInvokeParentGainedListeners(parentGainedListenerTags);
     }
 
     /**
@@ -4708,9 +4884,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             final AbstractHtml clonedObject = deepClone(this);
 
             final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-            // passed 2 instead of 1 because the load factor is 0.75f
-            final Set<AbstractHtml> initialSet = new LinkedHashSet<>(2);
-            initialSet.add(clonedObject);
+            final Set<AbstractHtml> initialSet = Set.of(clonedObject);
             childrenStack.push(initialSet);
 
             Set<AbstractHtml> children;
@@ -4796,9 +4970,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         final Map<String, AbstractHtml> tagByWffId = sharedObject.getTagByWffId(ACCESS_OBJECT);
 
         final Deque<Set<AbstractHtml>> removedTagsStack = new ArrayDeque<>();
-        // passed 2 instead of 1 because the load factor is 0.75f
-        final Set<AbstractHtml> initialSet = new HashSet<>(1);
-        initialSet.add(abstractHtml);
+        final Set<AbstractHtml> initialSet = Set.of(abstractHtml);
         removedTagsStack.push(initialSet);
 
         Set<AbstractHtml> stackChildren;
@@ -4911,9 +5083,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             // ArrayDeque give better performance than Stack, LinkedList
             final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-            // passed 2 instead of 1 because the load factor is 0.75f
-            final Set<AbstractHtml> initialSet = new HashSet<>(2);
-            initialSet.add(this);
+            final Set<AbstractHtml> initialSet = Set.of(this);
             childrenStack.push(initialSet);
 
             Set<AbstractHtml> children;
@@ -5015,9 +5185,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             // ArrayDeque give better performance than Stack, LinkedList
             final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-            // passed 2 instead of 1 because the load factor is 0.75f
-            final Set<AbstractHtml> initialSet = new HashSet<>(2);
-            initialSet.add(this);
+            final Set<AbstractHtml> initialSet = Set.of(this);
             childrenStack.push(initialSet);
 
             Set<AbstractHtml> children;
@@ -5180,9 +5348,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             // ArrayDeque give better performance than Stack, LinkedList
             final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-            // passed 2 instead of 1 because the load factor is 0.75f
-            final Set<AbstractHtml> initialSet = new HashSet<>(2);
-            initialSet.add(this);
+            final Set<AbstractHtml> initialSet = Set.of(this);
             childrenStack.push(initialSet);
 
             Set<AbstractHtml> children;
@@ -5671,16 +5837,22 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
+        final Deque<AbstractHtml> parentGainedListenerTags;
+        final Deque<AbstractHtml> parentLostListenerTags;
+
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
 
         try {
+            validateChildren(abstractHtmls);
+            parent = this.parent;
+            parentGainedListenerTags = buildParentGainedListenerTags(parent, abstractHtmls);
+            parentLostListenerTags = buildParentLostListenerTags(parent, abstractHtmls);
 
             for (final AbstractHtml each : children) {
                 each.applyURIChange(sharedObject);
             }
 
-            parent = this.parent;
             if (parent == null) {
                 if (skipException) {
                     return false;
@@ -5706,6 +5878,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 pushQueue.push();
             }
         }
+
+        pollAndInvokeParentLostListeners(parentLostListenerTags);
+        // Note: GainedListener should be invoked after ParentLostListener
+        pollAndInvokeParentGainedListeners(parentGainedListenerTags);
 
         return results[0];
     }
@@ -5772,11 +5948,18 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         // sharedObject should be after locking
         final AbstractHtml5SharedObject thisSharedObject = sharedObject;
 
+        final Deque<AbstractHtml> parentGainedListenerTags;
+        final Deque<AbstractHtml> parentLostListenerTags;
+
         try {
+            validateChildren(tags);
+            parent = this.parent;
+            parentGainedListenerTags = buildParentGainedListenerTags(parent, tags);
+            parentLostListenerTags = buildParentLostListenerTags(parent, tags, this);
             for (final AbstractHtml each : tags) {
                 each.applyURIChange(thisSharedObject);
             }
-            parent = this.parent;
+
             if (parent == null) {
                 if (skipException) {
                     return false;
@@ -5801,6 +5984,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 pushQueue.push();
             }
         }
+
+        pollAndInvokeParentLostListeners(parentLostListenerTags);
+        // Note: GainedListener should be invoked after ParentLostListener
+        pollAndInvokeParentGainedListeners(parentGainedListenerTags);
 
         return results[0];
     }
@@ -6303,17 +6490,23 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         // sharedObject should be after locking
         final AbstractHtml5SharedObject sharedObject = this.sharedObject;
 
+        final Deque<AbstractHtml> parentGainedListenerTags;
+        final Deque<AbstractHtml> parentLostListenerTags;
+
 //        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
 //        lock.lock();
 //
 
         try {
+            validateChildren(abstractHtmls);
+            parent = this.parent;
+            parentGainedListenerTags = buildParentGainedListenerTags(parent, abstractHtmls);
+            parentLostListenerTags = buildParentLostListenerTags(parent, abstractHtmls);
 
             for (final AbstractHtml each : abstractHtmls) {
                 each.applyURIChange(sharedObject);
             }
 
-            parent = this.parent;
             if (parent == null) {
                 if (skipException) {
                     return false;
@@ -6338,6 +6531,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 pushQueue.push();
             }
         }
+
+        pollAndInvokeParentLostListeners(parentLostListenerTags);
+        // Note: GainedListener should be invoked after ParentLostListener
+        pollAndInvokeParentGainedListeners(parentGainedListenerTags);
 
         return results[0];
     }
@@ -7407,12 +7604,17 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             if (expectedSO.equals(sharedObject)) {
 
                 final URIChangeTagSupplier uriChangeTagSupplier = expectedSO.getURIChangeTagSupplier(ACCESS_OBJECT);
-
+                final Deque<AbstractHtml> processedTags = new ArrayDeque<>();
                 final Deque<List<AbstractHtml>> childrenStack = new ArrayDeque<>();
                 childrenStack.push(List.of(this));
                 List<AbstractHtml> children;
                 while ((children = childrenStack.poll()) != null) {
                     for (final AbstractHtml eachChild : children) {
+                        if (eachChild.processedInHierarchicalLoop) {
+                            continue;
+                        }
+                        eachChild.processedInHierarchicalLoop = true;
+                        processedTags.addLast(eachChild);
                         final AbstractHtml[] innerHtmls = eachChild.changeInnerHtmlsForURIChange(uriEvent, true);
                         if (innerHtmls != null && innerHtmls.length > 0) {
                             childrenStack.push(List.of(innerHtmls));
@@ -7423,6 +7625,11 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                             uriChangeTagSupplier.supply(eachChild);
                         }
                     }
+                }
+
+                AbstractHtml processedTag;
+                while ((processedTag = processedTags.poll()) != null) {
+                    processedTag.processedInHierarchicalLoop = false;
                 }
 
                 return true;
@@ -7586,5 +7793,361 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         }
         return null;
     }
+
+    // ParentLostListener starts
+
+    /**
+     * @param parentLostListener the ParentLostListener
+     * @return the internal slot id of the added ParentLostListener. This id is
+     *         unique only for this tag, i.e. other tag object can also return the
+     *         same id.
+     * @since 12.0.1
+     */
+    public final long addParentLostListener(final ParentLostListener parentLostListener) {
+        if (parentLostListener == null) {
+            throw new InvalidValueException("parentLostListener cannot be null");
+        }
+        final Lock lock = lockAndGetWriteLock();
+        try {
+            final ParentLostListenerVariables parentLostListenerVariablesLocal = parentLostListenerVariables;
+            final ParentLostListenerVariables parentLostListenerVariables;
+            if (parentLostListenerVariablesLocal == null) {
+                parentLostListenerVariables = new ParentLostListenerVariables();
+                this.parentLostListenerVariables = parentLostListenerVariables;
+            } else {
+                parentLostListenerVariables = parentLostListenerVariablesLocal;
+            }
+
+            final Map<Long, ParentLostListener> parentLostListenersLocal = parentLostListenerVariables.parentLostListeners;
+            final Map<Long, ParentLostListener> parentLostListeners;
+            if (parentLostListenersLocal == null) {
+                parentLostListeners = new ConcurrentHashMap<>();
+                parentLostListenerVariables.parentLostListeners = parentLostListeners;
+            } else {
+                parentLostListeners = parentLostListenersLocal;
+            }
+
+            final long parentLostListenerSlotId = parentLostListenerVariables.parentLostListenerSlotIdCounter + 1;
+            parentLostListeners.put(parentLostListenerSlotId, parentLostListener);
+            parentLostListenerVariables.parentLostListenerSlotIdCounter = parentLostListenerSlotId;
+            return parentLostListenerSlotId;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * @param parentLostListenerSlotId the internal slot id returned by
+     *                                 {@link #addParentLostListener(ParentLostListener)}
+     *                                 method.
+     * @return true if a listener slot is removed associated with this id otherwise
+     *         false.
+     * @since 12.0.1
+     */
+    public final boolean removeParentLostListener(final long parentLostListenerSlotId) {
+
+        final Lock lock = lockAndGetWriteLock();
+        try {
+
+            final ParentLostListenerVariables parentLostListenerVariablesLocal = parentLostListenerVariables;
+            if (parentLostListenerVariablesLocal == null) {
+                return false;
+            }
+
+            final Map<Long, ParentLostListener> parentLostListenersLocal = parentLostListenerVariablesLocal.parentLostListeners;
+            if (parentLostListenersLocal == null) {
+                return false;
+            }
+
+            final ParentLostListener parentLostListener = parentLostListenersLocal.remove(parentLostListenerSlotId);
+            if (parentLostListenersLocal.isEmpty()) {
+                parentLostListenerVariablesLocal.parentLostListeners = null;
+            }
+
+            return parentLostListener != null;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Removes all <em>ParentLostListener</em>s from this tag.
+     *
+     * @since 12.0.1
+     */
+    public final void removeAllParentLostListeners() {
+        final Lock lock = lockAndGetWriteLock();
+        try {
+            final ParentLostListenerVariables parentLostListenerVariablesLocal = parentLostListenerVariables;
+            if (parentLostListenerVariablesLocal != null) {
+                parentLostListenerVariablesLocal.parentLostListeners = null;
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private void invokeParentLostListeners() {
+        final ParentLostListenerVariables parentLostListenerVariablesLocal = parentLostListenerVariables;
+        if (parentLostListenerVariablesLocal != null) {
+            final Map<Long, ParentLostListener> parentLostListenersLocal = parentLostListenerVariablesLocal.parentLostListeners;
+            if (parentLostListenersLocal != null) {
+                final List<Map.Entry<Long, ParentLostListener>> sortedEntries = parentLostListenersLocal.entrySet()
+                        .stream().sorted(Map.Entry.comparingByKey()).toList();
+                for (final Map.Entry<Long, ParentLostListener> entry : sortedEntries) {
+                    entry.getValue().parentLost(new ParentLostListener.Event(this));
+                }
+            }
+        }
+
+    }
+
+    private void pollAndInvokeParentLostListeners(final Deque<AbstractHtml> parentLostListenerTags) {
+        if (parentLostListenerTags != null) {
+            AbstractHtml tag;
+            while ((tag = parentLostListenerTags.poll()) != null) {
+                tag.invokeParentLostListeners();
+            }
+        }
+    }
+
+    private Deque<AbstractHtml> buildParentLostListenerTags(final AbstractHtml parent,
+            final AbstractHtml[] tagsToBeChildren) {
+        return buildParentLostListenerTags(parent, tagsToBeChildren, null, null);
+    }
+
+    private Deque<AbstractHtml> buildParentLostListenerTags(final AbstractHtml[] tagsToBeChildren) {
+        return buildParentLostListenerTags(this, tagsToBeChildren, null, null);
+    }
+
+    private Deque<AbstractHtml> buildParentLostListenerTags(final AbstractHtml[] tagsToBeChildren,
+            final AbstractHtml[] removedTags) {
+        return buildParentLostListenerTags(this, tagsToBeChildren, removedTags, null);
+    }
+
+    private Deque<AbstractHtml> buildParentLostListenerTags(final AbstractHtml parent,
+            final AbstractHtml[] tagsToBeChildren, final AbstractHtml removedTag) {
+        return buildParentLostListenerTags(parent, tagsToBeChildren, null, removedTag);
+    }
+
+    private Deque<AbstractHtml> buildParentLostListenerTags(final Collection<AbstractHtml> tagsToBeChildren) {
+        final int totalLength = tagsToBeChildren != null ? tagsToBeChildren.size() : 0;
+        if (totalLength == 0) {
+            return null;
+        }
+        final Deque<AbstractHtml> parentLostListenerTags = new ArrayDeque<>(totalLength);
+        for (final AbstractHtml tag : tagsToBeChildren) {
+            if (tag.parent != null && tag.parent != parent) {
+                parentLostListenerTags.add(tag);
+            }
+        }
+        return parentLostListenerTags.isEmpty() ? null : parentLostListenerTags;
+    }
+
+    private Deque<AbstractHtml> buildParentLostListenerTags(final AbstractHtml parent,
+            final AbstractHtml[] tagsToBeChildren, final AbstractHtml[] removedTags, final AbstractHtml removedTag) {
+        final int totalLength = (tagsToBeChildren != null ? tagsToBeChildren.length : 0)
+                + (removedTags != null ? removedTags.length : 0) + (removedTag != null ? 1 : 0);
+        if (totalLength == 0) {
+            return null;
+        }
+        final Deque<AbstractHtml> parentLostListenerTags = new ArrayDeque<>(totalLength);
+        if (tagsToBeChildren != null) {
+            for (final AbstractHtml tag : tagsToBeChildren) {
+                if (tag.parent != null && tag.parent != parent) {
+                    parentLostListenerTags.add(tag);
+                }
+            }
+        }
+        if (removedTags != null) {
+            for (final AbstractHtml tag : removedTags) {
+                parentLostListenerTags.add(tag);
+            }
+        }
+        if (removedTag != null) {
+            parentLostListenerTags.add(removedTag);
+        }
+        return parentLostListenerTags.isEmpty() ? null : parentLostListenerTags;
+    }
+
+    // ParentLostListener ends
+
+    // ParentGainedListener starts
+
+    /**
+     * @param parentGainedListener the ParentGainedListener
+     * @return the internal slot id of the added ParentGainedListener. This id is
+     *         unique only for this tag, i.e. other tag object can also return the
+     *         same id.
+     * @since 12.0.1
+     */
+    public final long addParentGainedListener(final ParentGainedListener parentGainedListener) {
+        if (parentGainedListener == null) {
+            throw new InvalidValueException("parentGainedListener cannot be null");
+        }
+        final Lock lock = lockAndGetWriteLock();
+        try {
+
+            final ParentGainedListenerVariables parentGainedListenerVariablesLocal = parentGainedListenerVariables;
+
+            final ParentGainedListenerVariables parentGainedListenerVariables;
+            if (parentGainedListenerVariablesLocal == null) {
+                parentGainedListenerVariables = new ParentGainedListenerVariables();
+                this.parentGainedListenerVariables = parentGainedListenerVariables;
+            } else {
+                parentGainedListenerVariables = parentGainedListenerVariablesLocal;
+            }
+
+            final Map<Long, ParentGainedListener> parentGainedListenersLocal = parentGainedListenerVariables.parentGainedListeners;
+            final Map<Long, ParentGainedListener> parentGainedListeners;
+            if (parentGainedListenersLocal == null) {
+                parentGainedListeners = new ConcurrentHashMap<>();
+                parentGainedListenerVariables.parentGainedListeners = parentGainedListeners;
+            } else {
+                parentGainedListeners = parentGainedListenersLocal;
+            }
+
+            final long parentGainedListenerSlotId = parentGainedListenerVariables.parentGainedListenerSlotIdCounter + 1;
+            parentGainedListeners.put(parentGainedListenerSlotId, parentGainedListener);
+            parentGainedListenerVariables.parentGainedListenerSlotIdCounter = parentGainedListenerSlotId;
+            return parentGainedListenerSlotId;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * @param parentGainedListenerSlotId the internal slot id returned by
+     *                                   {@link #addParentGainedListener(ParentGainedListener)}
+     *                                   method.
+     * @return true if a listener slot is removed associated with this id otherwise
+     *         false.
+     * @since 12.0.1
+     */
+    public final boolean removeParentGainedListener(final long parentGainedListenerSlotId) {
+
+        final Lock lock = lockAndGetWriteLock();
+        try {
+
+            final ParentGainedListenerVariables parentGainedListenerVariablesLocal = parentGainedListenerVariables;
+
+            if (parentGainedListenerVariablesLocal == null) {
+                return false;
+            }
+
+            final Map<Long, ParentGainedListener> parentGainedListenersLocal = parentGainedListenerVariablesLocal.parentGainedListeners;
+
+            if (parentGainedListenersLocal == null) {
+                return false;
+            }
+
+            final ParentGainedListener parentGainedListener = parentGainedListenersLocal
+                    .remove(parentGainedListenerSlotId);
+            if (parentGainedListenersLocal.isEmpty()) {
+                parentGainedListenerVariablesLocal.parentGainedListeners = null;
+            }
+
+            return parentGainedListener != null;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Removes all <em>ParentGainedListener</em>s from this tag.
+     *
+     * @since 12.0.1
+     */
+    public final void removeAllParentGainedListeners() {
+        final Lock lock = lockAndGetWriteLock();
+        try {
+            final ParentGainedListenerVariables parentGainedListenerVariablesLocal = parentGainedListenerVariables;
+            if (parentGainedListenerVariablesLocal != null) {
+                parentGainedListenerVariablesLocal.parentGainedListeners = null;
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private void invokeParentGainedListeners() {
+        final ParentGainedListenerVariables parentGainedListenerVariablesLocal = parentGainedListenerVariables;
+        if (parentGainedListenerVariablesLocal != null) {
+            final Map<Long, ParentGainedListener> parentGainedListenersLocal = parentGainedListenerVariablesLocal.parentGainedListeners;
+            if (parentGainedListenersLocal != null) {
+                final List<Map.Entry<Long, ParentGainedListener>> sortedEntries = parentGainedListenersLocal.entrySet()
+                        .stream().sorted(Map.Entry.comparingByKey()).toList();
+                for (final Map.Entry<Long, ParentGainedListener> entry : sortedEntries) {
+                    entry.getValue().parentGained(new ParentGainedListener.Event(this));
+                }
+            }
+        }
+    }
+
+    private void pollAndInvokeParentGainedListeners(final Deque<AbstractHtml> parentGainedListenerTags) {
+        if (parentGainedListenerTags != null) {
+            AbstractHtml tag;
+            while ((tag = parentGainedListenerTags.poll()) != null) {
+                tag.invokeParentGainedListeners();
+            }
+        }
+    }
+
+    private Deque<AbstractHtml> buildParentGainedListenerTags(final AbstractHtml parent,
+            final AbstractHtml[] tagsToBeChildren) {
+        return buildParentGainedListenerTags(parent, tagsToBeChildren, null, null);
+    }
+
+    private Deque<AbstractHtml> buildParentGainedListenerTags(final AbstractHtml[] tagsToBeChildren) {
+        return buildParentGainedListenerTags(this, tagsToBeChildren, null, null);
+    }
+
+    private Deque<AbstractHtml> buildParentGainedListenerTags(final AbstractHtml[] tagsToBeChildren,
+            final AbstractHtml[] addedTags) {
+        return buildParentGainedListenerTags(this, tagsToBeChildren, addedTags, null);
+    }
+
+    private Deque<AbstractHtml> buildParentGainedListenerTags(final Collection<AbstractHtml> tagsToBeChildren) {
+        final int totalLength = tagsToBeChildren != null ? tagsToBeChildren.size() : 0;
+        if (totalLength == 0) {
+            return null;
+        }
+        final int size = tagsToBeChildren.size();
+        final Deque<AbstractHtml> parentGainedListenerTags = new ArrayDeque<>(size);
+        for (final AbstractHtml tag : tagsToBeChildren) {
+            if (tag.parent == null || tag.parent != this) {
+                parentGainedListenerTags.add(tag);
+            }
+        }
+        return parentGainedListenerTags.isEmpty() ? null : parentGainedListenerTags;
+    }
+
+    private Deque<AbstractHtml> buildParentGainedListenerTags(final AbstractHtml parent,
+            final AbstractHtml[] tagsToBeChildren, final AbstractHtml[] addedTags, final AbstractHtml addedTag) {
+        final int totalLength = (tagsToBeChildren != null ? tagsToBeChildren.length : 0)
+                + (addedTags != null ? addedTags.length : 0) + (addedTag != null ? 1 : 0);
+        if (totalLength == 0) {
+            return null;
+        }
+        final Deque<AbstractHtml> parentGainedListenerTags = new ArrayDeque<>(totalLength);
+        if (tagsToBeChildren != null) {
+            for (final AbstractHtml tag : tagsToBeChildren) {
+                if (tag.parent == null || tag.parent != this) {
+                    parentGainedListenerTags.add(tag);
+                }
+            }
+        }
+        if (addedTags != null) {
+            for (final AbstractHtml tag : addedTags) {
+                parentGainedListenerTags.add(tag);
+            }
+        }
+        if (addedTag != null) {
+            parentGainedListenerTags.add(addedTag);
+        }
+        return parentGainedListenerTags.isEmpty() ? null : parentGainedListenerTags;
+    }
+
+    // ParentGainedListener ends
 
 }
