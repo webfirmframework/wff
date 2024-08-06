@@ -144,7 +144,7 @@ public final class ChildTagAppendListenerImpl implements ChildTagAppendListener 
 
         // add data-wff-id to all tags including nested tags
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-        childrenStack.push(new LinkedHashSet<AbstractHtml>(appendedChildTags));
+        childrenStack.push(new LinkedHashSet<>(appendedChildTags));
 
         Set<AbstractHtml> children;
         while ((children = childrenStack.poll()) != null) {
