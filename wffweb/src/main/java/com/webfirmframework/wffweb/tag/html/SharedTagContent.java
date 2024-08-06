@@ -1517,7 +1517,7 @@ public class SharedTagContent<T> {
                     // the condition isParentNullifiedOnce true means the parent
                     // of this tag has already been changed at least once
                     if (parentTag == null || prevNoTagAsBase.isParentNullifiedOnce()
-                            || prevNoTagAsBase.sharedTagContent == null) {
+                            || prevNoTagAsBase.sharedTagContent != SharedTagContent.this) {
                         prevNoTagAsBase.setCacheSTCFormatter(null);
                         prevNoTagAsBase.setSharedTagContent(null);
                         prevNoTagAsBase.setSharedTagContentSubscribed(null);
@@ -2204,7 +2204,7 @@ public class SharedTagContent<T> {
                 // the condition isParentNullifiedOnce true means the parent of
                 // this tag has already been changed at least once
                 if (parentTag == null || prevNoTagAsBase.isParentNullifiedOnce()
-                        || prevNoTagAsBase.sharedTagContent == null) {
+                        || prevNoTagAsBase.sharedTagContent != SharedTagContent.this) {
                     prevNoTagAsBase.setCacheSTCFormatter(null);
                     prevNoTagAsBase.setSharedTagContent(null);
                     prevNoTagAsBase.setSharedTagContentSubscribed(null);

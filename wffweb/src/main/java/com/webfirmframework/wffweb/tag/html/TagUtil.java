@@ -45,33 +45,27 @@ import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 public final class TagUtil {
 
     /**
-     *
      * @since 3.0.15
-     *
+     * @since 12.0.1 changed to record type
      */
-    private static final class TagContractRecord {
-
-        private final AbstractHtml tag;
-
-        private final AbstractHtml5SharedObject sharedObject;
-
-        private TagContractRecord(final AbstractHtml tag, final AbstractHtml5SharedObject sharedObject) {
-            super();
-            this.tag = tag;
-            this.sharedObject = sharedObject;
-        }
+    record TagContractRecord(AbstractHtml tag, AbstractHtml5SharedObject sharedObject) {
 
         /**
+         * @return objectId
          * @since 3.0.15 returns long value type
          * @since 3.0.19 returns ObjectId value type
-         * @return objectId
          */
-        private ObjectId objectId() {
+        ObjectId objectId() {
             return sharedObject.objectId();
         }
 
         private boolean isValid() {
             return sharedObject.equals(tag.getSharedObject());
+        }
+
+        @Override
+        public String toString() {
+            return sharedObject.objectId().id() + ":" + tag.internalId();
         }
     }
 

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1034,57 +1035,64 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         final AbstractHtml[] removedAbstractHtmls = children.toArray(new AbstractHtml[children.size()]);
         children.clear();
 
-        initNewSharedObjectInAllNestedTagsAndSetSuperParentNullLockless(removedAbstractHtmls);
+        final List<Lock> newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
 
-        final InnerHtmlAddListener listener = sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT);
+        try {
+            final InnerHtmlAddListener listener = sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT);
 
-        if (listener != null && updateClient) {
+            if (listener != null && updateClient) {
 
-            final InnerHtmlAddListener.Event[] events = new InnerHtmlAddListener.Event[innerHtmls.length];
+                final InnerHtmlAddListener.Event[] events = new InnerHtmlAddListener.Event[innerHtmls.length];
 
-            int index = 0;
+                int index = 0;
 
-            for (final AbstractHtml innerHtml : innerHtmls) {
+                for (final AbstractHtml innerHtml : innerHtmls) {
 
-                final boolean alreadyHasParent = innerHtml.parent != null;
-                AbstractHtml previousParentTag = null;
+                    final boolean alreadyHasParent = innerHtml.parent != null;
+                    AbstractHtml previousParentTag = null;
 
-                if (alreadyHasParent) {
-                    if (innerHtml.parent.sharedObject == sharedObject) {
-                        previousParentTag = innerHtml.parent;
+                    if (alreadyHasParent) {
+                        if (innerHtml.parent.sharedObject == sharedObject) {
+                            previousParentTag = innerHtml.parent;
+                        } else {
+                            if (innerHtml.parent.sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT) == null) {
+                                removeFromTagByWffIdMap(innerHtml,
+                                        innerHtml.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
+                            } // else {TODO also write the code to push
+                              // changes to the other BrowserPage}
+
+                        }
                     } else {
+                        removeDataWffIdFromHierarchy(sharedObject, innerHtml);
+                    }
+
+                    addChild(innerHtml, false);
+
+                    events[index] = new InnerHtmlAddListener.Event(this, innerHtml, previousParentTag);
+                    index++;
+
+                }
+
+                innerHtmlListenerData = new InnerHtmlListenerData(sharedObject, listener, events);
+
+            } else {
+                for (final AbstractHtml innerHtml : innerHtmls) {
+                    if (innerHtml.parent != null) {
                         if (innerHtml.parent.sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT) == null) {
                             removeFromTagByWffIdMap(innerHtml,
                                     innerHtml.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                         } // else {TODO also write the code to push
                           // changes to the other BrowserPage}
-
+                    } else {
+                        removeDataWffIdFromHierarchy(sharedObject, innerHtml);
                     }
-                } else {
-                    removeDataWffIdFromHierarchy(sharedObject, innerHtml);
+
+                    addChild(innerHtml, false);
                 }
-
-                addChild(innerHtml, false);
-
-                events[index] = new InnerHtmlAddListener.Event(this, innerHtml, previousParentTag);
-                index++;
-
             }
-
-            innerHtmlListenerData = new InnerHtmlListenerData(sharedObject, listener, events);
-
-        } else {
-            for (final AbstractHtml innerHtml : innerHtmls) {
-                if (innerHtml.parent != null) {
-                    if (innerHtml.parent.sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT) == null) {
-                        removeFromTagByWffIdMap(innerHtml, innerHtml.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                    } // else {TODO also write the code to push
-                      // changes to the other BrowserPage}
-                } else {
-                    removeDataWffIdFromHierarchy(sharedObject, innerHtml);
-                }
-
-                addChild(innerHtml, false);
+        } finally {
+            for (final Lock newSOLock : newSOLocks) {
+                newSOLock.unlock();
             }
         }
 
@@ -4908,11 +4916,14 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
+     * Just kept for future reference
+     *
      * @param removedAbstractHtmls
      * @return the locks after locking
      */
-    private List<Lock> initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
+    private List<Lock> initNewSharedObjectInAllNestedTagsAndSetSuperParentNullOld(
             final AbstractHtml[] removedAbstractHtmls) {
+        // TODO remove this unused method later
         final List<Lock> locks = new ArrayList<>(removedAbstractHtmls.length);
         for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
             final Lock lock = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, true);
@@ -4922,16 +4933,43 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
+     * @param abstractHtmls the removed tags from the current object
+     * @return locks after locking
+     * @since 12.0.1 its old implementation is in
+     *        initNewSharedObjectInAllNestedTagsAndSetSuperParentNullOld.
+     */
+    private List<Lock> initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(final AbstractHtml[] abstractHtmls) {
+        if (abstractHtmls == null || abstractHtmls.length == 0) {
+            return List.of();
+        }
+        final List<TagUtil.TagContractRecord> tagContractRecords = new ArrayList<>(abstractHtmls.length);
+        for (final AbstractHtml abstractHtml : abstractHtmls) {
+            tagContractRecords
+                    .add(new TagUtil.TagContractRecord(abstractHtml, new AbstractHtml5SharedObject(abstractHtml)));
+        }
+        tagContractRecords.sort(Comparator.comparing(TagUtil.TagContractRecord::objectId));
+        final List<Lock> locks = new ArrayList<>(abstractHtmls.length);
+        for (final TagUtil.TagContractRecord tagContractRecord : tagContractRecords) {
+            final WriteLock writeLock = tagContractRecord.sharedObject().getLock(ACCESS_OBJECT).writeLock();
+            writeLock.lock();
+            locks.add(writeLock);
+            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(tagContractRecord.tag(),
+                    tagContractRecord.sharedObject());
+        }
+        Collections.reverse(locks);
+        return locks;
+    }
+
+    /**
      * @param removedAbstractHtmls
      * @return the locks after locking
      */
     private void initNewSharedObjectInAllNestedTagsAndSetSuperParentNullLockless(
             final AbstractHtml[] removedAbstractHtmls) {
-
+        // TODO remove this unused method later
         for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
             initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, false);
         }
-
     }
 
     /**
@@ -4950,6 +4988,14 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         } else {
             lock = null;
         }
+
+        initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, newSharedObject);
+
+        return lock;
+    }
+
+    private void initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(final AbstractHtml abstractHtml,
+            final AbstractHtml5SharedObject newSharedObject) {
 
         if (TagUtil.isTagless(abstractHtml) && abstractHtml instanceof NoTag) {
             abstractHtml.sharedTagContent = null;
@@ -5002,8 +5048,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             }
 
         }
-
-        return lock;
     }
 
     /**
