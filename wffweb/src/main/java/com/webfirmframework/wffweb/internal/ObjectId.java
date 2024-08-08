@@ -40,7 +40,18 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
 
     private final long leastSigBits;
 
-    private volatile int hash;
+    /**
+     * Only for testing
+     *
+     * @param order
+     * @param mostSigBits
+     * @param leastSigBits
+     */
+    ObjectId(final long order, final long mostSigBits, final long leastSigBits) {
+        this.order = order;
+        this.mostSigBits = mostSigBits;
+        this.leastSigBits = leastSigBits;
+    }
 
     public ObjectId(final long mostSigBits, final long leastSigBits) {
         this.mostSigBits = mostSigBits;
@@ -67,13 +78,7 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
 
     @Override
     public int hashCode() {
-        final int hash = this.hash;
-        if (hash == 0) {
-            final int newHash = Objects.hash(order, mostSigBits, leastSigBits);
-            this.hash = newHash;
-            return newHash;
-        }
-        return hash;
+        return Objects.hash(order, mostSigBits, leastSigBits);
     }
 
     @Override
