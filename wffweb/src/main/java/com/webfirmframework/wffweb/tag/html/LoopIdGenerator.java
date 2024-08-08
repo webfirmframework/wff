@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.webfirmframework.wffweb.tag.html.model;
+package com.webfirmframework.wffweb.tag.html;
 
 import java.util.UUID;
 
 import com.webfirmframework.wffweb.internal.ObjectId;
 
 /**
- * Note: only for internal use. It should be specifically for
- * AbstractHtml5SharedObject class id generation.
+ * Note: only for internal use. It should be specifically for loop id.
  *
  * @author WFF
- * @since 3.0.19
+ * @since 12.0.1
  *
  */
-final class SharedObjectIdGenerator {
+final class LoopIdGenerator {
 
     static ObjectId nextId() {
         final UUID uuid = UUID.randomUUID();

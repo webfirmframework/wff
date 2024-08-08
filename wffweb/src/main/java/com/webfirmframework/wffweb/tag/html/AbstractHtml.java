@@ -56,6 +56,7 @@ import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.clone.CloneUtil;
 import com.webfirmframework.wffweb.common.URIEvent;
 import com.webfirmframework.wffweb.internal.InternalId;
+import com.webfirmframework.wffweb.internal.ObjectId;
 import com.webfirmframework.wffweb.internal.constants.CommonConstants;
 import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
 import com.webfirmframework.wffweb.internal.security.object.AbstractHtmlSecurity;
@@ -197,7 +198,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     private long hierarchyOrderCounter;
 
-    private volatile boolean processedInHierarchicalLoop;
+    private volatile ObjectId hierarchicalLoopId;
 
     private volatile List<URIChangeContent> uriChangeContents;
 
@@ -1987,25 +1988,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     }
 
-    private static void resetProcessedInHierarchicalLoopFlag(final Set<AbstractHtml> initialSet) {
-        // for future reference
-        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-        childrenStack.push(initialSet);
-        Set<AbstractHtml> children;
-        while ((children = childrenStack.poll()) != null) {
-            for (final AbstractHtml eachChild : children) {
-                if (!eachChild.processedInHierarchicalLoop) {
-                    continue;
-                }
-                eachChild.processedInHierarchicalLoop = false;
-                final Set<AbstractHtml> subChildren = eachChild.children;
-                if (subChildren != null && !subChildren.isEmpty()) {
-                    childrenStack.addLast(subChildren);
-                }
-            }
-        }
-    }
-
     /**
      * @param sharedObject
      * @since 12.0.0-beta.1 should be called only after lock and while
@@ -2032,18 +2014,17 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         final URIEvent currentURIEvent = uriChangeTagSupplier != null ? uriChangeTagSupplier.supply(null) : null;
 
         if (currentURIEvent != null || tagByWffId != null) {
-            final Deque<AbstractHtml> processedTags = new ArrayDeque<>();
+            final ObjectId hierarchicalLoopId = LoopIdGenerator.nextId();
             final Deque<List<AbstractHtml>> childrenStack = new ArrayDeque<>();
             childrenStack.push(List.of(this));
             List<AbstractHtml> children;
             while ((children = childrenStack.poll()) != null) {
 
                 for (final AbstractHtml eachChild : children) {
-                    if (eachChild.processedInHierarchicalLoop) {
+                    if (hierarchicalLoopId.equals(eachChild.hierarchicalLoopId)) {
                         continue;
                     }
-                    eachChild.processedInHierarchicalLoop = true;
-                    processedTags.addLast(eachChild);
+                    eachChild.hierarchicalLoopId = hierarchicalLoopId;
                     final AbstractHtml[] innerHtmls = eachChild.changeInnerHtmlsForURIChange(currentURIEvent,
                             updateClient);
                     if (innerHtmls != null && innerHtmls.length > 0) {
@@ -2064,10 +2045,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                         }
                     }
                 }
-            }
-            AbstractHtml processedTag;
-            while ((processedTag = processedTags.poll()) != null) {
-                processedTag.processedInHierarchicalLoop = false;
             }
 
         } else if (uriChangeContents != null && uriChangeTagSupplier != null) {
@@ -5035,6 +5012,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 }
 
                 stackChild.sharedObject = newSharedObject;
+                stackChild.hierarchicalLoopId = null;
 
                 if (stackChild.uriChangeContents != null && !stackChild.sharedObject.isWhenURIUsed()) {
                     stackChild.sharedObject.whenURIUsed(ACCESS_OBJECT);
@@ -7648,17 +7626,16 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             if (expectedSO.equals(sharedObject)) {
 
                 final URIChangeTagSupplier uriChangeTagSupplier = expectedSO.getURIChangeTagSupplier(ACCESS_OBJECT);
-                final Deque<AbstractHtml> processedTags = new ArrayDeque<>();
+                final ObjectId hierarchicalLoopId = LoopIdGenerator.nextId();
                 final Deque<List<AbstractHtml>> childrenStack = new ArrayDeque<>();
                 childrenStack.push(List.of(this));
                 List<AbstractHtml> children;
                 while ((children = childrenStack.poll()) != null) {
                     for (final AbstractHtml eachChild : children) {
-                        if (eachChild.processedInHierarchicalLoop) {
+                        if (hierarchicalLoopId.equals(eachChild.hierarchicalLoopId)) {
                             continue;
                         }
-                        eachChild.processedInHierarchicalLoop = true;
-                        processedTags.addLast(eachChild);
+                        eachChild.hierarchicalLoopId = hierarchicalLoopId;
                         final AbstractHtml[] innerHtmls = eachChild.changeInnerHtmlsForURIChange(uriEvent, true);
                         if (innerHtmls != null && innerHtmls.length > 0) {
                             childrenStack.push(List.of(innerHtmls));
@@ -7669,11 +7646,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                             uriChangeTagSupplier.supply(eachChild);
                         }
                     }
-                }
-
-                AbstractHtml processedTag;
-                while ((processedTag = processedTags.poll()) != null) {
-                    processedTag.processedInHierarchicalLoop = false;
                 }
 
                 return true;
