@@ -242,6 +242,28 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             WhenURIMethodType methodType, WhenURIProperties whenURIProperties) implements Serializable {
     }
 
+    /**
+     * @since 12.0.1
+     */
+    private record TagContractRecord(AbstractHtml tag, AbstractHtml5SharedObject sharedObject) {
+
+        /**
+         * @return objectId
+         */
+        private ObjectId objectId() {
+            return sharedObject.objectId();
+        }
+
+        private boolean isValid() {
+            return sharedObject.equals(tag.getSharedObject());
+        }
+
+        @Override
+        public String toString() {
+            return sharedObject.objectId().id() + ":" + tag.internalId();
+        }
+    }
+
     static {
         ACCESS_OBJECT = new AbstractHtmlSecurity(new Security());
 
@@ -4919,19 +4941,18 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         if (abstractHtmls == null || abstractHtmls.length == 0) {
             return List.of();
         }
-        final List<TagUtil.TagContractRecord> tagContractRecords = new ArrayList<>(abstractHtmls.length);
+        final List<TagContractRecord> tagContractRecords = new ArrayList<>(abstractHtmls.length);
         for (final AbstractHtml abstractHtml : abstractHtmls) {
-            tagContractRecords
-                    .add(new TagUtil.TagContractRecord(abstractHtml, new AbstractHtml5SharedObject(abstractHtml)));
+            tagContractRecords.add(new TagContractRecord(abstractHtml, new AbstractHtml5SharedObject(abstractHtml)));
         }
-        tagContractRecords.sort(Comparator.comparing(TagUtil.TagContractRecord::objectId));
+        tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
         final List<Lock> locks = new ArrayList<>(abstractHtmls.length);
-        for (final TagUtil.TagContractRecord tagContractRecord : tagContractRecords) {
-            final WriteLock writeLock = tagContractRecord.sharedObject().getLock(ACCESS_OBJECT).writeLock();
+        for (final TagContractRecord tagContractRecord : tagContractRecords) {
+            final WriteLock writeLock = tagContractRecord.sharedObject.getLock(ACCESS_OBJECT).writeLock();
             writeLock.lock();
             locks.add(writeLock);
-            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(tagContractRecord.tag(),
-                    tagContractRecord.sharedObject());
+            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(tagContractRecord.tag,
+                    tagContractRecord.sharedObject);
         }
         Collections.reverse(locks);
         return locks;

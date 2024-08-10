@@ -125,26 +125,15 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     *
      * @since 3.0.15
-     *
+     * @since 12.0.1 record class type
      */
-    private static final class TagContractRecord {
-
-        private final AbstractHtml tag;
-
-        private final AbstractHtml5SharedObject sharedObject;
-
-        private TagContractRecord(final AbstractHtml tag, final AbstractHtml5SharedObject sharedObject) {
-            super();
-            this.tag = tag;
-            this.sharedObject = sharedObject;
-        }
+    private record TagContractRecord(AbstractHtml tag, AbstractHtml5SharedObject sharedObject) {
 
         /**
+         * @return objectId
          * @since 3.0.15 returns long value type
          * @since 3.0.19 returns ObjectId value type
-         * @return objectId
          */
         private ObjectId objectId() {
             return sharedObject.objectId();
@@ -152,6 +141,11 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
         private boolean isValid() {
             return sharedObject.equals(tag.getSharedObject());
+        }
+
+        @Override
+        public String toString() {
+            return sharedObject.objectId().id() + ":" + tag.internalId();
         }
     }
 

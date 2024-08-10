@@ -48,14 +48,14 @@ public final class TagUtil {
      * @since 3.0.15
      * @since 12.0.1 changed to record type
      */
-    record TagContractRecord(AbstractHtml tag, AbstractHtml5SharedObject sharedObject) {
+    private record TagContractRecord(AbstractHtml tag, AbstractHtml5SharedObject sharedObject) {
 
         /**
          * @return objectId
          * @since 3.0.15 returns long value type
          * @since 3.0.19 returns ObjectId value type
          */
-        ObjectId objectId() {
+        private ObjectId objectId() {
             return sharedObject.objectId();
         }
 
@@ -304,7 +304,7 @@ public final class TagUtil {
      */
     public static void applyURIChangeAndAddDataWffIdAttribute(final AbstractHtml tag,
             final AbstractHtml5SharedObject sharedObject, final Map<String, AbstractHtml> tagByWffId,
-            final SecurityObject accessObject) {
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
         if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
