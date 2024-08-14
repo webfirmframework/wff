@@ -333,20 +333,48 @@ public enum BrowserPageContext {
             if (sessionWrapper != null) {
                 final Map<String, BrowserPage> browserPages = sessionWrapper.browserPages;
                 final BrowserPage browserPage = browserPages.get(wffInstanceId);
-                final long lastAccessedTime = System.currentTimeMillis();
+                final long currentTimeMillis = System.currentTimeMillis();
+                final BrowserPage validBrowserPage;
                 if (browserPage != null) {
-                    instanceIdBPForWS.put(browserPage.getInstanceId(), browserPage);
-                    browserPage.setLastClientAccessedTime(lastAccessedTime);
+                    if (isInvalidBrowserPage(browserPage, currentTimeMillis)) {
+                        validBrowserPage = null;
+                    } else {
+                        validBrowserPage = browserPage;
+                        instanceIdBPForWS.put(browserPage.getInstanceId(), browserPage);
+                        browserPage.setLastClientAccessedTime(currentTimeMillis);
+                    }
+                } else {
+                    validBrowserPage = null;
                 }
                 final HeartbeatManager hbManager = sessionWrapper.heartbeatManagerRef.get();
                 if (hbManager != null) {
-                    hbManager.setLastAccessedTime(lastAccessedTime);
+                    hbManager.setLastAccessedTime(currentTimeMillis);
                 }
-                return new WebSocketOpenedRecord(browserPage, sessionWrapper.session, hbManager);
+                return new WebSocketOpenedRecord(validBrowserPage, sessionWrapper.session, hbManager);
             }
         }
 
         return null;
+    }
+
+    /**
+     * Note: use only for invalid checking
+     *
+     * @param browserPage
+     * @param currentTimeMillis
+     * @return true if invalid otherwise false
+     * @since 12.0.1
+     */
+    private boolean isInvalidBrowserPage(final BrowserPage browserPage, final long currentTimeMillis) {
+        if (browserPage.onInitialClientPingInvoked) {
+            final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
+            if (autoCleanTaskExecutor != null
+                    && (currentTimeMillis - browserPage.getLastClientAccessedTime()) >= autoCleanTaskExecutor
+                            .minInterval()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -379,19 +407,27 @@ public enum BrowserPageContext {
             if (sessionWrapper != null) {
                 final Map<String, BrowserPage> browserPages = sessionWrapper.browserPages;
                 final BrowserPage browserPage = browserPages.get(wffInstanceId);
+                final long currentTimeMillis = System.currentTimeMillis();
+                final BrowserPage validBrowserPage;
                 if (browserPage != null) {
-                    instanceIdBPForWS.put(browserPage.getInstanceId(), browserPage);
-                    final long lastAccessedTime = System.currentTimeMillis();
-                    browserPage.setLastClientAccessedTime(lastAccessedTime);
-                    final HeartbeatManager hbManager = sessionWrapper.heartbeatManagerRef.updateAndGet(hbm -> {
-                        if (hbm == null) {
-                            return computeHeartbeatManager.apply(httpSessionId);
-                        }
-                        return hbm;
-                    });
-                    hbManager.setLastAccessedTime(lastAccessedTime);
-                    return new WebSocketOpenedRecord(browserPage, sessionWrapper.session, hbManager);
+                    if (isInvalidBrowserPage(browserPage, currentTimeMillis)) {
+                        validBrowserPage = null;
+                    } else {
+                        validBrowserPage = browserPage;
+                        instanceIdBPForWS.put(browserPage.getInstanceId(), browserPage);
+                        browserPage.setLastClientAccessedTime(currentTimeMillis);
+                    }
+                } else {
+                    validBrowserPage = null;
                 }
+                final HeartbeatManager hbManager = sessionWrapper.heartbeatManagerRef.updateAndGet(hbm -> {
+                    if (hbm == null) {
+                        return computeHeartbeatManager.apply(httpSessionId);
+                    }
+                    return hbm;
+                });
+                hbManager.setLastAccessedTime(currentTimeMillis);
+                return new WebSocketOpenedRecord(validBrowserPage, sessionWrapper.session, hbManager);
             }
         }
 

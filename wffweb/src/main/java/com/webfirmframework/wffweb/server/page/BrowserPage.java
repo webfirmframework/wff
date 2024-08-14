@@ -221,7 +221,7 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile Executor executor;
 
-    private volatile boolean onInitialClientPingInvoked;
+    volatile boolean onInitialClientPingInvoked;
 
     private volatile long lastClientAccessedTime = System.currentTimeMillis();
 
