@@ -59,6 +59,7 @@ window.wffGlobal = new function() {
 	this.REMOVE_PREV_BP_ON_TABCLOSE = "${REMOVE_PREV_BP_ON_TABCLOSE}";
 	//reconnect time interval for WebSocket
 	this.WS_RECON = "${WS_RECON}";
+	this.WS_HRTBT = "${WS_HRTBT}";	
 	this.LOSSLESS_COMM = "${LOSSLESS_COMM}";
 	this.onPayloadLoss = function() {if (!this.onPLI) { this.onPLI = true; "${ON_PAYLOAD_LOSS}"}};
 

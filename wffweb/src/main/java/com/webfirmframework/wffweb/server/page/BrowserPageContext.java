@@ -82,7 +82,7 @@ public enum BrowserPageContext {
 
     private transient ScheduledFuture<?> autoCleanScheduled;
 
-    private transient volatile MinIntervalExecutor autoCleanTaskExecutor;
+    transient volatile MinIntervalExecutor autoCleanTaskExecutor;
 
     private transient final ReferenceQueue<BrowserPage> browserPageRQ;
 

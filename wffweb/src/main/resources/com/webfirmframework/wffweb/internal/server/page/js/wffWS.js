@@ -11,6 +11,7 @@ var wffWS = new function() {
 	var webSocket = null;
 	var inDataQ = [];
 	var sendQData = null;
+	var lastWSPingTime = new Date().getTime();
 
 	this.openSocket = function(wsUrl) {
 
@@ -30,11 +31,13 @@ var wffWS = new function() {
 				var inData = [];
 				var ndx = 0;
 				var xp = false;
-				for (ndx = 0; ndx < inDataQ.length; ndx++) { 
-					var each = inDataQ[ndx]; 
+				var dataSent = false;
+				for (ndx = 0; ndx < inDataQ.length; ndx++) {
+					var each = inDataQ[ndx];
 					if (!xp) {
 						try {
 							webSocket.send(new Int8Array(each).buffer);
+							dataSent = true;
 						} catch(e) {
 							xp = true;
 							inData.push(each);
@@ -44,6 +47,9 @@ var wffWS = new function() {
 					}					
 				}
 				inDataQ = inData;
+				if (dataSent) {
+					lastWSPingTime = new Date().getTime();
+				}
 			}			
 		};
 		
@@ -104,6 +110,15 @@ var wffWS = new function() {
 				if (binary.length < 4) {
 					//invalid wff bm message so not to process
 					return;
+				}
+				
+				if (wffGlobal.WS_HRTBT > 0 && (new Date().getTime() - lastWSPingTime) >= wffGlobal.WS_HRTBT) {
+					try{
+						webSocket.send(new Int8Array([]).buffer);
+						lastWSPingTime = new Date().getTime();						
+					} catch(e){
+						console.error("Failed sending ping data.", e);
+					}					
 				}
 
 				// for (var i = 0; i < binary.length; i++) {
@@ -200,7 +215,8 @@ var wffWS = new function() {
 				sendQData();
 			}
 		} else {
-			webSocket.send(new Int8Array(bytes).buffer);	
+			webSocket.send(new Int8Array(bytes).buffer);
+			lastWSPingTime = new Date().getTime();
 		}
 	};
 

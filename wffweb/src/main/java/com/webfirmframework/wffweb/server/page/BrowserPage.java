@@ -180,7 +180,7 @@ public abstract class BrowserPage implements Serializable {
 
     private boolean removePrevFromBrowserContextOnTabInit = true;
 
-    private int wsHeartbeatInterval = -1;
+    int wsHeartbeatInterval = -1;
 
     private int wsReconnectInterval = -1;
 
@@ -223,7 +223,7 @@ public abstract class BrowserPage implements Serializable {
 
     volatile boolean onInitialClientPingInvoked;
 
-    private volatile long lastClientAccessedTime = System.currentTimeMillis();
+    volatile long lastClientAccessedTime = System.currentTimeMillis();
 
     private final Set<Reference<AbstractHtml>> tagsForURIChange = ConcurrentHashMap.newKeySet(1);
 
