@@ -140,13 +140,10 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
         }
 
         private boolean isValid(final AbstractHtml5SharedObject latestSharedObject) {
-            if (sharedObject.equals(tag.getSharedObject())) {
+            if (sharedObject.equals(tag.getSharedObject()) || (latestSharedObject == null)) {
                 return true;
             }
-            if (latestSharedObject != null) {
-                return tag.getSharedObject().objectId().compareTo(latestSharedObject.objectId()) >= 0;
-            }
-            return tag.getSharedObject().objectId().compareTo(sharedObject.objectId()) >= 0;
+            return tag.getSharedObject().objectId().compareTo(latestSharedObject.objectId()) >= 0;
         }
 
         @Override
