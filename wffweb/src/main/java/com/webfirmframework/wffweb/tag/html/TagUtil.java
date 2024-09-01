@@ -59,8 +59,14 @@ public final class TagUtil {
             return sharedObject.objectId();
         }
 
-        private boolean isValid() {
-            return sharedObject.equals(tag.getSharedObject());
+        private boolean isValid(final AbstractHtml5SharedObject latestSharedObject) {
+            if (sharedObject.equals(tag.getSharedObject())) {
+                return true;
+            }
+            if (latestSharedObject != null) {
+                return tag.getSharedObject().objectId().compareTo(latestSharedObject.objectId()) >= 0;
+            }
+            return tag.getSharedObject().objectId().compareTo(sharedObject.objectId()) >= 0;
         }
 
         @Override
@@ -197,21 +203,22 @@ public final class TagUtil {
 
             tagModified = false;
 
+            AbstractHtml5SharedObject latestSharedObject = null;
             for (final TagContractRecord tagContractRecord : tagContractRecords) {
 
-                if (!tagContractRecord.isValid()) {
+                if (!tagContractRecord.isValid(latestSharedObject)) {
                     tagModified = true;
                     break;
                 }
 
-                final Lock lock = tagContractRecord.sharedObject.getLock(accessObject).writeLock();
-                lock.lock();
+                final Lock lock = tagContractRecord.tag.lockAndGetWriteLock(latestSharedObject);
+                if (lock == null) {
+                    tagModified = true;
+                    break;
+                }
                 locks.add(lock);
 
-                if (!tagContractRecord.isValid()) {
-                    tagModified = true;
-                    break;
-                }
+                latestSharedObject = tagContractRecord.tag.getSharedObject();
             }
 
             if (locks.size() > 1) {

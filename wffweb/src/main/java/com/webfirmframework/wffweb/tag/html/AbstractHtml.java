@@ -39,6 +39,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -254,8 +255,14 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             return sharedObject.objectId();
         }
 
-        private boolean isValid() {
-            return sharedObject.equals(tag.getSharedObject());
+        private boolean isValid(final AbstractHtml5SharedObject latestSharedObject) {
+            if (sharedObject.equals(tag.getSharedObject())) {
+                return true;
+            }
+            if (latestSharedObject != null) {
+                return tag.getSharedObject().objectId().compareTo(latestSharedObject.objectId()) >= 0;
+            }
+            return tag.getSharedObject().objectId().compareTo(sharedObject.objectId()) >= 0;
         }
 
         @Override
@@ -6944,6 +6951,53 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     /**
      * NB: without this method this.sharedObject in the later execution of nested
      * methods may be different than the lock acquired sharedObject, we have faced
+     * this issue that is why it is implemented. This method is only for internal
+     * use.
+     *
+     * @param latestSharedObject the latest sharedObject for comparison.
+     * @return the lock if the sharedObject of this tag is latest compared to
+     *         latestSharedObject otherwise null. i.e. If the latestSharedObject is
+     *         newer than the sharedObject of this tag it will return null.
+     * @since 12.0.1
+     */
+    WriteLock lockAndGetWriteLock(final AbstractHtml5SharedObject latestSharedObject) {
+
+        AbstractHtml5SharedObject currentSO;
+        WriteLock lock = null;
+        do {
+            if (lock != null) {
+                lock.unlock();
+            }
+            currentSO = sharedObject;
+            if (latestSharedObject != null && latestSharedObject.objectId().compareTo(currentSO.objectId()) > 0) {
+                return null;
+            }
+            lock = currentSO.getLock(ACCESS_OBJECT).writeLock();
+            lock.lock();
+        } while (!currentSO.equals(sharedObject));
+
+        return lock;
+    }
+
+    /**
+     * Note: This method is only for internal use.
+     *
+     * @param accessObject       the access object
+     * @param latestSharedObject the sharedObject to compare
+     * @return the lock if locked
+     * @since 12.0.1
+     */
+    public WriteLock lockAndGetWriteLock(final SecurityObject accessObject,
+            final AbstractHtml5SharedObject latestSharedObject) {
+        if (!IndexedClassType.ABSTRACT_ATTRIBUTE.equals(accessObject.forClassType())) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        return lockAndGetWriteLock(latestSharedObject);
+    }
+
+    /**
+     * NB: without this method this.sharedObject in the later execution of nested
+     * methods may be different than the lock acquired sharedObject, we have faced
      * this issue that is why it is implemented.
      *
      * @return the lock
@@ -6962,6 +7016,52 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         } while (!currentSO.equals(sharedObject));
 
         return lock;
+    }
+
+    /**
+     * NB: without this method this.sharedObject in the later execution of nested
+     * methods may be different than the lock acquired sharedObject, we have faced
+     * this issue that is why it is implemented.
+     *
+     * @param latestSharedObject the latest sharedObject for comparison.
+     * @return the lock if the sharedObject of this tag is latest compared to
+     *         latestSharedObject otherwise null. i.e. If the latestSharedObject is
+     *         newer than the sharedObject of this tag it will return null.
+     * @since 12.0.1
+     */
+    ReadLock lockAndGetReadLock(final AbstractHtml5SharedObject latestSharedObject) {
+
+        AbstractHtml5SharedObject currentSO;
+        ReadLock lock = null;
+        do {
+            if (lock != null) {
+                lock.unlock();
+            }
+            currentSO = sharedObject;
+            if (latestSharedObject != null && latestSharedObject.objectId().compareTo(currentSO.objectId()) > 0) {
+                return null;
+            }
+            lock = currentSO.getLock(ACCESS_OBJECT).readLock();
+            lock.lock();
+        } while (!currentSO.equals(sharedObject));
+
+        return lock;
+    }
+
+    /**
+     * Note: This method is only for internal use.
+     *
+     * @param accessObject       the access object
+     * @param latestSharedObject the sharedObject to compare
+     * @return the lock if locked
+     * @since 12.0.1
+     */
+    public ReadLock lockAndGetReadLock(final SecurityObject accessObject,
+            final AbstractHtml5SharedObject latestSharedObject) {
+        if (!IndexedClassType.ABSTRACT_ATTRIBUTE.equals(accessObject.forClassType())) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        return lockAndGetReadLock(latestSharedObject);
     }
 
     /**

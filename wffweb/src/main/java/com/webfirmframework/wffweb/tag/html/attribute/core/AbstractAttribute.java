@@ -139,8 +139,14 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
             return sharedObject.objectId();
         }
 
-        private boolean isValid() {
-            return sharedObject.equals(tag.getSharedObject());
+        private boolean isValid(final AbstractHtml5SharedObject latestSharedObject) {
+            if (sharedObject.equals(tag.getSharedObject())) {
+                return true;
+            }
+            if (latestSharedObject != null) {
+                return tag.getSharedObject().objectId().compareTo(latestSharedObject.objectId()) >= 0;
+            }
+            return tag.getSharedObject().objectId().compareTo(sharedObject.objectId()) >= 0;
         }
 
         @Override
@@ -1597,20 +1603,21 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
             writeLocks = new ArrayList<>(tagContractRecords.size() + 1);
             ownerTagModified = false;
+            AbstractHtml5SharedObject latestSharedObject = null;
             for (final TagContractRecord tagContractRecord : tagContractRecords) {
-                if (!tagContractRecord.isValid()) {
+                if (!tagContractRecord.isValid(latestSharedObject)) {
                     ownerTagModified = true;
                     break;
                 }
 
-                final WriteLock lock = tagContractRecord.sharedObject.getLock(ACCESS_OBJECT).writeLock();
-                lock.lock();
+                final Lock lock = tagContractRecord.tag.lockAndGetWriteLock(ACCESS_OBJECT, latestSharedObject);
+                if (lock == null) {
+                    ownerTagModified = true;
+                    break;
+                }
                 writeLocks.add(lock);
 
-                if (!tagContractRecord.isValid()) {
-                    ownerTagModified = true;
-                    break;
-                }
+                latestSharedObject = tagContractRecord.tag.getSharedObject();
             }
 
             // NB: must reverse it before returning because its unlocking must be in the
@@ -1667,20 +1674,21 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
                 writeLocks = new ArrayList<>(tagContractRecords.size());
                 ownerTagModified = false;
+                AbstractHtml5SharedObject latestSharedObject = null;
                 for (final TagContractRecord tagContractRecord : tagContractRecords) {
-                    if (!tagContractRecord.isValid()) {
+                    if (!tagContractRecord.isValid(latestSharedObject)) {
                         ownerTagModified = true;
                         break;
                     }
 
-                    final WriteLock lock = tagContractRecord.sharedObject.getLock(ACCESS_OBJECT).writeLock();
-                    lock.lock();
+                    final WriteLock lock = tagContractRecord.tag.lockAndGetWriteLock(ACCESS_OBJECT, latestSharedObject);
+                    if (lock == null) {
+                        ownerTagModified = true;
+                        break;
+                    }
                     writeLocks.add(lock);
 
-                    if (!tagContractRecord.isValid()) {
-                        ownerTagModified = true;
-                        break;
-                    }
+                    latestSharedObject = tagContractRecord.tag.getSharedObject();
                 }
 
                 // NB: must reverse it before returning because its unlocking must be in the
@@ -1739,20 +1747,21 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
             readLocks = new ArrayList<>(tagContractRecords.size() + 1);
             ownerTagModified = false;
+            AbstractHtml5SharedObject latestSharedObject = null;
             for (final TagContractRecord tagContractRecord : tagContractRecords) {
-                if (!tagContractRecord.isValid()) {
+                if (!tagContractRecord.isValid(latestSharedObject)) {
                     ownerTagModified = true;
                     break;
                 }
 
-                final ReadLock lock = tagContractRecord.sharedObject.getLock(ACCESS_OBJECT).readLock();
-                lock.lock();
+                final ReadLock lock = tagContractRecord.tag.lockAndGetReadLock(ACCESS_OBJECT, latestSharedObject);
+                if (lock == null) {
+                    ownerTagModified = true;
+                    break;
+                }
                 readLocks.add(lock);
 
-                if (!tagContractRecord.isValid()) {
-                    ownerTagModified = true;
-                    break;
-                }
+                latestSharedObject = tagContractRecord.tag.getSharedObject();
             }
 
             // NB: must reverse it before returning because its unlocking must be in the
@@ -1809,20 +1818,21 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
                 readLocks = new ArrayList<>(tagContractRecords.size());
                 ownerTagModified = false;
+                AbstractHtml5SharedObject latestSharedObject = null;
                 for (final TagContractRecord tagContractRecord : tagContractRecords) {
-                    if (!tagContractRecord.isValid()) {
+                    if (!tagContractRecord.isValid(latestSharedObject)) {
                         ownerTagModified = true;
                         break;
                     }
 
-                    final ReadLock lock = tagContractRecord.sharedObject.getLock(ACCESS_OBJECT).readLock();
-                    lock.lock();
+                    final ReadLock lock = tagContractRecord.tag.lockAndGetReadLock(ACCESS_OBJECT, latestSharedObject);
+                    if (lock == null) {
+                        ownerTagModified = true;
+                        break;
+                    }
                     readLocks.add(lock);
 
-                    if (!tagContractRecord.isValid()) {
-                        ownerTagModified = true;
-                        break;
-                    }
+                    latestSharedObject = tagContractRecord.tag.getSharedObject();
                 }
 
                 // NB: must reverse it before returning because its unlocking must be in the

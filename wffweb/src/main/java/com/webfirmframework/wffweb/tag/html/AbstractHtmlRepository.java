@@ -53,8 +53,14 @@ public abstract class AbstractHtmlRepository {
             return sharedObject.objectId();
         }
 
-        private boolean isValid() {
-            return sharedObject.equals(tag.getSharedObject());
+        private boolean isValid(final AbstractHtml5SharedObject latestSharedObject) {
+            if (sharedObject.equals(tag.getSharedObject())) {
+                return true;
+            }
+            if (latestSharedObject != null) {
+                return tag.getSharedObject().objectId().compareTo(latestSharedObject.objectId()) >= 0;
+            }
+            return tag.getSharedObject().objectId().compareTo(sharedObject.objectId()) >= 0;
         }
 
         @Override
@@ -162,21 +168,21 @@ public abstract class AbstractHtmlRepository {
             locks = new ArrayList<>(tagContractRecords.size());
 
             tagModified = false;
+            AbstractHtml5SharedObject latestSharedObject = null;
             for (final TagContractRecord tagContractRecord : tagContractRecords) {
-                if (!tagContractRecord.isValid()) {
+                if (!tagContractRecord.isValid(latestSharedObject)) {
                     tagModified = true;
                     break;
                 }
 
-                final Lock lock = writeLock ? AbstractHtml.getWriteLock(tagContractRecord.sharedObject)
-                        : AbstractHtml.getReadLock(tagContractRecord.sharedObject);
-                lock.lock();
+                final Lock lock = writeLock ? tagContractRecord.tag.lockAndGetWriteLock(latestSharedObject)
+                        : tagContractRecord.tag.lockAndGetReadLock(latestSharedObject);
+                if (lock == null) {
+                    tagModified = true;
+                    break;
+                }
                 locks.add(lock);
-
-                if (!tagContractRecord.isValid()) {
-                    tagModified = true;
-                    break;
-                }
+                latestSharedObject = tagContractRecord.tag.getSharedObject();
             }
 
             // NB: must reverse it before returning because its unlocking must be in the
