@@ -54,10 +54,10 @@ public abstract class AbstractHtmlRepository {
         }
 
         private boolean isValid(final AbstractHtml5SharedObject latestSharedObject) {
-            if (sharedObject.equals(tag.getSharedObject()) || (latestSharedObject == null)) {
+            if (sharedObject.equals(tag.getSharedObjectLockless()) || (latestSharedObject == null)) {
                 return true;
             }
-            return tag.getSharedObject().objectId().compareTo(latestSharedObject.objectId()) >= 0;
+            return tag.getSharedObjectLockless().objectId().compareTo(latestSharedObject.objectId()) >= 0;
         }
 
         @Override
@@ -170,6 +170,9 @@ public abstract class AbstractHtmlRepository {
                 if (!tagContractRecord.isValid(latestSharedObject)) {
                     tagModified = true;
                     break;
+                }
+                if (tagContractRecord.tag.getSharedObjectLockless().equals(latestSharedObject)) {
+                    continue;
                 }
 
                 final Lock lock = writeLock ? tagContractRecord.tag.lockAndGetWriteLock(latestSharedObject)

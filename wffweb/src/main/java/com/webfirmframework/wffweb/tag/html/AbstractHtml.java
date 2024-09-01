@@ -256,10 +256,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         }
 
         private boolean isValid(final AbstractHtml5SharedObject latestSharedObject) {
-            if (sharedObject.equals(tag.getSharedObject()) || (latestSharedObject == null)) {
+            if (sharedObject.equals(tag.getSharedObjectLockless()) || (latestSharedObject == null)) {
                 return true;
             }
-            return tag.getSharedObject().objectId().compareTo(latestSharedObject.objectId()) >= 0;
+            return tag.getSharedObjectLockless().objectId().compareTo(latestSharedObject.objectId()) >= 0;
         }
 
         @Override
@@ -4639,6 +4639,23 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
+     * Note: this method is only for internal use.
+     *
+     * @param accessObject the access object.
+     * @return the sharedObject.
+     * @since 12.0.1
+     */
+    public final AbstractHtml5SharedObject getSharedObject(
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+        // NB: this is the alternative lockless method for getSharedObject method so do
+        // not use lock in this method.
+        if (!IndexedClassType.ABSTRACT_ATTRIBUTE.equals(accessObject.forClassType())) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        return sharedObject;
+    }
+
+    /**
      * only for internal purpose
      *
      * @return the sharedObject
@@ -6984,7 +7001,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @return the lock if locked
      * @since 12.0.1
      */
-    public WriteLock lockAndGetWriteLock(final SecurityObject accessObject,
+    public WriteLock lockAndGetWriteLock(@SuppressWarnings("exports") final SecurityObject accessObject,
             final AbstractHtml5SharedObject latestSharedObject) {
         if (!IndexedClassType.ABSTRACT_ATTRIBUTE.equals(accessObject.forClassType())) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
@@ -7053,7 +7070,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @return the lock if locked
      * @since 12.0.1
      */
-    public ReadLock lockAndGetReadLock(final SecurityObject accessObject,
+    public ReadLock lockAndGetReadLock(@SuppressWarnings("exports") final SecurityObject accessObject,
             final AbstractHtml5SharedObject latestSharedObject) {
         if (!IndexedClassType.ABSTRACT_ATTRIBUTE.equals(accessObject.forClassType())) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");

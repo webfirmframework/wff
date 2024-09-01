@@ -60,10 +60,10 @@ public final class TagUtil {
         }
 
         private boolean isValid(final AbstractHtml5SharedObject latestSharedObject) {
-            if (sharedObject.equals(tag.getSharedObject()) || (latestSharedObject == null)) {
+            if (sharedObject.equals(tag.getSharedObjectLockless()) || (latestSharedObject == null)) {
                 return true;
             }
-            return tag.getSharedObject().objectId().compareTo(latestSharedObject.objectId()) >= 0;
+            return tag.getSharedObjectLockless().objectId().compareTo(latestSharedObject.objectId()) >= 0;
         }
 
         @Override
@@ -207,6 +207,9 @@ public final class TagUtil {
                     tagModified = true;
                     break;
                 }
+                if (tagContractRecord.tag.getSharedObjectLockless().equals(latestSharedObject)) {
+                    continue;
+                }
 
                 final Lock lock = tagContractRecord.tag.lockAndGetWriteLock(latestSharedObject);
                 if (lock == null) {
@@ -215,7 +218,7 @@ public final class TagUtil {
                 }
                 locks.add(lock);
 
-                latestSharedObject = tagContractRecord.tag.getSharedObject();
+                latestSharedObject = tagContractRecord.tag.getSharedObjectLockless();
             }
 
             if (locks.size() > 1) {
