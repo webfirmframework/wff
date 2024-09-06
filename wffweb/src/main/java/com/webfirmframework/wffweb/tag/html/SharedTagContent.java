@@ -1366,10 +1366,10 @@ public class SharedTagContent<T> {
     }
 
     private void executeMethodCallsFromQ() {
-        if (!asyncUpdate && methodCallQLock.tryAcquire()) {
+        if (methodCallQLock.tryAcquire()) {
             final Executor executor = this.executor;
             try {
-                processMethodCallQ(executor, false);
+                processMethodCallQ(executor, asyncUpdate);
             } finally {
                 methodCallQLock.release();
             }
@@ -1380,7 +1380,7 @@ public class SharedTagContent<T> {
                 final Runnable runnable = () -> {
                     methodCallQLock.acquireUninterruptibly();
                     try {
-                        processMethodCallQ(activeExecutor, true);
+                        processMethodCallQ(activeExecutor, asyncUpdate);
                     } finally {
                         methodCallQLock.release();
                     }
@@ -1714,7 +1714,8 @@ public class SharedTagContent<T> {
                         }
                     };
 
-                    if (virtualThreadExecutor != null) {
+                    if (virtualThreadExecutor != null
+                            && !entry.getKey().getLock(ACCESS_OBJECT).isWriteLockedByCurrentThread()) {
                         virtualThreadExecutor.execute(runnable);
                     } else {
                         runnable.run();
