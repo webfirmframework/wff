@@ -2197,6 +2197,88 @@ public class SharedTagContentTest {
         assertEquals("invoked div whenURI /someuri success invoked div whenURI /someuri success invoked div whenURI another success invoked div whenURI another success ", controlFlow.toString());
 
     }
+
+    @Test
+    public void testDetachWithWhenURI() {
+        // dead-lock testing
+        StringBuffer controlFlow = new StringBuffer();
+        SharedTagContent<String> stc = new SharedTagContent<>("initial").setAsyncUpdate(true);
+        AtomicBoolean enableDetach = new AtomicBoolean(false);
+
+        BrowserPage browserPage1 = new BrowserPage() {
+
+            @Override
+            public String webSocketUrl() {
+                return "wss://wffweb";
+            }
+
+            @Override
+            public AbstractHtml render() {
+                super.setURI("/someuri");
+                return new Html(null).<Html>give(html1 -> {
+                    new Body(html1).give(body -> {
+
+                        new Div(body).subscribeTo(stc);
+                        new Div(body).subscribeTo(stc);
+                        new Div(body).subscribeTo(stc);
+
+                        new Div(body).whenURI((uri) -> true, (event) -> {
+                            controlFlow.append("invoked div whenURI %s success ".formatted(event.uriEvent().uriAfter()));
+                            if (enableDetach.get()) {
+                                stc.detach(true);
+                            }
+                        });
+                    });
+                });
+            }
+
+        };
+        browserPage1.toHtmlString();
+
+        assertEquals("invoked div whenURI /someuri success ", controlFlow.toString());
+
+        BrowserPage browserPage2 = new BrowserPage() {
+
+            @Override
+            public String webSocketUrl() {
+                return "wss://wffweb";
+            }
+
+            @Override
+            public AbstractHtml render() {
+                super.setURI("/someuri");
+                return new Html(null).<Html>give(html1 -> {
+                    new Body(html1).give(body -> {
+
+                        new Div(body).subscribeTo(stc);
+                        new Div(body).subscribeTo(stc);
+                        new Div(body).subscribeTo(stc);
+
+                        new Div(body).whenURI((uri) -> true, (event) -> {
+                            controlFlow.append("invoked div whenURI %s success ".formatted(event.uriEvent().uriAfter()));
+                            if (enableDetach.get()) {
+                                stc.detach(true);
+                            }
+                        });
+                    });
+                });
+            }
+
+        };
+        browserPage2.toHtmlString();
+
+        assertEquals("invoked div whenURI /someuri success invoked div whenURI /someuri success ", controlFlow.toString());
+
+        browserPage1.setURI("another");
+
+        assertEquals("invoked div whenURI /someuri success invoked div whenURI /someuri success invoked div whenURI another success ", controlFlow.toString());
+
+        enableDetach.set(true);
+        browserPage2.setURI("another");
+
+        assertEquals("invoked div whenURI /someuri success invoked div whenURI /someuri success invoked div whenURI another success invoked div whenURI another success ", controlFlow.toString());
+
+    }
             
 
 }
