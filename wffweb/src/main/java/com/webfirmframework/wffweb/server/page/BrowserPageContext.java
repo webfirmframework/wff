@@ -678,7 +678,15 @@ public enum BrowserPageContext {
         return autoCleanTaskExecutor != null;
     }
 
-    private void runAutoClean() {
+    /**
+     * Runs the autoclean operation only if required. This will be good for doing
+     * some manual GC operations for long-running application which has less
+     * frequent browserPage adding to or removing from the
+     * {@code BrowserPageContext}.
+     *
+     * @since 12.0.1
+     */
+    public void runAutoClean() {
         Reference<? extends BrowserPage> gcTask;
         while ((gcTask = browserPageRQ.poll()) != null) {
             gcTask.clear();
