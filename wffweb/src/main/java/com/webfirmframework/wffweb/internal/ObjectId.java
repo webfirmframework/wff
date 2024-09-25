@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 Web Firm Framework
+ * Copyright 2014-2024 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,19 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
     private final long mostSigBits;
 
     private final long leastSigBits;
+
+    /**
+     * Only for testing
+     *
+     * @param order
+     * @param mostSigBits
+     * @param leastSigBits
+     */
+    ObjectId(final long order, final long mostSigBits, final long leastSigBits) {
+        this.order = order;
+        this.mostSigBits = mostSigBits;
+        this.leastSigBits = leastSigBits;
+    }
 
     public ObjectId(final long mostSigBits, final long leastSigBits) {
         this.mostSigBits = mostSigBits;

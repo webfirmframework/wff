@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 Web Firm Framework
+ * Copyright 2014-2024 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -271,6 +271,7 @@ public enum WffJsFile {
             variableNameList.add("valueLegthBytes");
             variableNameList.add("bmObjOrArrBytes");
             variableNameList.add("nameLengthBytes");
+            variableNameList.add("lastWSPingTime");
             variableNameList.add("valuesToAppend");
             variableNameList.add("parentDocIndex");
             variableNameList.add("beforeTagWffId");
@@ -522,11 +523,11 @@ public enum WffJsFile {
 
             if (autoremoveParentScript) {
                 return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                        wsReconnectInterval, losslessCommunication, onPayloadLossJS).append(AUTOREMOVE_PARENT_SCRIPT)
-                                .toString();
+                        heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS)
+                                .append(AUTOREMOVE_PARENT_SCRIPT).toString();
             }
             return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                    wsReconnectInterval, losslessCommunication, onPayloadLossJS).toString();
+                    heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS).toString();
         }
 
         try {
@@ -591,11 +592,11 @@ public enum WffJsFile {
 
             if (autoremoveParentScript) {
                 return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                        wsReconnectInterval, losslessCommunication, onPayloadLossJS).append(AUTOREMOVE_PARENT_SCRIPT)
-                                .toString();
+                        heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS)
+                                .append(AUTOREMOVE_PARENT_SCRIPT).toString();
             }
             return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                    wsReconnectInterval, losslessCommunication, onPayloadLossJS).toString();
+                    heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS).toString();
         } catch (final Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -608,13 +609,13 @@ public enum WffJsFile {
             final boolean removePrevBPOnInitTab, final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
             final int wsReconnectInterval, final boolean losslessCommunication, final String onPayloadLossJS) {
         return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                wsReconnectInterval, losslessCommunication, onPayloadLossJS).append(
+                heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS).append(
                         HEART_BEAT_JS.replace("\"${HEARTBEAT_INTERVAL}\"", Integer.toString(heartbeatInterval)));
     }
 
     private static StringBuilder buildJsContentWithoutHeartbeat(final String wsUrl, final String instanceId,
-            final boolean removePrevBPOnInitTab, final boolean removePrevBPOnClosetTab, final int wsReconnectInterval,
-            final boolean losslessCommunication, final String onPayloadLossJS) {
+            final boolean removePrevBPOnInitTab, final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
+            final int wsReconnectInterval, final boolean losslessCommunication, final String onPayloadLossJS) {
 
         final StringBuilder globalContentBuider = new StringBuilder(WFF_GLOBAL.optimizedFileContent);
 
@@ -646,6 +647,7 @@ public enum WffJsFile {
                 URIEventInitiator.getJsObjectString());
 
         StringBuilderUtil.replaceFirst(globalContentBuider, "\"${WS_RECON}\"", String.valueOf(wsReconnectInterval));
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${WS_HRTBT}\"", String.valueOf(heartbeatInterval));
         StringBuilderUtil.replaceFirst(globalContentBuider, "\"${LOSSLESS_COMM}\"",
                 String.valueOf(losslessCommunication));
         String onLossyCommJS = onPayloadLossJS != null ? onPayloadLossJS.strip() : "";

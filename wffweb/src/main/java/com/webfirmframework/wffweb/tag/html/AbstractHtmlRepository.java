@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 Web Firm Framework
+ * Copyright 2014-2024 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,33 +39,30 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMData;
 public abstract class AbstractHtmlRepository {
 
     /**
-     *
-     * @since 3.0.15 returns long value type
-     *
+     * @since 3.0.15
+     * @since 12.0.1 it is record type
      */
-    private static final class TagContractRecord {
-
-        private final AbstractHtml tag;
-
-        private final AbstractHtml5SharedObject sharedObject;
-
-        private TagContractRecord(final AbstractHtml tag, final AbstractHtml5SharedObject sharedObject) {
-            super();
-            this.tag = tag;
-            this.sharedObject = sharedObject;
-        }
+    private record TagContractRecord(AbstractHtml tag, AbstractHtml5SharedObject sharedObject) {
 
         /**
+         * @return objectId
          * @since 3.0.15 returns long value type
          * @since 3.0.19 returns ObjectId value type
-         * @return objectId
          */
         private ObjectId objectId() {
             return sharedObject.objectId();
         }
 
-        private boolean isValid() {
-            return sharedObject.equals(tag.getSharedObject());
+        private boolean isValid(final AbstractHtml5SharedObject latestSharedObject) {
+            if (sharedObject.equals(tag.getSharedObjectLockless()) || (latestSharedObject == null)) {
+                return true;
+            }
+            return tag.getSharedObjectLockless().objectId().compareTo(latestSharedObject.objectId()) >= 0;
+        }
+
+        @Override
+        public String toString() {
+            return sharedObject.objectId().id() + ":" + tag.internalId();
         }
     }
 
@@ -111,12 +107,15 @@ public abstract class AbstractHtmlRepository {
     }
 
     /**
+     * Note: use lockAndGetReadLocks which safer than this method when it comes to
+     * thread-safety.
+     *
      * @param fromTags
      * @return the list of read lock
      * @since 3.0.1
      */
     protected static Collection<Lock> getReadLocks(final AbstractHtml... fromTags) {
-        return extractReadLocks(new ArrayDeque<>(), fromTags);
+        return extractReadLocks(fromTags);
     }
 
     /**
@@ -166,21 +165,24 @@ public abstract class AbstractHtmlRepository {
             locks = new ArrayList<>(tagContractRecords.size());
 
             tagModified = false;
+            AbstractHtml5SharedObject latestSharedObject = null;
             for (final TagContractRecord tagContractRecord : tagContractRecords) {
-                if (!tagContractRecord.isValid()) {
+                if (!tagContractRecord.isValid(latestSharedObject)) {
                     tagModified = true;
                     break;
                 }
+                if (tagContractRecord.tag.getSharedObjectLockless().equals(latestSharedObject)) {
+                    continue;
+                }
 
-                final Lock lock = writeLock ? AbstractHtml.getWriteLock(tagContractRecord.sharedObject)
-                        : AbstractHtml.getReadLock(tagContractRecord.sharedObject);
-                lock.lock();
+                final Lock lock = writeLock ? tagContractRecord.tag.lockAndGetWriteLock(latestSharedObject)
+                        : tagContractRecord.tag.lockAndGetReadLock(latestSharedObject);
+                if (lock == null) {
+                    tagModified = true;
+                    break;
+                }
                 locks.add(lock);
-
-                if (!tagContractRecord.isValid()) {
-                    tagModified = true;
-                    break;
-                }
+                latestSharedObject = tagContractRecord.tag.getSharedObject();
             }
 
             // NB: must reverse it before returning because its unlocking must be in the
@@ -194,8 +196,7 @@ public abstract class AbstractHtmlRepository {
         return locks;
     }
 
-    private static List<Lock> extractReadLocks(final Deque<TagContractRecord> tagContractRecords,
-            final AbstractHtml... fromTags) {
+    private static List<Lock> extractReadLocks(final AbstractHtml... fromTags) {
 
         if (fromTags == null || fromTags.length == 0) {
             return List.of();
@@ -204,7 +205,6 @@ public abstract class AbstractHtmlRepository {
         if (fromTags.length == 1) {
             final AbstractHtml tag = fromTags[0];
             final AbstractHtml5SharedObject sharedObject = tag.getSharedObject();
-            tagContractRecords.add(new TagContractRecord(tag, sharedObject));
 
             final List<Lock> locks = new ArrayList<>(1);
             locks.add(AbstractHtml.getReadLock(sharedObject));
@@ -216,7 +216,6 @@ public abstract class AbstractHtmlRepository {
         for (final AbstractHtml tag : fromTags) {
             final AbstractHtml5SharedObject sharedObject = tag.getSharedObject();
             sharedObjectsSet.add(sharedObject);
-            tagContractRecords.add(new TagContractRecord(tag, sharedObject));
         }
 
         final List<AbstractHtml5SharedObject> sortedSharedObjects = new ArrayList<>(sharedObjectsSet);

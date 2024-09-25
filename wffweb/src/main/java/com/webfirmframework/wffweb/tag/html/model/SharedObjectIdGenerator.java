@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 Web Firm Framework
+ * Copyright 2014-2024 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import java.util.UUID;
 import com.webfirmframework.wffweb.internal.ObjectId;
 
 /**
- * Note: only for internal use. It should be specifically for AbstractAttribute
- * class id generation.
+ * Note: only for internal use. It should be specifically for
+ * AbstractHtml5SharedObject class id generation.
  *
  * @author WFF
  * @since 3.0.19

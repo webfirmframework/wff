@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 Web Firm Framework
+ * Copyright 2014-2024 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -81,7 +82,7 @@ public enum BrowserPageContext {
 
     private transient ScheduledFuture<?> autoCleanScheduled;
 
-    private transient volatile MinIntervalExecutor autoCleanTaskExecutor;
+    transient volatile MinIntervalExecutor autoCleanTaskExecutor;
 
     private transient final ReferenceQueue<BrowserPage> browserPageRQ;
 
@@ -156,13 +157,17 @@ public enum BrowserPageContext {
 
         final Map<String, BrowserPage> browserPages = sessionWrapper.browserPages;
 
+        final AtomicBoolean computed = new AtomicBoolean();
         browserPages.computeIfAbsent(browserPage.getInstanceId(), k -> {
+            computed.set(true);
+            return browserPage;
+        });
+        if (computed.get()) {
             instanceIdBrowserPage.put(browserPage.getInstanceId(), browserPage);
             instanceIdHttpSessionId.put(browserPage.getInstanceId(), httpSessionId);
             browserPage.informRemovedFromContext(false);
             browserPage.setSession(sessionWrapper.session);
-            return browserPage;
-        });
+        }
 
         if (browserPage.getExternalDrivePath() != null) {
             // NB: this caching is required trigger to enqueue to ReferenceQueue when
@@ -328,20 +333,48 @@ public enum BrowserPageContext {
             if (sessionWrapper != null) {
                 final Map<String, BrowserPage> browserPages = sessionWrapper.browserPages;
                 final BrowserPage browserPage = browserPages.get(wffInstanceId);
-                final long lastAccessedTime = System.currentTimeMillis();
+                final long currentTimeMillis = System.currentTimeMillis();
+                final BrowserPage validBrowserPage;
                 if (browserPage != null) {
-                    instanceIdBPForWS.put(browserPage.getInstanceId(), browserPage);
-                    browserPage.setLastClientAccessedTime(lastAccessedTime);
+                    if (isInvalidBrowserPage(browserPage, currentTimeMillis)) {
+                        validBrowserPage = null;
+                    } else {
+                        validBrowserPage = browserPage;
+                        instanceIdBPForWS.put(browserPage.getInstanceId(), browserPage);
+                        browserPage.setLastClientAccessedTime(currentTimeMillis);
+                    }
+                } else {
+                    validBrowserPage = null;
                 }
                 final HeartbeatManager hbManager = sessionWrapper.heartbeatManagerRef.get();
                 if (hbManager != null) {
-                    hbManager.setLastAccessedTime(lastAccessedTime);
+                    hbManager.setLastAccessedTime(currentTimeMillis);
                 }
-                return new WebSocketOpenedRecord(browserPage, sessionWrapper.session, hbManager);
+                return new WebSocketOpenedRecord(validBrowserPage, sessionWrapper.session, hbManager);
             }
         }
 
         return null;
+    }
+
+    /**
+     * Note: use only for invalid checking
+     *
+     * @param browserPage
+     * @param currentTimeMillis
+     * @return true if invalid otherwise false
+     * @since 12.0.1
+     */
+    private boolean isInvalidBrowserPage(final BrowserPage browserPage, final long currentTimeMillis) {
+        if (browserPage.onInitialClientPingInvoked) {
+            final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
+            if (autoCleanTaskExecutor != null
+                    && (currentTimeMillis - browserPage.getLastClientAccessedTime()) >= autoCleanTaskExecutor
+                            .minInterval()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -374,19 +407,27 @@ public enum BrowserPageContext {
             if (sessionWrapper != null) {
                 final Map<String, BrowserPage> browserPages = sessionWrapper.browserPages;
                 final BrowserPage browserPage = browserPages.get(wffInstanceId);
+                final long currentTimeMillis = System.currentTimeMillis();
+                final BrowserPage validBrowserPage;
                 if (browserPage != null) {
-                    instanceIdBPForWS.put(browserPage.getInstanceId(), browserPage);
-                    final long lastAccessedTime = System.currentTimeMillis();
-                    browserPage.setLastClientAccessedTime(lastAccessedTime);
-                    final HeartbeatManager hbManager = sessionWrapper.heartbeatManagerRef.updateAndGet(hbm -> {
-                        if (hbm == null) {
-                            return computeHeartbeatManager.apply(httpSessionId);
-                        }
-                        return hbm;
-                    });
-                    hbManager.setLastAccessedTime(lastAccessedTime);
-                    return new WebSocketOpenedRecord(browserPage, sessionWrapper.session, hbManager);
+                    if (isInvalidBrowserPage(browserPage, currentTimeMillis)) {
+                        validBrowserPage = null;
+                    } else {
+                        validBrowserPage = browserPage;
+                        instanceIdBPForWS.put(browserPage.getInstanceId(), browserPage);
+                        browserPage.setLastClientAccessedTime(currentTimeMillis);
+                    }
+                } else {
+                    validBrowserPage = null;
                 }
+                final HeartbeatManager hbManager = sessionWrapper.heartbeatManagerRef.updateAndGet(hbm -> {
+                    if (hbm == null) {
+                        return computeHeartbeatManager.apply(httpSessionId);
+                    }
+                    return hbm;
+                });
+                hbManager.setLastAccessedTime(currentTimeMillis);
+                return new WebSocketOpenedRecord(validBrowserPage, sessionWrapper.session, hbManager);
             }
         }
 
@@ -411,14 +452,14 @@ public enum BrowserPageContext {
 
                 final AtomicReference<BrowserPage> bpRef = new AtomicReference<>();
                 browserPages.computeIfPresent(wffInstanceId, (k, bp) -> {
-                    instanceIdHttpSessionId.remove(wffInstanceId);
-                    instanceIdBrowserPage.remove(wffInstanceId);
-                    instanceIdBPForWS.remove(wffInstanceId);
                     bpRef.set(bp);
                     return null;
                 });
                 final BrowserPage bp = bpRef.get();
                 if (bp != null) {
+                    instanceIdHttpSessionId.remove(wffInstanceId);
+                    instanceIdBrowserPage.remove(wffInstanceId);
+                    instanceIdBPForWS.remove(wffInstanceId);
                     try {
                         bp.informRemovedFromContext(true);
                     } catch (final Throwable e) {
@@ -487,9 +528,6 @@ public enum BrowserPageContext {
                         sessionWrapper.lastClientAccessedTime = Math.max(lastClientAccessedTime,
                                 sessionWrapper.lastClientAccessedTime);
                         if ((currentTime - lastClientAccessedTime) >= maxIdleTimeout) {
-                            instanceIdHttpSessionId.remove(wffInstanceId);
-                            instanceIdBrowserPage.remove(wffInstanceId);
-                            instanceIdBPForWS.remove(wffInstanceId);
                             bpRef.set(bp);
                             return null;
                         }
@@ -497,6 +535,9 @@ public enum BrowserPageContext {
                     });
                     final BrowserPage bp = bpRef.get();
                     if (bp != null) {
+                        instanceIdHttpSessionId.remove(wffInstanceId);
+                        instanceIdBrowserPage.remove(wffInstanceId);
+                        instanceIdBPForWS.remove(wffInstanceId);
                         try {
                             bp.informRemovedFromContext(true);
                         } catch (final Throwable e) {
@@ -583,9 +624,9 @@ public enum BrowserPageContext {
      *                       {@code maxIdleTimeout} of websocket session. It should
      *                       be greater than the minInterval given in the
      *                       {@code HeartbeatManager}. It should be equal to the
-     *                       http session timeout value (maxInactiveInterval) in
-     *                       its milliseconds if the session tracking is enabled and
-     *                       the app depends on the session tracking.
+     *                       http session timeout value (maxInactiveInterval) in its
+     *                       milliseconds if the session tracking is enabled and the
+     *                       app depends on the session tracking.
      * @since 3.0.16
      */
     public void enableAutoClean(final long maxIdleTimeout) {
@@ -607,9 +648,9 @@ public enum BrowserPageContext {
      *                       {@code maxIdleTimeout} of websocket session. It should
      *                       be greater than the minInterval given in the
      *                       {@code HeartbeatManager}. It should be equal to the
-     *                       http session timeout value (maxInactiveInterval) in
-     *                       its milliseconds if the session tracking is enabled and
-     *                       the app depends on the session tracking.
+     *                       http session timeout value (maxInactiveInterval) in its
+     *                       milliseconds if the session tracking is enabled and the
+     *                       app depends on the session tracking.
      * @param executor       the executor object from which the thread will be
      *                       obtained to run the clean process.
      * @since 3.0.16
@@ -637,7 +678,15 @@ public enum BrowserPageContext {
         return autoCleanTaskExecutor != null;
     }
 
-    private void runAutoClean() {
+    /**
+     * Runs the autoclean operation only if required. This will be good for doing
+     * some manual GC operations for long-running application which has less
+     * frequent browserPage adding to or removing from the
+     * {@code BrowserPageContext}.
+     *
+     * @since 12.0.1
+     */
+    public void runAutoClean() {
         Reference<? extends BrowserPage> gcTask;
         while ((gcTask = browserPageRQ.poll()) != null) {
             gcTask.clear();
@@ -856,14 +905,14 @@ public enum BrowserPageContext {
                     final AtomicReference<BrowserPage> bpRef = new AtomicReference<>();
 
                     browserPages.computeIfPresent(instanceId, (k, bp) -> {
-                        instanceIdBrowserPage.remove(instanceId);
-                        instanceIdHttpSessionId.remove(instanceId);
-                        instanceIdBPForWS.remove(instanceId);
                         bpRef.set(bp);
                         return null;
                     });
                     final BrowserPage bp = bpRef.get();
                     if (bp != null) {
+                        instanceIdBrowserPage.remove(instanceId);
+                        instanceIdHttpSessionId.remove(instanceId);
+                        instanceIdBPForWS.remove(instanceId);
                         try {
                             bp.informRemovedFromContext(true);
                         } catch (final Throwable e) {

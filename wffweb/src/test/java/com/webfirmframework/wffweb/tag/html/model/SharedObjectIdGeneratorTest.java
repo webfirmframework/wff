@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 Web Firm Framework
+ * Copyright 2014-2024 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.model;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.webfirmframework.wffweb.internal.ObjectId;
 import org.junit.Test;
 
 
@@ -60,6 +62,16 @@ public class SharedObjectIdGeneratorTest {
             fail("SharedObjectIdGenerator.nextId generated a duplicate value");
         }
         
+    }
+
+    @Test
+    public void testCompareTo() {
+        final ObjectId objectId1 = SharedObjectIdGenerator.nextId();
+        final ObjectId objectId2 = SharedObjectIdGenerator.nextId();
+        assertEquals(1, objectId2.compareTo(objectId1));
+        assertEquals(-1, objectId1.compareTo(objectId2));
+        assertEquals(0, objectId1.compareTo(objectId1));
+        assertEquals(0, objectId2.compareTo(objectId2));
     }
 
 }

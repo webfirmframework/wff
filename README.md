@@ -1,7 +1,7 @@
 [![Build Status](https://img.shields.io/badge/build-passing-greensvg?style=flat)](https://app.circleci.com/pipelines/github/webfirmframework/wff?branch=master&filter=all)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/410601e16dc54b0a973c03845ad790c2)](https://www.codacy.com/app/webfirm-framework/wff?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=webfirmframework/wff&amp;utm_campaign=Badge_Grade)
 [![Stackoverflow](https://img.shields.io/badge/stackoverflow-wffweb-orange.svg)](https://stackoverflow.com/questions/tagged/wffweb)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](https://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C12.0.0%7Cjar)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](https://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C12.0.1%7Cjar)
 [![javadoc](https://img.shields.io/:wffweb-javadoc-blue.svg)](https://webfirmframework.github.io/wffweb/wffweb-javadoc)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 [![twitter](https://img.shields.io/badge/twitter-@wffweb-blue.svg)](https://webfirmframework.com/twitter)
@@ -12,20 +12,15 @@
 wffweb is one of the modules of webfirmframework. It's an open source java framework for real time application development which can generate html5 and css3 from java code, [read more...](https://webfirmframework.github.io/)
 
 
-To support us please donate anything you wish to the author of this framework!
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://webfirmframework.com/donate)
-
-
-#### [Register in wff hub for template reference and more!](http://hub.webfirmframework.com). It's built by wffweb-3.x.x
+#### [Register in wff hub for template reference and more!](http://hub.webfirmframework.com). It's built by wffweb-12.x.x
 #### [check out main features of wffweb](https://www.youtube.com/watch?v=UWoNliHOy6A)
-##### [check out wffweb-3.x.x sample projects](https://github.com/webfirmframework/minimal-production-ready-projects)
+##### [check out wffweb sample projects](https://github.com/webfirmframework/minimal-production-ready-projects)
 
 
-##### check out [this sample project](https://github.com/webfirmframework/wffweb-demo-deployment) deployed at [https://webfirmframework.com/demo/](https://webfirmframework.com/demo/)
+##### check out [this sample project](https://github.com/webfirmframework/wffweb-demo-deployment)
 
 
-(For the survival of this framework, some ads are shown in [webfirmframework.github.io](https://webfirmframework.github.io) and [webfirmframework.com](https://webfirmframework.com) web sites. These are temporary ads and will be removed soon. We are really sorry if it causes any inconvenience to your surfing.)   
+(For the survival of this framework, some ads are shown in [webfirmframework.github.io](https://webfirmframework.github.io) and [webfirmframework.com](https://webfirmframework.com) web sites. These are temporary ads and will be removed soon. We are really sorry if it causes any inconvenience to your reading.)   
 
 Here are some sample codes
 

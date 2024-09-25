@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 Web Firm Framework
+ * Copyright 2014-2024 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,9 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.webfirmframework.wffweb.InvalidValueException;
+import com.webfirmframework.wffweb.concurrent.MinIntervalExecutor;
 
 /**
  * PayloadProcessor for BrowserPage WebSocket's incoming bytes
@@ -193,5 +196,47 @@ public class PayloadProcessor implements Serializable {
             wsMessageChunks.add(messagePart);
             wsMessageChunksTotalCapacity.addAndGet(messagePart.capacity());
         }
+    }
+
+    /**
+     * Note: this method is relevant only if the heartbeat is enabled by
+     * {@link BrowserPage#setWebSocketHeartbeatInterval(int)}.
+     *
+     * @param maxIdleTimeout The expected value is in milliseconds. It should be
+     *                       greater than zero otherwise it will throw an
+     *                       {@code InvalidValueException}.
+     * @return true if the BrowserPage associated with this PayloadProcessor is not
+     *         expired.
+     * @since 12.0.1
+     */
+    public final boolean isValid(final long maxIdleTimeout) {
+        if (maxIdleTimeout <= 0) {
+            throw new InvalidValueException("maxIdleTimeout should be greater than 0.");
+        }
+        if (browserPage.wsHeartbeatInterval > 0) {
+            return (System.currentTimeMillis() - browserPage.lastClientAccessedTime) < maxIdleTimeout;
+        }
+        return true;
+    }
+
+    /**
+     * Note: this method is relevant only if the heartbeat is enabled by
+     * {@link BrowserPage#setWebSocketHeartbeatInterval(int)} and the auto clean is
+     * enabled in BrowserPageContext by any
+     * {@link BrowserPageContext#enableAutoClean} methods.
+     *
+     * @return true if the BrowserPage associated with this PayloadProcessor is not
+     *         expired.
+     * @since 12.0.1
+     */
+    public final boolean isValid() {
+        if (browserPage.wsHeartbeatInterval > 0) {
+            final MinIntervalExecutor autoCleanTaskExecutor = BrowserPageContext.INSTANCE.autoCleanTaskExecutor;
+            if (autoCleanTaskExecutor != null) {
+                return (System.currentTimeMillis() - browserPage.lastClientAccessedTime) < autoCleanTaskExecutor
+                        .minInterval();
+            }
+        }
+        return true;
     }
 }

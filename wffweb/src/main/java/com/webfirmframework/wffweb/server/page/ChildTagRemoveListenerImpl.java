@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 Web Firm Framework
+ * Copyright 2014-2024 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package com.webfirmframework.wffweb.server.page;
 import java.io.Serial;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -58,9 +57,7 @@ public final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener 
 
         if (!tagByWffId.isEmpty()) {
             final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-            // passed 2 instead of 1 because the load factor is 0.75f
-            final Set<AbstractHtml> initialSet = new HashSet<>(2);
-            initialSet.add(tag);
+            final Set<AbstractHtml> initialSet = Set.of(tag);
             childrenStack.push(initialSet);
 
             Set<AbstractHtml> children;

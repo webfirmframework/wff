@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 Web Firm Framework
+ * Copyright 2014-2024 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,33 +45,30 @@ import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 public final class TagUtil {
 
     /**
-     *
      * @since 3.0.15
-     *
+     * @since 12.0.1 changed to record type
      */
-    private static final class TagContractRecord {
-
-        private final AbstractHtml tag;
-
-        private final AbstractHtml5SharedObject sharedObject;
-
-        private TagContractRecord(final AbstractHtml tag, final AbstractHtml5SharedObject sharedObject) {
-            super();
-            this.tag = tag;
-            this.sharedObject = sharedObject;
-        }
+    private record TagContractRecord(AbstractHtml tag, AbstractHtml5SharedObject sharedObject) {
 
         /**
+         * @return objectId
          * @since 3.0.15 returns long value type
          * @since 3.0.19 returns ObjectId value type
-         * @return objectId
          */
         private ObjectId objectId() {
             return sharedObject.objectId();
         }
 
-        private boolean isValid() {
-            return sharedObject.equals(tag.getSharedObject());
+        private boolean isValid(final AbstractHtml5SharedObject latestSharedObject) {
+            if (sharedObject.equals(tag.getSharedObjectLockless()) || (latestSharedObject == null)) {
+                return true;
+            }
+            return tag.getSharedObjectLockless().objectId().compareTo(latestSharedObject.objectId()) >= 0;
+        }
+
+        @Override
+        public String toString() {
+            return sharedObject.objectId().id() + ":" + tag.internalId();
         }
     }
 
@@ -203,21 +200,25 @@ public final class TagUtil {
 
             tagModified = false;
 
+            AbstractHtml5SharedObject latestSharedObject = null;
             for (final TagContractRecord tagContractRecord : tagContractRecords) {
 
-                if (!tagContractRecord.isValid()) {
+                if (!tagContractRecord.isValid(latestSharedObject)) {
                     tagModified = true;
                     break;
                 }
+                if (tagContractRecord.tag.getSharedObjectLockless().equals(latestSharedObject)) {
+                    continue;
+                }
 
-                final Lock lock = tagContractRecord.sharedObject.getLock(accessObject).writeLock();
-                lock.lock();
+                final Lock lock = tagContractRecord.tag.lockAndGetWriteLock(latestSharedObject);
+                if (lock == null) {
+                    tagModified = true;
+                    break;
+                }
                 locks.add(lock);
 
-                if (!tagContractRecord.isValid()) {
-                    tagModified = true;
-                    break;
-                }
+                latestSharedObject = tagContractRecord.tag.getSharedObjectLockless();
             }
 
             if (locks.size() > 1) {
@@ -310,7 +311,7 @@ public final class TagUtil {
      */
     public static void applyURIChangeAndAddDataWffIdAttribute(final AbstractHtml tag,
             final AbstractHtml5SharedObject sharedObject, final Map<String, AbstractHtml> tagByWffId,
-            final SecurityObject accessObject) {
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
         if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 Web Firm Framework
+ * Copyright 2014-2024 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -181,7 +180,7 @@ public abstract class BrowserPage implements Serializable {
 
     private boolean removePrevFromBrowserContextOnTabInit = true;
 
-    private int wsHeartbeatInterval = -1;
+    int wsHeartbeatInterval = -1;
 
     private int wsReconnectInterval = -1;
 
@@ -222,9 +221,9 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile Executor executor;
 
-    private volatile boolean onInitialClientPingInvoked;
+    volatile boolean onInitialClientPingInvoked;
 
-    private volatile long lastClientAccessedTime = System.currentTimeMillis();
+    volatile long lastClientAccessedTime = System.currentTimeMillis();
 
     private final Set<Reference<AbstractHtml>> tagsForURIChange = ConcurrentHashMap.newKeySet(1);
 
@@ -1715,9 +1714,7 @@ public abstract class BrowserPage implements Serializable {
     private void addDataWffIdAttribute(final AbstractHtml abstractHtml) {
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-        // passed 2 instead of 1 because the load factor is 0.75f
-        final Set<AbstractHtml> initialSet = new LinkedHashSet<>(2);
-        initialSet.add(abstractHtml);
+        final Set<AbstractHtml> initialSet = Set.of(abstractHtml);
         childrenStack.push(initialSet);
 
         Set<AbstractHtml> children;
@@ -1753,9 +1750,7 @@ public abstract class BrowserPage implements Serializable {
         }
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-        // passed 2 instead of 1 because the load factor is 0.75f
-        final Set<AbstractHtml> initialSet = new LinkedHashSet<>(2);
-        initialSet.add(abstractHtml);
+        final Set<AbstractHtml> initialSet = Set.of(abstractHtml);
         childrenStack.push(initialSet);
 
         boolean headAndbodyTagMissing = true;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 Web Firm Framework
+ * Copyright 2014-2024 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,33 +125,30 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     *
      * @since 3.0.15
-     *
+     * @since 12.0.1 record class type
      */
-    private static final class TagContractRecord {
-
-        private final AbstractHtml tag;
-
-        private final AbstractHtml5SharedObject sharedObject;
-
-        private TagContractRecord(final AbstractHtml tag, final AbstractHtml5SharedObject sharedObject) {
-            super();
-            this.tag = tag;
-            this.sharedObject = sharedObject;
-        }
+    private record TagContractRecord(AbstractHtml tag, AbstractHtml5SharedObject sharedObject) {
 
         /**
+         * @return objectId
          * @since 3.0.15 returns long value type
          * @since 3.0.19 returns ObjectId value type
-         * @return objectId
          */
         private ObjectId objectId() {
             return sharedObject.objectId();
         }
 
-        private boolean isValid() {
-            return sharedObject.equals(tag.getSharedObject());
+        private boolean isValid(final AbstractHtml5SharedObject latestSharedObject) {
+            if (sharedObject.equals(tag.getSharedObject(ACCESS_OBJECT)) || (latestSharedObject == null)) {
+                return true;
+            }
+            return tag.getSharedObject(ACCESS_OBJECT).objectId().compareTo(latestSharedObject.objectId()) >= 0;
+        }
+
+        @Override
+        public String toString() {
+            return sharedObject.objectId().id() + ":" + tag.internalId();
         }
     }
 
@@ -676,7 +673,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
             final Collection<AbstractHtml5SharedObject> sharedObjects = new HashSet<>(1);
 
             for (final AbstractHtml ownerTag : ownerTags) {
-                sharedObjects.add(ownerTag.getSharedObject());
+                sharedObjects.add(ownerTag.getSharedObject(ACCESS_OBJECT));
             }
             return sharedObjects;
         } finally {
@@ -697,7 +694,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
         final Set<AbstractHtml> ownerTags = Set.copyOf(this.ownerTags);
         for (final AbstractHtml ownerTag : ownerTags) {
-            sharedObjects.add(ownerTag.getSharedObject());
+            sharedObjects.add(ownerTag.getSharedObject(ACCESS_OBJECT));
         }
         return new OwnerTagsRecord(ownerTags, sharedObjects);
     }
@@ -1138,7 +1135,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
             compressedBytes = null;
             for (final AbstractHtml ownerTag : ownerTags) {
                 ownerTag.setModified(modified);
-                ownerTag.getSharedObject().setChildModified(modified, ACCESS_OBJECT);
+                ownerTag.getSharedObject(ACCESS_OBJECT).setChildModified(modified, ACCESS_OBJECT);
             }
         }
     }
@@ -1595,7 +1592,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
             // considered as 1
 
             for (final AbstractHtml ownerTag : ownerTags) {
-                tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
+                tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject(ACCESS_OBJECT)));
             }
 
             tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
@@ -1603,20 +1600,24 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
             writeLocks = new ArrayList<>(tagContractRecords.size() + 1);
             ownerTagModified = false;
+            AbstractHtml5SharedObject latestSharedObject = null;
             for (final TagContractRecord tagContractRecord : tagContractRecords) {
-                if (!tagContractRecord.isValid()) {
+                if (!tagContractRecord.isValid(latestSharedObject)) {
                     ownerTagModified = true;
                     break;
                 }
+                if (tagContractRecord.tag.getSharedObject(ACCESS_OBJECT).equals(latestSharedObject)) {
+                    continue;
+                }
 
-                final WriteLock lock = tagContractRecord.sharedObject.getLock(ACCESS_OBJECT).writeLock();
-                lock.lock();
+                final Lock lock = tagContractRecord.tag.lockAndGetWriteLock(ACCESS_OBJECT, latestSharedObject);
+                if (lock == null) {
+                    ownerTagModified = true;
+                    break;
+                }
                 writeLocks.add(lock);
 
-                if (!tagContractRecord.isValid()) {
-                    ownerTagModified = true;
-                    break;
-                }
+                latestSharedObject = tagContractRecord.tag.getSharedObject(ACCESS_OBJECT);
             }
 
             // NB: must reverse it before returning because its unlocking must be in the
@@ -1665,7 +1666,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
                 // normally there will be one sharedObject so the capacity may be
                 // considered as 1
                 for (final AbstractHtml ownerTag : ownerTags) {
-                    tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
+                    tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject(ACCESS_OBJECT)));
                 }
 
                 tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
@@ -1673,20 +1674,24 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
                 writeLocks = new ArrayList<>(tagContractRecords.size());
                 ownerTagModified = false;
+                AbstractHtml5SharedObject latestSharedObject = null;
                 for (final TagContractRecord tagContractRecord : tagContractRecords) {
-                    if (!tagContractRecord.isValid()) {
+                    if (!tagContractRecord.isValid(latestSharedObject)) {
                         ownerTagModified = true;
                         break;
                     }
+                    if (tagContractRecord.tag.getSharedObject(ACCESS_OBJECT).equals(latestSharedObject)) {
+                        continue;
+                    }
 
-                    final WriteLock lock = tagContractRecord.sharedObject.getLock(ACCESS_OBJECT).writeLock();
-                    lock.lock();
+                    final WriteLock lock = tagContractRecord.tag.lockAndGetWriteLock(ACCESS_OBJECT, latestSharedObject);
+                    if (lock == null) {
+                        ownerTagModified = true;
+                        break;
+                    }
                     writeLocks.add(lock);
 
-                    if (!tagContractRecord.isValid()) {
-                        ownerTagModified = true;
-                        break;
-                    }
+                    latestSharedObject = tagContractRecord.tag.getSharedObject(ACCESS_OBJECT);
                 }
 
                 // NB: must reverse it before returning because its unlocking must be in the
@@ -1737,7 +1742,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
             // considered as 1
 
             for (final AbstractHtml ownerTag : ownerTags) {
-                tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
+                tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject(ACCESS_OBJECT)));
             }
 
             tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
@@ -1745,20 +1750,24 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
             readLocks = new ArrayList<>(tagContractRecords.size() + 1);
             ownerTagModified = false;
+            AbstractHtml5SharedObject latestSharedObject = null;
             for (final TagContractRecord tagContractRecord : tagContractRecords) {
-                if (!tagContractRecord.isValid()) {
+                if (!tagContractRecord.isValid(latestSharedObject)) {
                     ownerTagModified = true;
                     break;
                 }
+                if (tagContractRecord.tag.getSharedObject(ACCESS_OBJECT).equals(latestSharedObject)) {
+                    continue;
+                }
 
-                final ReadLock lock = tagContractRecord.sharedObject.getLock(ACCESS_OBJECT).readLock();
-                lock.lock();
+                final ReadLock lock = tagContractRecord.tag.lockAndGetReadLock(ACCESS_OBJECT, latestSharedObject);
+                if (lock == null) {
+                    ownerTagModified = true;
+                    break;
+                }
                 readLocks.add(lock);
 
-                if (!tagContractRecord.isValid()) {
-                    ownerTagModified = true;
-                    break;
-                }
+                latestSharedObject = tagContractRecord.tag.getSharedObject(ACCESS_OBJECT);
             }
 
             // NB: must reverse it before returning because its unlocking must be in the
@@ -1807,7 +1816,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
                 // considered as 1
 
                 for (final AbstractHtml ownerTag : ownerTags) {
-                    tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject()));
+                    tagContractRecords.add(new TagContractRecord(ownerTag, ownerTag.getSharedObject(ACCESS_OBJECT)));
                 }
 
                 tagContractRecords.sort(Comparator.comparing(TagContractRecord::objectId));
@@ -1815,20 +1824,24 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
                 readLocks = new ArrayList<>(tagContractRecords.size());
                 ownerTagModified = false;
+                AbstractHtml5SharedObject latestSharedObject = null;
                 for (final TagContractRecord tagContractRecord : tagContractRecords) {
-                    if (!tagContractRecord.isValid()) {
+                    if (!tagContractRecord.isValid(latestSharedObject)) {
                         ownerTagModified = true;
                         break;
                     }
+                    if (tagContractRecord.tag.getSharedObject(ACCESS_OBJECT).equals(latestSharedObject)) {
+                        continue;
+                    }
 
-                    final ReadLock lock = tagContractRecord.sharedObject.getLock(ACCESS_OBJECT).readLock();
-                    lock.lock();
+                    final ReadLock lock = tagContractRecord.tag.lockAndGetReadLock(ACCESS_OBJECT, latestSharedObject);
+                    if (lock == null) {
+                        ownerTagModified = true;
+                        break;
+                    }
                     readLocks.add(lock);
 
-                    if (!tagContractRecord.isValid()) {
-                        ownerTagModified = true;
-                        break;
-                    }
+                    latestSharedObject = tagContractRecord.tag.getSharedObject(ACCESS_OBJECT);
                 }
 
                 // NB: must reverse it before returning because its unlocking must be in the
@@ -1867,7 +1880,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
             final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
 
             for (final AbstractHtml ownerTag : ownerTags) {
-                sharedObjectsSet.add(ownerTag.getSharedObject());
+                sharedObjectsSet.add(ownerTag.getSharedObject(ACCESS_OBJECT));
             }
 
             final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);
@@ -1909,7 +1922,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
             final Set<AbstractHtml5SharedObject> sharedObjectsSet = new HashSet<>(1);
 
             for (final AbstractHtml ownerTag : ownerTags) {
-                sharedObjectsSet.add(ownerTag.getSharedObject());
+                sharedObjectsSet.add(ownerTag.getSharedObject(ACCESS_OBJECT));
             }
 
             final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(sharedObjectsSet);

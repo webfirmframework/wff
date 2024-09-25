@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 Web Firm Framework
+ * Copyright 2014-2024 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1366,10 +1366,10 @@ public class SharedTagContent<T> {
     }
 
     private void executeMethodCallsFromQ() {
-        if (!asyncUpdate && methodCallQLock.tryAcquire()) {
+        if (methodCallQLock.tryAcquire()) {
             final Executor executor = this.executor;
             try {
-                processMethodCallQ(executor, false);
+                processMethodCallQ(executor, asyncUpdate, false);
             } finally {
                 methodCallQLock.release();
             }
@@ -1380,7 +1380,7 @@ public class SharedTagContent<T> {
                 final Runnable runnable = () -> {
                     methodCallQLock.acquireUninterruptibly();
                     try {
-                        processMethodCallQ(activeExecutor, true);
+                        processMethodCallQ(activeExecutor, asyncUpdate, true);
                     } finally {
                         methodCallQLock.release();
                     }
@@ -1394,15 +1394,16 @@ public class SharedTagContent<T> {
         }
     }
 
-    private void processMethodCallQ(final Executor executor, final boolean parallelUpdateOnTags) {
+    private void processMethodCallQ(final Executor executor, final boolean parallelUpdateOnTags,
+            final boolean calledByThread) {
         QueuedMethodCall<T> eachItem;
         while ((eachItem = methodCallQ.poll()) != null) {
             if (eachItem instanceof final SetContentCall<T> each) {
                 setContentForQ(each.updateClient, each.updateClientNature, each.exclusionTags, each.content,
-                        each.contentTypeHtml, each.shared, executor, parallelUpdateOnTags);
+                        each.contentTypeHtml, each.shared, executor, parallelUpdateOnTags, calledByThread);
             } else if (eachItem instanceof final DetachCall<T> each) {
-                detachForQ(each.removeContent, each.exclusionTags, each.exclusionClientUpdateTags,
-                        parallelUpdateOnTags);
+                detachForQ(each.removeContent, each.exclusionTags, each.exclusionClientUpdateTags, parallelUpdateOnTags,
+                        calledByThread);
             } else if (eachItem instanceof final AddContentChangeListenerCall<T> each) {
                 addContentChangeListenerForQ(each.tag, each.contentChangeListener);
             } else if (eachItem instanceof final AddDetachListenerCall<T> each) {
@@ -1473,10 +1474,11 @@ public class SharedTagContent<T> {
      * @param shared
      * @param executor
      * @param parallelUpdateOnTags
+     * @param calledByThread
      */
     private void setContentForQ(final boolean updateClient, final UpdateClientNature updateClientNature,
             final Set<AbstractHtml> exclusionTags, final T content, final boolean contentTypeHtml, final boolean shared,
-            final Executor executor, final boolean parallelUpdateOnTags) {
+            final Executor executor, final boolean parallelUpdateOnTags, final boolean calledByThread) {
 
         if (shared) {
 
@@ -1517,7 +1519,7 @@ public class SharedTagContent<T> {
                     // the condition isParentNullifiedOnce true means the parent
                     // of this tag has already been changed at least once
                     if (parentTag == null || prevNoTagAsBase.isParentNullifiedOnce()
-                            || prevNoTagAsBase.sharedTagContent == null) {
+                            || prevNoTagAsBase.sharedTagContent != SharedTagContent.this) {
                         prevNoTagAsBase.setCacheSTCFormatter(null);
                         prevNoTagAsBase.setSharedTagContent(null);
                         prevNoTagAsBase.setSharedTagContentSubscribed(null);
@@ -1714,7 +1716,8 @@ public class SharedTagContent<T> {
                         }
                     };
 
-                    if (virtualThreadExecutor != null) {
+                    if (virtualThreadExecutor != null && (calledByThread
+                            || !entry.getKey().getLock(ACCESS_OBJECT).isWriteLockedByCurrentThread())) {
                         virtualThreadExecutor.execute(runnable);
                     } else {
                         runnable.run();
@@ -2174,10 +2177,12 @@ public class SharedTagContent<T> {
      * @param exclusionClientUpdateTags these tags will be excluded for client
      *                                  update
      * @param parallelUpdateOnTags
+     * @param calledByThread
      * @since 3.0.6
      */
     private void detachForQ(final boolean removeContent, final Set<AbstractHtml> exclusionTags,
-            final Set<AbstractHtml> exclusionClientUpdateTags, final boolean parallelUpdateOnTags) {
+            final Set<AbstractHtml> exclusionClientUpdateTags, final boolean parallelUpdateOnTags,
+            final boolean calledByThread) {
 
         final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(4);
         Deque<Runnable> runnables = null;
@@ -2204,7 +2209,7 @@ public class SharedTagContent<T> {
                 // the condition isParentNullifiedOnce true means the parent of
                 // this tag has already been changed at least once
                 if (parentTag == null || prevNoTagAsBase.isParentNullifiedOnce()
-                        || prevNoTagAsBase.sharedTagContent == null) {
+                        || prevNoTagAsBase.sharedTagContent != SharedTagContent.this) {
                     prevNoTagAsBase.setCacheSTCFormatter(null);
                     prevNoTagAsBase.setSharedTagContent(null);
                     prevNoTagAsBase.setSharedTagContentSubscribed(null);
@@ -2354,7 +2359,8 @@ public class SharedTagContent<T> {
 
                 };
 
-                if (virtualThreadExecutor != null) {
+                if (virtualThreadExecutor != null
+                        && (calledByThread || !entry.getKey().getLock(ACCESS_OBJECT).isWriteLockedByCurrentThread())) {
                     virtualThreadExecutor.execute(runnable);
                 } else {
                     runnable.run();
