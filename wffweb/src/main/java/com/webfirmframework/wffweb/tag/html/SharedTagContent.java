@@ -318,6 +318,10 @@ public class SharedTagContent<T> {
 
     }
 
+    private static record ReadStateCall<T> (StateConsumer<T> stateConsumer) implements QueuedMethodCall<T> {
+
+    }
+
     @FunctionalInterface
     public static interface ContentFormatter<T> {
         public abstract Content<String> format(final Content<T> content);
@@ -402,6 +406,11 @@ public class SharedTagContent<T> {
             Content<T> content) {
     }
 
+    public static final record StateEvent<T> (Content<T> content, boolean shared,
+                                              UpdateClientNature updateClientNature, boolean updateClient,
+                                              boolean asyncUpdate) {
+    }
+
     /**
      * @author WFF
      * @since 3.0.6
@@ -421,6 +430,17 @@ public class SharedTagContent<T> {
          *         returning Runnable object (Runnable.run).
          */
         public abstract Runnable detached(final DetachEvent<T> detachEvent);
+    }
+
+    /**
+     * @param <T> the content data type
+     * @since 12.0.2
+     */
+    @FunctionalInterface
+    public static interface StateConsumer<T> {
+
+        public abstract void accept(final StateEvent<T> stateEvent);
+
     }
 
     /**
@@ -1447,6 +1467,8 @@ public class SharedTagContent<T> {
                 removeForQ(each.insertedTag, each.parentTag);
             } else if (eachItem instanceof final RemoveListenersCall<T> each) {
                 removeListenersForQ(each.tagId);
+            } else if (eachItem instanceof final SharedTagContent.ReadStateCall<T> each) {
+                readStateForQ(each.stateConsumer);
             }
         }
         cleanup();
@@ -2100,6 +2122,14 @@ public class SharedTagContent<T> {
         if (contentChangeListeners != null) {
             contentChangeListeners.remove(tagId);
         }
+    }
+
+    /**
+     * @param stateConsumer
+     * @since 12.0.2
+     */
+    private void readStateForQ(final StateConsumer<T> stateConsumer) {
+        stateConsumer.accept(new StateEvent<>(contentWithType, shared, updateClientNature, updateClient, asyncUpdate));
     }
 
     /**
@@ -3045,4 +3075,19 @@ public class SharedTagContent<T> {
     public int pendingTasksSize() {
         return methodCallQ.size();
     }
+
+    /**
+     * Reads the state i.e. content and other properties of this SharedTagContent object.
+     * It ensures that no one is updating the content/properties of this SharedTagContent object at the time of reading.
+     * The difference between getContent and readState is, in a multi-threaded environment,
+     * if setContent is called just before this method it will make sure that the state is read only after setting
+     * the content (It will keep an orderly execution of method calls in FIFO).
+     * @param stateConsumer the StateConsumer to read the state.
+     * @since 12.0.2
+     */
+    public void readState(final StateConsumer<T> stateConsumer) {
+        methodCallQ.add(new ReadStateCall<>(stateConsumer));
+        executeMethodCallsFromQ();
+    }
+
 }
