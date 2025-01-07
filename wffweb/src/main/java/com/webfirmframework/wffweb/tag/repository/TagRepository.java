@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -411,9 +412,8 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
 
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                    .filter(child -> getAttributesLockless(child) != null)
-                    .map(AbstractHtmlRepository::getAttributesLockless).flatMap(Collection::stream).filter(filter)
-                    .collect(Collectors.toSet());
+                    .map(AbstractHtmlRepository::getAttributesLockless).filter(Objects::nonNull)
+                    .flatMap(Collection::stream).filter(filter).collect(Collectors.toSet());
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -455,9 +455,9 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
 
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                    .filter(child -> tagName.equals(child.getTagName()) && getAttributesLockless(child) != null)
-                    .map(AbstractHtmlRepository::getAttributesLockless).flatMap(Collection::stream)
-                    .collect(Collectors.toSet());
+                    .filter(child -> tagName.equals(child.getTagName()))
+                    .map(AbstractHtmlRepository::getAttributesLockless).filter(Objects::nonNull)
+                    .flatMap(Collection::stream).collect(Collectors.toSet());
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -519,7 +519,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
 
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                    .filter(child -> getAttributesLockless(child) != null).filter(filter)
+                    .filter(AbstractHtmlRepository::containsAttributesLockless).filter(filter)
                     .map(AbstractHtmlRepository::getAttributesLockless).flatMap(Collection::stream)
                     .collect(Collectors.toSet());
         } finally {
@@ -1410,8 +1410,8 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
 
         try {
             final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(parallel)
-                    .filter(tag -> tagName.equals(tag.getTagName()) && getAttributesLockless(tag) != null)
-                    .map(AbstractHtmlRepository::getAttributesLockless).flatMap(Collection::stream);
+                    .filter(tag -> tagName.equals(tag.getTagName())).map(AbstractHtmlRepository::getAttributesLockless)
+                    .filter(Objects::nonNull).flatMap(Collection::stream);
 
             return attributesStream.collect(Collectors.toSet());
         } finally {
@@ -1467,8 +1467,8 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
 
         try {
             final Stream<AbstractAttribute> attributesStream = buildAllTagsStream(parallel)
-                    .filter(tag -> getAttributesLockless(tag) != null)
-                    .map(AbstractHtmlRepository::getAttributesLockless).flatMap(Collection::stream);
+                    .map(AbstractHtmlRepository::getAttributesLockless).filter(Objects::nonNull)
+                    .flatMap(Collection::stream);
 
             return attributesStream.filter(filter).collect(Collectors.toSet());
         } finally {
@@ -2220,7 +2220,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * @author WFF
      */
     public Stream<AbstractAttribute> buildAllAttributesStream(final boolean parallel) {
-        return buildAllTagsStream(parallel).filter(tag -> tag.getAttributes() != null).map(AbstractHtml::getAttributes)
+        return buildAllTagsStream(parallel).map(AbstractHtml::getAttributes).filter(Objects::nonNull)
                 .flatMap(Collection::stream);
     }
 
@@ -2264,9 +2264,8 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
 
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                    .filter(tag -> getAttributesLockless(tag) != null)
-                    .map(AbstractHtmlRepository::getAttributesLockless).flatMap(Collection::stream)
-                    .collect(Collectors.toSet());
+                    .map(AbstractHtmlRepository::getAttributesLockless).filter(Objects::nonNull)
+                    .flatMap(Collection::stream).collect(Collectors.toSet());
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -2616,8 +2615,8 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
 
         try {
             return getAllNestedChildrenIncludingParent(parallel, fromTags)
-                    .filter(tag -> getAttributesLockless(tag) != null)
-                    .map(AbstractHtmlRepository::getAttributesLockless).flatMap(Collection::stream);
+                    .map(AbstractHtmlRepository::getAttributesLockless).filter(Objects::nonNull)
+                    .flatMap(Collection::stream);
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();

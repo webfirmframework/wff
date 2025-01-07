@@ -2682,6 +2682,18 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
+     * @return true if it contains attributes
+     * @since 12.0.2
+     */
+    final boolean containsAttributesLockless() {
+        final Map<String, AbstractAttribute> attributesMap = this.attributesMap;
+        if (attributesMap != null) {
+            return !attributesMap.isEmpty();
+        }
+        return false;
+    }
+
+    /**
      * gets the attribute by attribute name
      *
      * @return the attribute object for the given attribute name if exists otherwise

@@ -87,6 +87,15 @@ public abstract class AbstractHtmlRepository {
     }
 
     /**
+     * @param tag the tag to check if it contains attributes
+     * @return true if it contains attributes otherwise false
+     * @since 12.0.2
+     */
+    protected static boolean containsAttributesLockless(final AbstractHtml tag) {
+        return tag.containsAttributesLockless();
+    }
+
+    /**
      * Old implementation of getReadLocks method. It is kept for future reference.
      *
      * @param fromTags
