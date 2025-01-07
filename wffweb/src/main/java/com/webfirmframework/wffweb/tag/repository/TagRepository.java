@@ -144,17 +144,31 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
         final Collection<Lock> locks = lockAndGetReadLocks(fromTags);
 
         try {
-            final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(parallel, fromTags);
+            if (parallel) {
+                final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(parallel, fromTags);
 
-            final Optional<AbstractHtml> any = stream.filter(child -> {
+                final Optional<AbstractHtml> any = stream.filter(child -> {
 
+                    final AbstractAttribute idAttr = getAttributeByNameLockless(child, AttributeNameConstants.ID);
+
+                    return idAttr != null && id.equals(idAttr.getAttributeValue());
+
+                }).findAny();
+
+                return any.orElse(null);
+            }
+
+            final AbstractHtml[] foundTag = { null };
+            loopThroughAllNestedChildren(child -> {
                 final AbstractAttribute idAttr = getAttributeByNameLockless(child, AttributeNameConstants.ID);
+                if (idAttr != null && id.equals(idAttr.getAttributeValue())) {
+                    foundTag[0] = child;
+                    return false;
+                }
+                return true;
+            }, true, fromTags);
 
-                return idAttr != null && id.equals(idAttr.getAttributeValue());
-
-            }).findAny();
-
-            return any.orElse(null);
+            return foundTag[0];
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -563,17 +577,32 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
         final Collection<Lock> locks = lockAndGetReadLocks(fromTags);
 
         try {
-            final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(parallel, fromTags);
 
-            final Optional<AbstractHtml> any = stream.filter(child -> {
+            if (parallel) {
+                final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(parallel, fromTags);
 
+                final Optional<AbstractHtml> any = stream.filter(child -> {
+
+                    final AbstractAttribute attr = getAttributeByNameLockless(child, attributeName);
+
+                    return attr != null && attributeValue.equals(attr.getAttributeValue());
+
+                }).findAny();
+
+                return any.orElse(null);
+            }
+
+            final AbstractHtml[] foundTag = { null };
+            loopThroughAllNestedChildren(child -> {
                 final AbstractAttribute attr = getAttributeByNameLockless(child, attributeName);
+                if (attr != null && attributeValue.equals(attr.getAttributeValue())) {
+                    foundTag[0] = child;
+                    return false;
+                }
+                return true;
+            }, true, fromTags);
 
-                return attr != null && attributeValue.equals(attr.getAttributeValue());
-
-            }).findAny();
-
-            return any.orElse(null);
+            return foundTag[0];
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -628,11 +657,22 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
         final Collection<Lock> locks = lockAndGetReadLocks(fromTags);
 
         try {
-            final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(parallel, fromTags)
-                    .filter(tag -> tagName.equals(tag.getTagName())).findAny();
+            if (parallel) {
+                final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(parallel, fromTags)
+                        .filter(tag -> tagName.equals(tag.getTagName())).findAny();
+                return any.orElse(null);
+            }
 
-            return any.orElse(null);
+            final AbstractHtml[] foundTag = { null };
+            loopThroughAllNestedChildren(child -> {
+                if (tagName.equals(child.getTagName())) {
+                    foundTag[0] = child;
+                    return false;
+                }
+                return true;
+            }, true, fromTags);
 
+            return foundTag[0];
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -752,13 +792,25 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
         final Collection<Lock> locks = lockAndGetReadLocks(fromTags);
 
         try {
-            final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(parallel, fromTags)
-                    .filter(child -> tagClass.isAssignableFrom(child.getClass())
-                            && !NoTag.class.isAssignableFrom(child.getClass()))
-                    .findAny();
+            if (parallel) {
+                final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(parallel, fromTags)
+                        .filter(child -> tagClass.isAssignableFrom(child.getClass())
+                                && !NoTag.class.isAssignableFrom(child.getClass()))
+                        .findAny();
 
-            return (T) any.orElse(null);
+                return (T) any.orElse(null);
+            }
 
+            final AbstractHtml[] foundTag = { null };
+            loopThroughAllNestedChildren(child -> {
+                if (tagClass.isAssignableFrom(child.getClass()) && !NoTag.class.isAssignableFrom(child.getClass())) {
+                    foundTag[0] = child;
+                    return false;
+                }
+                return true;
+            }, true, fromTags);
+
+            return (T) foundTag[0];
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
@@ -952,10 +1004,23 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
         final Collection<Lock> locks = lockAndGetReadLocks(fromTags);
 
         try {
-            final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(parallel, fromTags)
-                    .filter(child -> getAttributeByNameLockless(child, attributeName) != null).findAny();
+            if (parallel) {
+                final Optional<AbstractHtml> any = getAllNestedChildrenIncludingParent(parallel, fromTags)
+                        .filter(child -> getAttributeByNameLockless(child, attributeName) != null).findAny();
 
-            return any.orElse(null);
+                return any.orElse(null);
+            }
+
+            final AbstractHtml[] foundTag = { null };
+            loopThroughAllNestedChildren(child -> {
+                if (getAttributeByNameLockless(child, attributeName) != null) {
+                    foundTag[0] = child;
+                    return false;
+                }
+                return true;
+            }, true, fromTags);
+
+            return foundTag[0];
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();
