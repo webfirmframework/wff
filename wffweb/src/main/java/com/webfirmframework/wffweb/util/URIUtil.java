@@ -16,11 +16,14 @@
 package com.webfirmframework.wffweb.util;
 
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 
@@ -593,5 +596,47 @@ public final class URIUtil {
 
         return new ParsedURI(uriWithoutQString, null, parseQueryString(uriInfo.queryString),
                 URLDecoder.decode(uriInfo.hash, StandardCharsets.UTF_8));
+    }
+
+    /**
+     * @param parameters the map of parameters
+     * @return the url query string
+     * @since 12.0.2
+     */
+    public static String buildQueryStringFromNameToCollectionOfValues(
+            final Map<String, Collection<String>> parameters) {
+        return parameters.entrySet().stream().<Map.Entry<String, String>>mapMulti((entry, downstream) -> {
+            for (final String value : entry.getValue()) {
+                downstream.accept(Map.entry(entry.getKey(), value));
+            }
+        }).map(URIUtil::buildNameEqualsValueEncodedString).collect(Collectors.joining("&"));
+    }
+
+    /**
+     * @param parameters the map of parameters
+     * @return the url query string
+     * @since 12.0.2
+     */
+    public static String buildQueryStringFromNameToValues(final Map<String, String[]> parameters) {
+        return parameters.entrySet().stream().<Map.Entry<String, String>>mapMulti((entry, downstream) -> {
+            for (final String value : entry.getValue()) {
+                downstream.accept(Map.entry(entry.getKey(), value));
+            }
+        }).map(URIUtil::buildNameEqualsValueEncodedString).collect(Collectors.joining("&"));
+    }
+
+    /**
+     * @param parameters the map of parameters
+     * @return the url query string
+     * @since 12.0.2
+     */
+    public static String buildQueryStringFromNameToValue(final Map<String, String> parameters) {
+        return parameters.entrySet().stream().map(URIUtil::buildNameEqualsValueEncodedString)
+                .collect(Collectors.joining("&"));
+    }
+
+    private static String buildNameEqualsValueEncodedString(final Map.Entry<String, String> nameValue) {
+        return URLEncoder.encode(nameValue.getKey(), StandardCharsets.UTF_8) + "="
+                + URLEncoder.encode(nameValue.getValue(), StandardCharsets.UTF_8);
     }
 }
