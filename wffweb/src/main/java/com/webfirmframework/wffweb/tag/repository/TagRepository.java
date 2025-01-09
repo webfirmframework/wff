@@ -551,6 +551,13 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * Finds and returns the first (including the nested tags) matching with the
      * given attribute name and value.
      *
+     * @param parallel       true to internally use parallel stream. If true it will
+     *                       split the finding task to different batches and will
+     *                       execute the batches in different threads in parallel
+     *                       consuming all CPUs. It will perform faster in finding
+     *                       from extremely large number of tags but at the same
+     *                       time it will less efficient in finding from small
+     *                       number of tags.
      * @param attributeName  the name of the attribute.
      * @param attributeValue the value of the attribute
      * @param fromTags       from which the findings to be done.
@@ -1518,6 +1525,12 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
     public AbstractHtml findOneTagByAttribute(final boolean parallel, final String attributeName,
             final String attributeValue) throws NullValueException {
 
+        if (attributeName == null) {
+            throw new NullValueException("The attributeName should not be null");
+        }
+        if (attributeValue == null) {
+            throw new NullValueException("The attributeValue should not be null");
+        }
         final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
 
         try {
@@ -2685,6 +2698,501 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             }
 
             return null;
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
+    }
+
+    /**
+     * Finds and returns the first (searches through the nested tags) matching with
+     * the given attribute name and value.
+     *
+     * @param attributeName  the name of the attribute.
+     * @param attributeValue the value of the attribute
+     * @return the first matching attribute with the given attribute name and value.
+     * @throws NullValueException if the {@code attributeName} or
+     *                            {@code attributeValue} is null
+     * @since 12.0.2
+     */
+    public AbstractAttribute findOneAttributeByAttributeNameAndValue(final String attributeName,
+            final String attributeValue) throws NullValueException {
+        return findOneAttributeByAttributeNameAndValue(false, attributeName, attributeValue);
+    }
+
+    /**
+     * Finds and returns the first (searches through the nested tags) matching with
+     * the given attribute name and value.
+     *
+     * @param parallel       true to internally use parallel stream. If true it will
+     *                       split the finding task to different batches and will
+     *                       execute the batches in different threads in parallel
+     *                       consuming all CPUs. It will perform faster in finding
+     *                       from extremely large number of tags but at the same
+     *                       time it will less efficient in finding from small
+     *                       number of tags.
+     * @param attributeName  the name of the attribute.
+     * @param attributeValue the value of the attribute
+     * @return the first matching attribute with the given attribute name and value.
+     * @throws NullValueException if the {@code attributeName} or
+     *                            {@code attributeValue} is null
+     * @since 12.0.2
+     */
+    public AbstractAttribute findOneAttributeByAttributeNameAndValue(final boolean parallel, final String attributeName,
+            final String attributeValue) throws NullValueException {
+
+        if (attributeName == null) {
+            throw new NullValueException("The attributeName should not be null");
+        }
+        if (attributeValue == null) {
+            throw new NullValueException("The attributeValue should not be null");
+        }
+
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
+
+        try {
+            final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
+
+            final Optional<AbstractAttribute> any = stream.map(tag -> getAttributeByNameLockless(tag, attributeName))
+                    .filter(Objects::nonNull).filter(attr -> attributeValue.equals(attr.getAttributeValue())).findAny();
+
+            return any.orElse(null);
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
+    }
+
+    /**
+     * Finds and returns the first (searches through the nested tags) matching with
+     * the given attribute name and value.
+     *
+     * @param attributeName  the name of the attribute.
+     * @param attributeValue the value of the attribute
+     * @param fromTags       from which the findings to be done.
+     * @return the first matching attribute with the given attribute name and value.
+     * @throws NullValueException if the {@code attributeName},
+     *                            {@code attributeValue} or {@code fromTags} is null
+     * @since 12.0.2
+     */
+    public static AbstractAttribute findOneAttributeByAttributeNameAndValue(final String attributeName,
+            final String attributeValue, final AbstractHtml... fromTags) throws NullValueException {
+        return findOneAttributeByAttributeNameAndValue(false, attributeName, attributeValue, fromTags);
+    }
+
+    /**
+     * Finds and returns the first (searches through the nested tags) matching with
+     * the given attribute name and value.
+     *
+     * @param parallel       true to internally use parallel stream. If true it will
+     *                       * split the finding task to different batches and will
+     *                       * execute the batches in different threads in parallel
+     *                       * consuming all CPUs. It will perform faster in finding
+     *                       * from extremely large number of tags but at the same *
+     *                       time it will less efficient in finding from small *
+     *                       number of tags.
+     * @param attributeName  the name of the attribute.
+     * @param attributeValue the value of the attribute
+     * @param fromTags       from which the findings to be done.
+     * @return the first matching attribute with the given attribute name and value.
+     * @throws NullValueException if the {@code attributeName},
+     *                            {@code attributeValue} or {@code fromTags} is null
+     * @since 12.0.2
+     */
+    public static AbstractAttribute findOneAttributeByAttributeNameAndValue(final boolean parallel,
+            final String attributeName, final String attributeValue, final AbstractHtml... fromTags)
+            throws NullValueException {
+
+        if (attributeName == null) {
+            throw new NullValueException("The attributeName should not be null");
+        }
+        if (attributeValue == null) {
+            throw new NullValueException("The attributeValue should not be null");
+        }
+
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        final Collection<Lock> locks = lockAndGetReadLocks(fromTags);
+
+        try {
+
+            if (parallel) {
+                final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(parallel, fromTags);
+
+                final Optional<AbstractAttribute> any = stream
+                        .map(tag -> getAttributeByNameLockless(tag, attributeName)).filter(Objects::nonNull)
+                        .filter(attr -> attributeValue.equals(attr.getAttributeValue())).findAny();
+
+                return any.orElse(null);
+            }
+
+            final AbstractAttribute[] foundAttribute = { null };
+            loopThroughAllNestedChildren(child -> {
+                final AbstractAttribute attr = getAttributeByNameLockless(child, attributeName);
+                if (attr != null && attributeValue.equals(attr.getAttributeValue())) {
+                    foundAttribute[0] = attr;
+                    return false;
+                }
+                return true;
+            }, true, fromTags);
+
+            return foundAttribute[0];
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
+    }
+
+    /**
+     * Finds and returns the first (searches through the nested tags) matching with
+     * the given attribute name and value.
+     *
+     * @param attributeName the name of the attribute.
+     * @return the first matching attribute with the given attribute name.
+     * @throws NullValueException if the {@code attributeName} is null
+     * @since 12.0.2
+     */
+    public AbstractAttribute findOneAttributeByAttributeName(final String attributeName) throws NullValueException {
+        return findOneAttributeByAttributeName(false, attributeName);
+    }
+
+    /**
+     * Finds and returns the first (searches through the nested tags) matching with
+     * the given attribute name.
+     *
+     * @param parallel      true to internally use parallel stream. If true it will
+     *                      split the finding task to different batches and will
+     *                      execute the batches in different threads in parallel
+     *                      consuming all CPUs. It will perform faster in finding
+     *                      from extremely large number of tags but at the same time
+     *                      it will less efficient in finding from small number of
+     *                      tags.
+     * @param attributeName the name of the attribute.
+     * @return the first matching attribute with the given attribute name.
+     * @throws NullValueException if the {@code attributeName} is null
+     * @since 12.0.2
+     */
+    public AbstractAttribute findOneAttributeByAttributeName(final boolean parallel, final String attributeName)
+            throws NullValueException {
+
+        if (attributeName == null) {
+            throw new NullValueException("The attributeName should not be null");
+        }
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
+
+        try {
+            final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
+
+            final Optional<AbstractAttribute> any = stream.map(tag -> getAttributeByNameLockless(tag, attributeName))
+                    .filter(Objects::nonNull).findAny();
+
+            return any.orElse(null);
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
+    }
+
+    /**
+     * Finds and returns the first (searches through the nested tags) matching with
+     * the given attribute name and value.
+     *
+     * @param attributeName the name of the attribute.
+     * @param fromTags      from which the findings to be done.
+     * @return the first matching attribute with the given attribute name.
+     * @throws NullValueException if the {@code attributeName} or {@code fromTags}
+     *                            is null
+     * @since 12.0.2
+     */
+    public static AbstractAttribute findOneAttributeByAttributeName(final String attributeName,
+            final AbstractHtml... fromTags) throws NullValueException {
+        return findOneAttributeByAttributeName(false, attributeName, fromTags);
+    }
+
+    /**
+     * Finds and returns the first (searches through the nested tags) matching with
+     * the given attribute name.
+     *
+     * @param parallel      true to internally use parallel stream. If true it will
+     *                      * split the finding task to different batches and will *
+     *                      execute the batches in different threads in parallel *
+     *                      consuming all CPUs. It will perform faster in finding *
+     *                      from extremely large number of tags but at the same *
+     *                      time it will less efficient in finding from small *
+     *                      number of tags.
+     * @param attributeName the name of the attribute.
+     * @param fromTags      from which the findings to be done.
+     * @return the first matching attribute with the given attribute name.
+     * @throws NullValueException if the {@code attributeName} or {@code fromTags}
+     *                            is null
+     * @since 12.0.2
+     */
+    public static AbstractAttribute findOneAttributeByAttributeName(final boolean parallel, final String attributeName,
+            final AbstractHtml... fromTags) throws NullValueException {
+
+        if (attributeName == null) {
+            throw new NullValueException("The attributeName should not be null");
+        }
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        final Collection<Lock> locks = lockAndGetReadLocks(fromTags);
+
+        try {
+
+            if (parallel) {
+                final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(parallel, fromTags);
+
+                final Optional<AbstractAttribute> any = stream
+                        .map(tag -> getAttributeByNameLockless(tag, attributeName)).filter(Objects::nonNull).findAny();
+
+                return any.orElse(null);
+            }
+
+            final AbstractAttribute[] foundAttribute = { null };
+            loopThroughAllNestedChildren(child -> {
+                final AbstractAttribute attr = getAttributeByNameLockless(child, attributeName);
+                if (attr != null) {
+                    foundAttribute[0] = attr;
+                    return false;
+                }
+                return true;
+            }, true, fromTags);
+
+            return foundAttribute[0];
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
+    }
+
+    /**
+     * Finds and returns the matching attributes having the given attribute name and
+     * value.
+     *
+     * @param attributeName  the name of the attribute.
+     * @param attributeValue the value of the attribute
+     * @return the matching attributes with the given attribute name and value.
+     * @throws NullValueException if the {@code attributeName} or
+     *                            {@code attributeValue} is null
+     * @since 12.0.2
+     */
+    public Collection<AbstractAttribute> findAttributesByAttributeNameAndValue(final String attributeName,
+            final String attributeValue) throws NullValueException {
+        return findAttributesByAttributeNameAndValue(false, attributeName, attributeValue);
+    }
+
+    /**
+     * Finds and returns the matching attributes having the given attribute name and
+     * value.
+     *
+     * @param parallel       true to internally use parallel stream. If true it will
+     *                       split the finding task to different batches and will
+     *                       execute the batches in different threads in parallel
+     *                       consuming all CPUs. It will perform faster in finding
+     *                       from extremely large number of tags but at the same
+     *                       time it will less efficient in finding from small
+     *                       number of tags.
+     * @param attributeName  the name of the attribute.
+     * @param attributeValue the value of the attribute
+     * @return the matching attributes with the given attribute name and value.
+     * @throws NullValueException if the {@code attributeName} or
+     *                            {@code attributeValue} is null
+     * @since 12.0.2
+     */
+    public Collection<AbstractAttribute> findAttributesByAttributeNameAndValue(final boolean parallel,
+            final String attributeName, final String attributeValue) throws NullValueException {
+
+        if (attributeName == null) {
+            throw new NullValueException("The attributeName should not be null");
+        }
+        if (attributeValue == null) {
+            throw new NullValueException("The attributeValue should not be null");
+        }
+
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
+
+        try {
+            final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
+
+            return stream.map(tag -> getAttributeByNameLockless(tag, attributeName)).filter(Objects::nonNull)
+                    .filter(attr -> attributeValue.equals(attr.getAttributeValue())).collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
+    }
+
+    /**
+     * Finds and returns the matching attributes having the given attribute name and
+     * value.
+     *
+     * @param attributeName  the name of the attribute.
+     * @param attributeValue the value of the attribute
+     * @param fromTags       from which the findings to be done.
+     * @return the matching attributes with the given attribute name and value.
+     * @throws NullValueException if the {@code attributeName},
+     *                            {@code attributeValue} or {@code fromTags} is null
+     * @since 12.0.2
+     */
+    public static Collection<AbstractAttribute> findAttributesByAttributeNameAndValue(final String attributeName,
+            final String attributeValue, final AbstractHtml... fromTags) throws NullValueException {
+        return findAttributesByAttributeNameAndValue(false, attributeName, attributeValue, fromTags);
+    }
+
+    /**
+     * Finds and returns the matching attributes having the given attribute name and
+     * value.
+     *
+     * @param parallel       true to internally use parallel stream. If true it will
+     *                       split the finding task to different batches and will
+     *                       execute the batches in different threads in parallel
+     *                       consuming all CPUs. It will perform faster in finding
+     *                       from extremely large number of tags but at the same
+     *                       time it will less efficient in finding from small
+     *                       number of tags.
+     * @param attributeName  the name of the attribute.
+     * @param attributeValue the value of the attribute
+     * @param fromTags       from which the findings to be done.
+     * @return the matching attributes with the given attribute name and value.
+     * @throws NullValueException if the {@code attributeName},
+     *                            {@code attributeValue} or {@code fromTags} is null
+     * @since 12.0.2
+     */
+    public static Collection<AbstractAttribute> findAttributesByAttributeNameAndValue(final boolean parallel,
+            final String attributeName, final String attributeValue, final AbstractHtml... fromTags)
+            throws NullValueException {
+
+        if (attributeName == null) {
+            throw new NullValueException("The attributeName should not be null");
+        }
+        if (attributeValue == null) {
+            throw new NullValueException("The attributeValue should not be null");
+        }
+
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        final Collection<Lock> locks = lockAndGetReadLocks(fromTags);
+
+        try {
+            final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(parallel, fromTags);
+            return stream.map(tag -> getAttributeByNameLockless(tag, attributeName)).filter(Objects::nonNull)
+                    .filter(attr -> attributeValue.equals(attr.getAttributeValue())).collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
+    }
+
+    /**
+     * Finds and returns the matching attributes having the given attribute name and
+     * value.
+     *
+     * @param attributeName the name of the attribute.
+     * @return the matching attributes with the given attribute name and value.
+     * @throws NullValueException if the {@code attributeName} is null
+     * @since 12.0.2
+     */
+    public Collection<AbstractAttribute> findAttributesByAttributeName(final String attributeName)
+            throws NullValueException {
+        return findAttributesByAttributeName(false, attributeName);
+    }
+
+    /**
+     * Finds and returns the matching attributes having the given attribute name.
+     *
+     * @param parallel      true to internally use parallel stream. If true it will
+     *                      split the finding task to different batches and will
+     *                      execute the batches in different threads in parallel
+     *                      consuming all CPUs. It will perform faster in finding
+     *                      from extremely large number of tags but at the same time
+     *                      it will less efficient in finding from small number of
+     *                      tags.
+     * @param attributeName the name of the attribute.
+     * @return the matching attributes with the given attribute name.
+     * @throws NullValueException if the {@code attributeName} is null
+     * @since 12.0.2
+     */
+    public Collection<AbstractAttribute> findAttributesByAttributeName(final boolean parallel,
+            final String attributeName) throws NullValueException {
+
+        if (attributeName == null) {
+            throw new NullValueException("The attributeName should not be null");
+        }
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
+
+        try {
+            final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
+
+            return stream.map(tag -> getAttributeByNameLockless(tag, attributeName)).filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
+    }
+
+    /**
+     * Finds and returns the matching attributes having the given attribute name.
+     *
+     * @param attributeName the name of the attribute.
+     * @param fromTags      from which the findings to be done.
+     * @return the matching attributes with the given attribute name.
+     * @throws NullValueException if the {@code attributeName} or {@code fromTags}
+     *                            is null
+     * @since 12.0.2
+     */
+    public static Collection<AbstractAttribute> findAttributesByAttributeName(final String attributeName,
+            final AbstractHtml... fromTags) throws NullValueException {
+        return findAttributesByAttributeName(false, attributeName, fromTags);
+    }
+
+    /**
+     * Finds and returns the matching attributes having the given attribute name.
+     *
+     * @param parallel      true to internally use parallel stream. If true it will
+     *                      * split the finding task to different batches and will *
+     *                      execute the batches in different threads in parallel *
+     *                      consuming all CPUs. It will perform faster in finding *
+     *                      from extremely large number of tags but at the same *
+     *                      time it will less efficient in finding from small *
+     *                      number of tags.
+     * @param attributeName the name of the attribute.
+     * @param fromTags      from which the findings to be done.
+     * @return the matching attributes with the given attribute name.
+     * @throws NullValueException if the {@code attributeName} or {@code fromTags}
+     *                            is null
+     * @since 12.0.2
+     */
+    public static Collection<AbstractAttribute> findAttributesByAttributeName(final boolean parallel,
+            final String attributeName, final AbstractHtml... fromTags) throws NullValueException {
+
+        if (attributeName == null) {
+            throw new NullValueException("The attributeName should not be null");
+        }
+        if (fromTags == null) {
+            throw new NullValueException("The fromTags should not be null");
+        }
+
+        final Collection<Lock> locks = lockAndGetReadLocks(fromTags);
+
+        try {
+            final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(parallel, fromTags);
+            return stream.map(tag -> getAttributeByNameLockless(tag, attributeName)).filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
         } finally {
             for (final Lock lock : locks) {
                 lock.unlock();

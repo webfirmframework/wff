@@ -56,7 +56,7 @@ import com.webfirmframework.wffweb.wffbm.data.BMValueType;
 import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
-@SuppressWarnings({ "serial", "removal" })
+@SuppressWarnings({ "serial" })
 public class TagRepositoryTest {  
     
     @Test
@@ -956,6 +956,199 @@ public class TagRepositoryTest {
         assertEquals("<div id=\"someDivId\"></div>", tag.toHtmlString());
         
         //TODO test other methods with parallel true
+    }
+
+    @Test
+    public void testFindOneAttributeByAttributeNameAndValue() throws Exception {
+        final AbstractAttribute name1Attr = new Name("name1");
+        final Html html = new Html(null) {{
+            new Div(this, new Id("one")) {{
+                new Span(this, new Id("two")) {{
+                    new H1(this, new Id("three"));
+                    new H2(this, new Id("three"));
+                    new NoTag(this, "something");
+                }};
+
+                new H3(this, name1Attr);
+            }};
+        }};
+        BrowserPage browserPage = new BrowserPage() {
+
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework/websocket";
+            }
+
+            @Override
+            public AbstractHtml render() {
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+
+        {
+            final AbstractAttribute attribute = browserPage.getTagRepository().findOneAttributeByAttributeNameAndValue("name", "name1");
+            assertNotNull(attribute);
+            assertEquals(name1Attr, attribute);
+        }
+
+        {
+            final AbstractAttribute attribute = browserPage.getTagRepository().findOneAttributeByAttributeNameAndValue("name", "name1222");
+            assertNull(attribute);
+        }
+        {
+            final AbstractAttribute attribute = TagRepository.findOneAttributeByAttributeNameAndValue("name", "name1", html);
+            assertNotNull(attribute);
+            assertEquals(name1Attr, attribute);
+        }
+
+        {
+            final AbstractAttribute attribute = TagRepository.findOneAttributeByAttributeNameAndValue(false, "name", "name1222", html);
+            assertNull(attribute);
+        }
+        {
+            final AbstractAttribute attribute = TagRepository.findOneAttributeByAttributeNameAndValue(true, "name", "name1222", html);
+            assertNull(attribute);
+        }
+        {
+            final AbstractAttribute attribute = browserPage.getTagRepository().findOneAttributeByAttributeName("name");
+            assertNotNull(attribute);
+            assertEquals(name1Attr, attribute);
+        }
+        {
+            final AbstractAttribute attribute = browserPage.getTagRepository().findOneAttributeByAttributeName("style");
+            assertNull(attribute);
+        }
+        {
+            final AbstractAttribute attribute = TagRepository.findOneAttributeByAttributeName(false, "name", html);
+            assertNotNull(attribute);
+            assertEquals(name1Attr, attribute);
+        }
+        {
+            final AbstractAttribute attribute = TagRepository.findOneAttributeByAttributeName(false, "style", html);
+            assertNull(attribute);
+        }
+        {
+            final AbstractAttribute attribute = TagRepository.findOneAttributeByAttributeName(true, "name", html);
+            assertNotNull(attribute);
+            assertEquals(name1Attr, attribute);
+        }
+        {
+            final AbstractAttribute attribute = TagRepository.findOneAttributeByAttributeName(true, "style", html);
+            assertNull(attribute);
+        }
+    }
+
+    @Test
+    public void testFindAttributesByAttributeNameAndValue() throws Exception {
+        final AbstractAttribute unusedAttr = new Name("name1");
+        final AbstractAttribute name1Attr1 = new Name("name1");
+        final AbstractAttribute name1Attr2 = new Name("name1");
+        final Html html = new Html(null) {{
+            new Div(this, new Id("one")) {{
+                new Span(this, new Id("two")) {{
+                    new H1(this, new Id("three"));
+                    new H2(this, new Id("three"));
+                    new NoTag(this, "something");
+                }};
+
+                new H3(this, name1Attr1);
+                new H3(this, name1Attr2);
+            }};
+        }};
+        BrowserPage browserPage = new BrowserPage() {
+
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework/websocket";
+            }
+
+            @Override
+            public AbstractHtml render() {
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+
+        Set<AbstractAttribute> expectedAttributes = Set.of(name1Attr1, name1Attr2);
+        Set<AbstractAttribute> notExpectedAttributes = Set.of(unusedAttr);
+        {
+            final Collection<AbstractAttribute> attributes = browserPage.getTagRepository().findAttributesByAttributeNameAndValue("name", "name1");
+            assertNotNull(attributes);
+            assertEquals(expectedAttributes, attributes);
+            assertNotEquals(notExpectedAttributes, attributes);
+        }
+
+        {
+            final Collection<AbstractAttribute> attributes = browserPage.getTagRepository().findAttributesByAttributeNameAndValue("name", "name1222");
+            assertNotNull(attributes);
+            assertTrue(attributes.isEmpty());
+        }
+        {
+            final Collection<AbstractAttribute> attributes = TagRepository.findAttributesByAttributeNameAndValue("name", "name1", html);
+            assertNotNull(attributes);
+            assertEquals(expectedAttributes, attributes);
+            assertNotEquals(notExpectedAttributes, attributes);
+        }
+
+        {
+            final Collection<AbstractAttribute> attributes = TagRepository.findAttributesByAttributeNameAndValue(false, "name", "name1222", html);
+            assertNotNull(attributes);
+            assertTrue(attributes.isEmpty());
+        }
+        {
+            final Collection<AbstractAttribute> attributes = TagRepository.findAttributesByAttributeNameAndValue(true, "name", "name1222", html);
+            assertNotNull(attributes);
+            assertTrue(attributes.isEmpty());
+        }
+        {
+            final Collection<AbstractAttribute> attributes = browserPage.getTagRepository().findAttributesByAttributeName("name");
+            assertNotNull(attributes);
+            assertEquals(expectedAttributes, attributes);
+            assertNotEquals(notExpectedAttributes, attributes);
+        }
+        {
+            final Collection<AbstractAttribute> attributes = browserPage.getTagRepository().findAttributesByAttributeName("style");
+            assertNotNull(attributes);
+            assertTrue(attributes.isEmpty());
+        }
+        {
+            final Collection<AbstractAttribute> attributes = TagRepository.findAttributesByAttributeName(false, "name", html);
+            assertNotNull(attributes);
+            assertEquals(expectedAttributes, attributes);
+            assertNotEquals(notExpectedAttributes, attributes);
+        }
+        {
+            final Collection<AbstractAttribute> attributes = TagRepository.findAttributesByAttributeName(false, "style", html);
+            assertNotNull(attributes);
+            assertTrue(attributes.isEmpty());
+        }
+        {
+            final Collection<AbstractAttribute> attributes = TagRepository.findAttributesByAttributeName("style", html);
+            assertNotNull(attributes);
+            assertTrue(attributes.isEmpty());
+        }
+        {
+            final Collection<AbstractAttribute> attributes = TagRepository.findAttributesByAttributeName(true, "name", html);
+            assertNotNull(attributes);
+            assertEquals(expectedAttributes, attributes);
+            assertNotEquals(notExpectedAttributes, attributes);
+        }
+        {
+            final Collection<AbstractAttribute> attributes = TagRepository.findAttributesByAttributeName(false, "style", html);
+            assertNotNull(attributes);
+            assertTrue(attributes.isEmpty());
+        }
+        {
+            final Collection<AbstractAttribute> attributes = TagRepository.findAttributesByAttributeName("style", html);
+            assertNotNull(attributes);
+            assertTrue(attributes.isEmpty());
+        }
+        {
+            final Collection<AbstractAttribute> attributes = TagRepository.findAttributesByAttributeName(true, "style", html);
+            assertNotNull(attributes);
+            assertTrue(attributes.isEmpty());
+        }
     }
 
 }
