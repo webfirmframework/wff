@@ -4,7 +4,6 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](https://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C12.0.1%7Cjar)
 [![javadoc](https://javadoc.io/badge2/com.webfirmframework/wffweb/javadoc.svg)](https://javadoc.io/doc/com.webfirmframework/wffweb)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
-[![twitter](https://img.shields.io/badge/twitter-@wffweb-blue.svg)](https://webfirmframework.com/twitter)
 
 
 # wffweb
