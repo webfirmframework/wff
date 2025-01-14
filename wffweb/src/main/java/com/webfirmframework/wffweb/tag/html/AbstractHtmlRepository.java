@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2024 Web Firm Framework
+ * Copyright since 2014 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,6 +84,15 @@ public abstract class AbstractHtmlRepository {
      */
     protected static Collection<AbstractAttribute> getAttributesLockless(final AbstractHtml tag) {
         return tag.getAttributesLockless();
+    }
+
+    /**
+     * @param tag the tag to check if it contains attributes
+     * @return true if it contains attributes otherwise false
+     * @since 12.0.2
+     */
+    protected static boolean containsAttributesLockless(final AbstractHtml tag) {
+        return tag.containsAttributesLockless();
     }
 
     /**

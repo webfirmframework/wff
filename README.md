@@ -2,10 +2,8 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/410601e16dc54b0a973c03845ad790c2)](https://www.codacy.com/app/webfirm-framework/wff?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=webfirmframework/wff&amp;utm_campaign=Badge_Grade)
 [![Stackoverflow](https://img.shields.io/badge/stackoverflow-wffweb-orange.svg)](https://stackoverflow.com/questions/tagged/wffweb)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.webfirmframework/wffweb/badge.svg)](https://search.maven.org/#artifactdetails%7Ccom.webfirmframework%7Cwffweb%7C12.0.1%7Cjar)
-[![javadoc](https://img.shields.io/:wffweb-javadoc-blue.svg)](https://webfirmframework.github.io/wffweb/wffweb-javadoc)
+[![javadoc](https://javadoc.io/badge2/com.webfirmframework/wffweb/javadoc.svg)](https://javadoc.io/doc/com.webfirmframework/wffweb)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
-[![twitter](https://img.shields.io/badge/twitter-@wffweb-blue.svg)](https://webfirmframework.com/twitter)
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://webfirmframework.com/donate)
 
 
 # wffweb

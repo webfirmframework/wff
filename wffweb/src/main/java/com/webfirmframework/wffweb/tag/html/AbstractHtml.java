@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2024 Web Firm Framework
+ * Copyright since 2014 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2679,6 +2679,18 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             return result;
         }
         return null;
+    }
+
+    /**
+     * @return true if it contains attributes
+     * @since 12.0.2
+     */
+    final boolean containsAttributesLockless() {
+        final Map<String, AbstractAttribute> attributesMap = this.attributesMap;
+        if (attributesMap != null) {
+            return !attributesMap.isEmpty();
+        }
+        return false;
     }
 
     /**

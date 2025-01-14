@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -505,5 +507,32 @@ public class URIUtilTest {
         assertEquals("/some/uri/pathparam/123/yes", uriInfo.pathname());
         assertEquals("hashpart2?name=wffweb", uriInfo.hash());
         assertEquals("", uriInfo.queryString());
+    }
+
+    @Test
+    public void testBuildQueryStringFromNameToCollectionOfValues() {
+        Map<String, Collection<String>> queryParamsMap = new HashMap<>();
+        queryParamsMap.put("param1", List.of("value11", "value12"));
+        queryParamsMap.put("param2", List.of("value21", "value22"));
+        String queryString = URIUtil.buildQueryStringFromNameToCollectionOfValues(queryParamsMap);
+        assertEquals("param1=value11&param1=value12&param2=value21&param2=value22", queryString);
+    }
+
+    @Test
+    public void testBuildQueryStringFromNameToValues() {
+        Map<String, String[]> queryParamsMap = new HashMap<>();
+        queryParamsMap.put("param1", new String[]{"value11", "value12"});
+        queryParamsMap.put("param2", new String[]{"value21", "value22"});
+        String queryString = URIUtil.buildQueryStringFromNameToValues(queryParamsMap);
+        assertEquals("param1=value11&param1=value12&param2=value21&param2=value22", queryString);
+    }
+
+    @Test
+    public void testBuildQueryStringFromNameToValue() {
+        Map<String, String> queryParamsMap = new HashMap<>();
+        queryParamsMap.put("param1", "value11");
+        queryParamsMap.put("param2", "value21");
+        String queryString = URIUtil.buildQueryStringFromNameToValue(queryParamsMap);
+        assertEquals("param1=value11&param2=value21", queryString);
     }
 }

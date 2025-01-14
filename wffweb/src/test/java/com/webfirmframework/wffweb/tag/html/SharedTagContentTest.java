@@ -6,6 +6,8 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.server.page.BrowserPage;
@@ -20,7 +22,7 @@ import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 
 /*
- * Copyright 2014-2024 Web Firm Framework
+ * Copyright since 2014 Web Firm Framework
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2279,6 +2281,17 @@ public class SharedTagContentTest {
         assertEquals("invoked div whenURI /someuri success invoked div whenURI /someuri success invoked div whenURI another success invoked div whenURI another success ", controlFlow.toString());
 
     }
-            
+
+    @Test
+    public void testReadState() {
+        SharedTagContent<String> stc = new SharedTagContent<>("initial").setAsyncUpdate(true);
+        AtomicReference<SharedTagContent.Content<String>> stateRef = new AtomicReference<>();
+        stc.readState(stateEvent -> stateRef.set(stateEvent.content()));
+        assertEquals("initial", stateRef.get().content());
+
+        stc.setContent("modified");
+        stc.readState(stateEvent -> stateRef.set(stateEvent.content()));
+        assertEquals("modified", stateRef.get().content());
+    }
 
 }
