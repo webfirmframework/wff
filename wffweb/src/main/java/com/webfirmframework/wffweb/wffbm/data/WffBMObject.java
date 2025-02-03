@@ -389,4 +389,17 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
         return valueValueType.valueAsInteger();
     }
 
+    /**
+     * @param key the key to get the value.
+     * @return the Integer value.
+     * @throws NumberFormatException if the value is not convertible to Long.
+     * @since 12.0.3
+     */
+    public Long getValueAsLong(final String key) {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return null;
+        }
+        return valueValueType.valueAsLong();
+    }
 }

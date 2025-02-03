@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.wffbm.data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -24,6 +25,7 @@ import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 public class ValueValueType implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String name;
@@ -171,8 +173,8 @@ public class ValueValueType implements Serializable {
     }
 
     /**
-     * @return the int value.
-     * @throws NumberFormatException the value is not convertible to BigInteger.
+     * @return the Integer value.
+     * @throws NumberFormatException the value is not convertible to Integer.
      * @since 12.0.3
      */
     public final Integer valueAsInteger() throws NumberFormatException {
@@ -184,24 +186,55 @@ public class ValueValueType implements Serializable {
             } else if (value instanceof final Long number) {
                 final int intValue = number.intValue();
                 if (intValue != number) {
-                    throw new NumberFormatException("Unable to create int from ".concat(Long.toString(number)));
+                    throw new NumberFormatException("Unable to create Integer from ".concat(Long.toString(number)));
                 }
                 return intValue;
             } else if (value instanceof final Double number) {
                 final int intValue = number.intValue();
                 if (intValue != number) {
-                    throw new NumberFormatException("Unable to create int from ".concat(Double.toString(intValue)));
+                    throw new NumberFormatException("Unable to create Integer from ".concat(Double.toString(intValue)));
                 }
                 return intValue;
             } else if (value instanceof final Float number) {
                 final int intValue = number.intValue();
                 if (intValue != number) {
-                    throw new NumberFormatException("Unable to create BigInteger from ".concat(Float.toString(number)));
+                    throw new NumberFormatException("Unable to create Integer from ".concat(Float.toString(number)));
                 }
                 return intValue;
             }
             return null;
         }
-        throw new NumberFormatException("Unable to create BigInteger from ".concat(valueType.name()));
+        throw new NumberFormatException("Unable to create Integer from ".concat(valueType.name()));
+    }
+
+    /**
+     * @return the Long value.
+     * @throws NumberFormatException the value is not convertible to Long.
+     * @since 12.0.3
+     */
+    public final Long valueAsLong() throws NumberFormatException {
+        final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
+        final Object value = this.value;
+        if (BMValueType.NUMBER.equals(valueType)) {
+            if (value instanceof final Integer number) {
+                return number.longValue();
+            } else if (value instanceof final Long number) {
+                return number;
+            } else if (value instanceof final Double number) {
+                final long longValue = number.longValue();
+                if (longValue != number) {
+                    throw new NumberFormatException("Unable to create Long from ".concat(Double.toString(number)));
+                }
+                return longValue;
+            } else if (value instanceof final Float number) {
+                final long longValue = number.longValue();
+                if (longValue != number) {
+                    throw new NumberFormatException("Unable to create Long from ".concat(Float.toString(number)));
+                }
+                return longValue;
+            }
+            return null;
+        }
+        throw new NumberFormatException("Unable to create Long from ".concat(valueType.name()));
     }
 }
