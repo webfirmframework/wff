@@ -404,4 +404,18 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
         }
         return valueValueType.valueAsLong();
     }
+
+    /**
+     * @param key the key to get the value.
+     * @return the value as a String.
+     * @since 12.0.3
+     */
+    public String getValueAsString(final String key) {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return null;
+        }
+        return valueValueType.valueAsString();
+    }
+
 }

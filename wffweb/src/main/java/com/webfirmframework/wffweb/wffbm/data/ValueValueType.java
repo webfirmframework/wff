@@ -245,4 +245,24 @@ public class ValueValueType implements Serializable {
         }
         throw new NumberFormatException("Unable to create Long from ".concat(valueType.name()));
     }
+
+    /**
+     * @return the value as a String.
+     * @since 12.0.3
+     */
+    public final String valueAsString() {
+        final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
+        final Object value = this.value;
+        if (BMValueType.STRING.equals(valueType)) {
+            if (value instanceof final String s) {
+                return s;
+            }
+            return null;
+        } else if (BMValueType.NULL.equals(valueType)) {
+            return null;
+        } else if (value != null) {
+            return String.valueOf(value);
+        }
+        return null;
+    }
 }
