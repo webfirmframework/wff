@@ -487,6 +487,7 @@ var wffClientCRUDUtil = new function() {
 				} else {
 					history.pushState({}, document.title, jsObj.uriAfter);
 				}
+				wffGlobal.getAndUpdateLocation();
 				uriChangeQ.push(vnt);
 				if (typeof wffGlobalListeners !== "undefined" && wffGlobalListeners.onSetURI && jsObj.origin === 'server') {
 					try {
