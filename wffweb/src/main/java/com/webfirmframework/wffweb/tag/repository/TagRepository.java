@@ -69,6 +69,14 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
 
     private final Map<String, AbstractHtml> tagByWffId;
 
+    /**
+     * @param name  name of the attribute
+     * @param value value of the attribute
+     * @since 12.0.3
+     */
+    public static final record AttributeNameValue(String name, String value) {
+    }
+
     private volatile Reference<TitleTag> titleTagRef;
 
     private volatile Reference<Body> bodyTagRef;
@@ -401,7 +409,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
             throws NullValueException {
 
         if (filter == null) {
-            throw new NullValueException("The tagName should not be null");
+            throw new NullValueException("The filter should not be null");
         }
 
         if (fromTags == null) {
@@ -3192,6 +3200,185 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
         try {
             final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(parallel, fromTags);
             return stream.map(tag -> getAttributeByNameLockless(tag, attributeName)).filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
+    }
+
+    /**
+     * Finds and returns the first (searches through the nested tags) matching with
+     * the given filter.
+     *
+     * @param parallel true to internally use parallel stream. If true it will split
+     *                 the finding task to different batches and will execute the
+     *                 batches in different threads in parallel consuming all CPUs.
+     *                 It will perform faster in finding from extremely large number
+     *                 of tags but at the same time it will less efficient in
+     *                 finding from small number of tags.
+     * @param filter   the filter lambda expression containing return true to
+     *                 include and false to exclude.
+     * @return the first matching attribute with the given filter.
+     * @throws NullValueException if the {@code filter} is null.
+     * @since 12.0.3
+     */
+    public AbstractAttribute findOneAttributeByFilter(final boolean parallel,
+            final Predicate<? super AttributeNameValue> filter) throws NullValueException {
+
+        if (filter == null) {
+            throw new NullValueException("The filter should not be null");
+        }
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
+
+        try {
+            final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
+
+            final Optional<AbstractAttribute> any = stream.map(AbstractHtmlRepository::getAttributesLockless)
+                    .filter(Objects::nonNull).flatMap(Collection::stream).filter(each -> filter
+                            .test(new AttributeNameValue(each.getAttributeName(), each.getAttributeValue())))
+                    .findAny();
+
+            return any.orElse(null);
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
+    }
+
+    /**
+     * Finds and returns the first (searches through the nested tags) matching with
+     * the given filter.
+     *
+     * @param parallel true to internally use parallel stream. If true it will split
+     *                 the finding task to different batches and will execute the
+     *                 batches in different threads in parallel consuming all CPUs.
+     *                 It will perform faster in finding from extremely large number
+     *                 of tags but at the same time it will less efficient in
+     *                 finding from small number of tags.
+     * @param filter   the filter lambda expression containing return true to
+     *                 include and false to exclude.
+     * @return the first matching attribute with the given filter.
+     * @throws NullValueException if the {@code filter} is null.
+     * @since 12.0.3
+     */
+    public static AbstractAttribute findOneAttributeByFilter(final boolean parallel,
+            final Predicate<? super AttributeNameValue> filter, final AbstractHtml... fromTags)
+            throws NullValueException {
+
+        if (filter == null) {
+            throw new NullValueException("The filter should not be null");
+        }
+
+        final Collection<Lock> locks = lockAndGetReadLocks(fromTags);
+
+        try {
+            if (parallel) {
+                final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(parallel, fromTags);
+                final Optional<AbstractAttribute> any = stream.map(AbstractHtmlRepository::getAttributesLockless)
+                        .filter(Objects::nonNull).flatMap(Collection::stream)
+                        .filter(each -> filter
+                                .test(new AttributeNameValue(each.getAttributeName(), each.getAttributeValue())))
+                        .findAny();
+                return any.orElse(null);
+            }
+
+            final AbstractAttribute[] foundTag = { null };
+            loopThroughAllNestedChildren(child -> {
+                final Collection<AbstractAttribute> attributes = getAttributesLockless(child);
+                if (attributes != null) {
+                    for (final AbstractAttribute attribute : attributes) {
+                        if (filter.test(
+                                new AttributeNameValue(attribute.getAttributeName(), attribute.getAttributeValue()))) {
+                            foundTag[0] = attribute;
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }, true, fromTags);
+
+            return foundTag[0];
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
+    }
+
+    /**
+     * Finds and returns the attributes (searches through the nested tags) matching
+     * with the given filter.
+     *
+     * @param parallel true to internally use parallel stream. If true it will split
+     *                 the finding task to different batches and will execute the
+     *                 batches in different threads in parallel consuming all CPUs.
+     *                 It will perform faster in finding from extremely large number
+     *                 of tags but at the same time it will less efficient in
+     *                 finding from small number of tags.
+     * @param filter   the filter lambda expression containing return true to
+     *                 include and false to exclude.
+     * @return the matching attributes with the given filter.
+     * @throws NullValueException if the {@code filter} is null.
+     * @since 12.0.3
+     */
+    public Collection<AbstractAttribute> findAttributesByFilter(final boolean parallel,
+            final Predicate<? super AttributeNameValue> filter) throws NullValueException {
+
+        if (filter == null) {
+            throw new NullValueException("The filter should not be null");
+        }
+        final Collection<Lock> locks = lockAndGetReadLocks(rootTags);
+
+        try {
+            final Stream<AbstractHtml> stream = buildAllTagsStream(parallel);
+
+            return stream.map(AbstractHtmlRepository::getAttributesLockless).filter(Objects::nonNull)
+                    .flatMap(Collection::stream)
+                    .filter(each -> filter
+                            .test(new AttributeNameValue(each.getAttributeName(), each.getAttributeValue())))
+                    .collect(Collectors.toSet());
+        } finally {
+            for (final Lock lock : locks) {
+                lock.unlock();
+            }
+        }
+    }
+
+    /**
+     * Finds and returns the attributes (searches through the nested tags) matching
+     * with the given filter.
+     *
+     * @param parallel true to internally use parallel stream. If true it will split
+     *                 the finding task to different batches and will execute the
+     *                 batches in different threads in parallel consuming all CPUs.
+     *                 It will perform faster in finding from extremely large number
+     *                 of tags but at the same time it will less efficient in
+     *                 finding from small number of tags.
+     * @param filter   the filter lambda expression containing return true to
+     *                 include and false to exclude.
+     * @return the matching attributes with the given filter.
+     * @throws NullValueException if the {@code filter} is null.
+     * @since 12.0.3
+     */
+    public static Collection<AbstractAttribute> findAttributesByFilter(final boolean parallel,
+            final Predicate<? super AttributeNameValue> filter, final AbstractHtml... fromTags)
+            throws NullValueException {
+
+        if (filter == null) {
+            throw new NullValueException("The filter should not be null");
+        }
+
+        final Collection<Lock> locks = lockAndGetReadLocks(fromTags);
+
+        try {
+            final Stream<AbstractHtml> stream = getAllNestedChildrenIncludingParent(parallel, fromTags);
+            return stream.map(AbstractHtmlRepository::getAttributesLockless).filter(Objects::nonNull)
+                    .flatMap(Collection::stream)
+                    .filter(each -> filter
+                            .test(new AttributeNameValue(each.getAttributeName(), each.getAttributeValue())))
                     .collect(Collectors.toSet());
         } finally {
             for (final Lock lock : locks) {
