@@ -169,4 +169,39 @@ public class ValueValueType implements Serializable {
         }
         throw new NumberFormatException("Unable to create BigInteger from ".concat(valueType.name()));
     }
+
+    /**
+     * @return the int value.
+     * @throws NumberFormatException the value is not convertible to BigInteger.
+     * @since 12.0.3
+     */
+    public final Integer valueAsInteger() throws NumberFormatException {
+        final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
+        final Object value = this.value;
+        if (BMValueType.NUMBER.equals(valueType)) {
+            if (value instanceof final Integer number) {
+                return number;
+            } else if (value instanceof final Long number) {
+                final int intValue = number.intValue();
+                if (intValue != number) {
+                    throw new NumberFormatException("Unable to create int from ".concat(Long.toString(number)));
+                }
+                return intValue;
+            } else if (value instanceof final Double number) {
+                final int intValue = number.intValue();
+                if (intValue != number) {
+                    throw new NumberFormatException("Unable to create int from ".concat(Double.toString(intValue)));
+                }
+                return intValue;
+            } else if (value instanceof final Float number) {
+                final int intValue = number.intValue();
+                if (intValue != number) {
+                    throw new NumberFormatException("Unable to create BigInteger from ".concat(Float.toString(number)));
+                }
+                return intValue;
+            }
+            return null;
+        }
+        throw new NumberFormatException("Unable to create BigInteger from ".concat(valueType.name()));
+    }
 }

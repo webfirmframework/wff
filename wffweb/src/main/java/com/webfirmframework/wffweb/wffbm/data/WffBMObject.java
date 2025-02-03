@@ -375,4 +375,18 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
         return valueValueType.valueAsBigInteger();
     }
 
+    /**
+     * @param key the key to get the value.
+     * @return the Integer value.
+     * @throws NumberFormatException if the value is not convertible to Integer.
+     * @since 12.0.3
+     */
+    public Integer getValueAsInteger(final String key) throws NumberFormatException {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return null;
+        }
+        return valueValueType.valueAsInteger();
+    }
+
 }

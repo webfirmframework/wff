@@ -188,4 +188,69 @@ public class WffBMObjectTest {
         // exception is expected
         wffBMObject.getValueAsBigInteger(keyForNumberDouble);
     }
+
+    @Test
+    public void testGetValueAsInteger() {
+        final WffBMObject wffBMObject = new WffBMObject();
+
+        Integer valueAsInteger;
+
+        final String keyForNumberPrimitive2 = "keyForNumberPrimitive2";
+        final long numberPrimitive2 = 1401;
+        wffBMObject.put(keyForNumberPrimitive2, BMValueType.NUMBER, numberPrimitive2);
+        valueAsInteger = wffBMObject.getValueAsInteger(keyForNumberPrimitive2);
+        assertEquals(String.valueOf(numberPrimitive2), valueAsInteger.toString());
+
+        final String keyForNumberPrimitive3 = "keyForNumberPrimitive3";
+        final int numberPrimitive3 = 1401;
+        wffBMObject.put(keyForNumberPrimitive3, BMValueType.NUMBER, numberPrimitive3);
+        valueAsInteger = wffBMObject.getValueAsInteger(keyForNumberPrimitive3);
+        assertEquals(String.valueOf(numberPrimitive3), valueAsInteger.toString());
+
+        final String keyForNullNumber = "keyForNullNumber";
+        wffBMObject.put(keyForNullNumber, BMValueType.NUMBER, null);
+        valueAsInteger = wffBMObject.getValueAsInteger(keyForNullNumber);
+        assertNull(valueAsInteger);
+    }
+
+    @Test
+    public void testGetValueAsIntegerDeserialized() {
+        WffBMObject wffBMObject = new WffBMObject();
+
+        final String keyForNumberPrimitive2 = "keyForNumberPrimitive2";
+        final long numberPrimitive2 = 1401;
+        wffBMObject.put(keyForNumberPrimitive2, BMValueType.NUMBER, numberPrimitive2);
+
+        final String keyForNumberPrimitive3 = "keyForNumberPrimitive3";
+        final int numberPrimitive3 = 1401;
+        wffBMObject.put(keyForNumberPrimitive3, BMValueType.NUMBER, numberPrimitive3);
+
+        wffBMObject = new WffBMObject(wffBMObject.buildBytes(true));
+
+        final Integer valueForNumberPrimitive2 = wffBMObject.getValueAsInteger(keyForNumberPrimitive2);
+        assertEquals(String.valueOf(numberPrimitive2), valueForNumberPrimitive2.toString());
+
+        final Integer valueForNumberPrimitive3 = wffBMObject.getValueAsInteger(keyForNumberPrimitive3);
+        assertEquals(String.valueOf(numberPrimitive3), valueForNumberPrimitive3.toString());
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testGetValueAsIntegerNumberFormatException1() {
+        final WffBMObject wffBMObject = new WffBMObject();
+        final String keyForRegex = "keyForNumberString";
+        final String regex = "*";
+        wffBMObject.put(keyForRegex, BMValueType.REG_EXP, regex);
+        // exception is expected
+        wffBMObject.getValueAsInteger(keyForRegex);
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testGetValueAsIntegerNumberFormatException2() {
+        final WffBMObject wffBMObject = new WffBMObject();
+        final String keyForNumberDouble = "keyForNumberDouble";
+        final double valueForNumberDouble = 14.01D;
+        wffBMObject.put(keyForNumberDouble, BMValueType.NUMBER, valueForNumberDouble);
+        // exception is expected
+        wffBMObject.getValueAsInteger(keyForNumberDouble);
+    }
 }
