@@ -16,6 +16,8 @@
 package com.webfirmframework.wffweb.wffbm.data;
 
 import java.io.Serial;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
@@ -24,6 +26,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
@@ -387,5 +390,101 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
     @Override
     public BMType getBMType() {
         return BMType.ARRAY;
+    }
+
+    /**
+     * @param index the index to get the value as string.
+     * @return the value as String.
+     * @since 12.0.3
+     */
+    public String getValueAsString(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return new ValueValueType("", valueType, value).valueAsString();
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as BigDecimal.
+     * @return the value as BigDecimal.
+     * @since 12.0.3
+     */
+    public BigDecimal getValueAsBigDecimal(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return new ValueValueType("", valueType, value).valueAsBigDecimal();
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as BigInteger.
+     * @return the value as BigInteger.
+     * @since 12.0.3
+     */
+    public BigInteger getValueAsBigInteger(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return new ValueValueType("", valueType, value).valueAsBigInteger();
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as Integer.
+     * @return the value as Integer.
+     * @since 12.0.3
+     */
+    public Integer getValueAsInteger(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return new ValueValueType("", valueType, value).valueAsInteger();
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as Long.
+     * @return the value as Long.
+     * @since 12.0.3
+     */
+    public Long getValueAsLong(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return new ValueValueType("", valueType, value).valueAsLong();
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as Double.
+     * @return the value as Double.
+     * @since 12.0.3
+     */
+    public Double getValueAsDouble(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return new ValueValueType("", valueType, value).valueAsDouble();
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as Boolean.
+     * @return the value as Boolean.
+     * @since 12.0.3
+     */
+    public Boolean getValueAsBoolean(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            final Boolean valueAsBoolean = new ValueValueType("", valueType, value).valueAsBoolean();
+            if (valueAsBoolean == null) {
+                throw new InvalidValueException(
+                        "Unable to parse boolean from value %s having valueType %s".formatted(value, valueType.name()));
+            }
+            return valueAsBoolean;
+        }
+        return null;
     }
 }

@@ -351,6 +351,20 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
 
     /**
      * @param key the key to get the value.
+     * @return the Double value.
+     * @throws NumberFormatException if the value is not convertible to Double.
+     * @since 12.0.3
+     */
+    public Double getValueAsDouble(final String key) throws NumberFormatException {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return null;
+        }
+        return valueValueType.valueAsDouble();
+    }
+
+    /**
+     * @param key the key to get the value.
      * @return the BigDecimal value.
      * @throws NumberFormatException if the value is not convertible to BigDecimal.
      * @since 12.0.3
@@ -416,6 +430,19 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
             return null;
         }
         return valueValueType.valueAsString();
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the value as a Boolean.
+     * @since 12.0.3
+     */
+    public Boolean getValueAsBoolean(final String key) {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return null;
+        }
+        return valueValueType.valueAsBoolean();
     }
 
 }

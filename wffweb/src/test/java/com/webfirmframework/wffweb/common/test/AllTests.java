@@ -180,6 +180,7 @@ import com.webfirmframework.wffweb.util.StringBuilderUtilTest;
 import com.webfirmframework.wffweb.util.StringUtilTest;
 import com.webfirmframework.wffweb.util.URIUtilTest;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
+import com.webfirmframework.wffweb.wffbm.data.WffBMArrayTest;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObjectArrayTest;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObjectTest;
 
@@ -230,7 +231,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectTest;
         ExternalDriveClientTasksWrapperQueueTest.class, AttributeIdGeneratorTest.class,
         SharedObjectIdGeneratorTest.class, WhenURIUseCaseTest.class, URIUtilTest.class, EventInitiatorTest.class,
         ImmutableCustomAttributeTest.class, BrowserPageActionTest.class, WffConfigurationTest.class,
-        TagContentTest.class, WffBMObjectTest.class })
+        TagContentTest.class, WffBMObjectTest.class, WffBMArrayTest.class })
 public class AllTests {
 
 }
