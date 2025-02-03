@@ -16,6 +16,10 @@
 package com.webfirmframework.wffweb.wffbm.data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.MathContext;
+
+import com.webfirmframework.wffweb.InvalidValueException;
 
 public class ValueValueType implements Serializable {
 
@@ -98,6 +102,34 @@ public class ValueValueType implements Serializable {
             return false;
         }
         return true;
+    }
+
+    /**
+     * @return the BigDecimal value.
+     * @throws InvalidValueException if the value is not convertible to BigDecimal.
+     * @since 12.0.3
+     */
+    public final BigDecimal valueAsBigDecimal() throws InvalidValueException {
+        final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
+        final Object value = this.value;
+        if (BMValueType.STRING.equals(valueType)) {
+            if (value instanceof final String s) {
+                return new BigDecimal(s);
+            }
+            return null;
+        } else if (BMValueType.NUMBER.equals(valueType)) {
+            if (value instanceof final Integer number) {
+                return new BigDecimal(number, MathContext.DECIMAL32);
+            } else if (value instanceof final Long number) {
+                return new BigDecimal(number, MathContext.DECIMAL64);
+            } else if (value instanceof final Double number) {
+                return new BigDecimal(number, MathContext.DECIMAL64);
+            } else if (value instanceof final Float number) {
+                return new BigDecimal(number, MathContext.DECIMAL32);
+            }
+            return null;
+        }
+        throw new InvalidValueException("Unable to create BigDecimal from %s".concat(valueType.name()));
     }
 
 }

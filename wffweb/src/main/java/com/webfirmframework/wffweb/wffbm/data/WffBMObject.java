@@ -16,7 +16,6 @@
 package com.webfirmframework.wffweb.wffbm.data;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
@@ -354,31 +353,11 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      * @since 12.0.3
      */
     public BigDecimal getValueAsBigDecimal(final String key) throws InvalidValueException {
-
         final ValueValueType valueValueType = super.get(key);
         if (valueValueType == null) {
             return null;
         }
-
-        if (BMValueType.STRING.equals(valueValueType.getValueType())) {
-            if (valueValueType.getValue() instanceof final String s) {
-                return new BigDecimal(s);
-            }
-            return null;
-        } else if (BMValueType.NUMBER.equals(valueValueType.getValueType())) {
-            if (valueValueType.getValue() instanceof final Integer number) {
-                return new BigDecimal(number, MathContext.DECIMAL32);
-            } else if (valueValueType.getValue() instanceof final Long number) {
-                return new BigDecimal(number, MathContext.DECIMAL64);
-            } else if (valueValueType.getValue() instanceof final Double number) {
-                return new BigDecimal(number, MathContext.DECIMAL64);
-            } else if (valueValueType.getValue() instanceof final Float number) {
-                return new BigDecimal(number, MathContext.DECIMAL32);
-            }
-            return null;
-        }
-        throw new InvalidValueException(
-                "Unable to create BigDecimal from %s".concat(valueValueType.getValueType().name()));
+        return valueValueType.valueAsBigDecimal();
     }
 
 }
