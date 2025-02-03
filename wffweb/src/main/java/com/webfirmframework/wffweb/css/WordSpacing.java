@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
@@ -40,6 +42,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public class WordSpacing extends AbstractCssProperty<WordSpacing> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public static final String NORMAL = "normal";

@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
@@ -33,6 +35,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
  */
 public class Rev extends AbstractAttribute implements AAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     /**

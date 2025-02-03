@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.tag.html;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serial;
 import java.nio.charset.Charset;
 
 import com.webfirmframework.wffweb.internal.constants.CommonConstants;
@@ -31,6 +32,7 @@ import com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName;
  */
 public abstract class DocType extends AbstractHtml {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private boolean prependDocType;

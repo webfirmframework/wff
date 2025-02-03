@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -52,6 +53,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class BorderRightColor extends AbstractCssProperty<BorderRightColor> implements StateChangeInformer<Bean> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final Logger LOGGER = Logger.getLogger(BorderRightColor.class.getName());

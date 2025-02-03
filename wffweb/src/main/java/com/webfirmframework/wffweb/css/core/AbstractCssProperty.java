@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.css.core;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.clone.CloneUtil;
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
 
@@ -27,6 +29,7 @@ import com.webfirmframework.wffweb.informer.StateChangeInformer;
 public abstract class AbstractCssProperty<EXTENDEDCLASS extends AbstractCssProperty<EXTENDEDCLASS>>
         implements CssProperty {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private StateChangeInformer<CssProperty> stateChangeInformer;

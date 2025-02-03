@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.wffbm.data;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -48,6 +49,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  */
 public class WffBMByteArray extends ByteArrayOutputStream implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private boolean outer;

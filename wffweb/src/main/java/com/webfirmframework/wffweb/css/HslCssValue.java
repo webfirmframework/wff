@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.data.AbstractBean;
 import com.webfirmframework.wffweb.util.StringUtil;
@@ -27,6 +29,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public class HslCssValue extends AbstractBean<HslCssValue> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private String hsl = "hsl(0, 0%, 0%)";

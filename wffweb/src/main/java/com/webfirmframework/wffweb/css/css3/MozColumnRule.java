@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.css.css3;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.css.CssNameConstants;
@@ -45,6 +47,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public class MozColumnRule extends AbstractCssProperty<MozColumnRule> implements StateChangeInformer<CssProperty> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";

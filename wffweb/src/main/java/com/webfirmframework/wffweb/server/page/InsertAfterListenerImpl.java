@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.io.Serial;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -39,6 +40,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  */
 public final class InsertAfterListenerImpl implements InsertAfterListener {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = Logger.getLogger(InsertAfterListenerImpl.class.getName());

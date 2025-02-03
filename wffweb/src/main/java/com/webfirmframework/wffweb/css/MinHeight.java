@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,6 +33,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class MinHeight extends AbstractCssProperty<MinHeight> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public static final String INITIAL = "initial";

@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.tag.repository;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -61,6 +62,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
  */
 public class TagRepository extends AbstractHtmlRepository implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final BrowserPage browserPage;

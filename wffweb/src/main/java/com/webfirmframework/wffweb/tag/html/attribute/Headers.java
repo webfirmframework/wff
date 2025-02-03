@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
@@ -31,9 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.ThAttributable;
  */
 public class Headers extends AbstractValueSetAttribute implements ThAttributable, TdAttributable {
 
-    /**
-     *
-     */
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.HEADERS;

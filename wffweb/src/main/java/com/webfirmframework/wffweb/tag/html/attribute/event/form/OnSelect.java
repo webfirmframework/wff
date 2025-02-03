@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event.form;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
@@ -32,6 +34,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AAttributable;
  */
 public class OnSelect extends AbstractEventAttribute implements AAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONSELECT;

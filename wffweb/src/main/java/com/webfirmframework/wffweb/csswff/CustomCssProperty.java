@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.csswff;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.css.core.AbstractCssProperty;
@@ -28,6 +30,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public class CustomCssProperty extends AbstractCssProperty<CustomCssProperty> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private String cssName;

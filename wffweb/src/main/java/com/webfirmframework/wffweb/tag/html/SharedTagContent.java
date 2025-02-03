@@ -406,9 +406,8 @@ public class SharedTagContent<T> {
             Content<T> content) {
     }
 
-    public static final record StateEvent<T> (Content<T> content, boolean shared,
-                                              UpdateClientNature updateClientNature, boolean updateClient,
-                                              boolean asyncUpdate) {
+    public static final record StateEvent<T> (Content<T> content, boolean shared, UpdateClientNature updateClientNature,
+            boolean updateClient, boolean asyncUpdate) {
     }
 
     /**
@@ -3077,11 +3076,14 @@ public class SharedTagContent<T> {
     }
 
     /**
-     * Reads the state i.e. content and other properties of this SharedTagContent object.
-     * It ensures that no one is updating the content/properties of this SharedTagContent object at the time of reading.
-     * The difference between getContent and readState is, in a multi-threaded environment,
-     * if setContent is called just before this method it will make sure that the state is read only after setting
-     * the content (It will keep an orderly execution of method calls in FIFO).
+     * Reads the state i.e. content and other properties of this SharedTagContent
+     * object. It ensures that no one is updating the content/properties of this
+     * SharedTagContent object at the time of reading. The difference between
+     * getContent and readState is, in a multi-threaded environment, if setContent
+     * is called just before this method it will make sure that the state is read
+     * only after setting the content (It will keep an orderly execution of method
+     * calls in FIFO).
+     *
      * @param stateConsumer the StateConsumer to read the state.
      * @since 12.0.2
      */

@@ -4,11 +4,14 @@ import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.server.page.action.BrowserPageAction;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
+import java.io.Serial;
+
 /**
  * should be kept in a package other than com.webfirmframework.wffweb.server.page
  */
 public class SampleBrowserPage extends BrowserPage {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Override

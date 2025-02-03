@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event.frame.or.object;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.attribute.event.AbstractEventAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
@@ -33,6 +35,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.TextAreaAttributable;
  */
 public class OnScroll extends AbstractEventAttribute implements InputAttributable, TextAreaAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.ONSCROLL;

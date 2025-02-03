@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.programming;
 
+import java.io.Serial;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
@@ -35,6 +36,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.ObjectTagAttributable;
  */
 public class ObjectTag extends AbstractHtml {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final Logger LOGGER = Logger.getLogger(ObjectTag.class.getName());

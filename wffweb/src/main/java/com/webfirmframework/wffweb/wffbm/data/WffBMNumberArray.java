@@ -15,12 +15,14 @@
  */
 package com.webfirmframework.wffweb.wffbm.data;
 
+import java.io.Serial;
 import java.util.Collection;
 
 import com.webfirmframework.wffweb.WffRuntimeException;
 
 public class WffBMNumberArray<T extends Number> extends WffBMArray {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public WffBMNumberArray() {

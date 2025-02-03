@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -50,6 +51,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class FontFamily extends AbstractCssProperty<FontFamily> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final Set<String> FONT_FAMILY_NAMES = new HashSet<String>() {

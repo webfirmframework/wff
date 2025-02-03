@@ -15,12 +15,15 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 
 public class DataWffId extends DataAttribute {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     // NB: if modifying its value it should also be updated in

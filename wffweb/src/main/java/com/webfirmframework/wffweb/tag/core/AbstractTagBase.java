@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.core;
 
+import java.io.Serial;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -26,6 +27,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
  */
 public abstract sealed class AbstractTagBase implements TagBase permits AbstractJsObject, AbstractAttribute {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     /**

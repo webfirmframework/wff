@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.WffRuntimeException;
@@ -30,6 +32,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public class ListStyleImage extends AbstractCssProperty<ListStyleImage> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public static final String NONE = "none";

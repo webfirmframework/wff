@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import java.io.Serial;
 import java.util.regex.PatternSyntaxException;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -40,6 +41,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  */
 public class Pattern extends AbstractAttribute implements InputAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.PATTERN;

@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.global;
 import static com.webfirmframework.wffweb.css.CssConstants.IMPORTANT;
 import static com.webfirmframework.wffweb.css.CssConstants.IMPORTANT_UPPERCASE;
 
+import java.io.Serial;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -410,6 +411,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
 // @formatter:on
 public class Style extends AbstractAttribute implements GlobalAttributable, StateChangeInformer<CssProperty> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_1L;
 
     private static final Logger LOGGER = Logger.getLogger(Style.class.getName());

@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.wffbm.data;
 
+import java.io.Serial;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
@@ -109,6 +110,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  */
 public class WffBMArray extends LinkedList<Object> implements WffBMData {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private boolean outer;

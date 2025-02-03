@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.io.Serial;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
 
 public final class AttributeRemoveListenerImpl implements AttributeRemoveListener {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = Logger.getLogger(AttributeRemoveListenerImpl.class.getName());

@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.io.Serial;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
@@ -38,6 +39,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
 
 public final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = Logger.getLogger(ChildTagRemoveListenerImpl.class.getName());

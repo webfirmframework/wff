@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.wffbm.data;
 
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -59,6 +60,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  */
 public class WffBMObject extends LinkedHashMap<String, ValueValueType> implements WffBMData {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private boolean outer;

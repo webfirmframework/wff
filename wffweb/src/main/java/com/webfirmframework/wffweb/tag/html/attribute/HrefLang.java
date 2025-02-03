@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
+import java.io.Serial;
 import java.util.Locale;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -33,6 +34,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.AreaAttributable;
  */
 public class HrefLang extends AbstractAttribute implements AAttributable, AreaAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private Locale locale;

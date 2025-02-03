@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.css.file;
 
+import java.io.Serial;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -30,6 +31,7 @@ import com.webfirmframework.wffweb.css.core.CssProperty;
  */
 public final class InlineCssBlock extends AbstractCssFileBlock {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private Consumer<Set<CssProperty>> consumer;

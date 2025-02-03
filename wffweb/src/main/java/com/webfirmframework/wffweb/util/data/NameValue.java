@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.util.data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -27,6 +28,7 @@ import java.io.Serializable;
  */
 public class NameValue implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1_1_0L;
 
     private byte[] name = {};

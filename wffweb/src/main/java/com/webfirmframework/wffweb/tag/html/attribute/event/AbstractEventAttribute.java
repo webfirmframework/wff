@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event;
 
+import java.io.Serial;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -23,7 +24,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeNa
 import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
- * All event attributes will be extend by this class. It contains some common
+ * All event attributes will be extended by this class. It contains some common
  * features which all event attribute classes want.
  *
  * @author WFF
@@ -31,6 +32,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public abstract class AbstractEventAttribute extends AbstractAttribute implements EventAttribute {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final Logger LOGGER = Logger.getLogger(AbstractEventAttribute.class.getName());

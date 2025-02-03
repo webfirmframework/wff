@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.Set;
 
@@ -299,6 +300,7 @@ public class AutoComplete extends AbstractValueSetAttribute implements InputAttr
      */
     public static final String PAGER = "pager";
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.AUTOCOMPLETE;

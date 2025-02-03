@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.io.Serial;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,6 +32,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  */
 public final class WffBMDataDeleteListenerImpl implements WffBMDataDeleteListener {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = Logger.getLogger(WffBMDataDeleteListenerImpl.class.getName());

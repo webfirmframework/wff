@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.attributewff;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.NullValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
@@ -28,6 +30,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  */
 public class ImmutableCustomAttribute extends AbstractAttribute implements GlobalAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     {

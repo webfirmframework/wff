@@ -20,6 +20,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
 /**
  * Listener to invoked when a tag gains a new parent
+ *
  * @since 12.0.1
  */
 @FunctionalInterface
