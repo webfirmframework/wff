@@ -17,9 +17,10 @@ package com.webfirmframework.wffweb.wffbm.data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 
-import com.webfirmframework.wffweb.InvalidValueException;
+import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 public class ValueValueType implements Serializable {
 
@@ -106,10 +107,10 @@ public class ValueValueType implements Serializable {
 
     /**
      * @return the BigDecimal value.
-     * @throws InvalidValueException if the value is not convertible to BigDecimal.
+     * @throws NumberFormatException if the value is not convertible to BigDecimal.
      * @since 12.0.3
      */
-    public final BigDecimal valueAsBigDecimal() throws InvalidValueException {
+    public final BigDecimal valueAsBigDecimal() throws NumberFormatException {
         final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
         final Object value = this.value;
         if (BMValueType.STRING.equals(valueType)) {
@@ -129,7 +130,43 @@ public class ValueValueType implements Serializable {
             }
             return null;
         }
-        throw new InvalidValueException("Unable to create BigDecimal from %s".concat(valueType.name()));
+        throw new NumberFormatException("Unable to create BigDecimal from ".concat(valueType.name()));
     }
 
+    /**
+     * @return the BigInteger value.
+     * @throws NumberFormatException the value is not convertible to BigInteger.
+     * @since 12.0.3
+     */
+    public final BigInteger valueAsBigInteger() throws NumberFormatException {
+        final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
+        final Object value = this.value;
+        if (BMValueType.STRING.equals(valueType)) {
+            if (value instanceof final String s) {
+                return new BigInteger(s);
+            }
+            return null;
+        } else if (BMValueType.NUMBER.equals(valueType)) {
+            if (value instanceof final Integer number) {
+                return new BigInteger(WffBinaryMessageUtil.getOptimizedBytesFromInt(number));
+            } else if (value instanceof final Long number) {
+                return new BigInteger(WffBinaryMessageUtil.getOptimizedBytesFromLong(number));
+            } else if (value instanceof final Double number) {
+                final long longValue = number.longValue();
+                if (longValue != number) {
+                    throw new NumberFormatException(
+                            "Unable to create BigInteger from ".concat(Double.toString(number)));
+                }
+                return new BigInteger(WffBinaryMessageUtil.getOptimizedBytesFromLong(longValue));
+            } else if (value instanceof final Float number) {
+                final int intValue = number.intValue();
+                if (intValue != number) {
+                    throw new NumberFormatException("Unable to create BigInteger from ".concat(Float.toString(number)));
+                }
+                return new BigInteger(WffBinaryMessageUtil.getOptimizedBytesFromInt(intValue));
+            }
+            return null;
+        }
+        throw new NumberFormatException("Unable to create BigInteger from ".concat(valueType.name()));
+    }
 }

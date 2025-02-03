@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.wffbm.data;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
@@ -349,15 +350,29 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     /**
      * @param key the key to get the value.
      * @return the BigDecimal value.
-     * @throws InvalidValueException if the value is not convertible to BigDecimal.
+     * @throws NumberFormatException if the value is not convertible to BigDecimal.
      * @since 12.0.3
      */
-    public BigDecimal getValueAsBigDecimal(final String key) throws InvalidValueException {
+    public BigDecimal getValueAsBigDecimal(final String key) throws NumberFormatException {
         final ValueValueType valueValueType = super.get(key);
         if (valueValueType == null) {
             return null;
         }
         return valueValueType.valueAsBigDecimal();
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the BigInteger value.
+     * @throws NumberFormatException if the value is not convertible to BigInteger.
+     * @since 12.0.3
+     */
+    public BigInteger getValueAsBigInteger(final String key) throws NumberFormatException {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return null;
+        }
+        return valueValueType.valueAsBigInteger();
     }
 
 }
