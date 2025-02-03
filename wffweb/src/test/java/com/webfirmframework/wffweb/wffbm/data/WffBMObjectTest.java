@@ -54,6 +54,11 @@ public class WffBMObjectTest {
         wffBMObject.put(keyForNullString, BMValueType.STRING, null);
         valueAsBigDecimal = wffBMObject.getValueAsBigDecimal(keyForNullString);
         assertNull(valueAsBigDecimal);
+
+        final String keyForNullType = "keyForNullType";
+        wffBMObject.put(keyForNullType, BMValueType.NULL, null);
+        valueAsBigDecimal = wffBMObject.getValueAsBigDecimal(keyForNullType);
+        assertNull(valueAsBigDecimal);
     }
 
     @Test
@@ -140,6 +145,11 @@ public class WffBMObjectTest {
         wffBMObject.put(keyForNullString, BMValueType.STRING, null);
         valueAsBigInteger = wffBMObject.getValueAsBigInteger(keyForNullString);
         assertNull(valueAsBigInteger);
+
+        final String keyForNullType = "keyForNullType";
+        wffBMObject.put(keyForNullType, BMValueType.NULL, null);
+        valueAsBigInteger = wffBMObject.getValueAsBigInteger(keyForNullType);
+        assertNull(valueAsBigInteger);
     }
 
     @Test
@@ -211,6 +221,11 @@ public class WffBMObjectTest {
         wffBMObject.put(keyForNullNumber, BMValueType.NUMBER, null);
         valueAsInteger = wffBMObject.getValueAsInteger(keyForNullNumber);
         assertNull(valueAsInteger);
+
+        final String keyForNullType = "keyForNullType";
+        wffBMObject.put(keyForNullType, BMValueType.NULL, null);
+        valueAsInteger = wffBMObject.getValueAsInteger(keyForNullType);
+        assertNull(valueAsInteger);
     }
 
     @Test
@@ -275,6 +290,11 @@ public class WffBMObjectTest {
         final String keyForNullNumber = "keyForNullNumber";
         wffBMObject.put(keyForNullNumber, BMValueType.NUMBER, null);
         valueAsLong = wffBMObject.getValueAsLong(keyForNullNumber);
+        assertNull(valueAsLong);
+
+        final String keyForNullType = "keyForNullType";
+        wffBMObject.put(keyForNullType, BMValueType.NULL, null);
+        valueAsLong = wffBMObject.getValueAsLong(keyForNullType);
         assertNull(valueAsLong);
     }
 

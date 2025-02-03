@@ -131,6 +131,8 @@ public class ValueValueType implements Serializable {
                 return new BigDecimal(number, MathContext.DECIMAL32);
             }
             return null;
+        } else if (BMValueType.NULL.equals(valueType)) {
+            return null;
         }
         throw new NumberFormatException("Unable to create BigDecimal from ".concat(valueType.name()));
     }
@@ -168,6 +170,8 @@ public class ValueValueType implements Serializable {
                 return new BigInteger(WffBinaryMessageUtil.getOptimizedBytesFromInt(intValue));
             }
             return null;
+        } else if (BMValueType.NULL.equals(valueType)) {
+            return null;
         }
         throw new NumberFormatException("Unable to create BigInteger from ".concat(valueType.name()));
     }
@@ -203,6 +207,8 @@ public class ValueValueType implements Serializable {
                 return intValue;
             }
             return null;
+        } else if (BMValueType.NULL.equals(valueType)) {
+            return null;
         }
         throw new NumberFormatException("Unable to create Integer from ".concat(valueType.name()));
     }
@@ -233,6 +239,8 @@ public class ValueValueType implements Serializable {
                 }
                 return longValue;
             }
+            return null;
+        } else if (BMValueType.NULL.equals(valueType)) {
             return null;
         }
         throw new NumberFormatException("Unable to create Long from ".concat(valueType.name()));
