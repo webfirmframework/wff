@@ -471,6 +471,19 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
     }
 
     /**
+     * @param index the index to get the value as Float.
+     * @return the value as Float.
+     * @since 12.0.3
+     */
+    public Float getValueAsFloat(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return new ValueValueType("", valueType, value).valueAsFloat();
+        }
+        return null;
+    }
+
+    /**
      * @param index the index to get the value as Boolean.
      * @return the value as Boolean.
      * @since 12.0.3

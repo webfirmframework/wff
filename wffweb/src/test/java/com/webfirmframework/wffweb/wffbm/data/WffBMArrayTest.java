@@ -102,8 +102,34 @@ public class WffBMArrayTest {
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void testGetAsDoubleIndexOutOfBoundsException() {
-        final WffBMArray wffBMArray = new WffBMArray(BMValueType.STRING);
+        final WffBMArray wffBMArray = new WffBMArray(BMValueType.NUMBER);
         wffBMArray.getValueAsDouble(0);
+    }
+
+    @Test
+    public void testGetAsFloat() {
+        final WffBMArray wffBMArray = new WffBMArray(BMValueType.NUMBER);
+        wffBMArray.add(1F);
+        wffBMArray.add(2);
+        wffBMArray.add(3);
+        wffBMArray.add(14.01F);
+        Float value = wffBMArray.getValueAsFloat(0);
+        assertEquals(1F, value, 0);
+
+        value = wffBMArray.getValueAsFloat(1);
+        assertEquals(2F, value, 0);
+
+        value = wffBMArray.getValueAsFloat(2);
+        assertEquals(3F, value, 0);
+
+        value = wffBMArray.getValueAsFloat(3);
+        assertEquals(14.01F, value, 0);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testGetAsFloatIndexOutOfBoundsException() {
+        final WffBMArray wffBMArray = new WffBMArray(BMValueType.NUMBER);
+        wffBMArray.getValueAsFloat(0);
     }
 
     @Test

@@ -365,6 +365,20 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
 
     /**
      * @param key the key to get the value.
+     * @return the Float value.
+     * @throws NumberFormatException if the value is not convertible to Float.
+     * @since 12.0.3
+     */
+    public Float getValueAsFloat(final String key) throws NumberFormatException {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return null;
+        }
+        return valueValueType.valueAsFloat();
+    }
+
+    /**
+     * @param key the key to get the value.
      * @return the BigDecimal value.
      * @throws NumberFormatException if the value is not convertible to BigDecimal.
      * @since 12.0.3
