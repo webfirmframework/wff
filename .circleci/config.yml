@@ -122,3 +122,4 @@ workflows:
       - build-and-test-openjdk-19
       - build-and-test-openjdk-20
       - build-and-test-openjdk-21
+      - build-and-test-openjdk-23
