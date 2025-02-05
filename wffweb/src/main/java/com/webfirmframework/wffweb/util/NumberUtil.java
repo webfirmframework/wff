@@ -45,7 +45,7 @@ public final class NumberUtil {
      *
      * @param x the BigDecimal value to check.
      * @param y the BigDecimal value to check.
-     * @return true if x > y otherwise false.
+     * @return true if x is greater than y otherwise false.
      * @since 12.0.3
      */
     public static boolean isGreaterThan(final BigDecimal x, final BigDecimal y) {
@@ -57,7 +57,7 @@ public final class NumberUtil {
      *
      * @param x the BigDecimal value to check.
      * @param y the BigDecimal value to check.
-     * @return true if x < y otherwise false.
+     * @return true if x is less than y otherwise false.
      * @since 12.0.3
      */
     public static boolean isLessThan(final BigDecimal x, final BigDecimal y) {
@@ -69,7 +69,7 @@ public final class NumberUtil {
      *
      * @param x the BigDecimal value to check.
      * @param y the BigDecimal value to check.
-     * @return true if x <= y otherwise false.
+     * @return true if x is less than or equal to y otherwise false.
      * @since 12.0.3
      */
     public static boolean isLessThanOrEqualTo(final BigDecimal x, final BigDecimal y) {
@@ -81,7 +81,7 @@ public final class NumberUtil {
      *
      * @param x the BigDecimal value to check.
      * @param y the BigDecimal value to check.
-     * @return true if x >= y otherwise false.
+     * @return true if x is greater than or equal to y otherwise false.
      * @since 12.0.3
      */
     public static boolean isGreaterThanOrEqualTo(final BigDecimal x, final BigDecimal y) {
@@ -105,7 +105,7 @@ public final class NumberUtil {
      *
      * @param x the BigInteger value to check.
      * @param y the BigInteger value to check.
-     * @return true if x > y otherwise false.
+     * @return true if x is greater than y otherwise false.
      * @since 12.0.3
      */
     public static boolean isGreaterThan(final BigInteger x, final BigInteger y) {
@@ -117,7 +117,7 @@ public final class NumberUtil {
      *
      * @param x the BigInteger value to check.
      * @param y the BigInteger value to check.
-     * @return true if x < y otherwise false.
+     * @return true if x is less than y otherwise false.
      * @since 12.0.3
      */
     public static boolean isLessThan(final BigInteger x, final BigInteger y) {
@@ -129,7 +129,7 @@ public final class NumberUtil {
      *
      * @param x the BigInteger value to check.
      * @param y the BigInteger value to check.
-     * @return true if x <= y otherwise false.
+     * @return true if x is less than or equal to y otherwise false.
      * @since 12.0.3
      */
     public static boolean isLessThanOrEqualTo(final BigInteger x, final BigInteger y) {
@@ -141,7 +141,7 @@ public final class NumberUtil {
      *
      * @param x the BigInteger value to check.
      * @param y the BigInteger value to check.
-     * @return true if x >= y otherwise false.
+     * @return true if x is greater than or equal to y otherwise false.
      * @since 12.0.3
      */
     public static boolean isGreaterThanOrEqualTo(final BigInteger x, final BigInteger y) {
