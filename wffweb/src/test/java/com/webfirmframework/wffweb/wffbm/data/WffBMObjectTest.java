@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.wffbm.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -976,6 +977,126 @@ public class WffBMObjectTest {
         wffBMObject.put(keyForBigDecimal, valueForBigDecimal);
 
         wffBMObject.getValueAsLong(keyForBigDecimal);
+    }
+
+    @Test
+    public void testPredicateWithAllGetValueAsMethods() {
+        final WffBMObject wffBMObject = new WffBMObject(true);
+
+        final String keyForBigDecimal = "keyForBigDecimal";
+        final BigDecimal valueForBigDecimal = new BigDecimal("14.01");
+        wffBMObject.put(keyForBigDecimal, valueForBigDecimal);
+        BigDecimal valueAsBigDecimal = wffBMObject.getValueAsBigDecimal(keyForBigDecimal,
+                valueValueType -> valueValueType.value() != null
+                        && BMValueType.NUMBER.equals(valueValueType.valueType()),
+                null);
+        assertNotNull(valueAsBigDecimal);
+        valueAsBigDecimal = wffBMObject.getValueAsBigDecimal(keyForBigDecimal,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), null);
+        assertNull(valueAsBigDecimal);
+        valueAsBigDecimal = wffBMObject.getValueAsBigDecimal(keyForBigDecimal,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), BigDecimal.ONE);
+        assertTrue(NumberUtil.isEqual(valueAsBigDecimal, BigDecimal.ONE));
+
+        final String keyForBigInteger = "keyForBigInteger";
+        final BigInteger valueForBigInteger = new BigInteger("1401");
+        wffBMObject.put(keyForBigInteger, valueForBigInteger);
+        BigInteger valueAsBigInteger = wffBMObject.getValueAsBigInteger(keyForBigInteger,
+                valueValueType -> valueValueType.value() != null
+                        && BMValueType.NUMBER.equals(valueValueType.valueType()),
+                null);
+        assertNotNull(valueAsBigInteger);
+        valueAsBigInteger = wffBMObject.getValueAsBigInteger(keyForBigInteger,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), null);
+        assertNull(valueAsBigInteger);
+        valueAsBigInteger = wffBMObject.getValueAsBigInteger(keyForBigInteger,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), BigInteger.valueOf(14));
+        assertTrue(NumberUtil.isEqual(valueAsBigInteger, BigInteger.valueOf(14)));
+
+        final String keyForDouble = "keyForDouble";
+        final double valueForDouble = 14.01D;
+        wffBMObject.put(keyForDouble, valueForDouble);
+        Double valueAsDouble = wffBMObject.getValueAsDouble(keyForDouble,
+                valueValueType -> valueValueType.value() != null
+                        && BMValueType.NUMBER.equals(valueValueType.valueType()),
+                null);
+        assertNotNull(valueAsDouble);
+        valueAsDouble = wffBMObject.getValueAsDouble(keyForDouble,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), null);
+        assertNull(valueAsDouble);
+        valueAsDouble = wffBMObject.getValueAsDouble(keyForDouble,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), 1401D);
+        assertEquals(1401D, valueAsDouble, 0);
+
+        final String keyForFloat = "keyForDouble";
+        final float valueForFloat = 14.01F;
+        wffBMObject.put(keyForFloat, valueForFloat);
+        Float valueAsFloat = wffBMObject.getValueAsFloat(keyForFloat, valueValueType -> valueValueType.value() != null
+                && BMValueType.NUMBER.equals(valueValueType.valueType()), null);
+        assertNotNull(valueAsFloat);
+        valueAsFloat = wffBMObject.getValueAsFloat(keyForFloat,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), null);
+        assertNull(valueAsFloat);
+        valueAsFloat = wffBMObject.getValueAsFloat(keyForFloat,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), 1401F);
+        assertEquals(1401F, valueAsFloat, 0);
+
+        final String keyForInteger = "keyForInteger";
+        final int valueForInteger = 1401;
+        wffBMObject.put(keyForInteger, valueForInteger);
+        Integer valueAsInteger = wffBMObject.getValueAsInteger(keyForInteger,
+                valueValueType -> valueValueType.value() != null
+                        && BMValueType.NUMBER.equals(valueValueType.valueType()),
+                null);
+        assertNotNull(valueAsInteger);
+        valueAsInteger = wffBMObject.getValueAsInteger(keyForInteger,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), null);
+        assertNull(valueAsInteger);
+        valueAsInteger = wffBMObject.getValueAsInteger(keyForInteger,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), 14);
+        assertEquals(14, valueAsInteger.intValue());
+
+        final String keyForLong = "keyForLong";
+        final long valueForLong = 1401;
+        wffBMObject.put(keyForLong, valueForLong);
+        Long valueAsLong = wffBMObject.getValueAsLong(keyForLong, valueValueType -> valueValueType.value() != null
+                && BMValueType.NUMBER.equals(valueValueType.valueType()), null);
+        assertNotNull(valueAsLong);
+        valueAsLong = wffBMObject.getValueAsLong(keyForLong,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), null);
+        assertNull(valueAsLong);
+        valueAsLong = wffBMObject.getValueAsLong(keyForLong,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), 14L);
+        assertEquals(14L, valueAsLong.longValue());
+
+        final String keyForBoolean = "keyForBoolean";
+        boolean valueForBoolean = false;
+        wffBMObject.put(keyForBoolean, BMValueType.BOOLEAN, valueForBoolean);
+        Boolean valueAsBoolean = wffBMObject.getValueAsBoolean(keyForBoolean,
+                valueValueType -> valueValueType.value() != null
+                        && BMValueType.BOOLEAN.equals(valueValueType.valueType()),
+                null);
+        assertNotNull(valueAsBoolean);
+        assertFalse(valueAsBoolean);
+        valueAsBoolean = wffBMObject.getValueAsBoolean(keyForBoolean,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), null);
+        assertNull(valueAsBoolean);
+        valueAsBoolean = wffBMObject.getValueAsBoolean(keyForBoolean,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), true);
+        assertTrue(valueAsBoolean);
+
+        valueForBoolean = true;
+        wffBMObject.put(keyForBoolean, BMValueType.BOOLEAN, valueForBoolean);
+        valueAsBoolean = wffBMObject.getValueAsBoolean(keyForBoolean, valueValueType -> valueValueType.value() != null
+                && BMValueType.BOOLEAN.equals(valueValueType.valueType()), null);
+        assertNotNull(valueAsBoolean);
+        assertTrue(valueAsBoolean);
+        valueAsBoolean = wffBMObject.getValueAsBoolean(keyForBoolean,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), null);
+        assertNull(valueAsBoolean);
+        valueAsBoolean = wffBMObject.getValueAsBoolean(keyForBoolean,
+                valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), false);
+        assertFalse(valueAsBoolean);
     }
 
 }

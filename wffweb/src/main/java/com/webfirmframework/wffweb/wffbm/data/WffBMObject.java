@@ -28,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.WffRuntimeException;
@@ -353,116 +354,6 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     }
 
     /**
-     * @param key the key to get the value.
-     * @return the Double value.
-     * @throws NumberFormatException if the value is not convertible to Double.
-     * @since 12.0.3
-     */
-    public Double getValueAsDouble(final String key) throws NumberFormatException {
-        final ValueValueType valueValueType = super.get(key);
-        if (valueValueType == null) {
-            return null;
-        }
-        return valueValueType.valueAsDouble();
-    }
-
-    /**
-     * @param key the key to get the value.
-     * @return the Float value.
-     * @throws NumberFormatException if the value is not convertible to Float.
-     * @since 12.0.3
-     */
-    public Float getValueAsFloat(final String key) throws NumberFormatException {
-        final ValueValueType valueValueType = super.get(key);
-        if (valueValueType == null) {
-            return null;
-        }
-        return valueValueType.valueAsFloat();
-    }
-
-    /**
-     * @param key the key to get the value.
-     * @return the BigDecimal value.
-     * @throws NumberFormatException if the value is not convertible to BigDecimal.
-     * @since 12.0.3
-     */
-    public BigDecimal getValueAsBigDecimal(final String key) throws NumberFormatException {
-        final ValueValueType valueValueType = super.get(key);
-        if (valueValueType == null) {
-            return null;
-        }
-        return valueValueType.valueAsBigDecimal();
-    }
-
-    /**
-     * @param key the key to get the value.
-     * @return the BigInteger value.
-     * @throws NumberFormatException if the value is not convertible to BigInteger.
-     * @since 12.0.3
-     */
-    public BigInteger getValueAsBigInteger(final String key) throws NumberFormatException {
-        final ValueValueType valueValueType = super.get(key);
-        if (valueValueType == null) {
-            return null;
-        }
-        return valueValueType.valueAsBigInteger();
-    }
-
-    /**
-     * @param key the key to get the value.
-     * @return the Integer value.
-     * @throws NumberFormatException if the value is not convertible to Integer.
-     * @since 12.0.3
-     */
-    public Integer getValueAsInteger(final String key) throws NumberFormatException {
-        final ValueValueType valueValueType = super.get(key);
-        if (valueValueType == null) {
-            return null;
-        }
-        return valueValueType.valueAsInteger();
-    }
-
-    /**
-     * @param key the key to get the value.
-     * @return the Integer value.
-     * @throws NumberFormatException if the value is not convertible to Long.
-     * @since 12.0.3
-     */
-    public Long getValueAsLong(final String key) {
-        final ValueValueType valueValueType = super.get(key);
-        if (valueValueType == null) {
-            return null;
-        }
-        return valueValueType.valueAsLong();
-    }
-
-    /**
-     * @param key the key to get the value.
-     * @return the value as a String.
-     * @since 12.0.3
-     */
-    public String getValueAsString(final String key) {
-        final ValueValueType valueValueType = super.get(key);
-        if (valueValueType == null) {
-            return null;
-        }
-        return valueValueType.valueAsString();
-    }
-
-    /**
-     * @param key the key to get the value.
-     * @return the value as a Boolean.
-     * @since 12.0.3
-     */
-    public Boolean getValueAsBoolean(final String key) {
-        final ValueValueType valueValueType = super.get(key);
-        if (valueValueType == null) {
-            return null;
-        }
-        return valueValueType.valueAsBoolean();
-    }
-
-    /**
      * The value will be internally saved as a double and the BMValueType will be
      * NUMBER. If you want to save a big value larger than double, save it as a
      * string and get it by getValueAsBigInteger/getValueAsBigDecimal method.
@@ -473,6 +364,274 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      */
     public void put(final String key, final Number value) {
         put(key, BMValueType.NUMBER, value);
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the Double value.
+     * @throws NumberFormatException if the value is not convertible to Double.
+     * @since 12.0.3
+     */
+    public Double getValueAsDouble(final String key) throws NumberFormatException {
+        return getValueAsDouble(key, null, null);
+    }
+
+    /**
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the Double value.
+     * @throws NumberFormatException if the value is not convertible to Double.
+     * @since 12.0.3
+     */
+    public Double getValueAsDouble(final String key, final Predicate<ValueAndValueType> predicate,
+            final Double defaultValue) throws NumberFormatException {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsDouble();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the Float value.
+     * @throws NumberFormatException if the value is not convertible to Float.
+     * @since 12.0.3
+     */
+    public Float getValueAsFloat(final String key) throws NumberFormatException {
+        return getValueAsFloat(key, null, null);
+    }
+
+    /**
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the Float value.
+     * @throws NumberFormatException if the value is not convertible to Float.
+     * @since 12.0.3
+     */
+    public Float getValueAsFloat(final String key, final Predicate<ValueAndValueType> predicate,
+            final Float defaultValue) throws NumberFormatException {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsFloat();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the BigDecimal value.
+     * @throws NumberFormatException if the value is not convertible to BigDecimal.
+     * @since 12.0.3
+     */
+    public BigDecimal getValueAsBigDecimal(final String key) throws NumberFormatException {
+        return getValueAsBigDecimal(key, null, null);
+    }
+
+    /**
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the BigDecimal value.
+     * @throws NumberFormatException if the value is not convertible to BigDecimal.
+     * @since 12.0.3
+     */
+    public BigDecimal getValueAsBigDecimal(final String key, final Predicate<ValueAndValueType> predicate,
+            final BigDecimal defaultValue) throws NumberFormatException {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsBigDecimal();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the BigInteger value.
+     * @throws NumberFormatException if the value is not convertible to BigInteger.
+     * @since 12.0.3
+     */
+    public BigInteger getValueAsBigInteger(final String key) throws NumberFormatException {
+        return getValueAsBigInteger(key, null, null);
+    }
+
+    /**
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the BigInteger value.
+     * @throws NumberFormatException if the value is not convertible to BigInteger.
+     * @since 12.0.3
+     */
+    public BigInteger getValueAsBigInteger(final String key, final Predicate<ValueAndValueType> predicate,
+            final BigInteger defaultValue) throws NumberFormatException {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsBigInteger();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the Integer value.
+     * @throws NumberFormatException if the value is not convertible to Integer.
+     * @since 12.0.3
+     */
+    public Integer getValueAsInteger(final String key) throws NumberFormatException {
+        return getValueAsInteger(key, null, null);
+    }
+
+    /**
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the Integer value.
+     * @throws NumberFormatException if the value is not convertible to Integer.
+     * @since 12.0.3
+     */
+    public Integer getValueAsInteger(final String key, final Predicate<ValueAndValueType> predicate,
+            final Integer defaultValue) throws NumberFormatException {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsInteger();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the Integer value.
+     * @throws NumberFormatException if the value is not convertible to Long.
+     * @since 12.0.3
+     */
+    public Long getValueAsLong(final String key) {
+        return getValueAsLong(key, null, null);
+    }
+
+    /**
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the Integer value.
+     * @throws NumberFormatException if the value is not convertible to Long.
+     * @since 12.0.3
+     */
+    public Long getValueAsLong(final String key, final Predicate<ValueAndValueType> predicate,
+            final Long defaultValue) {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsLong();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the value as a String.
+     * @since 12.0.3
+     */
+    public String getValueAsString(final String key) {
+        return getValueAsString(key, null, null);
+    }
+
+    /**
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the value as a String.
+     * @since 12.0.3
+     */
+    public String getValueAsString(final String key, final Predicate<ValueAndValueType> predicate,
+            final String defaultValue) {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsString();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the value as a Boolean.
+     * @since 12.0.3
+     */
+    public Boolean getValueAsBoolean(final String key) {
+        return getValueAsBoolean(key, null, null);
+    }
+
+    /**
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the value as a Boolean.
+     * @since 12.0.3
+     */
+    public Boolean getValueAsBoolean(final String key, final Predicate<ValueAndValueType> predicate,
+            final Boolean defaultValue) {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsBoolean();
+        }
+        return defaultValue;
     }
 
 }
