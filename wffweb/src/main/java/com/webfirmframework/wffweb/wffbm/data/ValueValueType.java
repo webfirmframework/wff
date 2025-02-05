@@ -23,6 +23,7 @@ import java.math.MathContext;
 import java.util.Objects;
 
 import com.webfirmframework.wffweb.InvalidValueException;
+import com.webfirmframework.wffweb.util.NumberUtil;
 
 public class ValueValueType implements Serializable {
 
@@ -148,10 +149,20 @@ public class ValueValueType implements Serializable {
                 }
                 return floatValue;
             } else if (value instanceof final BigDecimal number) {
+                // Note: floatValue == doubleValue may be false for the same value in some cases
+                // so BigDecimal conversion is required for equalizing
                 final float floatValue = number.floatValue();
-                if (floatValue != number.doubleValue()) {
-                    throw new NumberFormatException(
-                            "Unable to create Float from ".concat(number.stripTrailingZeros().toPlainString()));
+                if (!NumberUtil.isEqual(number, new BigDecimal(Float.toString(floatValue)))) {
+                    throw new NumberFormatException("Unable to create Float from ".concat(String.valueOf(number)));
+                }
+                return floatValue;
+            } else if (value instanceof final Double number) {
+                // Note: floatValue == doubleValue may be false for the same value in some cases
+                // so BigDecimal conversion is required for equalizing
+                final float floatValue = number.floatValue();
+                if (!NumberUtil.isEqual(new BigDecimal(number, MathContext.DECIMAL64),
+                        new BigDecimal(Float.toString(floatValue)))) {
+                    throw new NumberFormatException("Unable to create Float from ".concat(String.valueOf(number)));
                 }
                 return floatValue;
             } else if (value instanceof final Number number) {
@@ -185,6 +196,8 @@ public class ValueValueType implements Serializable {
             } else if (value instanceof final Double number) {
                 return new BigDecimal(number, MathContext.DECIMAL64);
             } else if (value instanceof final Float number) {
+                // may not reach to this line as the float is converted to double before saving
+                // into WffBMObject.
                 return new BigDecimal(number, MathContext.DECIMAL32);
             } else if (value instanceof final Long number) {
                 return new BigDecimal(number, MathContext.DECIMAL64);
@@ -230,6 +243,8 @@ public class ValueValueType implements Serializable {
                 }
                 return BigInteger.valueOf(longValue);
             } else if (value instanceof final Float number) {
+                // may not reach to this line as the float is converted to double before saving
+                // into WffBMObject.
                 final int intValue = number.intValue();
                 if (intValue != number) {
                     throw new NumberFormatException("Unable to create BigInteger from ".concat(Float.toString(number)));
@@ -279,6 +294,8 @@ public class ValueValueType implements Serializable {
                 }
                 return intValue;
             } else if (value instanceof final Float number) {
+                // may not reach to this line as the float is converted to double before saving
+                // into WffBMObject.
                 final int intValue = number.intValue();
                 if (intValue != number) {
                     throw new NumberFormatException("Unable to create Integer from ".concat(Float.toString(number)));
@@ -361,6 +378,14 @@ public class ValueValueType implements Serializable {
         if (BMValueType.STRING.equals(valueType)) {
             if (value instanceof final String s) {
                 return s;
+            }
+            return null;
+        } else if (BMValueType.NUMBER.equals(valueType)) {
+            if (value instanceof final BigDecimal number) {
+                return number.stripTrailingZeros().toPlainString();
+            }
+            if (value instanceof final Number number) {
+                return number.toString();
             }
             return null;
         } else if (BMValueType.NULL.equals(valueType)) {

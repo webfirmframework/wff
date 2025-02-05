@@ -109,7 +109,15 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
         if (this == value) {
             throw new InvalidValueException("The same instance cannot be passed as value");
         }
-        super.put(key, new ValueValueType(key, valueType.getType(), value));
+        // do not keep overloading method put(String, BMValueType, float) it may execute
+        // this method (i.e. (... Object))
+        // and for int value it will execute (..., float) method
+        if (BMValueType.NUMBER.equals(valueType) && value instanceof final Float f) {
+            super.put(key,
+                    new ValueValueType(key, valueType.getType(), new BigDecimal(Float.toString(f)).doubleValue()));
+        } else {
+            super.put(key, new ValueValueType(key, valueType.getType(), value));
+        }
     }
 
     /**
