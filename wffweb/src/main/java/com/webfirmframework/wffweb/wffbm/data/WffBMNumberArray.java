@@ -17,7 +17,9 @@ package com.webfirmframework.wffweb.wffbm.data;
 
 import java.io.Serial;
 import java.util.Collection;
+import java.util.stream.Stream;
 
+import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.WffRuntimeException;
 
 public class WffBMNumberArray<T extends Number> extends WffBMArray {
@@ -114,6 +116,28 @@ public class WffBMNumberArray<T extends Number> extends WffBMArray {
                     "This array supports only Number type values, eg Integer, Double, Byte, Short, Float, Long etc..");
         }
         super.addLast(e);
+    }
+
+    /**
+     * @param index the index to get the value as Boolean.
+     * @return nothing, it always throws exception as converting a number to boolean
+     *         doesn't make sense.
+     * @throws MethodNotImplementedException converting a number to a boolean
+     *                                       doesn't make sense.
+     * @since 12.0.3
+     */
+    @Override
+    public Boolean getValueAsBoolean(final int index) throws MethodNotImplementedException {
+        throw new MethodNotImplementedException("Cannot convert number to a boolean value.");
+    }
+
+    /**
+     * @return the Stream object.
+     * @since 12.0.3
+     */
+    @SuppressWarnings("unchecked")
+    public Stream<T> toStream() {
+        return stream().map(each -> (T) each);
     }
 
 }
