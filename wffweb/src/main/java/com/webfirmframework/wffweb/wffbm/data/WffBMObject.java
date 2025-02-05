@@ -56,7 +56,6 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * @author WFF
  * @see WffBMArray
  * @see WffBMByteArray
- *
  */
 public class WffBMObject extends LinkedHashMap<String, ValueValueType> implements WffBMData {
 
@@ -117,7 +116,6 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      * replacement method for build() method.
      *
      * @return
-     *
      * @since 3.0.15
      */
     public byte[] buildBytes() {
@@ -127,9 +125,8 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     /**
      * @param outer
      * @return bytes for this WffBMObject
-     *
-     * @since 3.0.2
      * @author WFF
+     * @since 3.0.2
      */
     @Override
     public byte[] buildBytes(final boolean outer) {
@@ -221,7 +218,6 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     /**
      * @param bmObjectBytes
      * @param outer
-     *
      */
     private void initWffBMObject(final byte[] bmObjectBytes, final boolean outer) {
 
@@ -317,8 +313,8 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
 
     /**
      * @param key the key name
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public Object getValue(final String key) {
         final ValueValueType valueValueType = super.get(key);
@@ -330,11 +326,10 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     }
 
     /**
-     *
      * @param key
      * @return the value type of this key
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public BMValueType getValueType(final String key) {
         final ValueValueType valueValueType = super.get(key);
@@ -457,6 +452,19 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
             return null;
         }
         return valueValueType.valueAsBoolean();
+    }
+
+    /**
+     * The value will be internally saved as a double and the BMValueType will be
+     * NUMBER. If you want to save a big value larger than double, save it as a
+     * string and get it by getValueAsBigInteger/getValueAsBigDecimal method.
+     *
+     * @param key   the key.
+     * @param value the value for the key.
+     * @since 12.0.3
+     */
+    public void put(final String key, final Number value) {
+        put(key, BMValueType.NUMBER, value);
     }
 
 }

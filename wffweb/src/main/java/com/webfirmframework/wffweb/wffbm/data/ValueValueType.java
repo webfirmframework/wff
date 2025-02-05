@@ -141,7 +141,20 @@ public class ValueValueType implements Serializable {
             }
             return null;
         } else if (BMValueType.NUMBER.equals(valueType)) {
-            if (value instanceof final Number number) {
+            if (value instanceof final BigInteger number) {
+                final float floatValue = number.floatValue();
+                if (floatValue != number.longValue()) {
+                    throw new NumberFormatException("Unable to create Float from ".concat(number.toString()));
+                }
+                return floatValue;
+            } else if (value instanceof final BigDecimal number) {
+                final float floatValue = number.floatValue();
+                if (floatValue != number.doubleValue()) {
+                    throw new NumberFormatException(
+                            "Unable to create Float from ".concat(number.stripTrailingZeros().toPlainString()));
+                }
+                return floatValue;
+            } else if (value instanceof final Number number) {
                 return number.floatValue();
             }
             return null;
@@ -165,7 +178,11 @@ public class ValueValueType implements Serializable {
             }
             return null;
         } else if (BMValueType.NUMBER.equals(valueType)) {
-            if (value instanceof final Double number) {
+            if (value instanceof final BigDecimal number) {
+                return number;
+            } else if (value instanceof final BigInteger number) {
+                return new BigDecimal(number, MathContext.DECIMAL64);
+            } else if (value instanceof final Double number) {
                 return new BigDecimal(number, MathContext.DECIMAL64);
             } else if (value instanceof final Float number) {
                 return new BigDecimal(number, MathContext.DECIMAL32);
@@ -197,7 +214,15 @@ public class ValueValueType implements Serializable {
             }
             return null;
         } else if (BMValueType.NUMBER.equals(valueType)) {
-            if (value instanceof final Double number) {
+            if (value instanceof final BigInteger number) {
+                return number;
+            } else if (value instanceof final BigDecimal number) {
+                if (number.longValue() != number.doubleValue()) {
+                    throw new NumberFormatException(
+                            "Unable to create BigInteger from ".concat(number.stripTrailingZeros().toPlainString()));
+                }
+                return number.toBigInteger();
+            } else if (value instanceof final Double number) {
                 final long longValue = number.longValue();
                 if (longValue != number) {
                     throw new NumberFormatException(
@@ -238,7 +263,16 @@ public class ValueValueType implements Serializable {
             }
             return null;
         } else if (BMValueType.NUMBER.equals(valueType)) {
-            if (value instanceof final Double number) {
+            if (value instanceof final BigInteger number) {
+                return Math.toIntExact(number.longValue());
+            } else if (value instanceof final BigDecimal number) {
+                final long longValue = number.longValue();
+                if (longValue != number.doubleValue()) {
+                    throw new NumberFormatException(
+                            "Unable to create Integer from ".concat(number.stripTrailingZeros().toPlainString()));
+                }
+                return Math.toIntExact(longValue);
+            } else if (value instanceof final Double number) {
                 final int intValue = number.intValue();
                 if (intValue != number) {
                     throw new NumberFormatException("Unable to create Integer from ".concat(Double.toString(intValue)));
@@ -282,7 +316,16 @@ public class ValueValueType implements Serializable {
             }
             return null;
         } else if (BMValueType.NUMBER.equals(valueType)) {
-            if (value instanceof final Double number) {
+            if (value instanceof final BigInteger number) {
+                return number.longValue();
+            } else if (value instanceof final BigDecimal number) {
+                final long longValue = number.longValue();
+                if (longValue != number.doubleValue()) {
+                    throw new NumberFormatException(
+                            "Unable to create Long from ".concat(number.stripTrailingZeros().toPlainString()));
+                }
+                return longValue;
+            } else if (value instanceof final Double number) {
                 final long longValue = number.longValue();
                 if (longValue != number) {
                     throw new NumberFormatException("Unable to create Long from ".concat(Double.toString(number)));

@@ -2,6 +2,7 @@ package com.webfirmframework.wffweb.wffbm.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -10,6 +11,7 @@ import java.math.RoundingMode;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidValueException;
+import com.webfirmframework.wffweb.util.NumberUtil;
 
 public class WffBMObjectTest {
 
@@ -86,7 +88,11 @@ public class WffBMObjectTest {
         final float numberPrimitive4 = 14.01F;
         wffBMObject.put(keyForNumberPrimitive4, BMValueType.NUMBER, numberPrimitive4);
 
-        wffBMObject = new WffBMObject(wffBMObject.buildBytes(true));
+        final String keyForNumberNonPrimitive1 = "keyForNumberNonPrimitive1";
+        final BigDecimal numberNonPrimitive1 = new BigDecimal("14.01");
+        wffBMObject.put(keyForNumberNonPrimitive1, BMValueType.NUMBER, numberNonPrimitive1);
+
+        wffBMObject = new WffBMObject(wffBMObject.buildBytes(true), true);
 
         final BigDecimal valueForNumberString = wffBMObject.getValueAsBigDecimal(keyForNumberString);
         assertEquals(numberString, valueForNumberString.stripTrailingZeros().toPlainString());
@@ -104,6 +110,10 @@ public class WffBMObjectTest {
         final BigDecimal valueForNumberPrimitive4 = wffBMObject.getValueAsBigDecimal(keyForNumberPrimitive4).setScale(2,
                 RoundingMode.DOWN);
         assertEquals(String.valueOf(numberPrimitive4), valueForNumberPrimitive4.stripTrailingZeros().toPlainString());
+
+        final BigDecimal valueForNumberNonPrimitive1 = wffBMObject.getValueAsBigDecimal(keyForNumberNonPrimitive1);
+        assertEquals(numberNonPrimitive1.stripTrailingZeros().toPlainString(),
+                valueForNumberNonPrimitive1.stripTrailingZeros().toPlainString());
     }
 
     @Test(expected = NumberFormatException.class)
@@ -705,6 +715,165 @@ public class WffBMObjectTest {
         wffBMObject.put(keyForRegex, BMValueType.REG_EXP, regex);
         // exception is expected
         wffBMObject.getValueAsFloat(keyForRegex);
+    }
+
+    @Test
+    public void testPutBigDecimal() {
+        WffBMObject wffBMObject = new WffBMObject(true);
+        final String keyForBigDecimal = "keyForBigDecimal";
+        final BigDecimal expected = new BigDecimal("14.01");
+        wffBMObject.put(keyForBigDecimal, expected);
+        BigDecimal actual = wffBMObject.getValueAsBigDecimal(keyForBigDecimal);
+        assertTrue(NumberUtil.isEqual(expected, actual));
+
+        wffBMObject = new WffBMObject(wffBMObject.buildBytes(true), true);
+        actual = wffBMObject.getValueAsBigDecimal(keyForBigDecimal);
+        assertTrue(NumberUtil.isEqual(expected, actual));
+    }
+
+    @Test
+    public void testPutBigInteger() {
+        WffBMObject wffBMObject = new WffBMObject(true);
+        final String keyForBigInteger = "keyForBigInteger";
+        final BigInteger expected = new BigInteger("14");
+        wffBMObject.put(keyForBigInteger, expected);
+        BigInteger actual = wffBMObject.getValueAsBigInteger(keyForBigInteger);
+        assertTrue(NumberUtil.isEqual(expected, actual));
+
+        wffBMObject = new WffBMObject(wffBMObject.buildBytes(true), true);
+        actual = wffBMObject.getValueAsBigInteger(keyForBigInteger);
+        assertTrue(NumberUtil.isEqual(expected, actual));
+    }
+
+    @Test
+    public void testPutBigIntegerBigDecimal() {
+        WffBMObject wffBMObject = new WffBMObject(true);
+        final String keyForBigInteger = "keyForBigInteger";
+        final String expectedValueString = "14";
+        final BigInteger valueForBigInteger = new BigInteger(expectedValueString);
+        wffBMObject.put(keyForBigInteger, valueForBigInteger);
+
+        final String keyForBigDecimal = "keyForBigDecimal";
+        final BigDecimal valueForBigDecimal = new BigDecimal(expectedValueString);
+        wffBMObject.put(keyForBigDecimal, valueForBigDecimal);
+
+        assertTrue(NumberUtil.isEqual(valueForBigInteger, wffBMObject.getValueAsBigInteger(keyForBigInteger)));
+        assertTrue(NumberUtil.isEqual(valueForBigDecimal, wffBMObject.getValueAsBigDecimal(keyForBigDecimal)));
+
+        assertTrue(NumberUtil.isEqual(new BigDecimal(valueForBigInteger),
+                wffBMObject.getValueAsBigDecimal(keyForBigInteger)));
+        assertTrue(NumberUtil.isEqual(valueForBigDecimal.toBigInteger(),
+                wffBMObject.getValueAsBigInteger(keyForBigDecimal)));
+
+        assertEquals(Integer.parseInt(expectedValueString), wffBMObject.getValueAsInteger(keyForBigInteger).intValue());
+        assertEquals(Integer.parseInt(expectedValueString), wffBMObject.getValueAsInteger(keyForBigDecimal).intValue());
+
+        assertEquals(Long.parseLong(expectedValueString), wffBMObject.getValueAsLong(keyForBigInteger).longValue());
+        assertEquals(Long.parseLong(expectedValueString), wffBMObject.getValueAsLong(keyForBigDecimal).longValue());
+
+        assertEquals(Double.parseDouble(expectedValueString), wffBMObject.getValueAsDouble(keyForBigInteger), 0);
+        assertEquals(Double.parseDouble(expectedValueString), wffBMObject.getValueAsDouble(keyForBigDecimal), 0);
+
+        assertEquals(Float.parseFloat(expectedValueString), wffBMObject.getValueAsFloat(keyForBigInteger), 0);
+        assertEquals(Float.parseFloat(expectedValueString), wffBMObject.getValueAsFloat(keyForBigDecimal), 0);
+
+        wffBMObject = new WffBMObject(wffBMObject.buildBytes(true), true);
+
+        assertTrue(NumberUtil.isEqual(valueForBigInteger, wffBMObject.getValueAsBigInteger(keyForBigInteger)));
+        assertTrue(NumberUtil.isEqual(valueForBigDecimal, wffBMObject.getValueAsBigDecimal(keyForBigDecimal)));
+
+        assertTrue(NumberUtil.isEqual(new BigDecimal(valueForBigInteger),
+                wffBMObject.getValueAsBigDecimal(keyForBigInteger)));
+        assertTrue(NumberUtil.isEqual(valueForBigDecimal.toBigInteger(),
+                wffBMObject.getValueAsBigInteger(keyForBigDecimal)));
+
+        assertEquals(Integer.parseInt(expectedValueString), wffBMObject.getValueAsInteger(keyForBigInteger).intValue());
+        assertEquals(Integer.parseInt(expectedValueString), wffBMObject.getValueAsInteger(keyForBigDecimal).intValue());
+
+        assertEquals(Long.parseLong(expectedValueString), wffBMObject.getValueAsLong(keyForBigInteger).longValue());
+        assertEquals(Long.parseLong(expectedValueString), wffBMObject.getValueAsLong(keyForBigDecimal).longValue());
+
+        assertEquals(Double.parseDouble(expectedValueString), wffBMObject.getValueAsDouble(keyForBigInteger), 0);
+        assertEquals(Double.parseDouble(expectedValueString), wffBMObject.getValueAsDouble(keyForBigDecimal), 0);
+
+        assertEquals(Float.parseFloat(expectedValueString), wffBMObject.getValueAsFloat(keyForBigInteger), 0);
+        assertEquals(Float.parseFloat(expectedValueString), wffBMObject.getValueAsFloat(keyForBigDecimal), 0);
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testValueAsFloatNumberFormatException1() {
+
+        final WffBMObject wffBMObject = new WffBMObject(true);
+        final String keyForBigInteger = "keyForBigInteger";
+        final String expectedValueString = BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.ONE).toString();
+        final BigInteger valueForBigInteger = new BigInteger(expectedValueString);
+        wffBMObject.put(keyForBigInteger, valueForBigInteger);
+
+        wffBMObject.getValueAsFloat(keyForBigInteger);
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testValueAsFloatNumberFormatException2() {
+
+        final WffBMObject wffBMObject = new WffBMObject(true);
+        final String expectedValueString = BigDecimal.valueOf(16777217).stripTrailingZeros().toPlainString();
+
+        final String keyForBigDecimal = "keyForBigDecimal";
+        final BigDecimal valueForBigDecimal = new BigDecimal(expectedValueString);
+        wffBMObject.put(keyForBigDecimal, valueForBigDecimal);
+
+        wffBMObject.getValueAsFloat(keyForBigDecimal);
+    }
+
+    @Test(expected = ArithmeticException.class)
+    public void testValueAsIntegerArithmeticException1() {
+
+        final WffBMObject wffBMObject = new WffBMObject(true);
+        final String keyForBigInteger = "keyForBigInteger";
+        final String expectedValueString = BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.ONE).toString();
+        final BigInteger valueForBigInteger = new BigInteger(expectedValueString);
+        wffBMObject.put(keyForBigInteger, valueForBigInteger);
+
+        wffBMObject.getValueAsInteger(keyForBigInteger);
+    }
+
+    @Test(expected = ArithmeticException.class)
+    public void testValueAsIntegerArithmeticException2() {
+
+        final WffBMObject wffBMObject = new WffBMObject(true);
+        final String expectedValueString = BigDecimal.valueOf(Long.MAX_VALUE).stripTrailingZeros().toPlainString();
+
+        final String keyForBigDecimal = "keyForBigDecimal";
+        final BigDecimal valueForBigDecimal = new BigDecimal(expectedValueString);
+        wffBMObject.put(keyForBigDecimal, valueForBigDecimal);
+
+        wffBMObject.getValueAsInteger(keyForBigDecimal);
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testValueAsIntegerNumberFormatException1() {
+
+        final WffBMObject wffBMObject = new WffBMObject(true);
+        final String expectedValueString = new BigDecimal("14.01").stripTrailingZeros().toPlainString();
+
+        final String keyForBigDecimal = "keyForBigDecimal";
+        final BigDecimal valueForBigDecimal = new BigDecimal(expectedValueString);
+        wffBMObject.put(keyForBigDecimal, valueForBigDecimal);
+
+        wffBMObject.getValueAsInteger(keyForBigDecimal);
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testValueAsLongNumberFormatException1() {
+
+        final WffBMObject wffBMObject = new WffBMObject(true);
+        final String expectedValueString = new BigDecimal("14.01").stripTrailingZeros().toPlainString();
+
+        final String keyForBigDecimal = "keyForBigDecimal";
+        final BigDecimal valueForBigDecimal = new BigDecimal(expectedValueString);
+        wffBMObject.put(keyForBigDecimal, valueForBigDecimal);
+
+        wffBMObject.getValueAsLong(keyForBigDecimal);
     }
 
 }
