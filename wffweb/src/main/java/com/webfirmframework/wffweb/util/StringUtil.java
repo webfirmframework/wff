@@ -569,9 +569,7 @@ public final class StringUtil {
      * for (final int[] startIndexAndEndIndex : startAndEndIndexesOf) {
      *     System.out.println(startIndexAndEndIndex[0] + " - " + startIndexAndEndIndex[1]);
      * }
-     * </code></pre>
-     * the output will be :
-     * <pre>
+     * </code></pre> the output will be : <pre>
      * <i>0 - 3
      * 4 - 7
      * 8 - 11
@@ -582,8 +580,7 @@ public final class StringUtil {
      * 28 - 31
      * 32 - 35
      * </i>
-     * </pre>
-     * <pre><code>
+     * </pre> <pre><code>
      * int[] startIndexAndEndIndex = startAndEndIndexesOf[0]; // 1, 2 etc..
      * System.out.println(startIndexAndEndIndex[0] + " - " + startIndexAndEndIndex[1]);
      * //the output will be : <i>0 - 3</i>

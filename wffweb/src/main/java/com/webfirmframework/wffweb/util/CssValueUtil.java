@@ -86,8 +86,7 @@ public final class CssValueUtil {
      * for (final String each : splitTest) {
      *     System.out.println(each);
      * }
-     * </code></pre>
-     * <pre>
+     * </code></pre> <pre>
      * gives out as :
      *
      * <i>hsla(7, 8, 9, 1)

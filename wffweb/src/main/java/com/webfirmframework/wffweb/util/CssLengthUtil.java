@@ -47,10 +47,9 @@ public final class CssLengthUtil {
      *
      * // the object will be equal to CssLengthUnit.PX
      * CssLengthUnit unit = (CssLengthUnit) lengthValueAsPremitiveAndUnit[1];
-     * </code></pre>
-     * Auto-boxing is done when the primitive value is stored in an object array
-     * therefore there is no much advantage with this method.
-     * [This method is left for future modification.]
+     * </code></pre> Auto-boxing is done when the primitive value is stored in an
+     * object array therefore there is no much advantage with this method. [This
+     * method is left for future modification.]
      *
      *
      * @param cssValue the value from which the length value and unit required to be
