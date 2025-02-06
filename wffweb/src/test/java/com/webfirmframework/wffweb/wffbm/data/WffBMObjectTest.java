@@ -1150,4 +1150,39 @@ public class WffBMObjectTest {
         assertEquals(BMValueType.UNDEFINED, wffBMObject.getValueType("undefinedValue"));
     }
 
+    @Test
+    public void testSimilar() throws IOException {
+
+        final WffBMObject wffBMObject = new WffBMObject();
+
+        final WffBMObject bmObj = new WffBMObject();
+        bmObj.putString("str", "someVal");
+
+        final WffBMArray wffBMAry = new WffBMArray(BMValueType.STRING);
+        wffBMAry.add("one");
+
+        final WffBMByteArray wffBMByteAry = new WffBMByteArray();
+        wffBMByteAry.write(new byte[] { 1, 2, 3 });
+
+        wffBMObject.put("bmObj", bmObj);
+        wffBMObject.put("wffBMAry", wffBMAry);
+        wffBMObject.put("wffBMByteAry", wffBMByteAry);
+        wffBMObject.putNull("nullValue");
+        wffBMObject.putUndefined("undefinedValue");
+        wffBMObject.putRegex("regexStr", "[w]");
+        wffBMObject.putString("keyForStr", "someVal");
+        wffBMObject.putFunction("keyForFun", "function(arg) {console.log(arg);}");
+
+        assertFalse(wffBMObject.isOuter());
+
+        final WffBMObject wffBMObjectCopy = new WffBMObject(wffBMObject.buildBytes(), wffBMObject.isOuter());
+        assertFalse(wffBMObjectCopy.isOuter());
+        assertTrue(wffBMObject.similar(wffBMObjectCopy));
+        wffBMObjectCopy.setOuter(true);
+        assertTrue(wffBMObject.similar(wffBMObjectCopy));
+
+        wffBMObjectCopy.putString("keyForStr", "valueChanged");
+        assertFalse(wffBMObject.similar(wffBMObjectCopy));
+    }
+
 }

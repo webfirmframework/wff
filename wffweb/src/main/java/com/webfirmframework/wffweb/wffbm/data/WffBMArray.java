@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -499,5 +500,14 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
             return valueAsBoolean;
         }
         return null;
+    }
+
+    /**
+     * @param other the other object for similarity checking.
+     * @return true if the other object also contains the same data otherwise false.
+     * @since 12.0.3
+     */
+    public boolean similar(final WffBMArray other) {
+        return Arrays.equals(buildBytes(true), other.buildBytes(true));
     }
 }

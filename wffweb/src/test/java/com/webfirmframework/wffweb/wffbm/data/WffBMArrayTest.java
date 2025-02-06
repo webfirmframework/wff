@@ -16,7 +16,10 @@
 package com.webfirmframework.wffweb.wffbm.data;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -230,6 +233,29 @@ public class WffBMArrayTest {
         final WffBMArray wffBMArray = new WffBMArray(BMValueType.BOOLEAN);
         wffBMArray.add("true");
         wffBMArray.getValueAsBoolean(0);
+    }
+
+    @Test
+    public void testSimilar() throws IOException {
+
+        final WffBMArray wffBMAry = new WffBMArray(BMValueType.STRING);
+        wffBMAry.add("one");
+        wffBMAry.add("two");
+        wffBMAry.add("three");
+        wffBMAry.add("4");
+
+        final WffBMByteArray wffBMByteAry = new WffBMByteArray();
+        wffBMByteAry.write(new byte[] { 1, 2, 3 });
+
+        assertFalse(wffBMAry.isOuter());
+
+        final WffBMArray wffBMAryCopy = new WffBMArray(wffBMAry.buildBytes(wffBMAry.isOuter()), wffBMAry.isOuter());
+        assertFalse(wffBMAryCopy.isOuter());
+        assertTrue(wffBMAry.similar(wffBMAryCopy));
+        wffBMAryCopy.setOuter(true);
+        assertTrue(wffBMAry.similar(wffBMAryCopy));
+        wffBMAryCopy.add("new item");
+        assertFalse(wffBMAry.similar(wffBMAryCopy));
     }
 
 }

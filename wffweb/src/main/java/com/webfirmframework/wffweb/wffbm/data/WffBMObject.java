@@ -439,12 +439,10 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      * The value will be internally saved as regex string and its BMValueType will
      * be REG_EXP. Eg:
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      *     WffBMObject obj = new WffBMObject();
      *     obj.putRegex("regexStr", "[w]");
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param key the key. @ param value the value for the key.
      * @since 12.0.3
@@ -468,12 +466,10 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      * The value will be internally saved as function string and its BMValueType
      * will be FUNCTION. Eg:
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      *     WffBMObject obj = new WffBMObject();
      *     obj.putFunction("funKey", "function(arg) {console.log(arg);}");
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param key the key. @ param value the value for the key.
      * @since 12.0.3
@@ -748,6 +744,15 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
             return valueValueType.valueAsBoolean();
         }
         return defaultValue;
+    }
+
+    /**
+     * @param other the other object for similarity checking.
+     * @return true if the other object also contains the same data otherwise false.
+     * @since 12.0.3
+     */
+    public boolean similar(final WffBMObject other) {
+        return Arrays.equals(buildBytes(true), other.buildBytes(true));
     }
 
 }
