@@ -33,7 +33,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * into this array. <br>
  * Sample :- <br>
  *
- * <pre>
+ * <pre><code>
  * WffBMObject bmObject = new WffBMObject();
  *
  * WffBMByteArray byteArray = new WffBMByteArray(); byteArray.write("こんにちは
@@ -41,7 +41,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  *
  * bmObject.put("byteArray", BMValueType.BM_BYTE_ARRAY, byteArray);
  *
- * </pre>
+ * </code></pre>
  *
  * @author WFF
  * @see WffBMArray

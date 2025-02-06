@@ -306,14 +306,13 @@ public final class StringUtil {
      * Note:- it will never return null instead it will return an empty array
      * (having length zero).
      *
-     * <pre>
-     *
+     * <pre><code>
      * final String[] allSubstrings = getAllSubstrings(&quot;abcd&quot;, &quot;ab&quot;, &quot;cd&quot;);
      * for (String each : allSubstrings) {
      *     System.out.println(each);
      * }
-     * the output will be : <i>abcd</i>
-     * </pre>
+     * //the output will be : <i>abcd</i>
+     * </code></pre>
      *
      * @param inputString  the string from which the substrings will be extracted.
      * @param startingWith to match the starting substring
@@ -564,19 +563,16 @@ public final class StringUtil {
      * Note:- it will never return null instead it will return an empty array
      * (having length zero).
      *
-     * <pre>
+     * <pre><code>
+     * final int[][] startAndEndIndexesOf = startAndEndIndexesOf( "121 131 141 151 161 171 181 191 101", "1", "1");
      *
-     *         final int[][] startAndEndIndexesOf = startAndEndIndexesOf(
-     *                 "121 131 141 151 161 171 181 191 101", "1", "1");
-     *
-     *         for (final int[] startIndexAndEndIndex : startAndEndIndexesOf) {
-     *             System.out.println(startIndexAndEndIndex[0] + " - "
-     *                     + startIndexAndEndIndex[1]);
-     *         }
-     *
+     * for (final int[] startIndexAndEndIndex : startAndEndIndexesOf) {
+     *     System.out.println(startIndexAndEndIndex[0] + " - " + startIndexAndEndIndex[1]);
+     * }
+     * </code></pre>
      * the output will be :
-     * <i>
-     * 0 - 3
+     * <pre>
+     * <i>0 - 3
      * 4 - 7
      * 8 - 11
      * 12 - 15
@@ -586,13 +582,12 @@ public final class StringUtil {
      * 28 - 31
      * 32 - 35
      * </i>
-     *
-     *         int[] startIndexAndEndIndex = startAndEndIndexesOf[0]; // 1, 2 etc..
-     *         System.out.println(startIndexAndEndIndex[0] + " - "
-     *                 + startIndexAndEndIndex[1]);
-     *
-     * the output will be : <i>0 - 3</i>
      * </pre>
+     * <pre><code>
+     * int[] startIndexAndEndIndex = startAndEndIndexesOf[0]; // 1, 2 etc..
+     * System.out.println(startIndexAndEndIndex[0] + " - " + startIndexAndEndIndex[1]);
+     * //the output will be : <i>0 - 3</i>
+     * </code></pre>
      *
      * @param inputString  the string from which the substrings will be extracted.
      * @param startingWith to match the starting substring
@@ -1022,10 +1017,10 @@ public final class StringUtil {
      *
      * Eg:
      *
-     * <pre>
+     * <pre><code>
      * String join = StringUtil.join(',', ':', ';', "one", "two", "three", "four");
      * prints <i>:one,two,three,four;</i>
-     * </pre>
+     * </code></pre>
      *
      * This method must be faster than Java 8's StringJoiner.
      *
@@ -1061,10 +1056,10 @@ public final class StringUtil {
     /**
      * Eg:
      *
-     * <pre>
+     * <pre><code>
      * String join = StringUtil.join(',', "one", "two", "three", "four");
      * prints <i>one,two,three,four</i>
-     * </pre>
+     * </code></pre>
      *
      * This method must be faster than Java 8's String.join method.
      *
@@ -1098,10 +1093,10 @@ public final class StringUtil {
     /**
      * Eg:
      *
-     * <pre>
+     * <pre><code>
      * String join = StringUtil.join(',', "one", "two", "three", "four");
      * prints <i>one,two,three,four</i>
-     * </pre>
+     * </code></pre>
      *
      * This method must be faster than Java 8's String.join method.
      *
