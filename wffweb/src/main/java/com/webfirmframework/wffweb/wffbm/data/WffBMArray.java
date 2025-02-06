@@ -52,7 +52,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  *
  * bmObject.put("numberArray", BMValueType.BM_ARRAY, numberArray);
  *
- * <code>// to store bytes in an array use WffBMByteArray</code>
+ * // to store bytes in an array use WffBMByteArray
  * WffBMByteArray byteArray = new WffBMByteArray();
  * byteArray.write("こんにちは WFFWEB".getBytes(StandardCharsets.UTF_8));
  *
