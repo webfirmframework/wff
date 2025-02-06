@@ -256,6 +256,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             return sharedObject.objectId();
         }
 
+        @SuppressWarnings("unused")
         private boolean isValid(final AbstractHtml5SharedObject latestSharedObject) {
             if (sharedObject.equals(tag.getSharedObjectLockless()) || (latestSharedObject == null)) {
                 return true;
@@ -4952,22 +4953,22 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         }
     }
 
-    /**
-     * Just kept for future reference
-     *
-     * @param removedAbstractHtmls
-     * @return the locks after locking
-     */
-    private List<Lock> initNewSharedObjectInAllNestedTagsAndSetSuperParentNullOld(
-            final AbstractHtml[] removedAbstractHtmls) {
-        // TODO remove this unused method later
-        final List<Lock> locks = new ArrayList<>(removedAbstractHtmls.length);
-        for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
-            final Lock lock = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, true);
-            locks.add(lock);
-        }
-        return locks;
-    }
+//    /**
+//     * Just kept for future reference
+//     *
+//     * @param removedAbstractHtmls
+//     * @return the locks after locking
+//     */
+//    private List<Lock> initNewSharedObjectInAllNestedTagsAndSetSuperParentNullOld(
+//            final AbstractHtml[] removedAbstractHtmls) {
+//        // TODO remove this unused method later
+//        final List<Lock> locks = new ArrayList<>(removedAbstractHtmls.length);
+//        for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
+//            final Lock lock = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, true);
+//            locks.add(lock);
+//        }
+//        return locks;
+//    }
 
     /**
      * @param abstractHtmls the removed tags from the current object
@@ -4996,17 +4997,17 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         return locks;
     }
 
-    /**
-     * @param removedAbstractHtmls
-     * @return the locks after locking
-     */
-    private void initNewSharedObjectInAllNestedTagsAndSetSuperParentNullLockless(
-            final AbstractHtml[] removedAbstractHtmls) {
-        // TODO remove this unused method later
-        for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
-            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, false);
-        }
-    }
+//    /**
+//     * @param removedAbstractHtmls
+//     * @return the locks after locking
+//     */
+//    private void initNewSharedObjectInAllNestedTagsAndSetSuperParentNullLockless(
+//            final AbstractHtml[] removedAbstractHtmls) {
+//        // TODO remove this unused method later
+//        for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
+//            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, false);
+//        }
+//    }
 
     /**
      * @param abstractHtml
