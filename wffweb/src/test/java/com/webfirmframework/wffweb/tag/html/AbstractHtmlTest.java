@@ -28,15 +28,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.Set;
 
 import com.webfirmframework.wffweb.InvalidUsageException;
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidTagException;
@@ -70,8 +70,12 @@ import com.webfirmframework.wffweb.tag.htmlwff.TagContent;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
-@SuppressWarnings("serial")
 public class AbstractHtmlTest {
+
+    @BeforeClass
+    public static void setupBeforeClass() {
+        WffConfiguration.setDebugMode(true);
+    }
 
     // for future development
     // @Test
@@ -3019,24 +3023,28 @@ public class AbstractHtmlTest {
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException1() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div childDiv1 = new Div(null);
         childDiv1.appendChild(childDiv1);
     }
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException2() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div childDiv1 = new Div(null);
         childDiv1.appendChildren(childDiv1);
     }
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException3() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div childDiv1 = new Div(null);
         childDiv1.appendChildren(List.of(childDiv1));
     }
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException4() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div parentDiv = new Div(null);
         Div childDiv1 = new Div(parentDiv);
         childDiv1.insertAfter(childDiv1);
@@ -3044,6 +3052,7 @@ public class AbstractHtmlTest {
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException5() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div parentDiv = new Div(null);
         Div childDiv1 = new Div(parentDiv);
         childDiv1.insertBefore(childDiv1);
@@ -3051,6 +3060,7 @@ public class AbstractHtmlTest {
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException6() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div parentDiv = new Div(null);
         Div childDiv1 = new Div(parentDiv);
         childDiv1.replaceWith(childDiv1);
@@ -3058,12 +3068,14 @@ public class AbstractHtmlTest {
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException7() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div childDiv1 = new Div(null);
         childDiv1.addInnerHtml(childDiv1);
     }
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException8() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div childDiv1 = new Div(null);
         childDiv1.addInnerHtmls(childDiv1);
     }

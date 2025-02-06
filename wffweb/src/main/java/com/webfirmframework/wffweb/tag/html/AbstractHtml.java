@@ -74,6 +74,7 @@ import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.internal.tag.html.listener.ReplaceListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.URIChangeTagSupplier;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamer;
 import com.webfirmframework.wffweb.tag.core.AbstractJsObject;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -2245,21 +2246,25 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     private void validateChildren(final AbstractHtml... children) {
-        for (final AbstractHtml child : children) {
-            if (child == null) {
-                throw new InvalidValueException("The child tag object cannot be null.");
+        if (WffConfiguration.isDebugMode()) {
+            for (final AbstractHtml child : children) {
+                if (child == null) {
+                    throw new InvalidValueException("The child tag object cannot be null.");
+                }
             }
+            validateChildren(Set.of(children));
         }
-        validateChildren(Set.of(children));
     }
 
     private void validateChildren(final Collection<AbstractHtml> children) {
-        for (final AbstractHtml child : children) {
-            if (child == null) {
-                throw new InvalidValueException("The child tag object cannot be null.");
+        if (WffConfiguration.isDebugMode()) {
+            for (final AbstractHtml child : children) {
+                if (child == null) {
+                    throw new InvalidValueException("The child tag object cannot be null.");
+                }
             }
+            validateChildren(new LinkedHashSet<>(children));
         }
-        validateChildren(new LinkedHashSet<>(children));
     }
 
     private void validateChildren(final Set<AbstractHtml> initialSet) {
@@ -2285,7 +2290,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * this object. <br>
      * Eg:-
      *
-     * <pre>
+     * <pre><code>
      * Div div = new Div(null, new Id("one")) {
      *     {
      *         new Div(this, new Id("child1"));
@@ -2302,18 +2307,18 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *
      * System.out.println(div.toHtmlString());
      *
-     * </pre>
+     * </code></pre>
      * <p>
      * This prints
      *
-     * <pre>
+     * <pre><code>
      * &lt;div id=&quot;one&quot;&gt;
      *     &lt;span&gt;&lt;/span&gt;
      *     &lt;p&gt;&lt;/p&gt;
      *     &lt;br/&gt;
      *     &lt;div id=&quot;child1&quot;&gt;&lt;/div&gt;
      * &lt;/div&gt;
-     * </pre>
+     * </code></pre>
      *
      * @param children children to prepend in this object's existing children.
      * @author WFF
@@ -6728,8 +6733,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * <br>
      * Eg:-
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * Html html = new Html(null) {{
      *      new Head(this) {{
      *          new TitleTag(this){{
@@ -6760,8 +6764,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *  true
      *  true
      *
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @return the sharedData object set by setSharedData method. This object is
      *         same across all of this tag hierarchy.
@@ -6780,8 +6783,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * <br>
      * Eg:-
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * Html html = new Html(null) {{
      *      new Head(this) {{
      *          new TitleTag(this){{
@@ -6812,8 +6814,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *  true
      *  true
      *
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param sharedData the object to access through all of this tag hierarchy.
      * @author WFF
@@ -7104,7 +7105,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * This method can avoid creating anonymous class coding. <br>
      * Eg: <br>
      *
-     * <pre>
+     * <pre><code>
      * Div rootDiv = new Div(null, new Id("rootDivId")).&lt;Div&gt;give(parent -&gt; {
      *     new Div(parent, new Id("parentDivId")).give(nestedTag1 -&gt; {
      *         new Div(nestedTag1, new Id("child1"));
@@ -7114,12 +7115,11 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * });
      *
      * System.out.println(rootDiv.toHtmlString());
-     * </pre>
+     * </code></pre>
      * <p>
      * produces
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * &lt;div id="rootDivId"&gt;
      *    &lt;div id="parentDivId"&gt;
      *         &lt;div id="child1"&gt;&lt;/div&gt;
@@ -7127,8 +7127,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *         &lt;div id="child3"&gt;&lt;/div&gt;
      *     &lt;/div&gt;
      * &lt;/div&gt;
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param consumer the consumer object
      * @return the same object on which give method is called.
@@ -7144,37 +7143,32 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * This method can avoid creating anonymous class coding. <br>
      * Eg: <br>
      *
-     * <pre>
+     * <pre><code>
      * Div div = new Div(null, new Id("rootDivId")).give(TagContent::text, "Hello World");
      * System.out.println(div.toHtmlString());
-     *
-     * </pre>
+     * </code></pre>
      * <p>
      * produces
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * &lt;div id="rootDivId"&gt;Hello World&lt;/div&gt;
-     * </code>
-     * </pre>
+     * </code></pre>
      * <p>
      * A mix of give methods will be
      *
-     * <pre>
+     * <pre><code>
      * Div div = new Div(null).give(dv -&gt; {
      *     new Span(dv).give(TagContent::text, "Hello World");
      * });
-     * </pre>
+     * </code></pre>
      * <p>
      * produces
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * &lt;div&gt;
      *     &lt;span&gt;Hello World&lt;/span&gt;
      * &lt;/div&gt;
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param consumer
      * @param input    the object to be passed as second argument of
