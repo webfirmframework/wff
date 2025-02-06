@@ -39,7 +39,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * The java object representation for JavaScript object. <br>
  * Sample code :- <br>
  *
- * <pre>
+ * <pre><code>
  * WffBMObject bmObject = new WffBMObject();
  * bmObject.put("serverKey", BMValueType.STRING, "value from server");
  * bmObject.put("string", BMValueType.STRING, "sample string");
@@ -49,7 +49,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * bmObject.put("reg", BMValueType.REG_EXP, "[w]");
  * bmObject.put("bool", BMValueType.BOOLEAN, true);
  * bmObject.put("testFun", BMValueType.FUNCTION, "function(arg) {alert(arg);}");
- * </pre>
+ * </code></pre>
  *
  * The {@code WffBMObject} can also hold array and binary data (as byte array).
  * Check out {@code WffBMArray} and {@code WffBMByteArray} respectively.
@@ -489,6 +489,16 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     }
 
     /**
+     * To get value as Double if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForDouble", 14.01D);
+     * Double valueAsDouble = wffBMObject.getValueAsDouble("keyForDouble", valueValueType -> valueValueType.value() != null && BMValueType.NUMBER.equals(valueValueType.valueType()), 1401.19D);
+     * </code></pre> In the above code if the value is not null and valueType is
+     * NUMBER then only it will convert the value to Double otherwise it will return
+     * the default value passed in the third argument i.e. 1401.19D.
+     *
      * @param key          the key to get the value.
      * @param predicate    to test the condition to return the converted value. If
      *                     the predicate test returns true this method will return
@@ -523,6 +533,16 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     }
 
     /**
+     * To get value as Float if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForFloat", 14.01F);
+     * Float valueAsFloat = wffBMObject.getValueAsFloat("keyForFloat", valueValueType -> valueValueType.value() != null && BMValueType.NUMBER.equals(valueValueType.valueType()), 1401.19F);
+     * </code></pre> In the above code if the value is not null and valueType is
+     * NUMBER then only it will convert the value to Float otherwise it will return
+     * the default value passed in the third argument i.e. 1401.19F.
+     *
      * @param key          the key to get the value.
      * @param predicate    to test the condition to return the converted value. If
      *                     the predicate test returns true this method will return
@@ -557,6 +577,16 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     }
 
     /**
+     * To get value as BigDecimal if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForBigDecimal", new BigDecimal("14.01"));
+     * BigDecimal valueAsBigDecimal = wffBMObject.getValueAsBigDecimal("keyForBigDecimal", valueValueType -> valueValueType.value() != null && BMValueType.NUMBER.equals(valueValueType.valueType()), new BigDecimal("1401.19"));
+     * </code></pre> In the above code if the value is not null and valueType is
+     * NUMBER then only it will convert the value to BigDecimal otherwise it will
+     * return the default value passed in the third argument i.e. 1401.19.
+     *
      * @param key          the key to get the value.
      * @param predicate    to test the condition to return the converted value. If
      *                     the predicate test returns true this method will return
@@ -591,6 +621,16 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     }
 
     /**
+     * To get value as BigInteger if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForBigInteger", new BigInteger("14"));
+     * BigInteger valueAsBigInteger = wffBMObject.getValueAsBigInteger("keyForBigInteger", valueValueType -> valueValueType.value() != null && BMValueType.NUMBER.equals(valueValueType.valueType()), new BigInteger("1401"));
+     * </code></pre> In the above code if the value is not null and valueType is
+     * NUMBER then only it will convert the value to BigInteger otherwise it will
+     * return the default value passed in the third argument i.e. 1401.
+     *
      * @param key          the key to get the value.
      * @param predicate    to test the condition to return the converted value. If
      *                     the predicate test returns true this method will return
@@ -625,6 +665,16 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     }
 
     /**
+     * To get value as Integer if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForInteger", 14);
+     * Integer valueAsInteger = wffBMObject.getValueAsInteger("keyForInteger", valueValueType -> valueValueType.value() != null && BMValueType.NUMBER.equals(valueValueType.valueType()), 1401);
+     * </code></pre> In the above code if the value is not null and valueType is
+     * NUMBER then only it will convert the value to Integer otherwise it will
+     * return the default value passed in the third argument i.e. 1401.
+     *
      * @param key          the key to get the value.
      * @param predicate    to test the condition to return the converted value. If
      *                     the predicate test returns true this method will return
@@ -650,7 +700,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
 
     /**
      * @param key the key to get the value.
-     * @return the Integer value.
+     * @return the Long value.
      * @throws NumberFormatException if the value is not convertible to Long.
      * @since 12.0.3
      */
@@ -659,13 +709,23 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     }
 
     /**
+     * To get value as Long if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForLong", 14L);
+     * Long valueAsLong = wffBMObject.getValueAsLong("keyForLong", valueValueType -> valueValueType.value() != null && BMValueType.NUMBER.equals(valueValueType.valueType()), 1401L);
+     * </code></pre> In the above code if the value is not null and valueType is
+     * NUMBER then only it will convert the value to Long otherwise it will return
+     * the default value passed in the third argument i.e. 1401L.
+     *
      * @param key          the key to get the value.
      * @param predicate    to test the condition to return the converted value. If
      *                     the predicate test returns true this method will return
      *                     the converted value otherwise it will return default
      *                     value.
      * @param defaultValue the default value to return.
-     * @return the Integer value.
+     * @return the Long value.
      * @throws NumberFormatException if the value is not convertible to Long.
      * @since 12.0.3
      */
@@ -692,6 +752,16 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     }
 
     /**
+     * To get value as String if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.putString("keyForString", "wffweb");
+     * String valueAsString = wffBMObject.getValueAsString("keyForString", valueValueType -> valueValueType.value() != null && BMValueType.STRING.equals(valueValueType.valueType()), "some default value");
+     * </code></pre> In the above code if the value is not null and valueType is
+     * STRING then only it will convert the value to String otherwise it will return
+     * the default value passed in the third argument i.e. "some default value".
+     *
      * @param key          the key to get the value.
      * @param predicate    to test the condition to return the converted value. If
      *                     the predicate test returns true this method will return
@@ -724,6 +794,16 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     }
 
     /**
+     * To get value as Boolean if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForBoolean", true);
+     * Boolean valueAsBoolean = wffBMObject.getValueAsBoolean("keyForBoolean", valueValueType -> valueValueType.value() != null && BMValueType.BOOLEAN.equals(valueValueType.valueType()), null);
+     * </code></pre> In the above code if the value is not null and valueType is
+     * BOOLEAN then only it will convert the value to Boolean otherwise it will
+     * return the default value passed in the third argument, i.e null.
+     *
      * @param key          the key to get the value.
      * @param predicate    to test the condition to return the converted value. If
      *                     the predicate test returns true this method will return
