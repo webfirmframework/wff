@@ -2500,10 +2500,9 @@ public abstract class BrowserPage implements Serializable {
     /**
      * holds push if not already on hold until unholdPush is called Usage :-
      *
-     * <pre>
-     * try {
+     * <pre><code>
      *     browserPage.holdPush();
-     *
+     * try {
      *     for (AbstractHtml tag : tags) {
      *         tag.removeAttributes("style");
      *     }
@@ -2511,7 +2510,7 @@ public abstract class BrowserPage implements Serializable {
      * } finally {
      *     browserPage.unholdPush();
      * }
-     * </pre>
+     * </code></pre>
      *
      *
      * @since 2.1.3
@@ -2523,10 +2522,9 @@ public abstract class BrowserPage implements Serializable {
     /**
      * unholds push if not already unheld. Usage :-
      *
-     * <pre>
-     * try {
+     * <pre><code>
      *     browserPage.holdPush();
-     *
+     * try {
      *     for (AbstractHtml tag : tags) {
      *         tag.removeAttributes("style");
      *     }
@@ -2534,7 +2532,7 @@ public abstract class BrowserPage implements Serializable {
      * } finally {
      *     browserPage.unholdPush();
      * }
-     * </pre>
+     * </code></pre>
      *
      *
      * @since 2.1.3
