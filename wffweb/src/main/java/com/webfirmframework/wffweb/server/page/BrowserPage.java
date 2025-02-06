@@ -2542,9 +2542,13 @@ public abstract class BrowserPage implements Serializable {
     public final void unholdPush() {
         if (holdPush.get() > 0) {
             final int count = holdPush.decrementAndGet();
-            // count should be second checking
-            if (copyCachedBMBytesToMainQ() || count == 0) {
-                pushWffBMBytesQueue();
+            if (count < 0) {
+                holdPush.incrementAndGet();
+            } else {
+                // count should be second checking
+                if (copyCachedBMBytesToMainQ() || count == 0) {
+                    pushWffBMBytesQueue();
+                }
             }
         }
     }
