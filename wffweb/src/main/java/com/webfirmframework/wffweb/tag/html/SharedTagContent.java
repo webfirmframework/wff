@@ -66,7 +66,7 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
  * <br>
  * Usage Eg:-<br>
  *
- * <pre>
+ * <pre><code>
  * SharedTagContent&lt;String&gt; stc = new SharedTagContent&lt;&gt;("Initial Content");
  *
  * Div div = new Div(null);
@@ -80,15 +80,15 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
  * System.out.println(div.toHtmlString());
  * stc.setContent("Content Changed");
  * System.out.println(div.toHtmlString());
- * </pre>
+ * </code></pre>
  *
  * prints
  *
- * <pre>
+ * <pre><code>
  * &lt;div&gt;&lt;span&gt;Initial Content&lt;/span&gt;&lt;span&gt;Initial Content&lt;/span&gt;&lt;/div&gt;
  *
  * &lt;div&gt;&lt;span&gt;Content Changed&lt;/span&gt;&lt;span&gt;Content Changed&lt;/span&gt;&lt;/div&gt;
- * </pre>
+ * </code></pre>
  *
  * @param <T> class type of content in this SharedTagContent object
  * @author WFF
@@ -476,7 +476,7 @@ public class SharedTagContent<T> {
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>                </pre>
+     * </code></pre>
      *
      *                           When Java releases Virtual Thread we may be able to
      *                           use as follows
@@ -484,7 +484,7 @@ public class SharedTagContent<T> {
      *                           <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>                </pre>
+     * </code></pre>
      *
      * @param updateClientNature
      *
@@ -561,7 +561,7 @@ public class SharedTagContent<T> {
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>      </pre>
+     * </code></pre>
      *
      *                 When Java releases Virtual Thread we may be able to use as
      *                 follows
@@ -569,7 +569,7 @@ public class SharedTagContent<T> {
      *                 <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>      </pre>
+     * </code></pre>
      *
      * @param content  the content its content type will be considered as plain
      *                 text, i.e. contentTypeHtml will be false.
@@ -629,7 +629,7 @@ public class SharedTagContent<T> {
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>                </pre>
+     * </code></pre>
      *
      *                           When Java releases Virtual Thread we may be able to
      *                           use as follows
@@ -637,7 +637,7 @@ public class SharedTagContent<T> {
      *                           <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>                </pre>
+     * </code></pre>
      *
      * @param updateClientNature
      *
@@ -691,7 +691,7 @@ public class SharedTagContent<T> {
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>             </pre>
+     * </code></pre>
      *
      *                        When Java releases Virtual Thread we may be able to
      *                        use as follows
@@ -699,7 +699,7 @@ public class SharedTagContent<T> {
      *                        <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>             </pre>
+     * </code></pre>
      *
      * @param content         the content to embed in the consumer tags.
      * @param contentTypeHtml true to treat the given content as HTML otherwise
@@ -750,7 +750,7 @@ public class SharedTagContent<T> {
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>                </pre>
+     * </code></pre>
      *
      *                           When Java releases Virtual Thread we may be able to
      *                           use as follows
@@ -758,7 +758,7 @@ public class SharedTagContent<T> {
      *                           <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>                </pre>
+     * </code></pre>
      *
      * @param updateClientNature
      *
@@ -823,7 +823,7 @@ public class SharedTagContent<T> {
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>                </pre>
+     * </code></pre>
      *
      *                           When Java releases Virtual Thread we may be able to
      *                           use as follows
@@ -831,7 +831,7 @@ public class SharedTagContent<T> {
      *                           <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>                </pre>
+     * </code></pre>
      *
      * @param updateClientNature
      *
@@ -885,7 +885,7 @@ public class SharedTagContent<T> {
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>             </pre>
+     * </code></pre>
      *
      *                        When Java releases Virtual Thread we may be able to
      *                        use as follows
@@ -893,7 +893,7 @@ public class SharedTagContent<T> {
      *                        <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>             </pre>
+     * </code></pre>
      *
      * @param shared          true to share its content across all consuming tags
      *                        when {@link SharedTagContent#setContent} is called.
@@ -934,7 +934,7 @@ public class SharedTagContent<T> {
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>      </pre>
+     * </code></pre>
      *
      *                 When Java releases Virtual Thread we may be able to use as
      *                 follows
@@ -942,7 +942,7 @@ public class SharedTagContent<T> {
      *                 <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>      </pre>
+     * </code></pre>
      *
      * @param shared   true to share its content across all consuming tags when
      *                 {@link SharedTagContent#setContent} is called.
@@ -1124,7 +1124,7 @@ public class SharedTagContent<T> {
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>      </pre>
+     * </code></pre>
      *
      *                 When Java releases Virtual Thread we may be able to use as
      *                 follows
@@ -1132,7 +1132,7 @@ public class SharedTagContent<T> {
      *                 <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>      </pre>
+     * </code></pre>
      *
      * @since 3.0.15
      */
@@ -1157,7 +1157,7 @@ public class SharedTagContent<T> {
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>      </pre>
+     * </code></pre>
      *
      *                 When Java releases Virtual Thread we may be able to use as
      *                 follows
@@ -1165,7 +1165,7 @@ public class SharedTagContent<T> {
      *                 <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code>      </pre>
+     * </code></pre>
      *
      * @since 3.0.15
      */
@@ -1798,21 +1798,19 @@ public class SharedTagContent<T> {
      *                           So it could be declared as a static final object.
      *                           Eg: <br>
      *
-     *                           <pre>
-     *                                                     <code>
+     *                           <pre><code>
      *
      *                                                     public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      *                                                     sharedTagContent.setExecutor(EXECUTOR);
-     *                                                     </code> </pre>
+     *                                                     </code></pre>
      *                           <p>
      *                           When Java releases Virtual Thread we may be able to
      *                           use as follows
      *
-     *                           <pre>
-     *                                                     <code>
+     *                           <pre><code>
      *                                                     public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      *                                                     sharedTagContent.setExecutor(EXECUTOR);
-     *                                                     </code> </pre>
+     *                                                     </code></pre>
      *
      * @param updateClientNature
      * @param sharedObjects
