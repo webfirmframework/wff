@@ -68,13 +68,11 @@ public enum BMValueType {
     /**
      * to initialize function, eg: function(arg) {alert(arg);}
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * WffBMObject bmObject = new WffBMObject();
      * bmObject.put("testMeFun", BMValueType.FUNCTION, "function(arg) {alert(arg);}");
      * so the usage would be <i>jsObject.testMeFun("Hello world");</i>
-     * </code>
-     * </pre>
+     * </code></pre>
      */
     FUNCTION,
 

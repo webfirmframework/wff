@@ -472,8 +472,7 @@ public class SharedTagContent<T> {
      *                           So it could be declared as a static final object.
      *                           Eg: <br>
      *
-     *                           <pre>
-     * <code>
+     *                           <pre><code>
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
@@ -483,8 +482,7 @@ public class SharedTagContent<T> {
      *                           When Java releases Virtual Thread we may be able to
      *                           use as follows
      *
-     *                           <pre>
-     * <code>
+     *                           <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
@@ -561,8 +559,7 @@ public class SharedTagContent<T> {
      *                 sharedTagContent instances in the project. So it could be
      *                 declared as a static final object. Eg: <br>
      *
-     *                 <pre>
-     * <code>
+     *                 <pre><code>
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
@@ -572,8 +569,7 @@ public class SharedTagContent<T> {
      *                 When Java releases Virtual Thread we may be able to use as
      *                 follows
      *
-     *                 <pre>
-     * <code>
+     *                 <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
@@ -633,8 +629,7 @@ public class SharedTagContent<T> {
      *                           So it could be declared as a static final object.
      *                           Eg: <br>
      *
-     *                           <pre>
-     * <code>
+     *                           <pre><code>
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
@@ -644,8 +639,7 @@ public class SharedTagContent<T> {
      *                           When Java releases Virtual Thread we may be able to
      *                           use as follows
      *
-     *                           <pre>
-     * <code>
+     *                           <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
@@ -699,8 +693,7 @@ public class SharedTagContent<T> {
      *                        all sharedTagContent instances in the project. So it
      *                        could be declared as a static final object. Eg: <br>
      *
-     *                        <pre>
-     * <code>
+     *                        <pre><code>
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
@@ -710,8 +703,7 @@ public class SharedTagContent<T> {
      *                        When Java releases Virtual Thread we may be able to
      *                        use as follows
      *
-     *                        <pre>
-     * <code>
+     *                        <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
@@ -762,8 +754,7 @@ public class SharedTagContent<T> {
      *                           So it could be declared as a static final object.
      *                           Eg: <br>
      *
-     *                           <pre>
-     * <code>
+     *                           <pre><code>
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
@@ -773,8 +764,7 @@ public class SharedTagContent<T> {
      *                           When Java releases Virtual Thread we may be able to
      *                           use as follows
      *
-     *                           <pre>
-     * <code>
+     *                           <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
@@ -839,8 +829,7 @@ public class SharedTagContent<T> {
      *                           So it could be declared as a static final object.
      *                           Eg: <br>
      *
-     *                           <pre>
-     * <code>
+     *                           <pre><code>
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
@@ -850,8 +839,7 @@ public class SharedTagContent<T> {
      *                           When Java releases Virtual Thread we may be able to
      *                           use as follows
      *
-     *                           <pre>
-     * <code>
+     *                           <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
@@ -905,8 +893,7 @@ public class SharedTagContent<T> {
      *                        all sharedTagContent instances in the project. So it
      *                        could be declared as a static final object. Eg: <br>
      *
-     *                        <pre>
-     * <code>
+     *                        <pre><code>
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
@@ -916,8 +903,7 @@ public class SharedTagContent<T> {
      *                        When Java releases Virtual Thread we may be able to
      *                        use as follows
      *
-     *                        <pre>
-     * <code>
+     *                        <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
@@ -958,8 +944,7 @@ public class SharedTagContent<T> {
      *                 sharedTagContent instances in the project. So it could be
      *                 declared as a static final object. Eg: <br>
      *
-     *                 <pre>
-     * <code>
+     *                 <pre><code>
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
@@ -969,8 +954,7 @@ public class SharedTagContent<T> {
      *                 When Java releases Virtual Thread we may be able to use as
      *                 follows
      *
-     *                 <pre>
-     * <code>
+     *                 <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
@@ -1152,8 +1136,7 @@ public class SharedTagContent<T> {
      *                 sharedTagContent instances in the project. So it could be
      *                 declared as a static final object. Eg: <br>
      *
-     *                 <pre>
-     * <code>
+     *                 <pre><code>
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
@@ -1163,8 +1146,7 @@ public class SharedTagContent<T> {
      *                 When Java releases Virtual Thread we may be able to use as
      *                 follows
      *
-     *                 <pre>
-     * <code>
+     *                 <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>
@@ -1189,8 +1171,7 @@ public class SharedTagContent<T> {
      *                 sharedTagContent instances in the project. So it could be
      *                 declared as a static final object. Eg: <br>
      *
-     *                 <pre>
-     * <code>
+     *                 <pre><code>
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
@@ -1200,8 +1181,7 @@ public class SharedTagContent<T> {
      *                 When Java releases Virtual Thread we may be able to use as
      *                 follows
      *
-     *                 <pre>
-     * <code>
+     *                 <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
      * </code>

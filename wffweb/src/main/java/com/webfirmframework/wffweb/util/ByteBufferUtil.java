@@ -31,8 +31,7 @@ public final class ByteBufferUtil {
     /**
      * Eg:
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * final String s = "1234567890abc";
      * final ByteBuffer inputData = ByteBuffer
      *         .wrap(s.getBytes(StandardCharsets.UTF_8));
@@ -48,8 +47,7 @@ public final class ByteBufferUtil {
      *
      * System.out.println(s.equals(builder.toString()));
      * System.out.println(5 == totalSlices);
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * prints
      *
@@ -100,8 +98,7 @@ public final class ByteBufferUtil {
      * <br>
      * Eg:
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * final String s = "1234567890abc";
      * final ByteBuffer inputData = ByteBuffer
      *         .wrap(s.getBytes(StandardCharsets.UTF_8));
@@ -117,8 +114,7 @@ public final class ByteBufferUtil {
      *
      * System.out.println(s.equals(builder.toString()));
      * System.out.println(5 == totalSlices);
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * prints
      *

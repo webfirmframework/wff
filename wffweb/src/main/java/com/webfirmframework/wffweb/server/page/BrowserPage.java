@@ -3047,22 +3047,18 @@ public abstract class BrowserPage implements Serializable {
      * NB: You may need only one copy of executor object for all browserPage
      * instances in the project. Eg: <br>
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * browserPage.setExecutor(EXECUTOR);
-     * </code>
-     * </pre>
+     * </code></pre>
      * <p>
      * When Java releases Virtual Thread we may be able to use as follows
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * browserPage.setExecutor(EXECUTOR);
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param executor
      * @since 3.0.15

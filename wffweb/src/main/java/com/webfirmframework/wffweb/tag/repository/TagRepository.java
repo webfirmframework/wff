@@ -702,8 +702,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * is assignable to the given tag class). <br>
      * <br>
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * Html html = new Html(null) {{
      *      new Head(this) {{
      *          new TitleTag(this){{
@@ -725,8 +724,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      *  title
      *  &lt;title&gt;some title&lt;/title&gt;
      *
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param tagClass the class of the tag.
      * @param fromTags from which the findings to be done.
@@ -747,8 +745,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * is assignable to the given tag class). <br>
      * <br>
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * Html html = new Html(null) {{
      *      new Head(this) {{
      *          new TitleTag(this){{
@@ -770,8 +767,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      *  title
      *  &lt;title&gt;some title&lt;/title&gt;
      *
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param parallel true to internally use parallel stream. If true it will split
      *                 the finding task to different batches and will execute the
@@ -840,8 +836,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * is assignable to the given tag class). <br>
      * <br>
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * Html html = new Html(null) {{
      *      new Head(this) {{
      *          new TitleTag(this){{
@@ -870,8 +865,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      *  1
      *  5
      *
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param tagClass the class of the tag.
      * @param fromTags from which the findings to be done.
@@ -892,8 +886,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * is assignable to the given tag class). <br>
      * <br>
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * Html html = new Html(null) {{
      *      new Head(this) {{
      *          new TitleTag(this){{
@@ -922,8 +915,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      *  1
      *  5
      *
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param parallel true to internally use parallel stream. If true it will split
      *                 the finding task to different batches and will execute the
@@ -1615,8 +1607,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * is assignable to the given tag class). <br>
      * <br>
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * Html html = new Html(null) {{
      *      new Head(this) {{
      *          new TitleTag(this){{
@@ -1638,8 +1629,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      *  title
      *  &lt;title&gt;some title&lt;/title&gt;
      *
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param tagClass the class of the tag.
      * @return the first matching tag which is assignable to the given tag class.
@@ -1656,8 +1646,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * is assignable to the given tag class). <br>
      * <br>
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * Html html = new Html(null) {{
      *      new Head(this) {{
      *          new TitleTag(this){{
@@ -1679,8 +1668,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      *  title
      *  &lt;title&gt;some title&lt;/title&gt;
      *
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param parallel true to internally use parallel stream. If true it will split
      *                 the finding task to different batches and will execute the
@@ -1721,8 +1709,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * is assignable to the given tag class). <br>
      * <br>
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * Html html = new Html(null) {{
      *      new Head(this) {{
      *          new TitleTag(this){{
@@ -1751,8 +1738,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      *  1
      *  5
      *
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param tagClass the class of the tag.
      * @return the all matching tags which is assignable to the given tag class.
@@ -1771,8 +1757,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * is assignable to the given tag class). <br>
      * <br>
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * Html html = new Html(null) {{
      *      new Head(this) {{
      *          new TitleTag(this){{
@@ -1801,8 +1786,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      *  1
      *  5
      *
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param parallel true to internally use parallel stream. If true it will split
      *                 the finding task to different batches and will execute the
@@ -2407,11 +2391,9 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * <br>
      * Eg, the below code reloads the client browser page.:-
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * tagRepository.execute(BrowserPageAction.RELOAD);
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param pageAction to perform the given {@code BrowserPageAction}
      * @since 2.1.11
