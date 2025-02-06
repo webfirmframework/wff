@@ -36,7 +36,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * The java array object representation for JavaScript array. <br>
  * Sample code :- <br>
  *
- * <pre>
+ * <pre><code>
  * WffBMObject bmObject = new WffBMObject();
  *
  * WffBMArray stringArray = new WffBMArray(BMValueType.STRING);
@@ -106,7 +106,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * objectArray.add(bmObject.clone());
  *
  * bmObject.put("objectArray", BMValueType.BM_ARRAY, objectArray);
- * </pre>
+ * </code></pre>
  *
  * @author WFF
  * @see WffBMByteArray

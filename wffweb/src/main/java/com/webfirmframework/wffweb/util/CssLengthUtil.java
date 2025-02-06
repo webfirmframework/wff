@@ -40,19 +40,18 @@ public final class CssLengthUtil {
      * gets the length value and unit as an array. For a cssValue
      * <code>555px</code>, the returned array may be used as
      *
-     * <pre>
+     * <pre><code>
      * Object[] lengthValueAsPremitiveAndUnit = CssLengthUtil
      *         .getLengthValueAsPremitiveAndUnit(&quot;555px&quot;);
      * float value = (float) lengthValueAsPremitiveAndUnit[0];
      *
      * // the object will be equal to CssLengthUnit.PX
      * CssLengthUnit unit = (CssLengthUnit) lengthValueAsPremitiveAndUnit[1];
-     *
+     * </code></pre>
      * Auto-boxing is done when the primitive value is stored in an object array
      * therefore there is no much advantage with this method.
      * [This method is left for future modification.]
      *
-     * </pre>
      *
      * @param cssValue the value from which the length value and unit required to be
      *                 parsed, Eg:- <code>555px</code>.
@@ -117,13 +116,13 @@ public final class CssLengthUtil {
      * gets the length value and unit as an array. For a cssValue
      * <code>555px</code>, the returned array may be used as
      *
-     * <pre>
+     * <pre><code>
      * Object[] lengthValueAndUnit = CssLengthUtil.getLengthValueAndUnit(&quot;555px&quot;);
      * Float value = (Float) lengthValueAndUnit[0];
      *
      * // the object will be equal to CssLengthUnit.PX
      * CssLengthUnit unit = (CssLengthUnit) lengthValueAndUnit[1];
-     * </pre>
+     * </code></pre>
      *
      * @param cssValue the value from which the length value and unit required to be
      *                 parsed, Eg:- <code>555px</code>.

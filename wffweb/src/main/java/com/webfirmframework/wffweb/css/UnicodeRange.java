@@ -64,11 +64,10 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
     }
 
     /**
-     * <pre>
      * Eg:-
+     * <pre><code>
      * String[] unicodeChars = {"U+0400-045F", "U+0490-0491", "U+04B0-04B1", "U+2116"};
-     *
-     * </pre>
+     * </code></pre>
      *
      * @param unicodeChars the unicodeChars to set
      * @author WFF
@@ -175,11 +174,11 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
     }
 
     /**
-     * <pre>
-     * Eg:-
-     * String[] unicodeChars = {"U+0400-045F", "U+0490-0491", "U+04B0-04B1", "U+2116"};
      *
-     * </pre>
+     * Eg:-
+     * <pre><code>
+     * String[] unicodeChars = {"U+0400-045F", "U+0490-0491", "U+04B0-04B1", "U+2116"};
+     * </code></pre>
      *
      * @param unicodeChars the unicodeChars to set
      * @author WFF

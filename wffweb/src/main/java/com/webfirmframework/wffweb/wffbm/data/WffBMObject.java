@@ -494,7 +494,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      * <pre><code>
      * WffBMObject wffBMObject = new WffBMObject();
      * wffBMObject.put("keyForDouble", 14.01D);
-     * Double valueAsDouble = wffBMObject.getValueAsDouble("keyForDouble", valueValueType -> valueValueType.value() != null && BMValueType.NUMBER.equals(valueValueType.valueType()), 1401.19D);
+     * Double valueAsDouble = wffBMObject.getValueAsDouble("keyForDouble", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.NUMBER.equals(valueValueType.valueType()), 1401.19D);
      * </code></pre> In the above code if the value is not null and valueType is
      * NUMBER then only it will convert the value to Double otherwise it will return
      * the default value passed in the third argument i.e. 1401.19D.
@@ -538,7 +538,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      * <pre><code>
      * WffBMObject wffBMObject = new WffBMObject();
      * wffBMObject.put("keyForFloat", 14.01F);
-     * Float valueAsFloat = wffBMObject.getValueAsFloat("keyForFloat", valueValueType -> valueValueType.value() != null && BMValueType.NUMBER.equals(valueValueType.valueType()), 1401.19F);
+     * Float valueAsFloat = wffBMObject.getValueAsFloat("keyForFloat", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.NUMBER.equals(valueValueType.valueType()), 1401.19F);
      * </code></pre> In the above code if the value is not null and valueType is
      * NUMBER then only it will convert the value to Float otherwise it will return
      * the default value passed in the third argument i.e. 1401.19F.
@@ -582,7 +582,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      * <pre><code>
      * WffBMObject wffBMObject = new WffBMObject();
      * wffBMObject.put("keyForBigDecimal", new BigDecimal("14.01"));
-     * BigDecimal valueAsBigDecimal = wffBMObject.getValueAsBigDecimal("keyForBigDecimal", valueValueType -> valueValueType.value() != null && BMValueType.NUMBER.equals(valueValueType.valueType()), new BigDecimal("1401.19"));
+     * BigDecimal valueAsBigDecimal = wffBMObject.getValueAsBigDecimal("keyForBigDecimal", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.NUMBER.equals(valueValueType.valueType()), new BigDecimal("1401.19"));
      * </code></pre> In the above code if the value is not null and valueType is
      * NUMBER then only it will convert the value to BigDecimal otherwise it will
      * return the default value passed in the third argument i.e. 1401.19.
@@ -626,7 +626,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      * <pre><code>
      * WffBMObject wffBMObject = new WffBMObject();
      * wffBMObject.put("keyForBigInteger", new BigInteger("14"));
-     * BigInteger valueAsBigInteger = wffBMObject.getValueAsBigInteger("keyForBigInteger", valueValueType -> valueValueType.value() != null && BMValueType.NUMBER.equals(valueValueType.valueType()), new BigInteger("1401"));
+     * BigInteger valueAsBigInteger = wffBMObject.getValueAsBigInteger("keyForBigInteger", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.NUMBER.equals(valueValueType.valueType()), new BigInteger("1401"));
      * </code></pre> In the above code if the value is not null and valueType is
      * NUMBER then only it will convert the value to BigInteger otherwise it will
      * return the default value passed in the third argument i.e. 1401.
@@ -670,7 +670,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      * <pre><code>
      * WffBMObject wffBMObject = new WffBMObject();
      * wffBMObject.put("keyForInteger", 14);
-     * Integer valueAsInteger = wffBMObject.getValueAsInteger("keyForInteger", valueValueType -> valueValueType.value() != null && BMValueType.NUMBER.equals(valueValueType.valueType()), 1401);
+     * Integer valueAsInteger = wffBMObject.getValueAsInteger("keyForInteger", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.NUMBER.equals(valueValueType.valueType()), 1401);
      * </code></pre> In the above code if the value is not null and valueType is
      * NUMBER then only it will convert the value to Integer otherwise it will
      * return the default value passed in the third argument i.e. 1401.
@@ -714,7 +714,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      * <pre><code>
      * WffBMObject wffBMObject = new WffBMObject();
      * wffBMObject.put("keyForLong", 14L);
-     * Long valueAsLong = wffBMObject.getValueAsLong("keyForLong", valueValueType -> valueValueType.value() != null && BMValueType.NUMBER.equals(valueValueType.valueType()), 1401L);
+     * Long valueAsLong = wffBMObject.getValueAsLong("keyForLong", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.NUMBER.equals(valueValueType.valueType()), 1401L);
      * </code></pre> In the above code if the value is not null and valueType is
      * NUMBER then only it will convert the value to Long otherwise it will return
      * the default value passed in the third argument i.e. 1401L.
@@ -757,7 +757,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      * <pre><code>
      * WffBMObject wffBMObject = new WffBMObject();
      * wffBMObject.putString("keyForString", "wffweb");
-     * String valueAsString = wffBMObject.getValueAsString("keyForString", valueValueType -> valueValueType.value() != null && BMValueType.STRING.equals(valueValueType.valueType()), "some default value");
+     * String valueAsString = wffBMObject.getValueAsString("keyForString", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.STRING.equals(valueValueType.valueType()), "some default value");
      * </code></pre> In the above code if the value is not null and valueType is
      * STRING then only it will convert the value to String otherwise it will return
      * the default value passed in the third argument i.e. "some default value".
@@ -799,7 +799,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      * <pre><code>
      * WffBMObject wffBMObject = new WffBMObject();
      * wffBMObject.put("keyForBoolean", true);
-     * Boolean valueAsBoolean = wffBMObject.getValueAsBoolean("keyForBoolean", valueValueType -> valueValueType.value() != null && BMValueType.BOOLEAN.equals(valueValueType.valueType()), null);
+     * Boolean valueAsBoolean = wffBMObject.getValueAsBoolean("keyForBoolean", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.BOOLEAN.equals(valueValueType.valueType()), null);
      * </code></pre> In the above code if the value is not null and valueType is
      * BOOLEAN then only it will convert the value to Boolean otherwise it will
      * return the default value passed in the third argument, i.e null.

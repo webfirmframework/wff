@@ -40,13 +40,13 @@ public final class CssTimeUtil {
      * gets the time value and unit as an array. For a cssValue <code>555ms</code>,
      * the returned array may be used as
      *
-     * <pre>
+     * <pre><code>
      * Object[] timeValueAsPremitiveAndUnit = CssTimeUtil.getTimeValueAsPremitiveAndUnit(&quot;555ms&quot;);
      * float value = (float) timeValueAsPremitiveAndUnit[0];
      *
      * // the object will be equal to CssTimeUnit.MS
      * CssTimeUnit unit = (CssTimeUnit) timeValueAsPremitiveAndUnit[1];
-     * </pre>
+     * </code></pre>
      *
      * @param cssValue the value from which the time value and unit required to be
      *                 parsed, Eg:- <code>555ms</code>.
@@ -78,13 +78,13 @@ public final class CssTimeUtil {
      * gets the time value and unit as an array. For a cssValue <code>555ms</code>,
      * the returned array may be used as
      *
-     * <pre>
+     * <pre><code>
      * Object[] timeValueAndUnit = CssTimeUtil.getTimeValueAndUnit(&quot;555ms&quot;);
      * Float value = (Float) timeValueAndUnit[0];
      *
      * // the object will be equal to CssTimeUnit.MS
      * CssTimeUnit unit = (CssTimeUnit) timeValueAndUnit[1];
-     * </pre>
+     * </code></pre>
      *
      * @param cssValue the value from which the time value and unit required to be
      *                 parsed, Eg:- <code>555ms</code>.

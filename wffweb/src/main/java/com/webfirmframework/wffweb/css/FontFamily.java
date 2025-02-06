@@ -116,11 +116,10 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
     }
 
     /**
-     * <pre>
      * Eg:-
+     * <pre><code>
      * String[] fontFamilyNames = {"Times New Roman", "Georgia", GenericFontFamilyNameContants.SERIF};
-     *
-     * </pre>
+     * </code></pre>
      *
      * @param fontFamilyNames the font family names.
      */
@@ -281,11 +280,10 @@ public class FontFamily extends AbstractCssProperty<FontFamily> {
     }
 
     /**
-     * <pre>
      * Eg:-
+     * <pre><code>
      * String[] fontFamilyNames = {"Times New Roman", "Georgia", GenericFontFamilyNameContants.SERIF};
-     *
-     * </pre>
+     * </code></pre>
      *
      * @param fontFamilyNames the fontFamilyNames to set
      * @author WFF
