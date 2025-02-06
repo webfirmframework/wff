@@ -354,7 +354,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     }
 
     /**
-     * The value will be internally saved as a double and the BMValueType will be
+     * The value will be internally saved as a double and its BMValueType will be
      * NUMBER. If you want to save a big value larger than double, save it as a
      * string and get it by getValueAsBigInteger/getValueAsBigDecimal method.
      *
@@ -364,6 +364,122 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      */
     public void put(final String key, final Number value) {
         put(key, BMValueType.NUMBER, value);
+    }
+
+    /**
+     * The value will be internally saved as boolean and its BMValueType will be
+     * NUMBER.
+     *
+     * @param key   the key.
+     * @param value the value for the key.
+     * @since 12.0.3
+     */
+    public void put(final String key, final Boolean value) {
+        put(key, BMValueType.BOOLEAN, value);
+    }
+
+    /**
+     * The value will be internally saved as WffBMObject and its BMValueType will be
+     * BM_OBJECT.
+     *
+     * @param key   the key.
+     * @param value the value for the key.
+     * @since 12.0.3
+     */
+    public void put(final String key, final WffBMObject value) {
+        put(key, BMValueType.BM_OBJECT, value);
+    }
+
+    /**
+     * The value will be internally saved as WffBMArray and its BMValueType will be
+     * BM_ARRAY.
+     *
+     * @param key   the key.
+     * @param value the value for the key.
+     * @since 12.0.3
+     */
+    public void put(final String key, final WffBMArray value) {
+        put(key, BMValueType.BM_ARRAY, value);
+    }
+
+    /**
+     * The value will be internally saved as WffBMByteArray and its BMValueType will
+     * be BM_BYTE_ARRAY.
+     *
+     * @param key   the key.
+     * @param value the value for the key.
+     * @since 12.0.3
+     */
+    public void put(final String key, final WffBMByteArray value) {
+        put(key, BMValueType.BM_BYTE_ARRAY, value);
+    }
+
+    /**
+     * The value will be internally saved as null and its BMValueType will be NULL.
+     *
+     * @param key the key.
+     * @since 12.0.3
+     */
+    public void putNull(final String key) {
+        put(key, BMValueType.NULL, null);
+    }
+
+    /**
+     * The value will be internally saved as null and its BMValueType will be
+     * UNDEFINED.
+     *
+     * @param key the key.
+     * @since 12.0.3
+     */
+    public void putUndefined(final String key) {
+        put(key, BMValueType.UNDEFINED, null);
+    }
+
+    /**
+     * The value will be internally saved as regex string and its BMValueType will
+     * be REG_EXP. Eg:
+     *
+     * <pre>
+     * <code>
+     *     WffBMObject obj = new WffBMObject();
+     *     obj.putRegex("regexStr", "[w]");
+     * </code>
+     * </pre>
+     *
+     * @param key the key. @ param value the value for the key.
+     * @since 12.0.3
+     */
+    public void putRegex(final String key, final String regex) {
+        put(key, BMValueType.REG_EXP, regex);
+    }
+
+    /**
+     * The value will be internally saved as string and its BMValueType will be
+     * STRING.
+     *
+     * @param key the key. @ param value the value for the key.
+     * @since 12.0.3
+     */
+    public void putString(final String key, final String string) {
+        put(key, BMValueType.STRING, string);
+    }
+
+    /**
+     * The value will be internally saved as function string and its BMValueType
+     * will be FUNCTION. Eg:
+     *
+     * <pre>
+     * <code>
+     *     WffBMObject obj = new WffBMObject();
+     *     obj.putFunction("funKey", "function(arg) {console.log(arg);}");
+     * </code>
+     * </pre>
+     *
+     * @param key the key. @ param value the value for the key.
+     * @since 12.0.3
+     */
+    public void putFunction(final String key, final String function) {
+        put(key, BMValueType.FUNCTION, function);
     }
 
     /**
@@ -572,7 +688,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
 
     /**
      * @param key the key to get the value.
-     * @return the value as a String.
+     * @return the value as String.
      * @since 12.0.3
      */
     public String getValueAsString(final String key) {
@@ -586,7 +702,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      *                     the converted value otherwise it will return default
      *                     value.
      * @param defaultValue the default value to return.
-     * @return the value as a String.
+     * @return the value as String.
      * @since 12.0.3
      */
     public String getValueAsString(final String key, final Predicate<ValueAndValueType> predicate,
@@ -604,7 +720,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
 
     /**
      * @param key the key to get the value.
-     * @return the value as a Boolean.
+     * @return the value as Boolean.
      * @since 12.0.3
      */
     public Boolean getValueAsBoolean(final String key) {
@@ -618,7 +734,7 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
      *                     the converted value otherwise it will return default
      *                     value.
      * @param defaultValue the default value to return.
-     * @return the value as a Boolean.
+     * @return the value as Boolean.
      * @since 12.0.3
      */
     public Boolean getValueAsBoolean(final String key, final Predicate<ValueAndValueType> predicate,

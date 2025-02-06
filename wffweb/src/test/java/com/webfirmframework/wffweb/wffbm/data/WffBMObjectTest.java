@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -37,7 +38,7 @@ public class WffBMObjectTest {
 
         final String keyForNumberString = "keyForNumberString";
         final String numberString = "14.01";
-        wffBMObject.put(keyForNumberString, BMValueType.STRING, numberString);
+        wffBMObject.putString(keyForNumberString, numberString);
         BigDecimal valueAsBigDecimal = wffBMObject.getValueAsBigDecimal(keyForNumberString);
         assertEquals(numberString, valueAsBigDecimal.stripTrailingZeros().toPlainString());
 
@@ -622,7 +623,7 @@ public class WffBMObjectTest {
         assertEquals(booleanString, valueAsBoolean.toString());
 
         final String keyForBoolean = "keyForBoolean";
-        wffBMObject.put(keyForBoolean, BMValueType.BOOLEAN, true);
+        wffBMObject.put(keyForBoolean, true);
         valueAsBoolean = wffBMObject.getValueAsBoolean(keyForBoolean);
         assertTrue(valueAsBoolean);
 
@@ -1097,6 +1098,56 @@ public class WffBMObjectTest {
         valueAsBoolean = wffBMObject.getValueAsBoolean(keyForBoolean,
                 valueValueType -> BMValueType.STRING.equals(valueValueType.valueType()), false);
         assertFalse(valueAsBoolean);
+    }
+
+    @Test
+    public void testPutMethods() throws IOException {
+        final WffBMObject wffBMObject = new WffBMObject(true);
+
+        final WffBMObject bmObj = new WffBMObject();
+        bmObj.putString("str", "someVal");
+
+        final WffBMArray wffBMAry = new WffBMArray(BMValueType.STRING);
+        wffBMAry.add("one");
+
+        final WffBMByteArray wffBMByteAry = new WffBMByteArray();
+        wffBMByteAry.write(new byte[] { 1, 2, 3 });
+
+        wffBMObject.put("bmObj", bmObj);
+        wffBMObject.put("wffBMAry", wffBMAry);
+        wffBMObject.put("wffBMByteAry", wffBMByteAry);
+        wffBMObject.putNull("nullValue");
+        wffBMObject.putUndefined("undefinedValue");
+        wffBMObject.putRegex("regexStr", "[w]");
+        wffBMObject.putString("keyForStr", "someVal");
+        wffBMObject.putFunction("keyForFun", "function(arg) {console.log(arg);}");
+
+        assertTrue(wffBMObject.getValue("bmObj") instanceof WffBMObject);
+        assertEquals(BMValueType.BM_OBJECT, wffBMObject.getValueType("bmObj"));
+
+        assertTrue(wffBMObject.getValue("wffBMAry") instanceof WffBMArray);
+        assertEquals(BMValueType.BM_ARRAY, wffBMObject.getValueType("wffBMAry"));
+
+        assertTrue(wffBMObject.getValue("wffBMByteAry") instanceof WffBMByteArray);
+        assertEquals(BMValueType.BM_BYTE_ARRAY, wffBMObject.getValueType("wffBMByteAry"));
+
+        assertTrue(wffBMObject.getValue("regexStr") instanceof String);
+        assertEquals(BMValueType.REG_EXP, wffBMObject.getValueType("regexStr"));
+        assertEquals("[w]", wffBMObject.getValue("regexStr"));
+
+        assertTrue(wffBMObject.getValue("keyForStr") instanceof String);
+        assertEquals(BMValueType.STRING, wffBMObject.getValueType("keyForStr"));
+        assertEquals("someVal", wffBMObject.getValue("keyForStr"));
+
+        assertTrue(wffBMObject.getValue("keyForFun") instanceof String);
+        assertEquals(BMValueType.FUNCTION, wffBMObject.getValueType("keyForFun"));
+        assertEquals("function(arg) {console.log(arg);}", wffBMObject.getValue("keyForFun"));
+
+        assertNull(wffBMObject.getValue("nullValue"));
+        assertEquals(BMValueType.NULL, wffBMObject.getValueType("nullValue"));
+
+        assertNull(wffBMObject.getValue("undefinedValue"));
+        assertEquals(BMValueType.UNDEFINED, wffBMObject.getValueType("undefinedValue"));
     }
 
 }
