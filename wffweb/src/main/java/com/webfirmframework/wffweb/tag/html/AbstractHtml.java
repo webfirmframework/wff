@@ -5383,12 +5383,13 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
+     * It uses algorithm version 2.
+     *
      * @param charset
      * @return the Wff Binary Message bytes of this tag containing indexed tag name
      *         and attribute name
      * @throws InvalidTagException
      * @author WFF
-     * @version algorithm version 2
      * @since 3.0.6
      */
     public byte[] toCompressedWffBMBytesV2(final Charset charset) {
@@ -5396,7 +5397,21 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
-     * Only for internal purpose
+     * It uses algorithm version 3.
+     *
+     * @param charset
+     * @return the Wff Binary Message bytes of this tag containing indexed tag name
+     *         and attribute name
+     * @throws InvalidTagException
+     * @author WFF
+     * @since 3.0.6
+     */
+    public byte[] toCompressedWffBMBytesV3(final Charset charset) {
+        return toCompressedWffBMBytesV3(charset, null);
+    }
+
+    /**
+     * Only for internal purpose. It uses algorithm version 2.
      *
      * @param charset
      * @param accessObject
@@ -5404,7 +5419,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *         and attribute name
      * @throws InvalidTagException
      * @author WFF
-     * @version algorithm version 2
      * @since 3.0.6
      * @since 3.0.15 accessObject added
      */
@@ -5558,15 +5572,177 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
-     * @param bmMessageBytes
+     * Only for internal purpose. It uses algorithm version 3.
+     *
+     * @param charset
+     * @param accessObject
+     * @return the Wff Binary Message bytes of this tag containing indexed tag name
+     *         and attribute name
+     * @throws InvalidTagException
+     * @author WFF
+     * @since 3.0.6
+     * @since 3.0.15 accessObject added
+     */
+    public final byte[] toCompressedWffBMBytesV3(final Charset charset,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+
+        final Lock lock;
+
+        if (accessObject != null) {
+            lock = null;
+            if (!IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType())) {
+                throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+            }
+        } else {
+            // writeLock is better as we are writing to wffSlotIndex
+            lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            lock.lock();
+        }
+
+        try {
+
+            final Deque<NameValue> nameValues = new ArrayDeque<>();
+
+            // ArrayDeque give better performance than Stack, LinkedList
+            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+            final Set<AbstractHtml> initialSet = Set.of(this);
+            childrenStack.push(initialSet);
+
+            Set<AbstractHtml> children;
+            while ((children = childrenStack.poll()) != null) {
+
+                for (final AbstractHtml tag : children) {
+
+                    final String nodeName = tag.tagName;
+
+                    final AbstractHtml parentLocal = tag.parent;
+
+                    if (nodeName != null && !nodeName.isEmpty()) {
+
+                        final NameValue nameValue = new NameValue();
+
+                        final byte[] nodeNameBytes;
+
+                        // just be initialized as local
+                        final byte[] tagNameIndexBytes = tag.tagNameIndexBytes;
+
+                        if (tagNameIndexBytes == null) {
+                            final byte[] rowNodeNameBytes = nodeName.getBytes(charset);
+                            nodeNameBytes = new byte[rowNodeNameBytes.length + 1];
+                            // if zero there is no optimized int bytes for index
+                            // because there is no tagNameIndex. second byte
+                            // onwards the bytes of tag name
+                            nodeNameBytes[0] = 0;
+                            System.arraycopy(rowNodeNameBytes, 0, nodeNameBytes, 1, rowNodeNameBytes.length);
+
+                            // logging is not required here
+                            // it is not an unusual case
+                            // if (LOGGER.isLoggable(Level.WARNING)) {
+                            // LOGGER.warning(nodeName
+                            // + " is not indexed, please register it with
+                            // TagRegistry");
+                            // }
+
+                        } else {
+
+                            if (tagNameIndexBytes.length == 1) {
+                                nodeNameBytes = tagNameIndexBytes;
+                            } else {
+                                nodeNameBytes = new byte[tagNameIndexBytes.length + 1];
+                                nodeNameBytes[0] = (byte) tagNameIndexBytes.length;
+                                System.arraycopy(tagNameIndexBytes, 0, nodeNameBytes, 1, tagNameIndexBytes.length);
+                            }
+
+                        }
+
+                        final byte[][] wffAttributeBytes = AttributeUtil.getAttributeHtmlBytesCompressedByIndex(false,
+                                charset, tag.attributes);
+
+                        final int parentWffSlotIndex = parentLocal == null ? -1 : parentLocal.wffSlotIndex;
+                        nameValue.setName(WffBinaryMessageUtil.getOptimizedBytesFromInt(parentWffSlotIndex));
+
+                        final byte[][] values = new byte[wffAttributeBytes.length + 1][0];
+
+                        values[0] = nodeNameBytes;
+
+                        System.arraycopy(wffAttributeBytes, 0, values, 1, wffAttributeBytes.length);
+
+                        nameValue.setValues(values);
+                        tag.wffSlotIndex = nameValues.size();
+                        nameValues.add(nameValue);
+
+                    } else {
+
+                        // tag.tagName == null means it is no tag
+                        // !tag.getClosingTag().isEmpty() SharedTagContet is
+                        // injecting NoTag with empty content so
+                        // !tag.getClosingTag().isEmpty() is not valid here
+
+                        final int parentWffSlotIndex = parentLocal == null ? -1 : parentLocal.wffSlotIndex;
+
+                        final NameValue nameValue = new NameValue();
+
+                        // # short for #text
+                        // @ short for html content
+                        // final byte[] nodeNameBytes = tag.noTagContentTypeHtml
+                        // ? encodedBytesForAtChar
+                        // : encodedByesForHashChar;
+
+                        final byte[] nodeNameBytes = tag.noTagContentTypeHtml ? INDEXED_AT_CHAR_BYTES
+                                : INDEXED_HASH_CHAR_BYTES;
+
+                        nameValue.setName(WffBinaryMessageUtil.getOptimizedBytesFromInt(parentWffSlotIndex));
+
+                        final byte[][] values = new byte[2][0];
+
+                        values[0] = nodeNameBytes;
+                        values[1] = tag.getClosingTag().getBytes(charset);
+
+                        nameValue.setValues(values);
+
+                        tag.wffSlotIndex = nameValues.size();
+                        nameValues.add(nameValue);
+                    }
+
+                    final Set<AbstractHtml> subChildren = tag.children;
+
+                    if (subChildren != null && !subChildren.isEmpty()) {
+                        childrenStack.push(subChildren);
+                    }
+
+                }
+
+            }
+
+            final NameValue nameValue = nameValues.getFirst();
+            nameValue.setName(new byte[0]);
+
+            return WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
+        } catch (final NoSuchElementException e) {
+            throw new InvalidTagException(
+                    "Not possible to build wff bm bytes on this tag.\nDon't use an empty new NoTag(null, \"\") or new Blank(null, \"\")",
+                    e);
+        } catch (final Exception e) {
+            throw new WffRuntimeException(e.getMessage(), e);
+        } finally {
+            if (lock != null) {
+                lock.unlock();
+            }
+
+        }
+    }
+
+    /**
+     * @param bmBytes Wff Binary Message bytes of tag i.e. returned by *
+     *                {@link AbstractHtml#toWffBMBytes(String)}
      * @return the AbstractHtml instance from the given Wff BM bytes. It uses system
      *         default charset.
      * @author WFF
      * @since 2.0.0 initial implementation
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      */
-    public static AbstractHtml getTagFromWffBMBytes(final byte[] bmMessageBytes) {
-        return getTagFromWffBMBytes(bmMessageBytes, CommonConstants.DEFAULT_CHARSET);
+    public static AbstractHtml getTagFromWffBMBytes(final byte[] bmBytes) {
+        return getTagFromWffBMBytes(bmBytes, CommonConstants.DEFAULT_CHARSET);
     }
 
     /**
@@ -5594,6 +5770,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      */
     public static AbstractHtml getTagFromWffBMBytes(final byte[] bmBytes, final Charset charset) {
+        // Note: it cannot parse bytes from toCompressedWffBMBytes... methods.
 
         final List<NameValue> nameValuesAsList = WffBinaryMessageUtil.VERSION_1.parse(bmBytes);
 
@@ -5694,6 +5871,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *        contentTypeHtml true
      */
     public static AbstractHtml getExactTagFromWffBMBytes(final byte[] bmBytes, final Charset charset) {
+        // Note: it cannot parse bytes from toCompressedWffBMBytes... methods.
 
         final List<NameValue> nameValuesAsList = WffBinaryMessageUtil.VERSION_1.parse(bmBytes);
 

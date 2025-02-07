@@ -152,7 +152,7 @@ public final class InsertBeforeListenerImpl implements InsertBeforeListener {
                     if (previousParentTag != null) {
                         if (WffJsFile.COMPRESSED_WFF_DATA) {
                             nameValue.setValues(parentTagName,
-                                    insertedTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, accessObject),
+                                    insertedTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, accessObject),
                                     beforeTagNameAndWffId[0], beforeTagNameAndWffId[1], new byte[] { 1 });
                         } else {
                             nameValue.setValues(parentTagName,
@@ -163,7 +163,7 @@ public final class InsertBeforeListenerImpl implements InsertBeforeListener {
                     } else {
                         if (WffJsFile.COMPRESSED_WFF_DATA) {
                             nameValue.setValues(parentTagName,
-                                    insertedTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, accessObject),
+                                    insertedTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, accessObject),
                                     beforeTagNameAndWffId[0], beforeTagNameAndWffId[1]);
                         } else {
                             nameValue.setValues(parentTagName,

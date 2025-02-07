@@ -122,7 +122,7 @@ public final class ChildTagAppendListenerImpl implements ChildTagAppendListener 
 
             if (WffJsFile.COMPRESSED_WFF_DATA) {
                 nameValue.setValues(parentTagName,
-                        appendedChildTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, accessObject));
+                        appendedChildTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, accessObject));
             } else {
                 nameValue.setValues(parentTagName, appendedChildTag.toWffBMBytes(StandardCharsets.UTF_8, accessObject));
             }
@@ -201,7 +201,7 @@ public final class ChildTagAppendListenerImpl implements ChildTagAppendListener 
             try {
                 if (WffJsFile.COMPRESSED_WFF_DATA) {
                     nameValue.setValues(parentTagName,
-                            appendedChildTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, accessObject));
+                            appendedChildTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, accessObject));
                 } else {
                     nameValue.setValues(parentTagName,
                             appendedChildTag.toWffBMBytes(StandardCharsets.UTF_8, accessObject));
@@ -371,7 +371,7 @@ public final class ChildTagAppendListenerImpl implements ChildTagAppendListener 
                             // tag
                             if (WffJsFile.COMPRESSED_WFF_DATA) {
                                 nameValue.setValues(currentTagName, movedChildWffIdBytes, movedChildTagName,
-                                        movedChildTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, accessObject));
+                                        movedChildTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, accessObject));
                             } else {
                                 nameValue.setValues(currentTagName, movedChildWffIdBytes, movedChildTagName,
                                         movedChildTag.toWffBMBytes(StandardCharsets.UTF_8, accessObject));

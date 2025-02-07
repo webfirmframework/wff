@@ -2116,7 +2116,7 @@ public class AbstractHtmlTest {
         };
 
         final byte[] wffBMBytes = html.toWffBMBytes(StandardCharsets.UTF_8);
-        final byte[] compressedWffBMBytes = html.toCompressedWffBMBytesV2(StandardCharsets.UTF_8);
+        final byte[] compressedWffBMBytes = html.toCompressedWffBMBytesV3(StandardCharsets.UTF_8);
 
         // without tagIndex impl: wffBMBytes.length: 311 compressedWffBMBytes.length:
         // 247
@@ -2162,7 +2162,7 @@ public class AbstractHtmlTest {
         long toWffBMBytesProcessingTime = after - before;
 
         before = System.nanoTime();
-        final int tagCompressedWffBMBytesLength = html.toCompressedWffBMBytesV2(StandardCharsets.UTF_8).length;
+        final int tagCompressedWffBMBytesLength = html.toCompressedWffBMBytesV3(StandardCharsets.UTF_8).length;
         after = System.nanoTime();
 
         long toCompressedWffBMBytesProcessingTime = after - before;
@@ -3942,6 +3942,59 @@ public class AbstractHtmlTest {
             stc.setContent("anotherContent");
             assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
             assertEquals(parentDiv.getFirstChild().toHtmlString(), "anotherContent");
+        }
+    }
+
+    @Test()
+    public void testToCompressedWffBMBytesV3() {
+        final Html rootTag = new Html(null).give(html -> {
+            new Head(html).give(head -> {
+                new Link(head, new Id("appbasicCssLink"), new Src("https://localhost/appbasic.css"));
+            });
+            new Body(html).give(body -> {
+                new Div(body, new Id("parentDivId"));
+            });
+        });
+        rootTag.toHtmlString();
+
+        {
+            final byte[] compressedWffBMBytes = rootTag.toCompressedWffBMBytes(StandardCharsets.UTF_8);
+            final byte[] compressedWffBMBytesV2 = rootTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, null);
+            final byte[] compressedWffBMBytesV3 = rootTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, null);
+            assertEquals(108, compressedWffBMBytes.length);
+            assertEquals(103, compressedWffBMBytesV2.length);
+            assertEquals(91, compressedWffBMBytesV3.length);
+            assertTrue(compressedWffBMBytesV2.length < compressedWffBMBytes.length);
+            assertTrue(compressedWffBMBytesV3.length < compressedWffBMBytesV2.length);
+        }
+
+        final BrowserPage browserPage = new BrowserPage() {
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework.com/ws-con";
+            }
+
+            @Override
+            public AbstractHtml render() {
+                return rootTag;
+            }
+        };
+
+        try {
+            browserPage.toOutputStream(new ByteArrayOutputStream(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            fail("failed due to IOException");
+        }
+
+        {
+            final byte[] compressedWffBMBytes = rootTag.toCompressedWffBMBytes(StandardCharsets.UTF_8);
+            final byte[] compressedWffBMBytesV2 = rootTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, null);
+            final byte[] compressedWffBMBytesV3 = rootTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, null);
+            assertEquals(82841, compressedWffBMBytes.length);
+            assertEquals(82835, compressedWffBMBytesV2.length);
+            assertEquals(82820, compressedWffBMBytesV3.length);
+            assertTrue(compressedWffBMBytesV2.length < compressedWffBMBytes.length);
+            assertTrue(compressedWffBMBytesV3.length < compressedWffBMBytesV2.length);
         }
     }
 
