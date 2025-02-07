@@ -18,6 +18,8 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 import java.io.Serial;
 
 import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 
@@ -36,6 +38,13 @@ public class DataWffId extends DataAttribute {
     // must be kept final to provide atomic consistency across multiple threads
     private final String attributeValue;
 
+    /**
+     * -1 for S and -2 for C
+     */
+    private final byte attributeValuePrefix;
+
+    private final byte[] attributeValueBytes;
+
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.DATA_WFF_ID;
 
     /**
@@ -45,6 +54,24 @@ public class DataWffId extends DataAttribute {
      */
     public DataWffId(final String value) {
         super(PRE_INDEXED_ATTR_NAME, value);
+        attributeValuePrefix = 0;
+        attributeValueBytes = null;
+        attributeValue = value;
+    }
+
+    /**
+     * Note: Only for internal use.
+     *
+     * @param value the value for the attribute
+     * @param attributeValuePrefix the value for the attribute.
+     * @param attributeValueBytes the bytes of integer to represent id.
+     * @since 12.0.3
+     * @author WFF
+     */
+    public DataWffId(final String value, final byte attributeValuePrefix, final byte[] attributeValueBytes) {
+        super(PRE_INDEXED_ATTR_NAME, value);
+        this.attributeValuePrefix = attributeValuePrefix;
+        this.attributeValueBytes = attributeValueBytes;
         attributeValue = value;
     }
 
@@ -113,4 +140,26 @@ public class DataWffId extends DataAttribute {
         return PRE_INDEXED_ATTR_NAME.index();
     }
 
+    /**
+     * Note: Only for internal use.
+     *
+     * @return the byte represented for value prefix.
+     * @since 12.0.3
+     */
+    public final byte attributeValuePrefix() {
+        return attributeValuePrefix;
+    }
+
+    /**
+     * Only for internal use.
+     *
+     * @param accessObject the access object to call this method.
+     * @return the value bytes
+     */
+    public final byte[] attributeValueBytes(final SecurityObject accessObject) {
+        if (accessObject == null || !IndexedClassType.ABSTRACT_ATTRIBUTE.equals(accessObject.forClassType())) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        return attributeValueBytes;
+    }
 }

@@ -5654,7 +5654,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
                         }
 
-                        final byte[][] wffAttributeBytes = AttributeUtil.getAttributeHtmlBytesCompressedByIndex(false,
+                        final byte[][] wffAttributeBytes = AttributeUtil.getAttributeHtmlBytesCompressedByIndexV2(false,
                                 charset, tag.attributes);
 
                         final int parentWffSlotIndex = parentLocal == null ? -1 : parentLocal.wffSlotIndex;

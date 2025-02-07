@@ -35,6 +35,7 @@ import com.webfirmframework.wffweb.WffSecurityException;
 import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
+import com.webfirmframework.wffweb.tag.html.attribute.InternalAttrNameConstants;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
@@ -102,6 +103,30 @@ public final class AttributeUtil {
             for (int i = 0; i < attributesArray.length; i++) {
                 final AbstractAttribute attribute = attributes[i];
                 attributesArray[i] = attribute.toCompressedBytesByIndex(rebuild, charset);
+            }
+            return attributesArray;
+
+        }
+        return new byte[0][0];
+    }
+
+    /**
+     * @param rebuild
+     * @param attributes
+     * @param charset    the charset
+     * @return the attributes bytes array compressed by index
+     * @author WFF
+     * @throws IOException
+     * @since 12.0.3
+     */
+    public static byte[][] getAttributeHtmlBytesCompressedByIndexV2(final boolean rebuild, final Charset charset,
+            final AbstractAttribute... attributes) throws IOException {
+        if (attributes != null) {
+            final byte[][] attributesArray = new byte[attributes.length][0];
+
+            for (int i = 0; i < attributesArray.length; i++) {
+                final AbstractAttribute attribute = attributes[i];
+                attributesArray[i] = attribute.toCompressedBytesByIndexV2(rebuild, charset);
             }
             return attributesArray;
 
@@ -199,6 +224,86 @@ public final class AttributeUtil {
                 attributes[index] = newAttributeInstance != null ? newAttributeInstance
                         : new CustomAttribute(attrName, attrValue);
 
+            }
+
+            index++;
+        }
+        return attributes;
+    }
+
+    /**
+     * @param attributesBytes
+     * @return the array of attributes built from bytes
+     * @since 3.0.3
+     */
+    public static AbstractAttribute[] parseExactAttributeHtmlBytesCompressedByIndexV2(final byte[][] attributesBytes,
+            final Charset charset) {
+
+        final AbstractAttribute[] attributes = new AbstractAttribute[attributesBytes.length];
+
+        int index = 0;
+        for (final byte[] compressedBytesByIndex : attributesBytes) {
+
+            final int lengthOfOptimizedBytesOfAttrNameIndex = compressedBytesByIndex[0];
+
+            if (lengthOfOptimizedBytesOfAttrNameIndex > 0) {
+                final byte[] tagNameIndexBytes = new byte[lengthOfOptimizedBytesOfAttrNameIndex];
+                System.arraycopy(compressedBytesByIndex, 1, tagNameIndexBytes, 0,
+                        lengthOfOptimizedBytesOfAttrNameIndex);
+
+                final int attrNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(tagNameIndexBytes);
+
+                final String attrValue = new String(compressedBytesByIndex, compressedBytesByIndex[0] + 1,
+                        compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1), charset);
+
+                attributes[index] = AttributeRegistry.getNewAttributeInstanceOrNullIfFailed(attrNameIndex, attrValue);
+
+            } else if (lengthOfOptimizedBytesOfAttrNameIndex == 0) {
+
+                final String attrNameValue = new String(compressedBytesByIndex, compressedBytesByIndex[0] + 1,
+                        compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1), charset);
+
+                final int indexOfEqualChar = attrNameValue.indexOf('=');
+
+                final String attrName;
+                final String attrValue;
+
+                if (indexOfEqualChar == -1) {
+                    attrName = attrNameValue;
+                    attrValue = null;
+                } else {
+                    attrName = attrNameValue.substring(0, indexOfEqualChar);
+                    attrValue = attrNameValue.substring(indexOfEqualChar + 1, attrNameValue.length());
+                }
+
+                final AbstractAttribute newAttributeInstance = AttributeRegistry
+                        .getNewAttributeInstanceOrNullIfFailed(attrName, attrValue);
+
+                attributes[index] = newAttributeInstance != null ? newAttributeInstance
+                        : new CustomAttribute(attrName, attrValue);
+
+            } else {
+                // -1 or -2 it is data-wff-id
+                // -1 for prefix S, -2 for prefix C
+                String prefix = null;
+                if (lengthOfOptimizedBytesOfAttrNameIndex == -1) {
+                    prefix = "S";
+                } else if (lengthOfOptimizedBytesOfAttrNameIndex == -2) {
+                    prefix = "C";
+                } else {
+                    throw new IllegalArgumentException("Invalid wff data found. Unable to handle value check "
+                            + lengthOfOptimizedBytesOfAttrNameIndex);
+                }
+                final byte[] attrValueIntBytes = new byte[compressedBytesByIndex.length - 1];
+                System.arraycopy(compressedBytesByIndex, 1, attrValueIntBytes, 0, compressedBytesByIndex.length - 1);
+
+                final String attrValue = prefix + WffBinaryMessageUtil.getIntFromOptimizedBytes(attrValueIntBytes);
+
+                final AbstractAttribute newAttributeInstance = AttributeRegistry
+                        .getNewAttributeInstanceOrNullIfFailed(InternalAttrNameConstants.DATA_WFF_ID, attrValue);
+
+                attributes[index] = newAttributeInstance != null ? newAttributeInstance
+                        : new CustomAttribute(InternalAttrNameConstants.DATA_WFF_ID, attrValue);
             }
 
             index++;

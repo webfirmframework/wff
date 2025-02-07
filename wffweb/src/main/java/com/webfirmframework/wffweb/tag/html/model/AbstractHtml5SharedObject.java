@@ -46,6 +46,7 @@ import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataUpdateLis
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
+import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 /**
  *
@@ -56,6 +57,11 @@ public final class AbstractHtml5SharedObject implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1_0_1L;
+
+    private static final byte BYTE_FOR_DATA_WFF_ID_PREFIX_S = -1;
+
+    // Note: do not remove it, keep it for future reference.
+//    private static final byte BYTE_FOR_DATA_WFF_ID_PREFIX_C = -2;
 
     private boolean childModified;
 
@@ -178,12 +184,14 @@ public final class AbstractHtml5SharedObject implements Serializable {
                 }
 
                 if (dataWffId.compareAndSet(incrementedDataWffId, newDataWffId)) {
-                    return new DataWffId("S" + newDataWffId);
+                    return new DataWffId("S" + newDataWffId, BYTE_FOR_DATA_WFF_ID_PREFIX_S,
+                            WffBinaryMessageUtil.getOptimizedBytesFromInt(newDataWffId));
                 }
                 continue;
             }
 
-            return new DataWffId("S" + incrementedDataWffId);
+            return new DataWffId("S" + incrementedDataWffId, BYTE_FOR_DATA_WFF_ID_PREFIX_S,
+                    WffBinaryMessageUtil.getOptimizedBytesFromInt(incrementedDataWffId));
         }
         throw new DataWffIdOutOfRangeError(
                 "BrowserPage object has reached an impossible worst case! No enough DataWffId available to assign to a new tag.");

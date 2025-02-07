@@ -205,6 +205,7 @@ var wffWS = new function() {
 		if (bytes.length > 0) {
 		    var bin = bytes;
 		    if (wffGlobal.LOSSLESS_COMM && bin.length > 4) {
+		        // this id bytes should always be length 4
 		        bin = wffBMUtil.getBytesFromInt(wffGlobal.getUniqueClientSidePayloadId());
 		        for (var i = 0; i < bytes.length; i++) {
                     bin.push(bytes[i]);

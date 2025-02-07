@@ -15,7 +15,13 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,22 +34,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.Set;
 
-import com.webfirmframework.wffweb.InvalidUsageException;
-import com.webfirmframework.wffweb.settings.WffConfiguration;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.InvalidUsageException;
 import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.css.Color;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.server.page.BrowserPageTest;
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.MaxLength;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
@@ -62,6 +68,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Translate;
 import com.webfirmframework.wffweb.tag.html.links.A;
 import com.webfirmframework.wffweb.tag.html.links.Link;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
+import com.webfirmframework.wffweb.tag.html.programming.Script;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
@@ -3986,13 +3993,17 @@ public class AbstractHtmlTest {
             fail("failed due to IOException");
         }
 
+        //this is a generated script it should be removed before testing
+        final Script script = TagRepository.findOneTagAssignableToTag(Script.class, rootTag);
+        script.getParent().removeChild(script);
+
         {
             final byte[] compressedWffBMBytes = rootTag.toCompressedWffBMBytes(StandardCharsets.UTF_8);
             final byte[] compressedWffBMBytesV2 = rootTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, null);
             final byte[] compressedWffBMBytesV3 = rootTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, null);
-            assertEquals(82841, compressedWffBMBytes.length);
-            assertEquals(82835, compressedWffBMBytesV2.length);
-            assertEquals(82820, compressedWffBMBytesV3.length);
+            assertEquals(133, compressedWffBMBytes.length);
+            assertEquals(128, compressedWffBMBytesV2.length);
+            assertEquals(106, compressedWffBMBytesV3.length);
             assertTrue(compressedWffBMBytesV2.length < compressedWffBMBytes.length);
             assertTrue(compressedWffBMBytesV3.length < compressedWffBMBytesV2.length);
         }

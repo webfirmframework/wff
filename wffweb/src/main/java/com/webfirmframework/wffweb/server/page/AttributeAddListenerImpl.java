@@ -91,7 +91,7 @@ public final class AttributeAddListenerImpl implements AttributeAddListener {
                 // }
                 // values[i] = attrNameValue.getBytes(StandardCharsets.UTF_8);
 
-                values[i] = addedAttributes[i - 2].toCompressedBytesByIndex(false, StandardCharsets.UTF_8);
+                values[i] = addedAttributes[i - 2].toCompressedBytesByIndexV2(false, StandardCharsets.UTF_8);
             }
 
             nameValue.setValues(values);

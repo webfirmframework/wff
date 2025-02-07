@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.Serial;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -45,6 +46,7 @@ import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.tag.core.AbstractTagBase;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
 
@@ -86,6 +88,8 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     private final boolean nullableAttrValueMapValue;
 
     private volatile byte[] compressedBytes;
+
+    private volatile byte compressedBytesVersion = 2;
 
     /**
      * NB: do not generate equals and hashcode base on this as the deserialized
@@ -353,7 +357,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
         byte[] compressedBytes = this.compressedBytes;
 
         // String result = "";
-        if (rebuild || compressedBytes == null) {
+        if (rebuild || compressedBytes == null || compressedBytesVersion != 1) {
 
             compressedBytes = new byte[0];
             final ByteArrayOutputStream compressedBytesBuilder = new ByteArrayOutputStream();
@@ -430,6 +434,105 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
             return compressedBytes;
         }
         this.compressedBytes = compressedBytes;
+        compressedBytesVersion = 1;
+        return compressedBytes;
+    }
+
+    /**
+     * gives compressed by index bytes for the attribute and value. The first byte
+     * represents the attribute name index bytes length, the next bytes represent
+     * the attribute name index bytes and the remaining bytes represent attribute
+     * value without <i>=</i> and <i>"</i>.
+     *
+     * @param rebuild
+     * @param charset
+     * @return the compressed by index bytes.
+     * @throws IOException
+     * @author WFF
+     * @since 12.0.3
+     */
+    protected final byte[] getBinaryStructureCompressedByIndexV2(final boolean rebuild, final Charset charset)
+            throws IOException {
+
+        final String attributeValue = this.attributeValue;
+        final String attributeName = this.attributeName;
+        byte[] compressedBytes = this.compressedBytes;
+
+        // String result = "";
+        if (rebuild || compressedBytes == null || compressedBytesVersion != 2) {
+
+            compressedBytes = new byte[0];
+            final ByteArrayOutputStream compressedBytesBuilder = new ByteArrayOutputStream();
+
+            beforePrintStructureCompressedByIndexV2();
+            // tagBuildzer.append(' ');
+
+            // final int attributeNameIndex =
+            // AttributeRegistry.getAttributeNames()
+            // .indexOf(attributeName);
+
+            // should always use local variable attrNameIndex
+            // this.attrNameIndex is eventually consistent
+            final byte[] attrNameIndexBytes = this.attrNameIndexBytes;
+
+            final boolean dataWffIdHandled;
+            if (attrNameIndexBytes == null) {
+                dataWffIdHandled = false;
+                compressedBytesBuilder.write(new byte[] { (byte) 0 });
+                compressedBytesBuilder.write(attributeName.getBytes(charset));
+
+                // logging is not required here
+                // as it is not an unusual case
+                // if (LOGGER.isLoggable(Level.WARNING)) {
+                // LOGGER.warning(attributeName
+                // + " is not indexed, please register it with
+                // AttributeRegistry");
+                // }
+            } else if (Arrays.equals(attrNameIndexBytes, PreIndexedAttributeName.DATA_WFF_ID.internalIndexBytes())
+                    && this instanceof final DataWffId dataWffId && dataWffId.attributeValuePrefix() < 0) {
+                // only -ve values are valid in attributeValuePrefix
+                compressedBytesBuilder.write(new byte[] { dataWffId.attributeValuePrefix() });
+                compressedBytesBuilder.write(dataWffId.attributeValueBytes(ACCESS_OBJECT));
+                dataWffIdHandled = true;
+            } else {
+                dataWffIdHandled = false;
+                compressedBytesBuilder.write(new byte[] { (byte) attrNameIndexBytes.length });
+                compressedBytesBuilder.write(attrNameIndexBytes);
+            }
+
+            if (!dataWffIdHandled) {
+                if (attributeValue != null) {
+                    if (attrNameIndexBytes == null) {
+                        compressedBytesBuilder.write("=".getBytes(charset));
+                    }
+                    compressedBytesBuilder.write(attributeValue.getBytes(charset));
+                } else if (attributeValueMap != null && !attributeValueMap.isEmpty()) {
+                    if (attrNameIndexBytes == null) {
+                        compressedBytesBuilder.write("=".getBytes(charset));
+                    }
+                    final Set<Entry<String, String>> entrySet = getAttributeValueMap().entrySet();
+                    for (final Entry<String, String> entry : entrySet) {
+                        compressedBytesBuilder.write(entry.getKey().getBytes(charset));
+                        compressedBytesBuilder.write(new byte[] { ':' });
+                        compressedBytesBuilder.write(entry.getValue().getBytes(charset));
+                        compressedBytesBuilder.write(new byte[] { ';' });
+                    }
+                } else if (attributeValueSet != null && !attributeValueSet.isEmpty()) {
+                    if (attrNameIndexBytes == null) {
+                        compressedBytesBuilder.write("=".getBytes(charset));
+                    }
+                    for (final String each : getAttributeValueSet()) {
+                        compressedBytesBuilder.write(each.getBytes(charset));
+                        compressedBytesBuilder.write(new byte[] { ' ' });
+                    }
+                }
+            }
+            compressedBytes = compressedBytesBuilder.toByteArray();
+        } else {
+            return compressedBytes;
+        }
+        this.compressedBytes = compressedBytes;
+        compressedBytesVersion = 2;
         return compressedBytes;
     }
 
@@ -487,6 +590,10 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
     public byte[] toCompressedBytesByIndex(final boolean rebuild, final Charset charset) throws IOException {
         return getBinaryStructureCompressedByIndex(rebuild, charset);
+    }
+
+    public final byte[] toCompressedBytesByIndexV2(final boolean rebuild, final Charset charset) throws IOException {
+        return getBinaryStructureCompressedByIndexV2(rebuild, charset);
     }
 
     /*
@@ -1498,13 +1605,24 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
     /**
      * invokes just before {@code getPrintStructureCompressedByIndex(final boolean}
-     * method and only if the getPrintStructureCompressedByIndex(final boolean}
-     * rebuilds the structure.
+     * method and only if it rebuilds the structure.
      *
      * @author WFF
      * @since 1.0.0
      */
     protected void beforePrintStructureCompressedByIndex() {
+        // TODO override and use
+    }
+
+    /**
+     * invokes just before
+     * {@code getPrintStructureCompressedByIndexV2(final boolean} method and only if
+     * it rebuilds the structure.
+     *
+     * @author WFF
+     * @since 12.0.3
+     */
+    protected void beforePrintStructureCompressedByIndexV2() {
         // TODO override and use
     }
 

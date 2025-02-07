@@ -83,12 +83,26 @@ var wffTagUtil = new function() {
 			
 			var attrNamVal = [wffGlobal.NDXD_ATRBS[attrNamNdx], getStringFromBytes(attrValByts)];
 			return attrNamVal;
-		} else {
+		} else if (lengOfOptmzdBytsOfAttrNam == 0) {
 			var reqBytsLngth = utf8Bytes.length - 1;
 			
 			var attrNamByts = subarray(utf8Bytes, 1, reqBytsLngth);
 			
 			return splitAttrNameValue(getStringFromBytes(attrNamByts));
+		} else {
+		   // -1 or -2 it is data-wff-id
+		   // -1 for prefix S, -2 for prefix C
+		   var prefix = null;
+		   if (lengOfOptmzdBytsOfAttrNam == -1) {
+               prefix = 'S';
+		   } else if (lengOfOptmzdBytsOfAttrNam == -2) {
+		       prefix = 'C';
+           } else {
+               wffLog("Invalid wff data found. Unable to handle value check ", lengOfOptmzdBytsOfAttrNam);
+               return null;
+           }
+           //[attributeName, attributeValue]
+           return ['data-wff-id', prefix + wffBMUtil.getIntFromOptimizedBytes(subarray(utf8Bytes, 1, utf8Bytes.length)).toString()];
 		}
 	};
 	
