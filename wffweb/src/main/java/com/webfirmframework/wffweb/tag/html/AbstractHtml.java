@@ -5404,7 +5404,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *         and attribute name
      * @throws InvalidTagException
      * @author WFF
-     * @since 3.0.6
+     * @since 12.0.3
      */
     public byte[] toCompressedWffBMBytesV3(final Charset charset) {
         return toCompressedWffBMBytesV3(charset, null);
@@ -5580,8 +5580,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *         and attribute name
      * @throws InvalidTagException
      * @author WFF
-     * @since 3.0.6
-     * @since 3.0.15 accessObject added
+     * @since 12.0.3
      */
     public final byte[] toCompressedWffBMBytesV3(final Charset charset,
             @SuppressWarnings("exports") final SecurityObject accessObject) {
