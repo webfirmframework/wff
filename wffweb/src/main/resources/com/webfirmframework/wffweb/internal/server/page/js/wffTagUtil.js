@@ -98,7 +98,7 @@ var wffTagUtil = new function() {
                return null;
            }
            //[attributeName, attributeValue]
-           return ["data-wff-id", prefix + wffBMUtil.getIntFromOptimizedBytes(subarray(utf8Bytes, 1, utf8Bytes.length)).toString()];
+           return ["data-wff-id", pfx + wffBMUtil.getIntFromOptimizedBytes(subarray(utf8Bytes, 1, utf8Bytes.length)).toString()];
 		}
 	};
 	

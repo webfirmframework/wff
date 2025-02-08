@@ -219,7 +219,7 @@ public class WffJsFileTest {
             var v19 = subarray(utf8Bytes, 1, v5);var v83 = wffBMUtil.f15(v19);var v84 = utf8Bytes.length - (v5 + 1);var v69 = subarray(utf8Bytes, v5 + 1, v84);var attrNamVal = [wffGlobal.NDXD_ATRBS[v83], f31(v69)];return attrNamVal;}else if(v5 == 0){
             var v61 = utf8Bytes.length - 1;var v70 = subarray(utf8Bytes, 1, v61);return f32(f31(v70));}else{
             var pfx = v5 == -1 ? "S" : v5 == -2 ? "C" : null;if(pfx === null){wffLog("Error: Unhandled value found!", v5);return null;}
-            return ["data-wff-id", prefix + wffBMUtil.f15(subarray(utf8Bytes, 1, utf8Bytes.length)).toString()];}
+            return ["data-wff-id", pfx + wffBMUtil.f15(subarray(utf8Bytes, 1, utf8Bytes.length)).toString()];}
             };this.f1 = f1;var f27 = function(tag, htmlString){
             var tmpDv = document.createElement('div');tmpDv.innerHTML = htmlString;for (var i = 0; i < tmpDv.childNodes.length; i++){
             var cn = tmpDv.childNodes[i];if(cn.nodeName === '#text'){
