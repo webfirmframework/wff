@@ -395,14 +395,15 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
 
     /**
      * @param value the number to add to the array.
+     * @return true or false.
      * @since 12.0.3
      */
-    public void addNumber(final Number value) {
+    public boolean addNumber(final Number value) {
         if (BMValueType.NUMBER.equals(valueType)) {
             if (value instanceof final Float f) {
-                super.add(floatToDouble(f));
+                return super.add(floatToDouble(f));
             } else {
-                super.add(value);
+                return super.add(value);
             }
         } else {
             throw new InvalidValueException("Number value is allowed to add only in BMValueType.NUMBER type array.");
@@ -445,7 +446,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
     }
 
     /**
-     * Inserts the specified number at the beginning of this array.
+     * Appends the specified number to the end of this array.
      *
      * @param value the number to insert.
      * @since 12.0.3

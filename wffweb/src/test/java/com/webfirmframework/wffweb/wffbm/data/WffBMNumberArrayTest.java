@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.wffbm.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 
@@ -51,9 +52,9 @@ public class WffBMNumberArrayTest {
         final float value1 = 14.01F;
         final float value2 = 14.011F;
         final float value3 = 14.0119F;
-        bmNumberArray.addNumber(value1);
+        assertTrue(bmNumberArray.addNumber(value1));
         bmNumberArray.add(value2);
-        bmNumberArray.addNumber(value3);
+        assertTrue(bmNumberArray.addNumber(value3));
 
         final Double value1AsDouble = bmNumberArray.getValueAsDouble(0);
         final Double value2AsDouble = bmNumberArray.getValueAsDouble(1);
@@ -62,6 +63,22 @@ public class WffBMNumberArrayTest {
         assertEquals(((Number) value1).toString(), value1AsDouble.toString());
         assertNotEquals(((Number) value2).toString(), value2AsDouble.toString());
         assertEquals(((Number) value3).toString(), value3AsFloat.toString());
+
+        bmNumberArray.addNumberFirst(value2);
+        Double firstValueAsDouble = bmNumberArray.getValueAsDouble(0);
+        assertEquals(((Number) value2).toString(), firstValueAsDouble.toString());
+
+        bmNumberArray.addNumberLast(value1);
+        Double valueLastAsDouble = bmNumberArray.getValueAsDouble(bmNumberArray.size() - 1);
+        assertEquals(((Number) value1).toString(), valueLastAsDouble.toString());
+
+        bmNumberArray.addNumber(0, value1);
+        firstValueAsDouble = bmNumberArray.getValueAsDouble(0);
+        assertEquals(((Number) value1).toString(), firstValueAsDouble.toString());
+
+        bmNumberArray.addNumber(bmNumberArray.size() - 1, value1);
+        valueLastAsDouble = bmNumberArray.getValueAsDouble(bmNumberArray.size() - 1);
+        assertEquals(((Number) value1).toString(), valueLastAsDouble.toString());
     }
 
 }
