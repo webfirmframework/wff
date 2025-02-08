@@ -16,6 +16,7 @@
 package com.webfirmframework.wffweb.wffbm.data;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.math.BigDecimal;
 
@@ -42,6 +43,25 @@ public class WffBMNumberArrayTest {
         bmNumberArray.add(new BigDecimal("14.0119"));
         final long count = bmNumberArray.toStream().filter(each -> NumberUtil.isGreaterThan(each, value1)).count();
         assertEquals(2, count);
+    }
+
+    @Test
+    public void testAddFloat() {
+        final WffBMNumberArray<BigDecimal> bmNumberArray = new WffBMNumberArray<>(true);
+        final float value1 = 14.01F;
+        final float value2 = 14.011F;
+        final float value3 = 14.0119F;
+        bmNumberArray.addNumber(value1);
+        bmNumberArray.add(value2);
+        bmNumberArray.addNumber(value3);
+
+        final Double value1AsDouble = bmNumberArray.getValueAsDouble(0);
+        final Double value2AsDouble = bmNumberArray.getValueAsDouble(1);
+        final Float value3AsFloat = bmNumberArray.getValueAsFloat(2);
+
+        assertEquals(((Number) value1).toString(), value1AsDouble.toString());
+        assertNotEquals(((Number) value2).toString(), value2AsDouble.toString());
+        assertEquals(((Number) value3).toString(), value3AsFloat.toString());
     }
 
 }

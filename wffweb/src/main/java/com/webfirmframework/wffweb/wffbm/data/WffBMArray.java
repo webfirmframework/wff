@@ -394,6 +394,84 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
     }
 
     /**
+     * @param value the number to add to the array.
+     * @since 12.0.3
+     */
+    public void addNumber(final Number value) {
+        if (BMValueType.NUMBER.equals(valueType)) {
+            if (value instanceof final Float f) {
+                super.add(floatToDouble(f));
+            } else {
+                super.add(value);
+            }
+        } else {
+            throw new InvalidValueException("Number value is allowed to add only in BMValueType.NUMBER type array.");
+        }
+    }
+
+    /**
+     * @param index the index
+     * @param value the number to add to the array.
+     * @since 12.0.3
+     */
+    public void addNumber(final int index, final Number value) {
+        if (BMValueType.NUMBER.equals(valueType)) {
+            if (value instanceof final Float f) {
+                super.add(index, floatToDouble(f));
+            } else {
+                super.add(index, value);
+            }
+        } else {
+            throw new InvalidValueException("Number value is allowed to add only in BMValueType.NUMBER type array.");
+        }
+    }
+
+    /**
+     * Inserts the specified number at the beginning of this array.
+     *
+     * @param value the number to insert.
+     * @since 12.0.3
+     */
+    public void addNumberFirst(final Number value) {
+        if (BMValueType.NUMBER.equals(valueType)) {
+            if (value instanceof final Float f) {
+                super.addFirst(floatToDouble(f));
+            } else {
+                super.addFirst(value);
+            }
+        } else {
+            throw new InvalidValueException("Number value is allowed to add only in BMValueType.NUMBER type array.");
+        }
+    }
+
+    /**
+     * Inserts the specified number at the beginning of this array.
+     *
+     * @param value the number to insert.
+     * @since 12.0.3
+     */
+    public void addNumberLast(final Number value) {
+        if (BMValueType.NUMBER.equals(valueType)) {
+            if (value instanceof final Float f) {
+                super.addLast(floatToDouble(f));
+            } else {
+                super.addLast(value);
+            }
+        } else {
+            throw new InvalidValueException("Number value is allowed to add only in BMValueType.NUMBER type array.");
+        }
+    }
+
+    /**
+     * @param value converts the float value to double without loosing precision.
+     * @return the double value.
+     * @since 12.0.3
+     */
+    protected static double floatToDouble(final Float value) {
+        return new BigDecimal(Float.toString(value)).doubleValue();
+    }
+
+    /**
      * @param index the index to get the value as string.
      * @return the value as String.
      * @since 12.0.3
