@@ -92,17 +92,13 @@ var wffTagUtil = new function() {
 		} else {
 		   // -1 or -2 it is data-wff-id
 		   // -1 for prefix S, -2 for prefix C
-		   var prefix = null;
-		   if (lengOfOptmzdBytsOfAttrNam == -1) {
-               prefix = 'S';
-		   } else if (lengOfOptmzdBytsOfAttrNam == -2) {
-		       prefix = 'C';
-           } else {
-               wffLog("Invalid wff data found. Unable to handle value check ", lengOfOptmzdBytsOfAttrNam);
+		   // pfx stands for prefix
+		   var pfx = lengOfOptmzdBytsOfAttrNam == -1 ? "S" : lengOfOptmzdBytsOfAttrNam == -2 ? "C" : null;
+		   if (pfx === null) {wffLog("Error: Unhandled value found!", lengOfOptmzdBytsOfAttrNam);
                return null;
            }
            //[attributeName, attributeValue]
-           return ['data-wff-id', prefix + wffBMUtil.getIntFromOptimizedBytes(subarray(utf8Bytes, 1, utf8Bytes.length)).toString()];
+           return ["data-wff-id", prefix + wffBMUtil.getIntFromOptimizedBytes(subarray(utf8Bytes, 1, utf8Bytes.length)).toString()];
 		}
 	};
 	
