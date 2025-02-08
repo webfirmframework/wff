@@ -62,17 +62,23 @@ public class DataWffId extends DataAttribute {
     /**
      * Note: Only for internal use.
      *
-     * @param value the value for the attribute
+     * @param value                the value for the attribute
      * @param attributeValuePrefix the value for the attribute.
-     * @param attributeValueBytes the bytes of integer to represent id.
+     * @param attributeValueBytes  the bytes of integer to represent id.
+     * @param accessObject         the access object to call this method.
      * @since 12.0.3
      * @author WFF
      */
-    public DataWffId(final String value, final byte attributeValuePrefix, final byte[] attributeValueBytes) {
+    public DataWffId(final String value, final byte attributeValuePrefix, final byte[] attributeValueBytes,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
         super(PRE_INDEXED_ATTR_NAME, value);
         this.attributeValuePrefix = attributeValuePrefix;
         this.attributeValueBytes = attributeValueBytes;
         attributeValue = value;
+        if (accessObject == null
+                || !IndexedClassType.ABSTRACT_HTML5_SHARED_OBJECT.equals(accessObject.forClassType())) {
+            throw new WffSecurityException("Not allowed to call this constructor. This class is for internal use.");
+        }
     }
 
     @Override
@@ -156,7 +162,7 @@ public class DataWffId extends DataAttribute {
      * @param accessObject the access object to call this method.
      * @return the value bytes
      */
-    public final byte[] attributeValueBytes(final SecurityObject accessObject) {
+    public final byte[] attributeValueBytes(@SuppressWarnings("exports") final SecurityObject accessObject) {
         if (accessObject == null || !IndexedClassType.ABSTRACT_ATTRIBUTE.equals(accessObject.forClassType())) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
