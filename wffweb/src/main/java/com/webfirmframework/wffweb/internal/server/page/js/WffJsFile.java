@@ -185,6 +185,7 @@ public enum WffJsFile {
             functionNameList.add("getAttrNameValueFromCompressedBytes");
             functionNameList.add("createTagFromCompressedWffBMBytes");
             functionNameList.add("getLengthOfOptimizedBytesFromInt");
+            functionNameList.add("getAttrNameFromCompressedBytes");
             functionNameList.add("concatArrayValuesFromPosition");
             functionNameList.add("getTagNameFromCompressedBytes");
             functionNameList.add("invokeAsyncWithPreFilterFunPD");
