@@ -3959,7 +3959,7 @@ public class AbstractHtmlTest {
                 new Link(head, new Id("appbasicCssLink"), new Src("https://localhost/appbasic.css"));
             });
             new Body(html).give(body -> {
-                new Div(body, new Id("parentDivId"));
+                new Div(body, new Id("parentDivId"), new Value(String.valueOf(Integer.MAX_VALUE)));
             });
         });
         rootTag.toHtmlString();
@@ -3968,9 +3968,9 @@ public class AbstractHtmlTest {
             final byte[] compressedWffBMBytes = rootTag.toCompressedWffBMBytes(StandardCharsets.UTF_8);
             final byte[] compressedWffBMBytesV2 = rootTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, null);
             final byte[] compressedWffBMBytesV3 = rootTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, null);
-            assertEquals(108, compressedWffBMBytes.length);
-            assertEquals(103, compressedWffBMBytesV2.length);
-            assertEquals(91, compressedWffBMBytesV3.length);
+            assertEquals(121, compressedWffBMBytes.length);
+            assertEquals(116, compressedWffBMBytesV2.length);
+            assertEquals(98, compressedWffBMBytesV3.length);
             assertTrue(compressedWffBMBytesV2.length < compressedWffBMBytes.length);
             assertTrue(compressedWffBMBytesV3.length < compressedWffBMBytesV2.length);
         }
@@ -4001,9 +4001,9 @@ public class AbstractHtmlTest {
             final byte[] compressedWffBMBytes = rootTag.toCompressedWffBMBytes(StandardCharsets.UTF_8);
             final byte[] compressedWffBMBytesV2 = rootTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, null);
             final byte[] compressedWffBMBytesV3 = rootTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, null);
-            assertEquals(133, compressedWffBMBytes.length);
-            assertEquals(128, compressedWffBMBytesV2.length);
-            assertEquals(106, compressedWffBMBytesV3.length);
+            assertEquals(146, compressedWffBMBytes.length);
+            assertEquals(141, compressedWffBMBytesV2.length);
+            assertEquals(113, compressedWffBMBytesV3.length);
             assertTrue(compressedWffBMBytesV2.length < compressedWffBMBytes.length);
             assertTrue(compressedWffBMBytesV3.length < compressedWffBMBytesV2.length);
         }
