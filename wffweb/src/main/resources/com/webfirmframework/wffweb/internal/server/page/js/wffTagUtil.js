@@ -308,20 +308,18 @@ var wffTagUtil = new function() {
 		var parent;
 		var parentTagName = getTagNameFromCompressedBytes(superParentValues[0]);
 		
-		if (parentTagName === '#') {
-			var text = getStringFromBytes(superParentValues[1]);
+		if (parentTagName === '#' || parentTagName === '$') {
+			var txt = parentTagName === '$' ? wffBMUtil.getIntFromOptimizedBytes(superParentValues[1]).toString()
+			: parentTagName === '#' ? getStringFromBytes(superParentValues[1]) : '';
 			parent = document.createDocumentFragment();
-			parent.appendChild(document.createTextNode(text));
+			parent.appendChild(document.createTextNode(txt));
 		} else if (parentTagName === '@') {
 			// @ short for html content
-			var text = getStringFromBytes(superParentValues[1]);
+			var txt = getStringFromBytes(superParentValues[1]);
 			parent = document.createDocumentFragment();			
-			appendHtmlAsChildren(parent, text);
-			
+			appendHtmlAsChildren(parent, txt);
 		} else {
-
 			parent = document.createElement(parentTagName);
-
 			for (var i = 1; i < superParentValues.length; i++) {
 				var attrNameValue = getAttrNameValueFromCompressedBytes(superParentValues[i]);
 				//value attribute doesn't work with setAttribute method
@@ -341,10 +339,11 @@ var wffTagUtil = new function() {
 
 			var child;
 
-			if (tagName === '#') {
-				var text = getStringFromBytes(values[1]);
+			if (tagName === '#' || tagName === '$') {
+			    var txt = tagName === '$' ? wffBMUtil.getIntFromOptimizedBytes(values[1]).toString()
+            			: tagName === '#' ? getStringFromBytes(values[1]) : '';
 				child = document.createDocumentFragment();
-				child.appendChild(document.createTextNode(text));
+				child.appendChild(document.createTextNode(txt));
 			} else if (tagName === '@') {
 				// @ short for html content
 				var text = getStringFromBytes(values[1]);

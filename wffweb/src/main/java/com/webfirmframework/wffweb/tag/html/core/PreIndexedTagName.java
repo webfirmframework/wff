@@ -33,12 +33,17 @@ public enum PreIndexedTagName {
     // then by name in ascending
 
     /**
-     * not a tag name. For internal purpose only
+     * not a tag name. For internal purpose only.
      */
     HASH("#"),
 
     /**
-     * not a tag name. For internal purpose only
+     * not a tag name. For internal purpose only.
+     */
+    DOLLAR("$"),
+
+    /**
+     * not a tag name. For internal purpose only.
      */
     AT("@"),
 

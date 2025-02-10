@@ -426,6 +426,9 @@ public enum WffJsFile {
             String eachLine;
 
             while ((eachLine = reader.readLine()) != null) {
+                if (eachLine.isBlank()) {
+                    continue;
+                }
                 // replacing double spaces with single space
                 // by .replaceAll(" +", " ")
                 // will not be file as there could e double space variable

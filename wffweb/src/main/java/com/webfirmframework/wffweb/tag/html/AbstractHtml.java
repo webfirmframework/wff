@@ -90,6 +90,7 @@ import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
+import com.webfirmframework.wffweb.util.NumberUtil;
 import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
@@ -121,6 +122,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     // its length will be always 1
     private static final byte[] INDEXED_HASH_CHAR_BYTES;
+
+    // its length will be always 1. to represent int bytes to interpret as TEXT
+    private static final byte[] INDEXED_DOLLAR_CHAR_BYTES;
 
     private volatile AbstractHtml parent;
 
@@ -278,6 +282,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         // its length will be always 1
         INDEXED_HASH_CHAR_BYTES = PreIndexedTagName.HASH.internalIndexBytes(ACCESS_OBJECT);
+
+        // its length will be always 1
+        INDEXED_DOLLAR_CHAR_BYTES = PreIndexedTagName.DOLLAR.internalIndexBytes(ACCESS_OBJECT);
 
     }
 
@@ -5686,16 +5693,20 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                         // final byte[] nodeNameBytes = tag.noTagContentTypeHtml
                         // ? encodedBytesForAtChar
                         // : encodedByesForHashChar;
-
-                        final byte[] nodeNameBytes = tag.noTagContentTypeHtml ? INDEXED_AT_CHAR_BYTES
-                                : INDEXED_HASH_CHAR_BYTES;
+                        final String tagContent = tag.getClosingTag();
+                        final boolean strictInt = NumberUtil.isStrictInt(tagContent);
+                        final byte[] nodeNameBytes = strictInt ? INDEXED_DOLLAR_CHAR_BYTES
+                                : tag.noTagContentTypeHtml ? INDEXED_AT_CHAR_BYTES : INDEXED_HASH_CHAR_BYTES;
 
                         nameValue.setName(WffBinaryMessageUtil.getOptimizedBytesFromInt(parentWffSlotIndex));
 
                         final byte[][] values = new byte[2][0];
 
                         values[0] = nodeNameBytes;
-                        values[1] = tag.getClosingTag().getBytes(charset);
+
+                        values[1] = strictInt
+                                ? WffBinaryMessageUtil.getOptimizedBytesFromInt(Integer.parseInt(tagContent))
+                                : tagContent.getBytes(charset);
 
                         nameValue.setValues(values);
 
