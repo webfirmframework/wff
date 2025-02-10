@@ -24,6 +24,18 @@ import java.math.BigInteger;
  */
 public final class NumberUtil {
 
+    // length = 11
+    private static final int[] INT_MIN_VALUE_CODE_POINTS = String.valueOf(Integer.MIN_VALUE).codePoints().toArray();
+
+    // length = 10
+    private static final int[] INT_MAX_VALUE_CODE_POINTS = String.valueOf(Integer.MAX_VALUE).codePoints().toArray();
+
+    private static final int[] NUMBER_CODE_POINTS = "0123456789".codePoints().toArray();
+
+    private static final int ZERO_CODE_POINT = NUMBER_CODE_POINTS[0];
+
+    private static final int NINE_CODE_POINT = NUMBER_CODE_POINTS[NUMBER_CODE_POINTS.length - 1];
+
     private NumberUtil() {
         throw new AssertionError();
     }
@@ -146,6 +158,59 @@ public final class NumberUtil {
      */
     public static boolean isGreaterThanOrEqualTo(final BigInteger x, final BigInteger y) {
         return x.compareTo(y) >= 0;
+    }
+
+    /**
+     * Checks if the value contains a 32 bit int. True for the following formats:
+     * -1401, 1401, 0. False for the following values/formats: +1401, 01401, 001401,
+     * 14.01, 14-01, 1401-, abcd
+     *
+     * @param value the value to check if it contains an 32 bit int value
+     * @return true if it contains 32 bit int value otherwise false.
+     * @since 12.0.3
+     */
+    public static boolean isStrictInt(final String value) {
+        if (value == null || value.isEmpty()) {
+            return false;
+        }
+        final int valueLength = value.length();
+        if (valueLength <= INT_MIN_VALUE_CODE_POINTS.length) {
+            final int codePointAt0 = value.codePointAt(0);
+            if (valueLength == 1 && codePointAt0 == ZERO_CODE_POINT) {
+                return true;
+            }
+            final boolean startsWithMinus = codePointAt0 == StringUtil.MINUS_CODE_POINT;
+            if (startsWithMinus) {
+                if ((valueLength == 1) || (value.codePointAt(1) == ZERO_CODE_POINT)) {
+                    return false;
+                }
+            } else if (codePointAt0 == ZERO_CODE_POINT) {
+                return false;
+            }
+
+            final boolean notAStrictNumber = startsWithMinus
+                    ? value.codePoints().skip(1).anyMatch(cp -> cp < ZERO_CODE_POINT || cp > NINE_CODE_POINT)
+                    : value.codePoints().anyMatch(cp -> cp < ZERO_CODE_POINT || cp > NINE_CODE_POINT);
+
+            if (!notAStrictNumber) {
+                if (valueLength == INT_MAX_VALUE_CODE_POINTS.length) {
+                    for (int i = 0; i < INT_MAX_VALUE_CODE_POINTS.length; i++) {
+                        if (value.codePointAt(i) > INT_MAX_VALUE_CODE_POINTS[i]) {
+                            return false;
+                        }
+                    }
+                } else if (valueLength == INT_MIN_VALUE_CODE_POINTS.length) {
+                    for (int i = 1; i < INT_MIN_VALUE_CODE_POINTS.length; i++) {
+                        if (value.codePointAt(i) > INT_MIN_VALUE_CODE_POINTS[i]) {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return !notAStrictNumber;
+        }
+        return false;
     }
 
 }

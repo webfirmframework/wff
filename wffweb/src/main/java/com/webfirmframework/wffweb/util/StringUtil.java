@@ -33,7 +33,7 @@ public final class StringUtil {
 
     private static final int COLON_CODE_POINT;
 
-    private static final int MINUS_CODE_POINT;
+    static final int MINUS_CODE_POINT;
 
     private static final int PLUS_CODE_POINT;
 
