@@ -30,6 +30,8 @@ public class NumberUtilTest {
 
         assertTrue(NumberUtil.isStrictInt(intValue1));
         assertTrue(NumberUtil.isStrictInt(intValue2));
+        assertTrue(NumberUtil.isStrictInt(String.valueOf(Integer.MAX_VALUE - 1)));
+        assertTrue(NumberUtil.isStrictInt(String.valueOf(Integer.MIN_VALUE + 1)));
         assertTrue(NumberUtil.isStrictInt("-1401"));
         assertTrue(NumberUtil.isStrictInt("1401"));
         assertTrue(NumberUtil.isStrictInt("0"));
