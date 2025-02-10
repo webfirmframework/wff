@@ -39,13 +39,15 @@ public class DataWffId extends DataAttribute {
     private final String attributeValue;
 
     /**
-     * -1 for S and -2 for C
+     * -5 for S and -6 for C
      */
     private final byte attributeValuePrefix;
 
-    private final byte[] attributeValueBytes;
+    private final byte[] attributeValueIntBytes;
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.DATA_WFF_ID;
+
+    public static final String[] VALUE_PREFIXES = { "S", "C" };
 
     /**
      * @param value the value for the attribute
@@ -55,25 +57,25 @@ public class DataWffId extends DataAttribute {
     public DataWffId(final String value) {
         super(PRE_INDEXED_ATTR_NAME, value);
         attributeValuePrefix = 0;
-        attributeValueBytes = null;
+        attributeValueIntBytes = null;
         attributeValue = value;
     }
 
     /**
      * Note: Only for internal use.
      *
-     * @param value                the value for the attribute
-     * @param attributeValuePrefix the value for the attribute.
-     * @param attributeValueBytes  the bytes of integer to represent id.
-     * @param accessObject         the access object to call this method.
+     * @param value                  the value for the attribute
+     * @param attributeValuePrefix   the value for the attribute.
+     * @param attributeValueIntBytes the bytes of integer to represent id.
+     * @param accessObject           the access object to call this method.
      * @since 12.0.3
      * @author WFF
      */
-    public DataWffId(final String value, final byte attributeValuePrefix, final byte[] attributeValueBytes,
+    public DataWffId(final String value, final byte attributeValuePrefix, final byte[] attributeValueIntBytes,
             @SuppressWarnings("exports") final SecurityObject accessObject) {
         super(PRE_INDEXED_ATTR_NAME, value);
         this.attributeValuePrefix = attributeValuePrefix;
-        this.attributeValueBytes = attributeValueBytes;
+        this.attributeValueIntBytes = attributeValueIntBytes;
         attributeValue = value;
         if (accessObject == null
                 || !IndexedClassType.ABSTRACT_HTML5_SHARED_OBJECT.equals(accessObject.forClassType())) {
@@ -162,10 +164,10 @@ public class DataWffId extends DataAttribute {
      * @param accessObject the access object to call this method.
      * @return the value bytes
      */
-    public final byte[] attributeValueBytes(@SuppressWarnings("exports") final SecurityObject accessObject) {
+    public final byte[] attributeValueIntBytes(@SuppressWarnings("exports") final SecurityObject accessObject) {
         if (accessObject == null || !IndexedClassType.ABSTRACT_ATTRIBUTE.equals(accessObject.forClassType())) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
-        return attributeValueBytes;
+        return attributeValueIntBytes;
     }
 }

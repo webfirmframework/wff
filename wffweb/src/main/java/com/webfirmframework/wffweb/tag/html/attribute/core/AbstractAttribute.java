@@ -48,7 +48,9 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.listener.AttributeValueChangeListener;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
+import com.webfirmframework.wffweb.util.NumberUtil;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
+import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
 
@@ -64,6 +66,8 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     private byte[] attrNameIndexBytes = null;
 
     private volatile String attributeValue;
+
+    private volatile byte[] attributeValueIntBytes;
 
     /**
      * NB: it should never be nullified after initialization
@@ -474,10 +478,11 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
             // should always use local variable attrNameIndex
             // this.attrNameIndex is eventually consistent
             final byte[] attrNameIndexBytes = this.attrNameIndexBytes;
+            final byte[] attributeValueIntBytes = this.attributeValueIntBytes;
 
-            final boolean dataWffIdHandled;
+            final boolean attributeHandled;
             if (attrNameIndexBytes == null) {
-                dataWffIdHandled = false;
+                attributeHandled = false;
                 compressedBytesBuilder.write(new byte[] { (byte) 0 });
                 compressedBytesBuilder.write(attributeName.getBytes(charset));
 
@@ -492,15 +497,21 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
                     && this instanceof final DataWffId dataWffId && dataWffId.attributeValuePrefix() < 0) {
                 // only -ve values are valid in attributeValuePrefix
                 compressedBytesBuilder.write(new byte[] { dataWffId.attributeValuePrefix() });
-                compressedBytesBuilder.write(dataWffId.attributeValueBytes(ACCESS_OBJECT));
-                dataWffIdHandled = true;
+                compressedBytesBuilder.write(dataWffId.attributeValueIntBytes(ACCESS_OBJECT));
+                attributeHandled = true;
+            } else if (attributeValueIntBytes != null) {
+                // only -ve values are valid for attrNameIndexBytes
+                compressedBytesBuilder.write(new byte[] { (byte) -attrNameIndexBytes.length });
+                compressedBytesBuilder.write(attrNameIndexBytes);
+                compressedBytesBuilder.write(attributeValueIntBytes);
+                attributeHandled = true;
             } else {
-                dataWffIdHandled = false;
+                attributeHandled = false;
                 compressedBytesBuilder.write(new byte[] { (byte) attrNameIndexBytes.length });
                 compressedBytesBuilder.write(attrNameIndexBytes);
             }
 
-            if (!dataWffIdHandled) {
+            if (!attributeHandled) {
                 if (attributeValue != null) {
                     if (attrNameIndexBytes == null) {
                         compressedBytesBuilder.write("=".getBytes(charset));
@@ -1071,6 +1082,14 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
+     * @return the int value bytes
+     * @since 12.0.3
+     */
+    byte[] getAttributeValueIntBytes() {
+        return attributeValueIntBytes;
+    }
+
+    /**
      * @param attributeValue the value to set again even if the existing value is
      *                       same at server side, the assigned value will be
      *                       reflected in the UI. Sometimes we may modify the value
@@ -1089,6 +1108,9 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
             // this.attributeValue = attributeValue must be
             // before invokeValueChangeListeners
             this.attributeValue = attributeValue;
+            attributeValueIntBytes = NumberUtil.isStrictInt(attributeValue)
+                    ? WffBinaryMessageUtil.getOptimizedBytesFromInt(Integer.parseInt(attributeValue))
+                    : null;
             setModifiedLockless(true);
             invokeValueChangeListeners(ownerTagsRecord);
             listenerInvoked = true;
@@ -1123,6 +1145,9 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
                 // this.attributeValue = attributeValue must be
                 // before invokeValueChangeListeners
                 this.attributeValue = attributeValue;
+                attributeValueIntBytes = NumberUtil.isStrictInt(attributeValue)
+                        ? WffBinaryMessageUtil.getOptimizedBytesFromInt(Integer.parseInt(attributeValue))
+                        : null;
                 setModifiedLockless(true);
                 if (updateClient) {
                     invokeValueChangeListeners(ownerTagsRecord);

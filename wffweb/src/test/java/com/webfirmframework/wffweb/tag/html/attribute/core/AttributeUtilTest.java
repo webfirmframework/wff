@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -50,108 +51,103 @@ public class AttributeUtilTest {
 
     @Test
     public void testGetAttributeHtmlStringBooleanAbstractAttributeArray() {
-        Style style = new Style();
+        final Style style = new Style();
         style.addCssProperty("background", "green");
         style.addCssProperty("align", "center");
-        CustomAttribute ca = new CustomAttribute("custom-attr",
-                "testvalue1, testvalue2");
-        
+        final CustomAttribute ca = new CustomAttribute("custom-attr", "testvalue1, testvalue2");
+
         String attributeHtmlString = AttributeUtil.getAttributeHtmlString(true, style, ca);
-        assertEquals(" style=\"background:green;align:center;\" custom-attr=\"testvalue1, testvalue2\"", attributeHtmlString);
-        
+        assertEquals(" style=\"background:green;align:center;\" custom-attr=\"testvalue1, testvalue2\"",
+                attributeHtmlString);
+
         attributeHtmlString = AttributeUtil.getAttributeHtmlString(false, style, ca);
-        assertEquals(" style=\"background:green;align:center;\" custom-attr=\"testvalue1, testvalue2\"", attributeHtmlString);
-     
+        assertEquals(" style=\"background:green;align:center;\" custom-attr=\"testvalue1, testvalue2\"",
+                attributeHtmlString);
+
     }
 
     @Test
     public void testGetAttributeHtmlStringBooleanCharsetAbstractAttributeArray() {
-        Style style = new Style();
+        final Style style = new Style();
         style.addCssProperty("background", "green");
         style.addCssProperty("align", "center");
-        CustomAttribute ca = new CustomAttribute("custom-attr",
-                "testvalue1, testvalue2");
-        
+        final CustomAttribute ca = new CustomAttribute("custom-attr", "testvalue1, testvalue2");
+
         String attributeHtmlString = AttributeUtil.getAttributeHtmlString(true, style, ca);
-        assertEquals(" style=\"background:green;align:center;\" custom-attr=\"testvalue1, testvalue2\"", attributeHtmlString);
-        
+        assertEquals(" style=\"background:green;align:center;\" custom-attr=\"testvalue1, testvalue2\"",
+                attributeHtmlString);
+
         attributeHtmlString = AttributeUtil.getAttributeHtmlString(false, style, ca);
-        assertEquals(" style=\"background:green;align:center;\" custom-attr=\"testvalue1, testvalue2\"", attributeHtmlString);
-        
+        assertEquals(" style=\"background:green;align:center;\" custom-attr=\"testvalue1, testvalue2\"",
+                attributeHtmlString);
+
     }
 
     @Test
     public void testGetAttributeHtmlCompressedByIndexArray() throws IOException {
 
-        Style style = new Style();
+        final Style style = new Style();
         style.addCssProperty("background", "green");
         style.addCssProperty("align", "center");
-        CustomAttribute ca = new CustomAttribute("custom-attr",
-                "testvalue1, testvalue2");
+        final CustomAttribute ca = new CustomAttribute("custom-attr", "testvalue1, testvalue2");
 
-        CustomAttribute valuelessAttr = new CustomAttribute("custom-attr2", null);
+        final CustomAttribute valuelessAttr = new CustomAttribute("custom-attr2", null);
 
         {
-            byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndex(
-                    true, StandardCharsets.UTF_8, style, ca);
+            final byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil
+                    .getAttributeHtmlBytesCompressedByIndex(true, StandardCharsets.UTF_8, style, ca);
 
             assertEquals(2, attributeHtmlCompressedByIndexArray.length);
 
             byte[] compressedBytesByIndex = attributeHtmlCompressedByIndexArray[0];
 
-            int lengthOfOptimizedBytesOfAttrNameIndex = compressedBytesByIndex[0];
+            final int lengthOfOptimizedBytesOfAttrNameIndex = compressedBytesByIndex[0];
             assertTrue(lengthOfOptimizedBytesOfAttrNameIndex > 0);
             assertEquals(1, lengthOfOptimizedBytesOfAttrNameIndex);
 
-            byte[] tagNameIndexBytes =   new byte[lengthOfOptimizedBytesOfAttrNameIndex];
+            final byte[] tagNameIndexBytes = new byte[lengthOfOptimizedBytesOfAttrNameIndex];
 
             System.arraycopy(compressedBytesByIndex, 1, tagNameIndexBytes, 0, lengthOfOptimizedBytesOfAttrNameIndex);
 
-            assertEquals(AttributeRegistry.getAttributeNames().indexOf("style"), WffBinaryMessageUtil.getIntFromOptimizedBytes(tagNameIndexBytes));
+            assertEquals(AttributeRegistry.getAttributeNames().indexOf("style"),
+                    WffBinaryMessageUtil.getIntFromOptimizedBytes(tagNameIndexBytes));
 
             assertEquals("background:green;align:center;", new String(compressedBytesByIndex,
-                    compressedBytesByIndex[0] + 1,
-                    compressedBytesByIndex.length
-                            - (compressedBytesByIndex[0] + 1)));
+                    compressedBytesByIndex[0] + 1, compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1)));
 
             compressedBytesByIndex = attributeHtmlCompressedByIndexArray[1];
             assertEquals(0, compressedBytesByIndex[0]);
             assertEquals("custom-attr=testvalue1, testvalue2", new String(compressedBytesByIndex,
-                    compressedBytesByIndex[0] + 1,
-                    compressedBytesByIndex.length
-                            - (compressedBytesByIndex[0] + 1)));
+                    compressedBytesByIndex[0] + 1, compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1)));
 
         }
 
         {
-            byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndex(
-                    false, StandardCharsets.UTF_8, style, ca);
+            final byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil
+                    .getAttributeHtmlBytesCompressedByIndex(false, StandardCharsets.UTF_8, style, ca);
 
             assertEquals(2, attributeHtmlCompressedByIndexArray.length);
 
             byte[] compressedBytesByIndex = attributeHtmlCompressedByIndexArray[0];
             assertEquals(1, compressedBytesByIndex[0]);
             assertEquals("background:green;align:center;", new String(compressedBytesByIndex,
-                    compressedBytesByIndex[0] + 1,
-                    compressedBytesByIndex.length
-                            - (compressedBytesByIndex[0] + 1)));
+                    compressedBytesByIndex[0] + 1, compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1)));
 
             compressedBytesByIndex = attributeHtmlCompressedByIndexArray[1];
             assertEquals(0, compressedBytesByIndex[0]);
             assertEquals("custom-attr=testvalue1, testvalue2", new String(compressedBytesByIndex,
-                    compressedBytesByIndex[0] + 1,
-                    compressedBytesByIndex.length
-                            - (compressedBytesByIndex[0] + 1)));
+                    compressedBytesByIndex[0] + 1, compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1)));
 
         }
 
         {
-            byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndex(
-                    false, StandardCharsets.UTF_8, style, ca, valuelessAttr);
+            final byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil
+                    .getAttributeHtmlBytesCompressedByIndex(false, StandardCharsets.UTF_8, style, ca, valuelessAttr);
 
             {
                 // just to verify caching causes no problem
-                AttributeUtil.parseExactAttributeHtmlBytesCompressedByIndex(attributeHtmlCompressedByIndexArray, StandardCharsets.UTF_8);
+                AttributeUtil.parseExactAttributeHtmlBytesCompressedByIndex(attributeHtmlCompressedByIndexArray,
+                        StandardCharsets.UTF_8);
             }
 
             assertEquals(3, attributeHtmlCompressedByIndexArray.length);
@@ -159,48 +155,43 @@ public class AttributeUtilTest {
             byte[] compressedBytesByIndex = attributeHtmlCompressedByIndexArray[0];
             assertEquals(1, compressedBytesByIndex[0]);
             assertEquals("background:green;align:center;", new String(compressedBytesByIndex,
-                    compressedBytesByIndex[0] + 1,
-                    compressedBytesByIndex.length
-                            - (compressedBytesByIndex[0] + 1)));
+                    compressedBytesByIndex[0] + 1, compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1)));
 
             compressedBytesByIndex = attributeHtmlCompressedByIndexArray[1];
             assertEquals(0, compressedBytesByIndex[0]);
             assertEquals("custom-attr=testvalue1, testvalue2", new String(compressedBytesByIndex,
-                    compressedBytesByIndex[0] + 1,
-                    compressedBytesByIndex.length
-                            - (compressedBytesByIndex[0] + 1)));
+                    compressedBytesByIndex[0] + 1, compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1)));
 
             compressedBytesByIndex = attributeHtmlCompressedByIndexArray[2];
             assertEquals(0, compressedBytesByIndex[0]);
-            assertEquals("custom-attr2", new String(compressedBytesByIndex,
-                    compressedBytesByIndex[0] + 1,
-                    compressedBytesByIndex.length
-                            - (compressedBytesByIndex[0] + 1)));
+            assertEquals("custom-attr2", new String(compressedBytesByIndex, compressedBytesByIndex[0] + 1,
+                    compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1)));
 
         }
 
         {
-            byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndex(
+            final byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndex(
                     false, StandardCharsets.UTF_8, style, ca, valuelessAttr, new ReadOnly(), new Value(""));
 
-            final AbstractAttribute[] attributes = AttributeUtil.parseExactAttributeHtmlBytesCompressedByIndex(attributeHtmlCompressedByIndexArray, StandardCharsets.UTF_8);
-            AbstractAttribute attr1 = attributes[0];
+            final AbstractAttribute[] attributes = AttributeUtil.parseExactAttributeHtmlBytesCompressedByIndex(
+                    attributeHtmlCompressedByIndexArray, StandardCharsets.UTF_8);
+            final AbstractAttribute attr1 = attributes[0];
             assertEquals("style", attr1.getAttributeName());
             assertEquals("background:green;align:center;", attr1.getAttributeValue());
 
-            AbstractAttribute attr2 = attributes[1];
+            final AbstractAttribute attr2 = attributes[1];
             assertEquals("custom-attr", attr2.getAttributeName());
             assertEquals("testvalue1, testvalue2", attr2.getAttributeValue());
 
-            AbstractAttribute attr3 = attributes[2];
+            final AbstractAttribute attr3 = attributes[2];
             assertEquals("custom-attr2", attr3.getAttributeName());
             assertNull(attr3.getAttributeValue());
 
-            AbstractAttribute attr4 = attributes[3];
+            final AbstractAttribute attr4 = attributes[3];
             assertEquals("readonly", attr4.getAttributeName());
             assertNull(attr3.getAttributeValue());
 
-            AbstractAttribute attr5 = attributes[4];
+            final AbstractAttribute attr5 = attributes[4];
             assertEquals("value", attr5.getAttributeName());
             assertNotNull(attr5.getAttributeValue());
             assertEquals("", attr5.getAttributeValue());
@@ -211,75 +202,68 @@ public class AttributeUtilTest {
     @Test
     public void testGetAttributeHtmlCompressedByIndexV2Array() throws IOException {
 
-        Style style = new Style();
+        final Style style = new Style();
         style.addCssProperty("background", "green");
         style.addCssProperty("align", "center");
-        CustomAttribute ca = new CustomAttribute("custom-attr",
-                "testvalue1, testvalue2");
+        final CustomAttribute ca = new CustomAttribute("custom-attr", "testvalue1, testvalue2");
 
-        CustomAttribute valuelessAttr = new CustomAttribute("custom-attr2", null);
+        final CustomAttribute valuelessAttr = new CustomAttribute("custom-attr2", null);
 
         {
-            byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndexV2(
-                    true, StandardCharsets.UTF_8, style, ca);
+            final byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil
+                    .getAttributeHtmlBytesCompressedByIndexV2(true, StandardCharsets.UTF_8, style, ca);
 
             assertEquals(2, attributeHtmlCompressedByIndexArray.length);
 
             byte[] compressedBytesByIndex = attributeHtmlCompressedByIndexArray[0];
 
-            int lengthOfOptimizedBytesOfAttrNameIndex = compressedBytesByIndex[0];
+            final int lengthOfOptimizedBytesOfAttrNameIndex = compressedBytesByIndex[0];
             assertTrue(lengthOfOptimizedBytesOfAttrNameIndex > 0);
             assertEquals(1, lengthOfOptimizedBytesOfAttrNameIndex);
 
-            byte[] tagNameIndexBytes =   new byte[lengthOfOptimizedBytesOfAttrNameIndex];
+            final byte[] tagNameIndexBytes = new byte[lengthOfOptimizedBytesOfAttrNameIndex];
 
             System.arraycopy(compressedBytesByIndex, 1, tagNameIndexBytes, 0, lengthOfOptimizedBytesOfAttrNameIndex);
 
-            assertEquals(AttributeRegistry.getAttributeNames().indexOf("style"), WffBinaryMessageUtil.getIntFromOptimizedBytes(tagNameIndexBytes));
+            assertEquals(AttributeRegistry.getAttributeNames().indexOf("style"),
+                    WffBinaryMessageUtil.getIntFromOptimizedBytes(tagNameIndexBytes));
 
             assertEquals("background:green;align:center;", new String(compressedBytesByIndex,
-                    compressedBytesByIndex[0] + 1,
-                    compressedBytesByIndex.length
-                            - (compressedBytesByIndex[0] + 1)));
+                    compressedBytesByIndex[0] + 1, compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1)));
 
             compressedBytesByIndex = attributeHtmlCompressedByIndexArray[1];
             assertEquals(0, compressedBytesByIndex[0]);
             assertEquals("custom-attr=testvalue1, testvalue2", new String(compressedBytesByIndex,
-                    compressedBytesByIndex[0] + 1,
-                    compressedBytesByIndex.length
-                            - (compressedBytesByIndex[0] + 1)));
+                    compressedBytesByIndex[0] + 1, compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1)));
 
         }
 
         {
-            byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndexV2(
-                    false, StandardCharsets.UTF_8, style, ca);
+            final byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil
+                    .getAttributeHtmlBytesCompressedByIndexV2(false, StandardCharsets.UTF_8, style, ca);
 
             assertEquals(2, attributeHtmlCompressedByIndexArray.length);
 
             byte[] compressedBytesByIndex = attributeHtmlCompressedByIndexArray[0];
             assertEquals(1, compressedBytesByIndex[0]);
             assertEquals("background:green;align:center;", new String(compressedBytesByIndex,
-                    compressedBytesByIndex[0] + 1,
-                    compressedBytesByIndex.length
-                            - (compressedBytesByIndex[0] + 1)));
+                    compressedBytesByIndex[0] + 1, compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1)));
 
             compressedBytesByIndex = attributeHtmlCompressedByIndexArray[1];
             assertEquals(0, compressedBytesByIndex[0]);
             assertEquals("custom-attr=testvalue1, testvalue2", new String(compressedBytesByIndex,
-                    compressedBytesByIndex[0] + 1,
-                    compressedBytesByIndex.length
-                            - (compressedBytesByIndex[0] + 1)));
+                    compressedBytesByIndex[0] + 1, compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1)));
 
         }
 
         {
-            byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndexV2(
-                    false, StandardCharsets.UTF_8, style, ca, valuelessAttr);
+            final byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil
+                    .getAttributeHtmlBytesCompressedByIndexV2(false, StandardCharsets.UTF_8, style, ca, valuelessAttr);
 
             {
                 // just to verify caching causes no problem
-                AttributeUtil.parseExactAttributeHtmlBytesCompressedByIndex(attributeHtmlCompressedByIndexArray, StandardCharsets.UTF_8);
+                AttributeUtil.parseExactAttributeHtmlBytesCompressedByIndex(attributeHtmlCompressedByIndexArray,
+                        StandardCharsets.UTF_8);
             }
 
             assertEquals(3, attributeHtmlCompressedByIndexArray.length);
@@ -287,48 +271,43 @@ public class AttributeUtilTest {
             byte[] compressedBytesByIndex = attributeHtmlCompressedByIndexArray[0];
             assertEquals(1, compressedBytesByIndex[0]);
             assertEquals("background:green;align:center;", new String(compressedBytesByIndex,
-                    compressedBytesByIndex[0] + 1,
-                    compressedBytesByIndex.length
-                            - (compressedBytesByIndex[0] + 1)));
+                    compressedBytesByIndex[0] + 1, compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1)));
 
             compressedBytesByIndex = attributeHtmlCompressedByIndexArray[1];
             assertEquals(0, compressedBytesByIndex[0]);
             assertEquals("custom-attr=testvalue1, testvalue2", new String(compressedBytesByIndex,
-                    compressedBytesByIndex[0] + 1,
-                    compressedBytesByIndex.length
-                            - (compressedBytesByIndex[0] + 1)));
+                    compressedBytesByIndex[0] + 1, compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1)));
 
             compressedBytesByIndex = attributeHtmlCompressedByIndexArray[2];
             assertEquals(0, compressedBytesByIndex[0]);
-            assertEquals("custom-attr2", new String(compressedBytesByIndex,
-                    compressedBytesByIndex[0] + 1,
-                    compressedBytesByIndex.length
-                            - (compressedBytesByIndex[0] + 1)));
+            assertEquals("custom-attr2", new String(compressedBytesByIndex, compressedBytesByIndex[0] + 1,
+                    compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1)));
 
         }
 
         {
-            byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndexV2(
+            final byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndexV2(
                     false, StandardCharsets.UTF_8, style, ca, valuelessAttr, new ReadOnly(), new Value(""));
 
-            final AbstractAttribute[] attributes = AttributeUtil.parseExactAttributeHtmlBytesCompressedByIndex(attributeHtmlCompressedByIndexArray, StandardCharsets.UTF_8);
-            AbstractAttribute attr1 = attributes[0];
+            final AbstractAttribute[] attributes = AttributeUtil.parseExactAttributeHtmlBytesCompressedByIndex(
+                    attributeHtmlCompressedByIndexArray, StandardCharsets.UTF_8);
+            final AbstractAttribute attr1 = attributes[0];
             assertEquals("style", attr1.getAttributeName());
             assertEquals("background:green;align:center;", attr1.getAttributeValue());
 
-            AbstractAttribute attr2 = attributes[1];
+            final AbstractAttribute attr2 = attributes[1];
             assertEquals("custom-attr", attr2.getAttributeName());
             assertEquals("testvalue1, testvalue2", attr2.getAttributeValue());
 
-            AbstractAttribute attr3 = attributes[2];
+            final AbstractAttribute attr3 = attributes[2];
             assertEquals("custom-attr2", attr3.getAttributeName());
             assertNull(attr3.getAttributeValue());
 
-            AbstractAttribute attr4 = attributes[3];
+            final AbstractAttribute attr4 = attributes[3];
             assertEquals("readonly", attr4.getAttributeName());
             assertNull(attr3.getAttributeValue());
 
-            AbstractAttribute attr5 = attributes[4];
+            final AbstractAttribute attr5 = attributes[4];
             assertEquals("value", attr5.getAttributeName());
             assertNotNull(attr5.getAttributeValue());
             assertEquals("", attr5.getAttributeValue());
@@ -359,29 +338,31 @@ public class AttributeUtilTest {
 
             try {
                 browserPage.toOutputStream(new ByteArrayOutputStream(), StandardCharsets.UTF_8);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 fail("failed due to IOException");
             }
 
-            //this is a generated script it should be removed before testing
+            // this is a generated script it should be removed before testing
             final Script script = TagRepository.findOneTagAssignableToTag(Script.class, rootTag);
             script.getParent().removeChild(script);
 
-            byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndexV2(
-                    false, StandardCharsets.UTF_8,
-                    TagRepository.findOneAttributeByAttributeNameAndValue(InternalAttrNameConstants.DATA_WFF_ID, "S2", rootTag));
+            byte[][] attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndexV2(false,
+                    StandardCharsets.UTF_8, TagRepository.findOneAttributeByAttributeNameAndValue(
+                            InternalAttrNameConstants.DATA_WFF_ID, "S2", rootTag));
 
-            AbstractAttribute[] attributes = AttributeUtil.parseExactAttributeHtmlBytesCompressedByIndexV2(attributeHtmlCompressedByIndexArray, StandardCharsets.UTF_8);
+            AbstractAttribute[] attributes = AttributeUtil.parseExactAttributeHtmlBytesCompressedByIndexV2(
+                    attributeHtmlCompressedByIndexArray, StandardCharsets.UTF_8);
             assertEquals(InternalAttrNameConstants.DATA_WFF_ID, attributes[0].getAttributeName());
             assertEquals("S2", attributes[0].getAttributeValue());
             assertEquals(1, attributes.length);
 
-            attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndexV2(
-                    false, StandardCharsets.UTF_8, style, ca, valuelessAttr, new ReadOnly(), new Value(""),
-                    new DataWffId("S1401"),
-                    TagRepository.findOneAttributeByAttributeNameAndValue(InternalAttrNameConstants.DATA_WFF_ID, "S2", rootTag));
+            attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndexV2(false,
+                    StandardCharsets.UTF_8, style, ca, valuelessAttr, new ReadOnly(), new Value(""), new Value("14"),
+                    new DataWffId("S1401"), TagRepository.findOneAttributeByAttributeNameAndValue(
+                            InternalAttrNameConstants.DATA_WFF_ID, "S2", rootTag));
 
-            attributes = AttributeUtil.parseExactAttributeHtmlBytesCompressedByIndexV2(attributeHtmlCompressedByIndexArray, StandardCharsets.UTF_8);
+            attributes = AttributeUtil.parseExactAttributeHtmlBytesCompressedByIndexV2(
+                    attributeHtmlCompressedByIndexArray, StandardCharsets.UTF_8);
 
             AbstractAttribute attr1 = attributes[0];
             assertEquals("style", attr1.getAttributeName());
@@ -395,29 +376,54 @@ public class AttributeUtilTest {
             assertEquals("custom-attr2", attr3.getAttributeName());
             assertNull(attr3.getAttributeValue());
 
-            AbstractAttribute attr4 = attributes[3];
+            final AbstractAttribute attr4 = attributes[3];
             assertEquals("readonly", attr4.getAttributeName());
             assertNull(attr3.getAttributeValue());
 
-            AbstractAttribute attr5 = attributes[4];
+            final AbstractAttribute attr5 = attributes[4];
             assertEquals("value", attr5.getAttributeName());
             assertNotNull(attr5.getAttributeValue());
             assertEquals("", attr5.getAttributeValue());
 
-            AbstractAttribute attr6 = attributes[5];
-            assertEquals(InternalAttrNameConstants.DATA_WFF_ID, attr6.getAttributeName());
+            final AbstractAttribute attr6 = attributes[5];
+            assertEquals("value", attr6.getAttributeName());
             assertNotNull(attr6.getAttributeValue());
-            assertEquals("S1401", attr6.getAttributeValue());
+            assertEquals("14", attr6.getAttributeValue());
+            assertArrayEquals(WffBinaryMessageUtil.getOptimizedBytesFromInt(14), attr6.getAttributeValueIntBytes());
 
-            AbstractAttribute attr7 = attributes[6];
+            final AbstractAttribute attr7 = attributes[6];
             assertEquals(InternalAttrNameConstants.DATA_WFF_ID, attr7.getAttributeName());
-            assertNotNull(attr5.getAttributeValue());
-            assertEquals("S2", attr7.getAttributeValue());
+            assertNotNull(attr7.getAttributeValue());
+            assertEquals("S1401", attr7.getAttributeValue());
+
+            final AbstractAttribute attr8 = attributes[7];
+            assertEquals(InternalAttrNameConstants.DATA_WFF_ID, attr8.getAttributeName());
+            assertNotNull(attr6.getAttributeValue());
+            assertEquals("S2", attr8.getAttributeValue());
+
+            attributeHtmlCompressedByIndexArray = AttributeUtil.getAttributeHtmlBytesCompressedByIndexV2(false,
+                    StandardCharsets.UTF_8, new Value("1401"), new Value("14.01"), new Value("011"));
+
+            attributes = AttributeUtil.parseExactAttributeHtmlBytesCompressedByIndexV2(
+                    attributeHtmlCompressedByIndexArray, StandardCharsets.UTF_8);
+
+            attr1 = attributes[0];
+            assertEquals("value", attr1.getAttributeName());
+            assertEquals("1401", attr1.getAttributeValue());
+            assertArrayEquals(WffBinaryMessageUtil.getOptimizedBytesFromInt(1401), attr1.getAttributeValueIntBytes());
+
+            attr2 = attributes[1];
+            assertEquals("value", attr2.getAttributeName());
+            assertEquals("14.01", attr2.getAttributeValue());
+
+            attr3 = attributes[2];
+            assertEquals("value", attr3.getAttributeName());
+            assertEquals("011", attr3.getAttributeValue());
+            assertNull(attr3.getAttributeValueIntBytes());
         }
 
     }
-    
-    
+
 //    public static void main(String[] args) throws Exception {
 //
 //        {
@@ -496,7 +502,5 @@ public class AttributeUtilTest {
 //        // String(attributeHtmlCompressedByIndexArray[1]));
 //
 //    }
-    
-    
 
 }

@@ -37,6 +37,7 @@ import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.attribute.InternalAttrNameConstants;
 import com.webfirmframework.wffweb.tag.html.attributewff.CustomAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 /**
@@ -244,17 +245,26 @@ public final class AttributeUtil {
         int index = 0;
         for (final byte[] compressedBytesByIndex : attributesBytes) {
 
-            final int lengthOfOptimizedBytesOfAttrNameIndex = compressedBytesByIndex[0];
+            int lengthOfOptimizedBytesOfAttrNameIndex = compressedBytesByIndex[0];
 
-            if (lengthOfOptimizedBytesOfAttrNameIndex > 0) {
+            if (lengthOfOptimizedBytesOfAttrNameIndex > 0
+                    || (lengthOfOptimizedBytesOfAttrNameIndex < 0 && lengthOfOptimizedBytesOfAttrNameIndex > -5)) {
+                final boolean negative = lengthOfOptimizedBytesOfAttrNameIndex < 0;
+                lengthOfOptimizedBytesOfAttrNameIndex = Math.abs(lengthOfOptimizedBytesOfAttrNameIndex);
                 final byte[] tagNameIndexBytes = new byte[lengthOfOptimizedBytesOfAttrNameIndex];
                 System.arraycopy(compressedBytesByIndex, 1, tagNameIndexBytes, 0,
                         lengthOfOptimizedBytesOfAttrNameIndex);
 
                 final int attrNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(tagNameIndexBytes);
 
-                final String attrValue = new String(compressedBytesByIndex, compressedBytesByIndex[0] + 1,
-                        compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1), charset);
+                final byte[] attrValueBytes = new byte[compressedBytesByIndex.length
+                        - (lengthOfOptimizedBytesOfAttrNameIndex + 1)];
+                System.arraycopy(compressedBytesByIndex, lengthOfOptimizedBytesOfAttrNameIndex + 1, attrValueBytes, 0,
+                        attrValueBytes.length);
+
+                final String attrValue = negative
+                        ? String.valueOf(WffBinaryMessageUtil.getIntFromOptimizedBytes(attrValueBytes))
+                        : new String(attrValueBytes, charset);
 
                 attributes[index] = AttributeRegistry.getNewAttributeInstanceOrNullIfFailed(attrNameIndex, attrValue);
 
@@ -283,17 +293,15 @@ public final class AttributeUtil {
                         : new CustomAttribute(attrName, attrValue);
 
             } else {
-                // -1 or -2 it is data-wff-id
-                // -1 for prefix S, -2 for prefix C
-                String prefix = null;
-                if (lengthOfOptimizedBytesOfAttrNameIndex == -1) {
-                    prefix = "S";
-                } else if (lengthOfOptimizedBytesOfAttrNameIndex == -2) {
-                    prefix = "C";
-                } else {
-                    throw new IllegalArgumentException("Invalid wff data found. Unable to handle value check "
-                            + lengthOfOptimizedBytesOfAttrNameIndex);
+                lengthOfOptimizedBytesOfAttrNameIndex = Math.abs(lengthOfOptimizedBytesOfAttrNameIndex);
+                final int indexOfPrefix = lengthOfOptimizedBytesOfAttrNameIndex - 5;
+                if (indexOfPrefix >= DataWffId.VALUE_PREFIXES.length) {
+                    throw new IllegalArgumentException("Error: prefix not indexed for " + indexOfPrefix);
                 }
+                final String prefix = DataWffId.VALUE_PREFIXES[indexOfPrefix];
+                // -5 or -6 it is data-wff-id
+                // -5 for prefix S, -6 for prefix C
+
                 final byte[] attrValueIntBytes = new byte[compressedBytesByIndex.length - 1];
                 System.arraycopy(compressedBytesByIndex, 1, attrValueIntBytes, 0, compressedBytesByIndex.length - 1);
 

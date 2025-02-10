@@ -61,7 +61,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
 
     private static final SecurityObject ACCESS_OBJECT;
 
-    private static final byte BYTE_FOR_DATA_WFF_ID_PREFIX_S = -1;
+    private static final byte BYTE_FOR_DATA_WFF_ID_PREFIX_S = -5;
 
     /**
      * Note: Only for internal use.
@@ -77,7 +77,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
     }
 
     // Note: do not remove it, keep it for future reference.
-//    private static final byte BYTE_FOR_DATA_WFF_ID_PREFIX_C = -2;
+//    private static final byte BYTE_FOR_DATA_WFF_ID_PREFIX_C = -6;
 
     static {
         ACCESS_OBJECT = new AbstractHtml5SharedObjectSecurity(new AbstractHtml5SharedObject.Security());
