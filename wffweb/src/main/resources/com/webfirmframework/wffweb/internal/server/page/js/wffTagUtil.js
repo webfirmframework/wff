@@ -133,13 +133,14 @@ var wffTagUtil = new function() {
 //		return div.firstChild;
 //	};
 
-	this.getTagByTagNameAndWffId = function(tagName, wffId) {
-		console.log('getTagByTagNameAndWffId tagName', tagName, 'wffId', wffId);
-		var elements = document.querySelectorAll(tagName + '[data-wff-id="'
+	this.getTagByTagNameAndWffId = function(tn, wffId) {
+	    // tn stands for tagName
+		console.log('getTagByTagNameAndWffId tagName', tn, 'wffId', wffId);
+		var elements = document.querySelectorAll(tn + '[data-wff-id="'
 				+ wffId + '"]');
 		if (elements.length > 1) {
 			console.log('getTagByTagNameAndWffId multiple tags with same wff id');
-			wffLog('multiple tags with same wff id', 'tagName', 'wffId', wffId);
+			wffLog('multiple tags with same wff id', tn, 'wffId', wffId);
 		}
 		return elements[0];
 	};
@@ -263,21 +264,22 @@ var wffTagUtil = new function() {
 			var name = nameValues[i].name;
 			var values = nameValues[i].values;
 
-			var tagName = getStringFromBytes(values[0]);
+            // tn stands for tagName
+			var tn = getStringFromBytes(values[0]);
 
 			var child;
 
-			if (tagName === '#') {
+			if (tn === '#') {
 				var text = getStringFromBytes(values[1]);
 				child = document.createDocumentFragment();
 				child.appendChild(document.createTextNode(text));
-			} else if (tagName === '@') {
+			} else if (tn === '@') {
 				// @ short for html content
 				var text = getStringFromBytes(values[1]);
 				child = document.createDocumentFragment();				
 				appendHtmlAsChildren(child, text);
 			} else {
-				child = document.createElement(tagName);
+				child = document.createElement(tn);
 
 				for (var j = 1; j < values.length; j++) {
 					var attrNameValue = splitAttrNameValue(getStringFromBytes(values[j]));
@@ -308,8 +310,8 @@ var wffTagUtil = new function() {
 		var parent;
 		var parentTagName = getTagNameFromCompressedBytes(superParentValues[0]);
 		
-		if (parentTagName === '#' || parentTagName === '$') {
-			var txt = parentTagName === '$' ? wffBMUtil.getIntFromOptimizedBytes(superParentValues[1]).toString()
+		if (parentTagName === '#' || parentTagName === '$' || parentTagName === '%') {
+			var txt = (parentTagName === '$' || parentTagName === '%') ? wffBMUtil.getIntFromOptimizedBytes(superParentValues[1]).toString()
 			: parentTagName === '#' ? getStringFromBytes(superParentValues[1]) : '';
 			parent = document.createDocumentFragment();
 			parent.appendChild(document.createTextNode(txt));
@@ -335,22 +337,23 @@ var wffTagUtil = new function() {
 			var name = nameValues[i].name;
 			var values = nameValues[i].values;
 
-			var tagName = getTagNameFromCompressedBytes(values[0]);
+            // tn stands for tagName
+			var tn = getTagNameFromCompressedBytes(values[0]);
 
 			var child;
 
-			if (tagName === '#' || tagName === '$') {
-			    var txt = tagName === '$' ? wffBMUtil.getIntFromOptimizedBytes(values[1]).toString()
-            			: tagName === '#' ? getStringFromBytes(values[1]) : '';
+			if (tn === '#' || tn === '$' || tn === '%') {
+			    var txt = (tn === '$' || tn === '%') ? wffBMUtil.getIntFromOptimizedBytes(values[1]).toString()
+            			: tn === '#' ? getStringFromBytes(values[1]) : '';
 				child = document.createDocumentFragment();
 				child.appendChild(document.createTextNode(txt));
-			} else if (tagName === '@') {
+			} else if (tn === '@') {
 				// @ short for html content
 				var text = getStringFromBytes(values[1]);
 				child = document.createDocumentFragment();				
 				appendHtmlAsChildren(child, text);
 			} else {
-				child = document.createElement(tagName);
+				child = document.createElement(tn);
 
 				for (var j = 1; j < values.length; j++) {
 					var attrNameValue = getAttrNameValueFromCompressedBytes(values[j]);

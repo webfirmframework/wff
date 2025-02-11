@@ -123,8 +123,17 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     // its length will be always 1
     private static final byte[] INDEXED_HASH_CHAR_BYTES;
 
-    // its length will be always 1. to represent int bytes to interpret as TEXT
+    /**
+     * its length will be always 1. to represent int bytes to interpret as TEXT but
+     * to represent noTagContentTypeHtml = true
+     */
     private static final byte[] INDEXED_DOLLAR_CHAR_BYTES;
+
+    /**
+     * its length will be always 1. to represent int bytes to interpret as TEXT but
+     * noTagContentTypeHtml = false
+     */
+    private static final byte[] INDEXED_PERCENT_CHAR_BYTES;
 
     private volatile AbstractHtml parent;
 
@@ -285,6 +294,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         // its length will be always 1
         INDEXED_DOLLAR_CHAR_BYTES = PreIndexedTagName.DOLLAR.internalIndexBytes(ACCESS_OBJECT);
+
+        INDEXED_PERCENT_CHAR_BYTES = PreIndexedTagName.PERCENT.internalIndexBytes(ACCESS_OBJECT);
 
     }
 
@@ -5254,6 +5265,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
+     * Note: different wffweb lib version will generate different bytes so use the
+     * same wffweb lib version for parsing.
+     *
      * @param charset
      * @return the Wff Binary Message bytes of this tag containing indexed tag name
      *         and attribute name
@@ -5390,7 +5404,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
-     * It uses algorithm version 2.
+     * It uses algorithm version 2. Note: different wffweb lib version will generate
+     * different bytes so use the same wffweb lib version for parsing.
      *
      * @param charset
      * @return the Wff Binary Message bytes of this tag containing indexed tag name
@@ -5406,6 +5421,14 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     /**
      * It uses algorithm version 3.
      *
+     * To create Tag object from the returned bytes follow the example:
+     *
+     * <pre><code>
+     * Div div = new Div(null, new Id("someId"), new Value("1401"));
+     * AbstractHtml parsedTag = TagCompressedWffBMBytesParser.VERSION_3.parse(div.toCompressedWffBMBytesV3(StandardCharsets.UTF_8), true, StandardCharsets.UTF_8);
+     * </code></pre> Note: different wffweb lib version will generate different
+     * bytes so use the same wffweb lib version for parsing.
+     *
      * @param charset
      * @return the Wff Binary Message bytes of this tag containing indexed tag name
      *         and attribute name
@@ -5418,7 +5441,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
-     * Only for internal purpose. It uses algorithm version 2.
+     * Only for internal purpose. It uses algorithm version 2. Note: different
+     * wffweb lib version will generate different bytes so use the same wffweb lib
+     * version for parsing.
      *
      * @param charset
      * @param accessObject
@@ -5579,7 +5604,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
-     * Only for internal purpose. It uses algorithm version 3.
+     * Only for internal purpose. It uses algorithm version 3. Note: different
+     * wffweb lib version will generate different bytes so use the same wffweb lib
+     * version for parsing.
      *
      * @param charset
      * @param accessObject
@@ -5695,7 +5722,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                         // : encodedByesForHashChar;
                         final String tagContent = tag.getClosingTag();
                         final boolean strictInt = NumberUtil.isStrictInt(tagContent);
-                        final byte[] nodeNameBytes = strictInt ? INDEXED_DOLLAR_CHAR_BYTES
+                        final byte[] nodeNameBytes = strictInt
+                                ? tag.noTagContentTypeHtml ? INDEXED_DOLLAR_CHAR_BYTES : INDEXED_PERCENT_CHAR_BYTES
                                 : tag.noTagContentTypeHtml ? INDEXED_AT_CHAR_BYTES : INDEXED_HASH_CHAR_BYTES;
 
                         nameValue.setName(WffBinaryMessageUtil.getOptimizedBytesFromInt(parentWffSlotIndex));

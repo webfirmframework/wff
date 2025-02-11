@@ -33,17 +33,26 @@ public enum PreIndexedTagName {
     // then by name in ascending
 
     /**
-     * not a tag name. For internal purpose only.
+     * not a tag name. For internal purpose only. TEXT content, i.e. String bytes
+     * content with noTagContentTypeHtml = false.
      */
     HASH("#"),
 
     /**
-     * not a tag name. For internal purpose only.
+     * not a tag name. For internal purpose only. int bytes content with
+     * noTagContentTypeHtml = true.
      */
     DOLLAR("$"),
 
     /**
-     * not a tag name. For internal purpose only.
+     * not a tag name. For internal purpose only. int bytes content with
+     * noTagContentTypeHtml = false.
+     */
+    PERCENT("%"),
+
+    /**
+     * not a tag name. For internal purpose only. HTML content, i.e. String bytes
+     * content with noTagContentTypeHtml = true.
      */
     AT("@"),
 
@@ -307,6 +316,11 @@ public enum PreIndexedTagName {
     private final byte[] indexBytes;
 
     /**
+     * For internal use.
+     */
+    private static final PreIndexedTagName[] PRE_INDEXED_TAG_NAMES = PreIndexedTagName.values();
+
+    /**
      * @param tagName
      * @since 3.0.3
      */
@@ -352,6 +366,7 @@ public enum PreIndexedTagName {
     /**
      * Only for internal purpose
      *
+     * @param accessObject the access object
      * @return optimized bytes of index
      * @since 3.0.6
      */
@@ -360,6 +375,17 @@ public enum PreIndexedTagName {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         return indexBytes;
+    }
+
+    /**
+     * Only for internal purpose.
+     *
+     * @param index the index to get PreIndexedTagName.
+     * @return the PreIndexedTagName at index.
+     * @since 12.0.3
+     */
+    public static PreIndexedTagName getPreIndexedTagName(final int index) {
+        return PRE_INDEXED_TAG_NAMES[index];
     }
 
 }

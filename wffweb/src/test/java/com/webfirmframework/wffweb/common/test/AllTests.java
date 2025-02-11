@@ -178,6 +178,7 @@ import com.webfirmframework.wffweb.util.HashUtilTest;
 import com.webfirmframework.wffweb.util.ObjectUtilTest;
 import com.webfirmframework.wffweb.util.StringBuilderUtilTest;
 import com.webfirmframework.wffweb.util.StringUtilTest;
+import com.webfirmframework.wffweb.util.TagCompressedWffBMBytesParserTest;
 import com.webfirmframework.wffweb.util.URIUtilTest;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtilTest;
 import com.webfirmframework.wffweb.wffbm.data.WffBMArrayTest;
@@ -231,7 +232,7 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectTest;
         ExternalDriveClientTasksWrapperQueueTest.class, AttributeIdGeneratorTest.class,
         SharedObjectIdGeneratorTest.class, WhenURIUseCaseTest.class, URIUtilTest.class, EventInitiatorTest.class,
         ImmutableCustomAttributeTest.class, BrowserPageActionTest.class, WffConfigurationTest.class,
-        TagContentTest.class, WffBMObjectTest.class, WffBMArrayTest.class })
+        TagContentTest.class, WffBMObjectTest.class, WffBMArrayTest.class, TagCompressedWffBMBytesParserTest.class })
 public class AllTests {
 
 }

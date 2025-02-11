@@ -4017,9 +4017,9 @@ public class AbstractHtmlTest {
             assertEquals(26, compressedWffBMBytes.length);
             assertEquals(25, compressedWffBMBytesV2.length);
             assertEquals(16, compressedWffBMBytesV3.length);
-            assertArrayEquals(new byte[] { 1, 1, 0, 3, 2, 1, 35, 4, 0, 0, 0, 0, 13, 1, 35, 10, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytes);
-            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 35, 4, 0, 0, 0, 0, 13, 1, 0, 10, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV2);
-            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 35, 1, 0, 7, 1, 1, 4, 127, -1, -1, -1 }, compressedWffBMBytesV3);
+            assertArrayEquals(new byte[] { 1, 1, 0, 3, 2, 1, 36, 4, 0, 0, 0, 0, 13, 1, 35, 10, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytes);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 4, 0, 0, 0, 0, 13, 1, 0, 10, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV2);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 1, 0, 7, 1, 2, 4, 127, -1, -1, -1 }, compressedWffBMBytesV3);
 
             div.give(TagContent::text, "02147483647");
             compressedWffBMBytes = div.toCompressedWffBMBytes(StandardCharsets.UTF_8);
@@ -4028,9 +4028,34 @@ public class AbstractHtmlTest {
             assertEquals(27, compressedWffBMBytes.length);
             assertEquals(26, compressedWffBMBytesV2.length);
             assertEquals(23, compressedWffBMBytesV3.length);
-            assertArrayEquals(new byte[] { 1, 1, 0, 3, 2, 1, 35, 4, 0, 0, 0, 0, 14, 1, 35, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytes);
-            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 35, 4, 0, 0, 0, 0, 14, 1, 0, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV2);
-            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 35, 1, 0, 14, 1, 0, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV3);
+            assertArrayEquals(new byte[] { 1, 1, 0, 3, 2, 1, 36, 4, 0, 0, 0, 0, 14, 1, 35, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytes);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 4, 0, 0, 0, 0, 14, 1, 0, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV2);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 1, 0, 14, 1, 0, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV3);
+        }
+
+        {
+            Div div = new Div(null).give(TagContent::html, String.valueOf(Integer.MAX_VALUE));
+            assertEquals("<div>2147483647</div>", div.toHtmlString());
+            byte[] compressedWffBMBytes = div.toCompressedWffBMBytes(StandardCharsets.UTF_8);
+            byte[] compressedWffBMBytesV2 = div.toCompressedWffBMBytesV2(StandardCharsets.UTF_8);
+            byte[] compressedWffBMBytesV3 = div.toCompressedWffBMBytesV3(StandardCharsets.UTF_8);
+            assertEquals(26, compressedWffBMBytes.length);
+            assertEquals(25, compressedWffBMBytesV2.length);
+            assertEquals(16, compressedWffBMBytesV3.length);
+            assertArrayEquals(new byte[] { 1, 1, 0, 3, 2, 1, 36, 4, 0, 0, 0, 0, 13, 1, 64, 10, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytes);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 4, 0, 0, 0, 0, 13, 1, 3, 10, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV2);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 1, 0, 7, 1, 1, 4, 127, -1, -1, -1 }, compressedWffBMBytesV3);
+
+            div.give(TagContent::html, "02147483647");
+            compressedWffBMBytes = div.toCompressedWffBMBytes(StandardCharsets.UTF_8);
+            compressedWffBMBytesV2 = div.toCompressedWffBMBytesV2(StandardCharsets.UTF_8);
+            compressedWffBMBytesV3 = div.toCompressedWffBMBytesV3(StandardCharsets.UTF_8);
+            assertEquals(27, compressedWffBMBytes.length);
+            assertEquals(26, compressedWffBMBytesV2.length);
+            assertEquals(23, compressedWffBMBytesV3.length);
+            assertArrayEquals(new byte[] { 1, 1, 0, 3, 2, 1, 36, 4, 0, 0, 0, 0, 14, 1, 64, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytes);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 4, 0, 0, 0, 0, 14, 1, 3, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV2);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 1, 0, 14, 1, 3, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV3);
         }
     }
 

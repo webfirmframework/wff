@@ -341,7 +341,6 @@ public enum WffJsFile {
             variableNameList.add("argBytes");
             variableNameList.add("tgNamNdx");
             variableNameList.add("allTags");
-            variableNameList.add("allTags");
             variableNameList.add("rplcByt");
             variableNameList.add("wffIds");
             variableNameList.add("wffId");
