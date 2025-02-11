@@ -35,26 +35,14 @@ import com.webfirmframework.wffweb.util.data.NameValue;
 public enum TagCompressedWffBMBytesParser {
 
     VERSION_3 {
-        private String parseTagName(final byte[] tagNameRowBytes, final Charset charset) {
-            if (tagNameRowBytes.length == 1) {
-                final int tagNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(tagNameRowBytes);
-                return PreIndexedTagName.getPreIndexedTagName(tagNameIndex).tagName();
-            }
-            final int lengthOfOptimizedIndexBytesOfTagName = tagNameRowBytes[0];
-            if (lengthOfOptimizedIndexBytesOfTagName > 0) {
-                final byte[] tagNameIndexOptimizedBytes = new byte[lengthOfOptimizedIndexBytesOfTagName];
-                System.arraycopy(tagNameRowBytes, 1, tagNameIndexOptimizedBytes, 0,
-                        lengthOfOptimizedIndexBytesOfTagName);
-                final int tagNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(tagNameIndexOptimizedBytes);
-                return PreIndexedTagName.getPreIndexedTagName(tagNameIndex).tagName();
-            }
-
-            final int requiredBytesLength = tagNameRowBytes.length - 1;
-            final byte[] tagNameBytes = new byte[requiredBytesLength];
-            System.arraycopy(tagNameRowBytes, 1, tagNameBytes, 0, requiredBytesLength);
-            return new String(tagNameBytes, charset);
-        }
-
+        /**
+         * @param bmBytes  the WFF BM bytes of tag.
+         * @param exactTag true to create the tag object of the exact tag, false to
+         *                 create object of CustomTag class.
+         * @param charset  the charset to parse the text content.
+         * @return the tag object parsed from the tag bytes.
+         * @since 12.0.3
+         */
         @Override
         public AbstractHtml parse(final byte[] bmBytes, final boolean exactTag, final Charset charset) {
 
@@ -160,6 +148,32 @@ public enum TagCompressedWffBMBytesParser {
             }
 
             return parent;
+        }
+
+        /**
+         * @param tagNameRawBytes the raw tag name bytes
+         * @param charset         the charset for the tag name.
+         * @return the tag name.
+         * @since 12.0.3
+         */
+        private String parseTagName(final byte[] tagNameRawBytes, final Charset charset) {
+            if (tagNameRawBytes.length == 1) {
+                final int tagNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(tagNameRawBytes);
+                return PreIndexedTagName.getPreIndexedTagName(tagNameIndex).tagName();
+            }
+            final int lengthOfOptimizedIndexBytesOfTagName = tagNameRawBytes[0];
+            if (lengthOfOptimizedIndexBytesOfTagName > 0) {
+                final byte[] tagNameIndexOptimizedBytes = new byte[lengthOfOptimizedIndexBytesOfTagName];
+                System.arraycopy(tagNameRawBytes, 1, tagNameIndexOptimizedBytes, 0,
+                        lengthOfOptimizedIndexBytesOfTagName);
+                final int tagNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(tagNameIndexOptimizedBytes);
+                return PreIndexedTagName.getPreIndexedTagName(tagNameIndex).tagName();
+            }
+
+            final int requiredBytesLength = tagNameRawBytes.length - 1;
+            final byte[] tagNameBytes = new byte[requiredBytesLength];
+            System.arraycopy(tagNameRawBytes, 1, tagNameBytes, 0, requiredBytesLength);
+            return new String(tagNameBytes, charset);
         }
     };
 

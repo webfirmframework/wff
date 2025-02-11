@@ -26,12 +26,15 @@ import com.webfirmframework.wffweb.tag.html.Body;
 import com.webfirmframework.wffweb.tag.html.Html;
 import com.webfirmframework.wffweb.tag.html.attribute.Src;
 import com.webfirmframework.wffweb.tag.html.attribute.Value;
+import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.formatting.Em;
+import com.webfirmframework.wffweb.tag.html.html5.images.FigCaption;
 import com.webfirmframework.wffweb.tag.html.links.Link;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
+import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.tag.htmlwff.TagContent;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
@@ -96,6 +99,8 @@ public class TagCompressedWffBMBytesParserTest {
                 new Div(body, new Id("parentDivId"), new Value(String.valueOf(Integer.MAX_VALUE)));
                 new Span(body).give(TagContent::html, "<p>notes</p>");
                 new Em(body).give(TagContent::text, "some text");
+                new CustomTag("a", AbstractHtml.TagType.OPENING_CLOSING, body).give(TagContent::text,
+                        "some sample text");
             });
         });
         rootTag.toHtmlString();
@@ -103,10 +108,20 @@ public class TagCompressedWffBMBytesParserTest {
                 new Src("https://localhost/appbasic.css"));
         final Div divWithoutAttributes = new Div(null);
         final Div div = new Div(null, new Id("someId"), new Value("1401"));
+        final FigCaption figCaption = new FigCaption(null, new ClassAttribute("cls1"), new Value("1401"))
+                .give(TagContent::text, "140119");
 
         AbstractHtml parsedTag = TagCompressedWffBMBytesParser.VERSION_3
                 .parse(div.toCompressedWffBMBytesV3(StandardCharsets.UTF_8), true, StandardCharsets.UTF_8);
         Assert.assertEquals(div.toHtmlString(), parsedTag.toHtmlString());
+
+        final byte[] figCaptionCompressedWffBMBytesV3 = figCaption.toCompressedWffBMBytesV3(StandardCharsets.UTF_8);
+        parsedTag = TagCompressedWffBMBytesParser.VERSION_3.parse(figCaptionCompressedWffBMBytesV3, true,
+                StandardCharsets.UTF_8);
+        Assert.assertEquals(figCaption.toHtmlString(), parsedTag.toHtmlString());
+        Assert.assertEquals(57, figCaption.toHtmlString().length());
+        Assert.assertEquals(28, figCaptionCompressedWffBMBytesV3.length);
+        Assert.assertTrue(figCaptionCompressedWffBMBytesV3.length < figCaption.toHtmlString().length());
 
         parsedTag = TagCompressedWffBMBytesParser.VERSION_3.parse(
                 divWithoutAttributes.toCompressedWffBMBytesV3(StandardCharsets.UTF_8), true, StandardCharsets.UTF_8);
