@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.formsandinputs;
 
+import java.io.Serial;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
@@ -33,6 +34,7 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
  */
 public class TextArea extends AbstractHtml {
 
+    @Serial
     private static final long serialVersionUID = 1_0_1L;
 
     private static final Logger LOGGER = Logger.getLogger(TextArea.class.getName());

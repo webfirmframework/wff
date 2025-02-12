@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.FormAttributable;
@@ -30,6 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.FormAttributable;
  */
 public class Method extends AbstractAttribute implements FormAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public static final String GET = "get";

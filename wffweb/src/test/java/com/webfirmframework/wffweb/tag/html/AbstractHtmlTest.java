@@ -15,7 +15,13 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,22 +34,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.Set;
 
-import com.webfirmframework.wffweb.InvalidUsageException;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.InvalidUsageException;
 import com.webfirmframework.wffweb.NoParentException;
 import com.webfirmframework.wffweb.css.Color;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.server.page.BrowserPageTest;
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.MaxLength;
 import com.webfirmframework.wffweb.tag.html.attribute.Name;
@@ -62,6 +68,7 @@ import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Translate;
 import com.webfirmframework.wffweb.tag.html.links.A;
 import com.webfirmframework.wffweb.tag.html.links.Link;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
+import com.webfirmframework.wffweb.tag.html.programming.Script;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
@@ -70,8 +77,12 @@ import com.webfirmframework.wffweb.tag.htmlwff.TagContent;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
-@SuppressWarnings("serial")
 public class AbstractHtmlTest {
+
+    @BeforeClass
+    public static void setupBeforeClass() {
+        WffConfiguration.setDebugMode(true);
+    }
 
     // for future development
     // @Test
@@ -2112,7 +2123,7 @@ public class AbstractHtmlTest {
         };
 
         final byte[] wffBMBytes = html.toWffBMBytes(StandardCharsets.UTF_8);
-        final byte[] compressedWffBMBytes = html.toCompressedWffBMBytesV2(StandardCharsets.UTF_8);
+        final byte[] compressedWffBMBytes = html.toCompressedWffBMBytesV3(StandardCharsets.UTF_8);
 
         // without tagIndex impl: wffBMBytes.length: 311 compressedWffBMBytes.length:
         // 247
@@ -2158,7 +2169,7 @@ public class AbstractHtmlTest {
         long toWffBMBytesProcessingTime = after - before;
 
         before = System.nanoTime();
-        final int tagCompressedWffBMBytesLength = html.toCompressedWffBMBytesV2(StandardCharsets.UTF_8).length;
+        final int tagCompressedWffBMBytesLength = html.toCompressedWffBMBytesV3(StandardCharsets.UTF_8).length;
         after = System.nanoTime();
 
         long toCompressedWffBMBytesProcessingTime = after - before;
@@ -3019,24 +3030,28 @@ public class AbstractHtmlTest {
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException1() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div childDiv1 = new Div(null);
         childDiv1.appendChild(childDiv1);
     }
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException2() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div childDiv1 = new Div(null);
         childDiv1.appendChildren(childDiv1);
     }
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException3() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div childDiv1 = new Div(null);
         childDiv1.appendChildren(List.of(childDiv1));
     }
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException4() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div parentDiv = new Div(null);
         Div childDiv1 = new Div(parentDiv);
         childDiv1.insertAfter(childDiv1);
@@ -3044,6 +3059,7 @@ public class AbstractHtmlTest {
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException5() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div parentDiv = new Div(null);
         Div childDiv1 = new Div(parentDiv);
         childDiv1.insertBefore(childDiv1);
@@ -3051,6 +3067,7 @@ public class AbstractHtmlTest {
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException6() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div parentDiv = new Div(null);
         Div childDiv1 = new Div(parentDiv);
         childDiv1.replaceWith(childDiv1);
@@ -3058,12 +3075,14 @@ public class AbstractHtmlTest {
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException7() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div childDiv1 = new Div(null);
         childDiv1.addInnerHtml(childDiv1);
     }
 
     @Test(expected = InvalidUsageException.class)
     public void testRecurringException8() {
+        //NB: WffConfiguration.setDebugMode(true) is written inside setupBeforeClass otherwise it will not validate
         Div childDiv1 = new Div(null);
         childDiv1.addInnerHtmls(childDiv1);
     }
@@ -3930,6 +3949,113 @@ public class AbstractHtmlTest {
             stc.setContent("anotherContent");
             assertEquals(listenerCountAfterInvocation, childDivListenerInvoked.get());
             assertEquals(parentDiv.getFirstChild().toHtmlString(), "anotherContent");
+        }
+    }
+
+    @Test()
+    public void testToCompressedWffBMBytesV3() {
+        final Html rootTag = new Html(null).give(html -> {
+            new Head(html).give(head -> {
+                new Link(head, new Id("appbasicCssLink"), new Src("https://localhost/appbasic.css"));
+            });
+            new Body(html).give(body -> {
+                new Div(body, new Id("parentDivId"), new Value(String.valueOf(Integer.MAX_VALUE)));
+            });
+        });
+        rootTag.toHtmlString();
+
+        {
+            final byte[] compressedWffBMBytes = rootTag.toCompressedWffBMBytes(StandardCharsets.UTF_8);
+            final byte[] compressedWffBMBytesV2 = rootTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, null);
+            final byte[] compressedWffBMBytesV3 = rootTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, null);
+            assertEquals(121, compressedWffBMBytes.length);
+            assertEquals(116, compressedWffBMBytesV2.length);
+            assertEquals(98, compressedWffBMBytesV3.length);
+            assertTrue(compressedWffBMBytesV2.length < compressedWffBMBytes.length);
+            assertTrue(compressedWffBMBytesV3.length < compressedWffBMBytesV2.length);
+        }
+
+        final BrowserPage browserPage = new BrowserPage() {
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework.com/ws-con";
+            }
+
+            @Override
+            public AbstractHtml render() {
+                return rootTag;
+            }
+        };
+
+        try {
+            browserPage.toOutputStream(new ByteArrayOutputStream(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            fail("failed due to IOException");
+        }
+
+        //this is a generated script it should be removed before testing
+        final Script script = TagRepository.findOneTagAssignableToTag(Script.class, rootTag);
+        script.getParent().removeChild(script);
+
+        {
+            final byte[] compressedWffBMBytes = rootTag.toCompressedWffBMBytes(StandardCharsets.UTF_8);
+            final byte[] compressedWffBMBytesV2 = rootTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, null);
+            final byte[] compressedWffBMBytesV3 = rootTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, null);
+            assertEquals(146, compressedWffBMBytes.length);
+            assertEquals(141, compressedWffBMBytesV2.length);
+            assertEquals(113, compressedWffBMBytesV3.length);
+            assertTrue(compressedWffBMBytesV2.length < compressedWffBMBytes.length);
+            assertTrue(compressedWffBMBytesV3.length < compressedWffBMBytesV2.length);
+        }
+
+        {
+            Div div = new Div(null).give(TagContent::text, String.valueOf(Integer.MAX_VALUE));
+            assertEquals("<div>2147483647</div>", div.toHtmlString());
+            byte[] compressedWffBMBytes = div.toCompressedWffBMBytes(StandardCharsets.UTF_8);
+            byte[] compressedWffBMBytesV2 = div.toCompressedWffBMBytesV2(StandardCharsets.UTF_8);
+            byte[] compressedWffBMBytesV3 = div.toCompressedWffBMBytesV3(StandardCharsets.UTF_8);
+            assertEquals(26, compressedWffBMBytes.length);
+            assertEquals(25, compressedWffBMBytesV2.length);
+            assertEquals(16, compressedWffBMBytesV3.length);
+            assertArrayEquals(new byte[] { 1, 1, 0, 3, 2, 1, 36, 4, 0, 0, 0, 0, 13, 1, 35, 10, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytes);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 4, 0, 0, 0, 0, 13, 1, 0, 10, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV2);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 1, 0, 7, 1, 2, 4, 127, -1, -1, -1 }, compressedWffBMBytesV3);
+
+            div.give(TagContent::text, "02147483647");
+            compressedWffBMBytes = div.toCompressedWffBMBytes(StandardCharsets.UTF_8);
+            compressedWffBMBytesV2 = div.toCompressedWffBMBytesV2(StandardCharsets.UTF_8);
+            compressedWffBMBytesV3 = div.toCompressedWffBMBytesV3(StandardCharsets.UTF_8);
+            assertEquals(27, compressedWffBMBytes.length);
+            assertEquals(26, compressedWffBMBytesV2.length);
+            assertEquals(23, compressedWffBMBytesV3.length);
+            assertArrayEquals(new byte[] { 1, 1, 0, 3, 2, 1, 36, 4, 0, 0, 0, 0, 14, 1, 35, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytes);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 4, 0, 0, 0, 0, 14, 1, 0, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV2);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 1, 0, 14, 1, 0, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV3);
+        }
+
+        {
+            Div div = new Div(null).give(TagContent::html, String.valueOf(Integer.MAX_VALUE));
+            assertEquals("<div>2147483647</div>", div.toHtmlString());
+            byte[] compressedWffBMBytes = div.toCompressedWffBMBytes(StandardCharsets.UTF_8);
+            byte[] compressedWffBMBytesV2 = div.toCompressedWffBMBytesV2(StandardCharsets.UTF_8);
+            byte[] compressedWffBMBytesV3 = div.toCompressedWffBMBytesV3(StandardCharsets.UTF_8);
+            assertEquals(26, compressedWffBMBytes.length);
+            assertEquals(25, compressedWffBMBytesV2.length);
+            assertEquals(16, compressedWffBMBytesV3.length);
+            assertArrayEquals(new byte[] { 1, 1, 0, 3, 2, 1, 36, 4, 0, 0, 0, 0, 13, 1, 64, 10, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytes);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 4, 0, 0, 0, 0, 13, 1, 3, 10, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV2);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 1, 0, 7, 1, 1, 4, 127, -1, -1, -1 }, compressedWffBMBytesV3);
+
+            div.give(TagContent::html, "02147483647");
+            compressedWffBMBytes = div.toCompressedWffBMBytes(StandardCharsets.UTF_8);
+            compressedWffBMBytesV2 = div.toCompressedWffBMBytesV2(StandardCharsets.UTF_8);
+            compressedWffBMBytesV3 = div.toCompressedWffBMBytesV3(StandardCharsets.UTF_8);
+            assertEquals(27, compressedWffBMBytes.length);
+            assertEquals(26, compressedWffBMBytesV2.length);
+            assertEquals(23, compressedWffBMBytesV3.length);
+            assertArrayEquals(new byte[] { 1, 1, 0, 3, 2, 1, 36, 4, 0, 0, 0, 0, 14, 1, 64, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytes);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 4, 0, 0, 0, 0, 14, 1, 3, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV2);
+            assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 1, 0, 14, 1, 3, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV3);
         }
     }
 

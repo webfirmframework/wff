@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
+
 /**
  * <pre>
  * src: <i>URL</i>;
@@ -33,6 +35,7 @@ package com.webfirmframework.wffweb.css;
  */
 public class SrcCssProperty extends Src {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public SrcCssProperty(final String cssValue) {

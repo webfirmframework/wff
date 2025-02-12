@@ -15,8 +15,11 @@
  */
 package com.webfirmframework.wffweb;
 
+import java.io.Serial;
+
 public class DataWffIdOutOfRangeError extends WffError {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public DataWffIdOutOfRangeError() {

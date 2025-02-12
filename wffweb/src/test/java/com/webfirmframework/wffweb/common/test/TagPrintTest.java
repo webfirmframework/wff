@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.common.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
@@ -51,6 +52,7 @@ import com.webfirmframework.wffweb.view.AbstractHtmlView;
  */
 public class TagPrintTest implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private long beforeTimeMillis;

@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.data;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.informer.StateChangeInformer;
 
 /**
@@ -25,6 +27,7 @@ import com.webfirmframework.wffweb.informer.StateChangeInformer;
  */
 public abstract class AbstractBean<FORCLASS> implements Bean {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private StateChangeInformer<Bean> stateChangeInformer;

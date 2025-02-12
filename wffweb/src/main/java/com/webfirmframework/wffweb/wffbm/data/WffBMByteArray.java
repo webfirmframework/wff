@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.wffbm.data;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -32,7 +33,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * into this array. <br>
  * Sample :- <br>
  *
- * <pre>
+ * <pre><code>
  * WffBMObject bmObject = new WffBMObject();
  *
  * WffBMByteArray byteArray = new WffBMByteArray(); byteArray.write("こんにちは
@@ -40,7 +41,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  *
  * bmObject.put("byteArray", BMValueType.BM_BYTE_ARRAY, byteArray);
  *
- * </pre>
+ * </code></pre>
  *
  * @author WFF
  * @see WffBMArray
@@ -48,6 +49,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  */
 public class WffBMByteArray extends ByteArrayOutputStream implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private boolean outer;

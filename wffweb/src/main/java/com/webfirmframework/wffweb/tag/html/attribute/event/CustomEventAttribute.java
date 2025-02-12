@@ -15,8 +15,11 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.event;
 
+import java.io.Serial;
+
 public class CustomEventAttribute extends AbstractEventAttribute {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public CustomEventAttribute(final String attributeName, final ServerMethod serverMethod) {

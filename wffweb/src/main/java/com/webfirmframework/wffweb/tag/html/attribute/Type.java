@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.html5.identifier.EmbedAttributable;
@@ -98,6 +100,7 @@ public class Type extends AbstractAttribute implements AAttributable, AreaAttrib
         ScriptAttributable, StyleAttributable, ButtonAttributable, EmbedAttributable, LinkAttributable,
         MenuAttributable, ObjectTagAttributable, SourceAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_1L;
 
     public static final String BUTTON = "button";

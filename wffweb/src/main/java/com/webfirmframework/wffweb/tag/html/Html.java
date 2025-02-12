@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
+import java.io.Serial;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
@@ -31,6 +32,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.HtmlAttributable;
  */
 public class Html extends DocType {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final Logger LOGGER = Logger.getLogger(Html.class.getName());

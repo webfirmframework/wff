@@ -15,12 +15,17 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.WffSecurityException;
+import com.webfirmframework.wffweb.internal.constants.IndexedClassType;
+import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 
 public class DataWffId extends DataAttribute {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     // NB: if modifying its value it should also be updated in
@@ -33,7 +38,16 @@ public class DataWffId extends DataAttribute {
     // must be kept final to provide atomic consistency across multiple threads
     private final String attributeValue;
 
+    /**
+     * -5 for S and -6 for C
+     */
+    private final byte attributeValuePrefix;
+
+    private final byte[] attributeValueIntBytes;
+
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.DATA_WFF_ID;
+
+    public static final String[] VALUE_PREFIXES = { "S", "C" };
 
     /**
      * @param value the value for the attribute
@@ -42,7 +56,31 @@ public class DataWffId extends DataAttribute {
      */
     public DataWffId(final String value) {
         super(PRE_INDEXED_ATTR_NAME, value);
+        attributeValuePrefix = 0;
+        attributeValueIntBytes = null;
         attributeValue = value;
+    }
+
+    /**
+     * Note: Only for internal use.
+     *
+     * @param value                  the value for the attribute
+     * @param attributeValuePrefix   the value for the attribute.
+     * @param attributeValueIntBytes the bytes of integer to represent id.
+     * @param accessObject           the access object to call this method.
+     * @since 12.0.3
+     * @author WFF
+     */
+    public DataWffId(final String value, final byte attributeValuePrefix, final byte[] attributeValueIntBytes,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+        super(PRE_INDEXED_ATTR_NAME, value);
+        this.attributeValuePrefix = attributeValuePrefix;
+        this.attributeValueIntBytes = attributeValueIntBytes;
+        attributeValue = value;
+        if (accessObject == null
+                || !IndexedClassType.ABSTRACT_HTML5_SHARED_OBJECT.equals(accessObject.forClassType())) {
+            throw new WffSecurityException("Not allowed to call this constructor. This class is for internal use.");
+        }
     }
 
     @Override
@@ -110,4 +148,26 @@ public class DataWffId extends DataAttribute {
         return PRE_INDEXED_ATTR_NAME.index();
     }
 
+    /**
+     * Note: Only for internal use.
+     *
+     * @return the byte represented for value prefix.
+     * @since 12.0.3
+     */
+    public final byte attributeValuePrefix() {
+        return attributeValuePrefix;
+    }
+
+    /**
+     * Only for internal use.
+     *
+     * @param accessObject the access object to call this method.
+     * @return the value bytes
+     */
+    public final byte[] attributeValueIntBytes(@SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !IndexedClassType.ABSTRACT_ATTRIBUTE.equals(accessObject.forClassType())) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        return attributeValueIntBytes;
+    }
 }

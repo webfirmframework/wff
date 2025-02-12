@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.concurrent;
 
+import java.io.Serial;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -33,6 +34,7 @@ import java.util.concurrent.locks.StampedLock;
  */
 final class ReentrantStampedLock extends StampedLock {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final transient AtomicReference<Thread> lockHolder = new AtomicReference<>();

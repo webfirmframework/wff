@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.css;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.data.AbstractBean;
@@ -28,6 +30,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public class UrlCss3Value extends AbstractBean<UrlCss3Value> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     // NB : it should not override equals and hashcode methods as its objects

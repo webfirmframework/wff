@@ -2500,10 +2500,9 @@ public abstract class BrowserPage implements Serializable {
     /**
      * holds push if not already on hold until unholdPush is called Usage :-
      *
-     * <pre>
-     * try {
+     * <pre><code>
      *     browserPage.holdPush();
-     *
+     * try {
      *     for (AbstractHtml tag : tags) {
      *         tag.removeAttributes("style");
      *     }
@@ -2511,7 +2510,7 @@ public abstract class BrowserPage implements Serializable {
      * } finally {
      *     browserPage.unholdPush();
      * }
-     * </pre>
+     * </code></pre>
      *
      *
      * @since 2.1.3
@@ -2523,10 +2522,9 @@ public abstract class BrowserPage implements Serializable {
     /**
      * unholds push if not already unheld. Usage :-
      *
-     * <pre>
-     * try {
+     * <pre><code>
      *     browserPage.holdPush();
-     *
+     * try {
      *     for (AbstractHtml tag : tags) {
      *         tag.removeAttributes("style");
      *     }
@@ -2534,7 +2532,7 @@ public abstract class BrowserPage implements Serializable {
      * } finally {
      *     browserPage.unholdPush();
      * }
-     * </pre>
+     * </code></pre>
      *
      *
      * @since 2.1.3
@@ -2542,9 +2540,13 @@ public abstract class BrowserPage implements Serializable {
     public final void unholdPush() {
         if (holdPush.get() > 0) {
             final int count = holdPush.decrementAndGet();
-            // count should be second checking
-            if (copyCachedBMBytesToMainQ() || count == 0) {
-                pushWffBMBytesQueue();
+            if (count < 0) {
+                holdPush.incrementAndGet();
+            } else {
+                // count should be second checking
+                if (copyCachedBMBytesToMainQ() || count == 0) {
+                    pushWffBMBytesQueue();
+                }
             }
         }
     }
@@ -3047,22 +3049,18 @@ public abstract class BrowserPage implements Serializable {
      * NB: You may need only one copy of executor object for all browserPage
      * instances in the project. Eg: <br>
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      *
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * browserPage.setExecutor(EXECUTOR);
-     * </code>
-     * </pre>
+     * </code></pre>
      * <p>
      * When Java releases Virtual Thread we may be able to use as follows
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * browserPage.setExecutor(EXECUTOR);
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param executor
      * @since 3.0.15

@@ -1151,4 +1151,152 @@ public class TagRepositoryTest {
         }
     }
 
+    @Test
+    public void testFindOneAttributeByFilter() throws Exception {
+        final Html html = new Html(null) {{
+            new Div(this, new Id("one")) {{
+                new Span(this, new Id("two")) {{
+                    new H1(this, new Id("three"));
+                    new H2(this, new Id("three"));
+                    new NoTag(this, "something");
+                }};
+
+                new H3(this, new Name("name1"));
+            }};
+        }};
+        BrowserPage browserPage = new BrowserPage() {
+
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework/websocket";
+            }
+
+            @Override
+            public AbstractHtml render() {
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        {
+            final AbstractAttribute attribute = TagRepository.findOneAttributeByFilter(false, attributeNameValue -> "name".equals(attributeNameValue.name()) && "name1222".equals(attributeNameValue.value()), html);
+            assertNull(attribute);
+        }
+        {
+            final AbstractAttribute attribute = TagRepository.findOneAttributeByFilter(true, attributeNameValue -> "name".equals(attributeNameValue.name()) && "name1222".equals(attributeNameValue.value()), html);
+            assertNull(attribute);
+        }
+        {
+            final AbstractAttribute attribute = TagRepository.findOneAttributeByFilter(false, attributeNameValue -> "id".equals(attributeNameValue.name()) && "three".equals(attributeNameValue.value()), html);
+            assertNotNull(attribute);
+            assertEquals("id", attribute.getAttributeName());
+            assertEquals("three", attribute.getAttributeValue());
+        }
+        {
+            final AbstractAttribute attribute = TagRepository.findOneAttributeByFilter(true, attributeNameValue -> "id".equals(attributeNameValue.name()) && "three".equals(attributeNameValue.value()), html);
+            assertNotNull(attribute);
+            assertEquals("id", attribute.getAttributeName());
+            assertEquals("three", attribute.getAttributeValue());
+        }
+        {
+            final AbstractAttribute attribute = browserPage.getTagRepository().findOneAttributeByFilter(false, attributeNameValue -> "name".equals(attributeNameValue.name()) && "name1222".equals(attributeNameValue.value()));
+            assertNull(attribute);
+        }
+        {
+            final AbstractAttribute attribute = browserPage.getTagRepository().findOneAttributeByFilter(true, attributeNameValue -> "name".equals(attributeNameValue.name()) && "name1222".equals(attributeNameValue.value()));
+            assertNull(attribute);
+        }
+        {
+            final AbstractAttribute attribute = browserPage.getTagRepository().findOneAttributeByFilter(false, attributeNameValue -> "id".equals(attributeNameValue.name()) && "three".equals(attributeNameValue.value()));
+            assertNotNull(attribute);
+            assertEquals("id", attribute.getAttributeName());
+            assertEquals("three", attribute.getAttributeValue());
+        }
+        {
+            final AbstractAttribute attribute = browserPage.getTagRepository().findOneAttributeByFilter(true, attributeNameValue -> "id".equals(attributeNameValue.name()) && "three".equals(attributeNameValue.value()));
+            assertNotNull(attribute);
+            assertEquals("id", attribute.getAttributeName());
+            assertEquals("three", attribute.getAttributeValue());
+        }
+    }
+
+    @Test
+    public void testFindAttributesByFilter() throws Exception {
+        final Html html = new Html(null) {{
+            new Div(this, new Id("one")) {{
+                new Span(this, new Id("two")) {{
+                    new H1(this, new Id("three"));
+                    new H2(this, new Id("three"));
+                    new NoTag(this, "something");
+                }};
+
+                new H3(this, new Name("name1"));
+            }};
+        }};
+        BrowserPage browserPage = new BrowserPage() {
+
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework/websocket";
+            }
+
+            @Override
+            public AbstractHtml render() {
+                return html;
+            }
+        };
+        browserPage.toHtmlString();
+        {
+            final Collection<AbstractAttribute> attributes = TagRepository.findAttributesByFilter(false, attributeNameValue -> "name".equals(attributeNameValue.name()) && "name1222".equals(attributeNameValue.value()), html);
+            assertNotNull(attributes);
+            assertEquals(0, attributes.size());
+        }
+        {
+            final Collection<AbstractAttribute> attributes = TagRepository.findAttributesByFilter(true, attributeNameValue -> "name".equals(attributeNameValue.name()) && "name1222".equals(attributeNameValue.value()), html);
+            assertNotNull(attributes);
+            assertEquals(0, attributes.size());
+        }
+        {
+            final Collection<AbstractAttribute> attributes = TagRepository.findAttributesByFilter(false, attributeNameValue -> "id".equals(attributeNameValue.name()) && "three".equals(attributeNameValue.value()), html);
+            assertNotNull(attributes);
+            for (AbstractAttribute attribute : attributes) {
+                assertEquals("id", attribute.getAttributeName());
+                assertEquals("three", attribute.getAttributeValue());
+            }
+        }
+        {
+            final Collection<AbstractAttribute> attributes = TagRepository.findAttributesByFilter(true, attributeNameValue -> "id".equals(attributeNameValue.name()) && "three".equals(attributeNameValue.value()), html);
+            assertNotNull(attributes);
+            for (AbstractAttribute attribute : attributes) {
+                assertEquals("id", attribute.getAttributeName());
+                assertEquals("three", attribute.getAttributeValue());
+            }
+        }
+        {
+            final Collection<AbstractAttribute> attributes = browserPage.getTagRepository().findAttributesByFilter(false, attributeNameValue -> "name".equals(attributeNameValue.name()) && "name1222".equals(attributeNameValue.value()));
+            assertNotNull(attributes);
+            assertEquals(0, attributes.size());
+        }
+        {
+            final Collection<AbstractAttribute> attributes = browserPage.getTagRepository().findAttributesByFilter(true, attributeNameValue -> "name".equals(attributeNameValue.name()) && "name1222".equals(attributeNameValue.value()));
+            assertNotNull(attributes);
+            assertEquals(0, attributes.size());
+        }
+        {
+            final Collection<AbstractAttribute> attributes = browserPage.getTagRepository().findAttributesByFilter(false, attributeNameValue -> "id".equals(attributeNameValue.name()) && "three".equals(attributeNameValue.value()));
+            assertNotNull(attributes);
+            for (AbstractAttribute attribute : attributes) {
+                assertEquals("id", attribute.getAttributeName());
+                assertEquals("three", attribute.getAttributeValue());
+            }
+        }
+        {
+            final Collection<AbstractAttribute> attributes = browserPage.getTagRepository().findAttributesByFilter(true, attributeNameValue -> "id".equals(attributeNameValue.name()) && "three".equals(attributeNameValue.value()));
+            assertNotNull(attributes);
+            for (AbstractAttribute attribute : attributes) {
+                assertEquals("id", attribute.getAttributeName());
+                assertEquals("three", attribute.getAttributeValue());
+            }
+        }
+    }
+
 }

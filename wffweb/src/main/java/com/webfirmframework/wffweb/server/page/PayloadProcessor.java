@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.ConcurrentModificationException;
@@ -34,6 +35,7 @@ import com.webfirmframework.wffweb.concurrent.MinIntervalExecutor;
  */
 public class PayloadProcessor implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // ByteBuffer will be useful if we are planning for any memory optimization

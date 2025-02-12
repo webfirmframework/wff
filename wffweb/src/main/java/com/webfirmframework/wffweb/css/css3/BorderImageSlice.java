@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.css.css3;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -75,6 +76,7 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  */
 public class BorderImageSlice extends AbstractCssProperty<BorderImageSlice> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public static final String FILL = "fill";

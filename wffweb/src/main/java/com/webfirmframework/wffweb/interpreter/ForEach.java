@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.interpreter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -28,6 +29,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
  */
 public abstract class ForEach<EACHTYPE> implements Serializable, Cloneable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     @SuppressWarnings("unused")

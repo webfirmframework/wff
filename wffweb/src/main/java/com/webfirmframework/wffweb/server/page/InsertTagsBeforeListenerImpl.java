@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.io.Serial;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -39,6 +40,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  */
 public final class InsertTagsBeforeListenerImpl implements InsertTagsBeforeListener {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = Logger.getLogger(InsertTagsBeforeListenerImpl.class.getName());
@@ -160,7 +162,7 @@ public final class InsertTagsBeforeListenerImpl implements InsertTagsBeforeListe
 
                 try {
                     if (WffJsFile.COMPRESSED_WFF_DATA) {
-                        nameValue.setValues(insertedTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, accessObject));
+                        nameValue.setValues(insertedTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, accessObject));
                     } else {
                         nameValue.setValues(insertedTag.toWffBMBytes(StandardCharsets.UTF_8, accessObject));
                     }

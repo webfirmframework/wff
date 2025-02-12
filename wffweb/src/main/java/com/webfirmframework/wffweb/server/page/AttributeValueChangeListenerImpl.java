@@ -77,7 +77,7 @@ final class AttributeValueChangeListenerImpl implements AttributeValueChangeList
             // }
             // nameValue.setName(attrNameValue.getBytes(StandardCharsets.UTF_8));
 
-            nameValue.setName(event.sourceAttribute().toCompressedBytesByIndex(false, StandardCharsets.UTF_8));
+            nameValue.setName(event.sourceAttribute().toCompressedBytesByIndexV2(false, StandardCharsets.UTF_8));
 
             final Set<AbstractHtml> ownerTags = new HashSet<>(event.ownerTags());
 

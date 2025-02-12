@@ -33,6 +33,8 @@ public final class SecurityClassConstants {
 
     public static final String SHARED_TAG_CONTENT = "com.webfirmframework.wffweb.tag.html.SharedTagContent$Security";
 
+    public static final String ABSTRACT_HTML5_SHARED_OBJECT = "com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject$Security";
+
     public SecurityClassConstants() {
         throw new AssertionError();
     }

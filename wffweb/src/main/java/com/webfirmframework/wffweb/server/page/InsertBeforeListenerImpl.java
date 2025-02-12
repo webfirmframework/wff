@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.io.Serial;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -39,6 +40,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  */
 public final class InsertBeforeListenerImpl implements InsertBeforeListener {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = Logger.getLogger(InsertBeforeListenerImpl.class.getName());
@@ -150,7 +152,7 @@ public final class InsertBeforeListenerImpl implements InsertBeforeListener {
                     if (previousParentTag != null) {
                         if (WffJsFile.COMPRESSED_WFF_DATA) {
                             nameValue.setValues(parentTagName,
-                                    insertedTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, accessObject),
+                                    insertedTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, accessObject),
                                     beforeTagNameAndWffId[0], beforeTagNameAndWffId[1], new byte[] { 1 });
                         } else {
                             nameValue.setValues(parentTagName,
@@ -161,7 +163,7 @@ public final class InsertBeforeListenerImpl implements InsertBeforeListener {
                     } else {
                         if (WffJsFile.COMPRESSED_WFF_DATA) {
                             nameValue.setValues(parentTagName,
-                                    insertedTag.toCompressedWffBMBytesV2(StandardCharsets.UTF_8, accessObject),
+                                    insertedTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, accessObject),
                                     beforeTagNameAndWffId[0], beforeTagNameAndWffId[1]);
                         } else {
                             nameValue.setValues(parentTagName,

@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.io.Serial;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +28,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
 
 public final class AttributeAddListenerImpl implements AttributeAddListener {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = Logger.getLogger(AttributeAddListenerImpl.class.getName());
@@ -89,7 +91,7 @@ public final class AttributeAddListenerImpl implements AttributeAddListener {
                 // }
                 // values[i] = attrNameValue.getBytes(StandardCharsets.UTF_8);
 
-                values[i] = addedAttributes[i - 2].toCompressedBytesByIndex(false, StandardCharsets.UTF_8);
+                values[i] = addedAttributes[i - 2].toCompressedBytesByIndexV2(false, StandardCharsets.UTF_8);
             }
 
             nameValue.setValues(values);

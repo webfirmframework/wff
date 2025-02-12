@@ -15,30 +15,35 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.Reference;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
-import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.webfirmframework.wffweb.common.SampleBrowserPage;
-import com.webfirmframework.wffweb.server.page.BrowserPage.Settings;
-import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.NotRenderedException;
 import com.webfirmframework.wffweb.NullValueException;
+import com.webfirmframework.wffweb.common.SampleBrowserPage;
+import com.webfirmframework.wffweb.server.page.BrowserPage.Settings;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 import com.webfirmframework.wffweb.tag.html.Body;
 import com.webfirmframework.wffweb.tag.html.Html;
@@ -393,6 +398,55 @@ public class BrowserPageTest {
         assertNotEquals(defaultSettings.onPayloadLoss().serverSideAction(), sampleBrowserPage.getSettings().onPayloadLoss().serverSideAction());
         
         assertEquals(defaultSettings.onPayloadLoss().javaScript(), sampleBrowserPage.getSettings().onPayloadLoss().javaScript());
+    }
+
+    @Test
+    public void testHoldPushUnholdPushAndIsHoldPush() {
+        final BrowserPage browserPage = new BrowserPage() {
+            @Override
+            public String webSocketUrl() {
+                return "wss://webfirmframework.com/ws-con";
+            }
+
+            @Override
+            public AbstractHtml render() {
+                Html rootTag = new Html(null).give(html -> {
+                    new Head(html);
+                    new Body(html);
+                });
+                rootTag.setPrependDocType(true);
+                return rootTag;
+            }
+        };
+        try {
+            browserPage.toOutputStream(new ByteArrayOutputStream(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            fail("failed due to IOException");
+        }
+
+        assertFalse(browserPage.isHoldPush());
+        browserPage.holdPush();
+        assertTrue(browserPage.isHoldPush());
+        try {
+            browserPage.getTagRepository().findBodyTag().appendChild(new Div(null));
+        } finally {
+            browserPage.unholdPush();
+        }
+        assertFalse(browserPage.isHoldPush());
+
+        //unholding without holding
+        browserPage.unholdPush();
+
+        assertFalse(browserPage.isHoldPush());
+        browserPage.holdPush();
+        assertTrue(browserPage.isHoldPush());
+        try {
+            browserPage.getTagRepository().findBodyTag().appendChild(new Div(null));
+        } finally {
+            browserPage.unholdPush();
+        }
+        assertFalse(browserPage.isHoldPush());
+
     }
 
 }

@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.links;
 
+import java.io.Serial;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.settings.WffConfiguration;
@@ -33,6 +34,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  */
 public class Nav extends AbstractHtml {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final Logger LOGGER = Logger.getLogger(Nav.class.getName());

@@ -19,6 +19,7 @@ package com.webfirmframework.wffweb.tag.html.attribute.global;
 import static com.webfirmframework.wffweb.css.CssConstants.IMPORTANT;
 import static com.webfirmframework.wffweb.css.CssConstants.IMPORTANT_UPPERCASE;
 
+import java.io.Serial;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -316,100 +317,101 @@ import com.webfirmframework.wffweb.util.TagStringUtil;
  *float <br>
  *font <br>
  *<code>@</code>font-face : cannot be used directly<br>
- *font-family<br>
- *font-size<br>
- *font-size-adjust<br>
- *font-stretch<br>
- *font-style<br>
- *font-variant<br>
- *font-weight<br>
- *hanging-punctuation<br>
- *height<br>
- *icon<br>
- *justify-content<br>
- *<i>@keyframes</i> : cannot be used directly<br>
- *left<br>
- *letter-spacing<br>
- *line-height<br>
- *list-style<br>
- *list-style-image<br>
- *list-style-position<br>
- *list-style-type<br>
- *margin<br>
- *margin-bottom<br>
- *margin-left<br>
- *margin-right<br>
- *margin-top<br>
- *max-height<br>
- *max-width<br>
- *<i>@media</i> : cannot be used directly<br>
- *min-height<br>
- *min-width<br>
- *nav-down<br>
- *nav-index<br>
- *nav-left<br>
- *nav-right<br>
- *nav-up<br>
- *opacity<br>
- *order<br>
- *outline<br>
- *outline-color<br>
- *outline-offset<br>
- *outline-style<br>
- *outline-width<br>
- *overflow<br>
- *overflow-x<br>
- *overflow-y<br>
- *padding<br>
- *padding-bottom<br>
- *padding-left<br>
- *padding-right<br>
- *padding-top<br>
- *page-break-after<br>
- *page-break-before<br>
- *page-break-inside<br>
- *perspective<br>
- *perspective-origin<br>
- *position<br>
- *quotes<br>
- *resize<br>
- *right<br>
- *tab-size<br>
- *table-layout<br>
- *text-align<br>
- *text-align-last<br>
- *text-decoration<br>
- *text-decoration-color<br>
- *text-decoration-line<br>
- *text-decoration-style<br>
- *text-indent<br>
- *text-justify<br>
- *text-overflow<br>
- *text-shadow<br>
- *text-transform<br>
- *top<br>
- *transform<br>
- *transform-origin<br>
- *transform-style<br>
- *transition<br>
- *transition-delay<br>
- *transition-duration<br>
- *transition-property<br>
- *transition-timing-function<br>
- *unicode-bidi<br>
- *vertical-align<br>
- *visibility<br>
- *white-space<br>
- *width<br>
- *word-break<br>
- *word-spacing<br>
- *word-wrap<br>
- *z-index<br>
+ *         font-family<br>
+ *         font-size<br>
+ *         font-size-adjust<br>
+ *         font-stretch<br>
+ *         font-style<br>
+ *         font-variant<br>
+ *         font-weight<br>
+ *         hanging-punctuation<br>
+ *         height<br>
+ *         icon<br>
+ *         justify-content<br>
+ *         <i>@keyframes</i> : cannot be used directly<br>
+ *         left<br>
+ *         letter-spacing<br>
+ *         line-height<br>
+ *         list-style<br>
+ *         list-style-image<br>
+ *         list-style-position<br>
+ *         list-style-type<br>
+ *         margin<br>
+ *         margin-bottom<br>
+ *         margin-left<br>
+ *         margin-right<br>
+ *         margin-top<br>
+ *         max-height<br>
+ *         max-width<br>
+ *         <i>@media</i> : cannot be used directly<br>
+ *         min-height<br>
+ *         min-width<br>
+ *         nav-down<br>
+ *         nav-index<br>
+ *         nav-left<br>
+ *         nav-right<br>
+ *         nav-up<br>
+ *         opacity<br>
+ *         order<br>
+ *         outline<br>
+ *         outline-color<br>
+ *         outline-offset<br>
+ *         outline-style<br>
+ *         outline-width<br>
+ *         overflow<br>
+ *         overflow-x<br>
+ *         overflow-y<br>
+ *         padding<br>
+ *         padding-bottom<br>
+ *         padding-left<br>
+ *         padding-right<br>
+ *         padding-top<br>
+ *         page-break-after<br>
+ *         page-break-before<br>
+ *         page-break-inside<br>
+ *         perspective<br>
+ *         perspective-origin<br>
+ *         position<br>
+ *         quotes<br>
+ *         resize<br>
+ *         right<br>
+ *         tab-size<br>
+ *         table-layout<br>
+ *         text-align<br>
+ *         text-align-last<br>
+ *         text-decoration<br>
+ *         text-decoration-color<br>
+ *         text-decoration-line<br>
+ *         text-decoration-style<br>
+ *         text-indent<br>
+ *         text-justify<br>
+ *         text-overflow<br>
+ *         text-shadow<br>
+ *         text-transform<br>
+ *         top<br>
+ *         transform<br>
+ *         transform-origin<br>
+ *         transform-style<br>
+ *         transition<br>
+ *         transition-delay<br>
+ *         transition-duration<br>
+ *         transition-property<br>
+ *         transition-timing-function<br>
+ *         unicode-bidi<br>
+ *         vertical-align<br>
+ *         visibility<br>
+ *         white-space<br>
+ *         width<br>
+ *         word-break<br>
+ *         word-spacing<br>
+ *         word-wrap<br>
+ *         z-index<br>
  *         </pre>
  **/
 // @formatter:on
 public class Style extends AbstractAttribute implements GlobalAttributable, StateChangeInformer<CssProperty> {
 
+    @Serial
     private static final long serialVersionUID = 1_0_1L;
 
     private static final Logger LOGGER = Logger.getLogger(Style.class.getName());

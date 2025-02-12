@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
@@ -37,6 +39,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.InputAttributable;
  */
 public class Align extends AbstractAttribute implements InputAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public static final String LEFT = "left";

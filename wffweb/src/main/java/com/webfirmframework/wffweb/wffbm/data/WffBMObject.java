@@ -15,6 +15,9 @@
  */
 package com.webfirmframework.wffweb.wffbm.data;
 
+import java.io.Serial;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
@@ -25,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.WffRuntimeException;
@@ -35,7 +39,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * The java object representation for JavaScript object. <br>
  * Sample code :- <br>
  *
- * <pre>
+ * <pre><code>
  * WffBMObject bmObject = new WffBMObject();
  * bmObject.put("serverKey", BMValueType.STRING, "value from server");
  * bmObject.put("string", BMValueType.STRING, "sample string");
@@ -45,7 +49,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * bmObject.put("reg", BMValueType.REG_EXP, "[w]");
  * bmObject.put("bool", BMValueType.BOOLEAN, true);
  * bmObject.put("testFun", BMValueType.FUNCTION, "function(arg) {alert(arg);}");
- * </pre>
+ * </code></pre>
  *
  * The {@code WffBMObject} can also hold array and binary data (as byte array).
  * Check out {@code WffBMArray} and {@code WffBMByteArray} respectively.
@@ -53,10 +57,10 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * @author WFF
  * @see WffBMArray
  * @see WffBMByteArray
- *
  */
 public class WffBMObject extends LinkedHashMap<String, ValueValueType> implements WffBMData {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private boolean outer;
@@ -106,14 +110,21 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
         if (this == value) {
             throw new InvalidValueException("The same instance cannot be passed as value");
         }
-        super.put(key, new ValueValueType(key, valueType.getType(), value));
+        // do not keep overloading method put(String, BMValueType, float) it may execute
+        // this method (i.e. (... Object))
+        // and for int value it will execute (..., float) method
+        if (BMValueType.NUMBER.equals(valueType) && value instanceof final Float f) {
+            super.put(key,
+                    new ValueValueType(key, valueType.getType(), new BigDecimal(Float.toString(f)).doubleValue()));
+        } else {
+            super.put(key, new ValueValueType(key, valueType.getType(), value));
+        }
     }
 
     /**
      * replacement method for build() method.
      *
      * @return
-     *
      * @since 3.0.15
      */
     public byte[] buildBytes() {
@@ -123,9 +134,8 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     /**
      * @param outer
      * @return bytes for this WffBMObject
-     *
-     * @since 3.0.2
      * @author WFF
+     * @since 3.0.2
      */
     @Override
     public byte[] buildBytes(final boolean outer) {
@@ -217,7 +227,6 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     /**
      * @param bmObjectBytes
      * @param outer
-     *
      */
     private void initWffBMObject(final byte[] bmObjectBytes, final boolean outer) {
 
@@ -313,8 +322,8 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
 
     /**
      * @param key the key name
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public Object getValue(final String key) {
         final ValueValueType valueValueType = super.get(key);
@@ -326,11 +335,10 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     }
 
     /**
-     *
      * @param key
      * @return the value type of this key
-     * @since 2.0.0
      * @author WFF
+     * @since 2.0.0
      */
     public BMValueType getValueType(final String key) {
         final ValueValueType valueValueType = super.get(key);
@@ -343,6 +351,488 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
     @Override
     public BMType getBMType() {
         return BMType.OBJECT;
+    }
+
+    /**
+     * The value will be internally saved as a double and its BMValueType will be
+     * NUMBER. If you want to save a big value larger than double, save it as a
+     * string and get it by getValueAsBigInteger/getValueAsBigDecimal method.
+     *
+     * @param key   the key.
+     * @param value the value for the key.
+     * @since 12.0.3
+     */
+    public void put(final String key, final Number value) {
+        put(key, BMValueType.NUMBER, value);
+    }
+
+    /**
+     * The value will be internally saved as boolean and its BMValueType will be
+     * NUMBER.
+     *
+     * @param key   the key.
+     * @param value the value for the key.
+     * @since 12.0.3
+     */
+    public void put(final String key, final Boolean value) {
+        put(key, BMValueType.BOOLEAN, value);
+    }
+
+    /**
+     * The value will be internally saved as WffBMObject and its BMValueType will be
+     * BM_OBJECT.
+     *
+     * @param key   the key.
+     * @param value the value for the key.
+     * @since 12.0.3
+     */
+    public void put(final String key, final WffBMObject value) {
+        put(key, BMValueType.BM_OBJECT, value);
+    }
+
+    /**
+     * The value will be internally saved as WffBMArray and its BMValueType will be
+     * BM_ARRAY.
+     *
+     * @param key   the key.
+     * @param value the value for the key.
+     * @since 12.0.3
+     */
+    public void put(final String key, final WffBMArray value) {
+        put(key, BMValueType.BM_ARRAY, value);
+    }
+
+    /**
+     * The value will be internally saved as WffBMByteArray and its BMValueType will
+     * be BM_BYTE_ARRAY.
+     *
+     * @param key   the key.
+     * @param value the value for the key.
+     * @since 12.0.3
+     */
+    public void put(final String key, final WffBMByteArray value) {
+        put(key, BMValueType.BM_BYTE_ARRAY, value);
+    }
+
+    /**
+     * The value will be internally saved as null and its BMValueType will be NULL.
+     *
+     * @param key the key.
+     * @since 12.0.3
+     */
+    public void putNull(final String key) {
+        put(key, BMValueType.NULL, null);
+    }
+
+    /**
+     * The value will be internally saved as null and its BMValueType will be
+     * UNDEFINED.
+     *
+     * @param key the key.
+     * @since 12.0.3
+     */
+    public void putUndefined(final String key) {
+        put(key, BMValueType.UNDEFINED, null);
+    }
+
+    /**
+     * The value will be internally saved as regex string and its BMValueType will
+     * be REG_EXP. Eg:
+     *
+     * <pre><code>
+     *     WffBMObject obj = new WffBMObject();
+     *     obj.putRegex("regexStr", "[w]");
+     * </code></pre>
+     *
+     * @param key the key. @ param value the value for the key.
+     * @since 12.0.3
+     */
+    public void putRegex(final String key, final String regex) {
+        put(key, BMValueType.REG_EXP, regex);
+    }
+
+    /**
+     * The value will be internally saved as string and its BMValueType will be
+     * STRING.
+     *
+     * @param key the key. @ param value the value for the key.
+     * @since 12.0.3
+     */
+    public void putString(final String key, final String string) {
+        put(key, BMValueType.STRING, string);
+    }
+
+    /**
+     * The value will be internally saved as function string and its BMValueType
+     * will be FUNCTION. Eg:
+     *
+     * <pre><code>
+     *     WffBMObject obj = new WffBMObject();
+     *     obj.putFunction("funKey", "function(arg) {console.log(arg);}");
+     * </code></pre>
+     *
+     * @param key the key. @ param value the value for the key.
+     * @since 12.0.3
+     */
+    public void putFunction(final String key, final String function) {
+        put(key, BMValueType.FUNCTION, function);
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the Double value.
+     * @throws NumberFormatException if the value is not convertible to Double.
+     * @since 12.0.3
+     */
+    public Double getValueAsDouble(final String key) throws NumberFormatException {
+        return getValueAsDouble(key, null, null);
+    }
+
+    /**
+     * To get value as Double if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForDouble", 14.01D);
+     * Double valueAsDouble = wffBMObject.getValueAsDouble("keyForDouble", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.NUMBER.equals(valueValueType.valueType()), 1401.19D);
+     * </code></pre> In the above code if the value is not null and valueType is
+     * NUMBER then only it will convert the value to Double otherwise it will return
+     * the default value passed in the third argument i.e. 1401.19D.
+     *
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the Double value.
+     * @throws NumberFormatException if the value is not convertible to Double.
+     * @since 12.0.3
+     */
+    public Double getValueAsDouble(final String key, final Predicate<ValueAndValueType> predicate,
+            final Double defaultValue) throws NumberFormatException {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsDouble();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the Float value.
+     * @throws NumberFormatException if the value is not convertible to Float.
+     * @since 12.0.3
+     */
+    public Float getValueAsFloat(final String key) throws NumberFormatException {
+        return getValueAsFloat(key, null, null);
+    }
+
+    /**
+     * To get value as Float if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForFloat", 14.01F);
+     * Float valueAsFloat = wffBMObject.getValueAsFloat("keyForFloat", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.NUMBER.equals(valueValueType.valueType()), 1401.19F);
+     * </code></pre> In the above code if the value is not null and valueType is
+     * NUMBER then only it will convert the value to Float otherwise it will return
+     * the default value passed in the third argument i.e. 1401.19F.
+     *
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the Float value.
+     * @throws NumberFormatException if the value is not convertible to Float.
+     * @since 12.0.3
+     */
+    public Float getValueAsFloat(final String key, final Predicate<ValueAndValueType> predicate,
+            final Float defaultValue) throws NumberFormatException {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsFloat();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the BigDecimal value.
+     * @throws NumberFormatException if the value is not convertible to BigDecimal.
+     * @since 12.0.3
+     */
+    public BigDecimal getValueAsBigDecimal(final String key) throws NumberFormatException {
+        return getValueAsBigDecimal(key, null, null);
+    }
+
+    /**
+     * To get value as BigDecimal if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForBigDecimal", new BigDecimal("14.01"));
+     * BigDecimal valueAsBigDecimal = wffBMObject.getValueAsBigDecimal("keyForBigDecimal", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.NUMBER.equals(valueValueType.valueType()), new BigDecimal("1401.19"));
+     * </code></pre> In the above code if the value is not null and valueType is
+     * NUMBER then only it will convert the value to BigDecimal otherwise it will
+     * return the default value passed in the third argument i.e. 1401.19.
+     *
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the BigDecimal value.
+     * @throws NumberFormatException if the value is not convertible to BigDecimal.
+     * @since 12.0.3
+     */
+    public BigDecimal getValueAsBigDecimal(final String key, final Predicate<ValueAndValueType> predicate,
+            final BigDecimal defaultValue) throws NumberFormatException {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsBigDecimal();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the BigInteger value.
+     * @throws NumberFormatException if the value is not convertible to BigInteger.
+     * @since 12.0.3
+     */
+    public BigInteger getValueAsBigInteger(final String key) throws NumberFormatException {
+        return getValueAsBigInteger(key, null, null);
+    }
+
+    /**
+     * To get value as BigInteger if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForBigInteger", new BigInteger("14"));
+     * BigInteger valueAsBigInteger = wffBMObject.getValueAsBigInteger("keyForBigInteger", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.NUMBER.equals(valueValueType.valueType()), new BigInteger("1401"));
+     * </code></pre> In the above code if the value is not null and valueType is
+     * NUMBER then only it will convert the value to BigInteger otherwise it will
+     * return the default value passed in the third argument i.e. 1401.
+     *
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the BigInteger value.
+     * @throws NumberFormatException if the value is not convertible to BigInteger.
+     * @since 12.0.3
+     */
+    public BigInteger getValueAsBigInteger(final String key, final Predicate<ValueAndValueType> predicate,
+            final BigInteger defaultValue) throws NumberFormatException {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsBigInteger();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the Integer value.
+     * @throws NumberFormatException if the value is not convertible to Integer.
+     * @since 12.0.3
+     */
+    public Integer getValueAsInteger(final String key) throws NumberFormatException {
+        return getValueAsInteger(key, null, null);
+    }
+
+    /**
+     * To get value as Integer if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForInteger", 14);
+     * Integer valueAsInteger = wffBMObject.getValueAsInteger("keyForInteger", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.NUMBER.equals(valueValueType.valueType()), 1401);
+     * </code></pre> In the above code if the value is not null and valueType is
+     * NUMBER then only it will convert the value to Integer otherwise it will
+     * return the default value passed in the third argument i.e. 1401.
+     *
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the Integer value.
+     * @throws NumberFormatException if the value is not convertible to Integer.
+     * @since 12.0.3
+     */
+    public Integer getValueAsInteger(final String key, final Predicate<ValueAndValueType> predicate,
+            final Integer defaultValue) throws NumberFormatException {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsInteger();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the Long value.
+     * @throws NumberFormatException if the value is not convertible to Long.
+     * @since 12.0.3
+     */
+    public Long getValueAsLong(final String key) {
+        return getValueAsLong(key, null, null);
+    }
+
+    /**
+     * To get value as Long if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForLong", 14L);
+     * Long valueAsLong = wffBMObject.getValueAsLong("keyForLong", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.NUMBER.equals(valueValueType.valueType()), 1401L);
+     * </code></pre> In the above code if the value is not null and valueType is
+     * NUMBER then only it will convert the value to Long otherwise it will return
+     * the default value passed in the third argument i.e. 1401L.
+     *
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the Long value.
+     * @throws NumberFormatException if the value is not convertible to Long.
+     * @since 12.0.3
+     */
+    public Long getValueAsLong(final String key, final Predicate<ValueAndValueType> predicate,
+            final Long defaultValue) {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsLong();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the value as String.
+     * @since 12.0.3
+     */
+    public String getValueAsString(final String key) {
+        return getValueAsString(key, null, null);
+    }
+
+    /**
+     * To get value as String if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.putString("keyForString", "wffweb");
+     * String valueAsString = wffBMObject.getValueAsString("keyForString", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.STRING.equals(valueValueType.valueType()), "some default value");
+     * </code></pre> In the above code if the value is not null and valueType is
+     * STRING then only it will convert the value to String otherwise it will return
+     * the default value passed in the third argument i.e. "some default value".
+     *
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the value as String.
+     * @since 12.0.3
+     */
+    public String getValueAsString(final String key, final Predicate<ValueAndValueType> predicate,
+            final String defaultValue) {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsString();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the value as Boolean.
+     * @since 12.0.3
+     */
+    public Boolean getValueAsBoolean(final String key) {
+        return getValueAsBoolean(key, null, null);
+    }
+
+    /**
+     * To get value as Boolean if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForBoolean", true);
+     * Boolean valueAsBoolean = wffBMObject.getValueAsBoolean("keyForBoolean", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.BOOLEAN.equals(valueValueType.valueType()), null);
+     * </code></pre> In the above code if the value is not null and valueType is
+     * BOOLEAN then only it will convert the value to Boolean otherwise it will
+     * return the default value passed in the third argument, i.e null.
+     *
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the value as Boolean.
+     * @since 12.0.3
+     */
+    public Boolean getValueAsBoolean(final String key, final Predicate<ValueAndValueType> predicate,
+            final Boolean defaultValue) {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return valueValueType.valueAsBoolean();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param other the other object for similarity checking.
+     * @return true if the other object also contains the same data otherwise false.
+     * @since 12.0.3
+     */
+    public boolean similar(final WffBMObject other) {
+        return Arrays.equals(buildBytes(true), other.buildBytes(true));
     }
 
 }

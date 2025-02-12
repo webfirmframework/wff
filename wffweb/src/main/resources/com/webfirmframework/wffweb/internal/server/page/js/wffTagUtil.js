@@ -72,7 +72,9 @@ var wffTagUtil = new function() {
 	var getAttrNameValueFromCompressedBytes = function(utf8Bytes) {
 		var lengOfOptmzdBytsOfAttrNam = utf8Bytes[0];
 		
-		if(lengOfOptmzdBytsOfAttrNam > 0) {
+		if(lengOfOptmzdBytsOfAttrNam > 0 || (lengOfOptmzdBytsOfAttrNam < 0 && lengOfOptmzdBytsOfAttrNam > -5)) {
+		    var ng = lengOfOptmzdBytsOfAttrNam < 0;
+		    var lengOfOptmzdBytsOfAttrNam = ng ? Math.abs(lengOfOptmzdBytsOfAttrNam) : lengOfOptmzdBytsOfAttrNam;
 			var attrNamNdxOptmzdByts = subarray(utf8Bytes, 1, lengOfOptmzdBytsOfAttrNam);
 			
 			var attrNamNdx = wffBMUtil.getIntFromOptimizedBytes(attrNamNdxOptmzdByts);
@@ -80,15 +82,28 @@ var wffTagUtil = new function() {
 			var attrValLen = utf8Bytes.length - (lengOfOptmzdBytsOfAttrNam + 1);
 			
 			var attrValByts = subarray(utf8Bytes, lengOfOptmzdBytsOfAttrNam + 1, attrValLen);
-			
-			var attrNamVal = [wffGlobal.NDXD_ATRBS[attrNamNdx], getStringFromBytes(attrValByts)];
-			return attrNamVal;
-		} else {
+
+			var attrValue = ng ? wffBMUtil.getIntFromOptimizedBytes(attrValByts).toString() : getStringFromBytes(attrValByts);
+
+			// [attributeName, attributeValue]
+			return [wffGlobal.NDXD_ATRBS[attrNamNdx], attrValue];
+		} else if (lengOfOptmzdBytsOfAttrNam == 0) {
 			var reqBytsLngth = utf8Bytes.length - 1;
-			
 			var attrNamByts = subarray(utf8Bytes, 1, reqBytsLngth);
-			
 			return splitAttrNameValue(getStringFromBytes(attrNamByts));
+		} else {
+		   lengOfOptmzdBytsOfAttrNam = Math.abs(lengOfOptmzdBytsOfAttrNam);
+		   // -5 or -6 it is data-wff-id
+		   // -5 for prefix S, -6 for prefix C, getting it dynamically
+		   var ndx = lengOfOptmzdBytsOfAttrNam - 5;
+		   if (ndx >= wffGlobal.WFF_ID_PFXS.length) {
+		       wffLog("Error: prefix not indexed for", ndx);
+               return null;
+		   }
+		   // pfx stands for prefix
+		   var pfx = wffGlobal.WFF_ID_PFXS[ndx];
+           // [attributeName, attributeValue]
+           return ["data-wff-id", pfx + wffBMUtil.getIntFromOptimizedBytes(subarray(utf8Bytes, 1, utf8Bytes.length)).toString()];
 		}
 	};
 	
@@ -118,13 +133,14 @@ var wffTagUtil = new function() {
 //		return div.firstChild;
 //	};
 
-	this.getTagByTagNameAndWffId = function(tagName, wffId) {
-		console.log('getTagByTagNameAndWffId tagName', tagName, 'wffId', wffId);
-		var elements = document.querySelectorAll(tagName + '[data-wff-id="'
+	this.getTagByTagNameAndWffId = function(tn, wffId) {
+	    // tn stands for tagName
+		console.log('getTagByTagNameAndWffId tagName', tn, 'wffId', wffId);
+		var elements = document.querySelectorAll(tn + '[data-wff-id="'
 				+ wffId + '"]');
 		if (elements.length > 1) {
 			console.log('getTagByTagNameAndWffId multiple tags with same wff id');
-			wffLog('multiple tags with same wff id', 'tagName', 'wffId', wffId);
+			wffLog('multiple tags with same wff id', tn, 'wffId', wffId);
 		}
 		return elements[0];
 	};
@@ -248,21 +264,22 @@ var wffTagUtil = new function() {
 			var name = nameValues[i].name;
 			var values = nameValues[i].values;
 
-			var tagName = getStringFromBytes(values[0]);
+            // tn stands for tagName
+			var tn = getStringFromBytes(values[0]);
 
 			var child;
 
-			if (tagName === '#') {
+			if (tn === '#') {
 				var text = getStringFromBytes(values[1]);
 				child = document.createDocumentFragment();
 				child.appendChild(document.createTextNode(text));
-			} else if (tagName === '@') {
+			} else if (tn === '@') {
 				// @ short for html content
 				var text = getStringFromBytes(values[1]);
 				child = document.createDocumentFragment();				
 				appendHtmlAsChildren(child, text);
 			} else {
-				child = document.createElement(tagName);
+				child = document.createElement(tn);
 
 				for (var j = 1; j < values.length; j++) {
 					var attrNameValue = splitAttrNameValue(getStringFromBytes(values[j]));
@@ -293,20 +310,18 @@ var wffTagUtil = new function() {
 		var parent;
 		var parentTagName = getTagNameFromCompressedBytes(superParentValues[0]);
 		
-		if (parentTagName === '#') {
-			var text = getStringFromBytes(superParentValues[1]);
+		if (parentTagName === '#' || parentTagName === '$' || parentTagName === '%') {
+			var txt = (parentTagName === '$' || parentTagName === '%') ? wffBMUtil.getIntFromOptimizedBytes(superParentValues[1]).toString()
+			: parentTagName === '#' ? getStringFromBytes(superParentValues[1]) : '';
 			parent = document.createDocumentFragment();
-			parent.appendChild(document.createTextNode(text));
+			parent.appendChild(document.createTextNode(txt));
 		} else if (parentTagName === '@') {
 			// @ short for html content
-			var text = getStringFromBytes(superParentValues[1]);
+			var txt = getStringFromBytes(superParentValues[1]);
 			parent = document.createDocumentFragment();			
-			appendHtmlAsChildren(parent, text);
-			
+			appendHtmlAsChildren(parent, txt);
 		} else {
-
 			parent = document.createElement(parentTagName);
-
 			for (var i = 1; i < superParentValues.length; i++) {
 				var attrNameValue = getAttrNameValueFromCompressedBytes(superParentValues[i]);
 				//value attribute doesn't work with setAttribute method
@@ -322,21 +337,23 @@ var wffTagUtil = new function() {
 			var name = nameValues[i].name;
 			var values = nameValues[i].values;
 
-			var tagName = getTagNameFromCompressedBytes(values[0]);
+            // tn stands for tagName
+			var tn = getTagNameFromCompressedBytes(values[0]);
 
 			var child;
 
-			if (tagName === '#') {
-				var text = getStringFromBytes(values[1]);
+			if (tn === '#' || tn === '$' || tn === '%') {
+			    var txt = (tn === '$' || tn === '%') ? wffBMUtil.getIntFromOptimizedBytes(values[1]).toString()
+            			: tn === '#' ? getStringFromBytes(values[1]) : '';
 				child = document.createDocumentFragment();
-				child.appendChild(document.createTextNode(text));
-			} else if (tagName === '@') {
+				child.appendChild(document.createTextNode(txt));
+			} else if (tn === '@') {
 				// @ short for html content
 				var text = getStringFromBytes(values[1]);
 				child = document.createDocumentFragment();				
 				appendHtmlAsChildren(child, text);
 			} else {
-				child = document.createElement(tagName);
+				child = document.createElement(tn);
 
 				for (var j = 1; j < values.length; j++) {
 					var attrNameValue = getAttrNameValueFromCompressedBytes(values[j]);

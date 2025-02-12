@@ -15,14 +15,19 @@
  */
 package com.webfirmframework.wffweb.wffbm.data;
 
+import java.io.Serial;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
@@ -31,7 +36,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * The java array object representation for JavaScript array. <br>
  * Sample code :- <br>
  *
- * <pre>
+ * <pre><code>
  * WffBMObject bmObject = new WffBMObject();
  *
  * WffBMArray stringArray = new WffBMArray(BMValueType.STRING);
@@ -47,7 +52,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  *
  * bmObject.put("numberArray", BMValueType.BM_ARRAY, numberArray);
  *
- * <code>// to store bytes in an array use WffBMByteArray</code>
+ * // to store bytes in an array use WffBMByteArray
  * WffBMByteArray byteArray = new WffBMByteArray();
  * byteArray.write("こんにちは WFFWEB".getBytes(StandardCharsets.UTF_8));
  *
@@ -101,7 +106,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * objectArray.add(bmObject.clone());
  *
  * bmObject.put("objectArray", BMValueType.BM_ARRAY, objectArray);
- * </pre>
+ * </code></pre>
  *
  * @author WFF
  * @see WffBMByteArray
@@ -109,6 +114,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  */
 public class WffBMArray extends LinkedList<Object> implements WffBMData {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private boolean outer;
@@ -385,5 +391,202 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
     @Override
     public BMType getBMType() {
         return BMType.ARRAY;
+    }
+
+    /**
+     * @param value the number to add to the array.
+     * @return true or false.
+     * @since 12.0.3
+     */
+    public boolean addNumber(final Number value) {
+        if (BMValueType.NUMBER.equals(valueType)) {
+            if (value instanceof final Float f) {
+                return super.add(floatToDouble(f));
+            } else {
+                return super.add(value);
+            }
+        } else {
+            throw new InvalidValueException("Number value is allowed to add only in BMValueType.NUMBER type array.");
+        }
+    }
+
+    /**
+     * @param index the index
+     * @param value the number to add to the array.
+     * @since 12.0.3
+     */
+    public void addNumber(final int index, final Number value) {
+        if (BMValueType.NUMBER.equals(valueType)) {
+            if (value instanceof final Float f) {
+                super.add(index, floatToDouble(f));
+            } else {
+                super.add(index, value);
+            }
+        } else {
+            throw new InvalidValueException("Number value is allowed to add only in BMValueType.NUMBER type array.");
+        }
+    }
+
+    /**
+     * Inserts the specified number at the beginning of this array.
+     *
+     * @param value the number to insert.
+     * @since 12.0.3
+     */
+    public void addNumberFirst(final Number value) {
+        if (BMValueType.NUMBER.equals(valueType)) {
+            if (value instanceof final Float f) {
+                super.addFirst(floatToDouble(f));
+            } else {
+                super.addFirst(value);
+            }
+        } else {
+            throw new InvalidValueException("Number value is allowed to add only in BMValueType.NUMBER type array.");
+        }
+    }
+
+    /**
+     * Appends the specified number to the end of this array.
+     *
+     * @param value the number to insert.
+     * @since 12.0.3
+     */
+    public void addNumberLast(final Number value) {
+        if (BMValueType.NUMBER.equals(valueType)) {
+            if (value instanceof final Float f) {
+                super.addLast(floatToDouble(f));
+            } else {
+                super.addLast(value);
+            }
+        } else {
+            throw new InvalidValueException("Number value is allowed to add only in BMValueType.NUMBER type array.");
+        }
+    }
+
+    /**
+     * @param value converts the float value to double without loosing precision.
+     * @return the double value.
+     * @since 12.0.3
+     */
+    protected static double floatToDouble(final Float value) {
+        return new BigDecimal(Float.toString(value)).doubleValue();
+    }
+
+    /**
+     * @param index the index to get the value as string.
+     * @return the value as String.
+     * @since 12.0.3
+     */
+    public String getValueAsString(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return new ValueValueType("", valueType, value).valueAsString();
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as BigDecimal.
+     * @return the value as BigDecimal.
+     * @since 12.0.3
+     */
+    public BigDecimal getValueAsBigDecimal(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return new ValueValueType("", valueType, value).valueAsBigDecimal();
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as BigInteger.
+     * @return the value as BigInteger.
+     * @since 12.0.3
+     */
+    public BigInteger getValueAsBigInteger(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return new ValueValueType("", valueType, value).valueAsBigInteger();
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as Integer.
+     * @return the value as Integer.
+     * @since 12.0.3
+     */
+    public Integer getValueAsInteger(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return new ValueValueType("", valueType, value).valueAsInteger();
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as Long.
+     * @return the value as Long.
+     * @since 12.0.3
+     */
+    public Long getValueAsLong(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return new ValueValueType("", valueType, value).valueAsLong();
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as Double.
+     * @return the value as Double.
+     * @since 12.0.3
+     */
+    public Double getValueAsDouble(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return new ValueValueType("", valueType, value).valueAsDouble();
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as Float.
+     * @return the value as Float.
+     * @since 12.0.3
+     */
+    public Float getValueAsFloat(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return new ValueValueType("", valueType, value).valueAsFloat();
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as Boolean.
+     * @return the value as Boolean.
+     * @since 12.0.3
+     */
+    public Boolean getValueAsBoolean(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            final Boolean valueAsBoolean = new ValueValueType("", valueType, value).valueAsBoolean();
+            if (valueAsBoolean == null) {
+                throw new InvalidValueException(
+                        "Unable to parse boolean from value %s having valueType %s".formatted(value, valueType.name()));
+            }
+            return valueAsBoolean;
+        }
+        return null;
+    }
+
+    /**
+     * @param other the other object for similarity checking.
+     * @return true if the other object also contains the same data otherwise false.
+     * @since 12.0.3
+     */
+    public boolean similar(final WffBMArray other) {
+        return Arrays.equals(buildBytes(true), other.buildBytes(true));
     }
 }

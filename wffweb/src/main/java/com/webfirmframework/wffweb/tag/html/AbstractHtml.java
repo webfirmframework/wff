@@ -74,6 +74,7 @@ import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.internal.tag.html.listener.ReplaceListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.URIChangeTagSupplier;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.streamer.WffBinaryMessageOutputStreamer;
 import com.webfirmframework.wffweb.tag.core.AbstractJsObject;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -89,6 +90,7 @@ import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.htmlwff.CustomTag;
 import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
+import com.webfirmframework.wffweb.util.NumberUtil;
 import com.webfirmframework.wffweb.util.StringUtil;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 import com.webfirmframework.wffweb.util.data.NameValue;
@@ -120,6 +122,18 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     // its length will be always 1
     private static final byte[] INDEXED_HASH_CHAR_BYTES;
+
+    /**
+     * its length will be always 1. to represent int bytes to interpret as TEXT but
+     * to represent noTagContentTypeHtml = true
+     */
+    private static final byte[] INDEXED_DOLLAR_CHAR_BYTES;
+
+    /**
+     * its length will be always 1. to represent int bytes to interpret as TEXT but
+     * noTagContentTypeHtml = false
+     */
+    private static final byte[] INDEXED_PERCENT_CHAR_BYTES;
 
     private volatile AbstractHtml parent;
 
@@ -255,6 +269,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             return sharedObject.objectId();
         }
 
+        @SuppressWarnings("unused")
         private boolean isValid(final AbstractHtml5SharedObject latestSharedObject) {
             if (sharedObject.equals(tag.getSharedObjectLockless()) || (latestSharedObject == null)) {
                 return true;
@@ -276,6 +291,11 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         // its length will be always 1
         INDEXED_HASH_CHAR_BYTES = PreIndexedTagName.HASH.internalIndexBytes(ACCESS_OBJECT);
+
+        // its length will be always 1
+        INDEXED_DOLLAR_CHAR_BYTES = PreIndexedTagName.DOLLAR.internalIndexBytes(ACCESS_OBJECT);
+
+        INDEXED_PERCENT_CHAR_BYTES = PreIndexedTagName.PERCENT.internalIndexBytes(ACCESS_OBJECT);
 
     }
 
@@ -2245,21 +2265,25 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     private void validateChildren(final AbstractHtml... children) {
-        for (final AbstractHtml child : children) {
-            if (child == null) {
-                throw new InvalidValueException("The child tag object cannot be null.");
+        if (WffConfiguration.isDebugMode()) {
+            for (final AbstractHtml child : children) {
+                if (child == null) {
+                    throw new InvalidValueException("The child tag object cannot be null.");
+                }
             }
+            validateChildren(Set.of(children));
         }
-        validateChildren(Set.of(children));
     }
 
     private void validateChildren(final Collection<AbstractHtml> children) {
-        for (final AbstractHtml child : children) {
-            if (child == null) {
-                throw new InvalidValueException("The child tag object cannot be null.");
+        if (WffConfiguration.isDebugMode()) {
+            for (final AbstractHtml child : children) {
+                if (child == null) {
+                    throw new InvalidValueException("The child tag object cannot be null.");
+                }
             }
+            validateChildren(new LinkedHashSet<>(children));
         }
-        validateChildren(new LinkedHashSet<>(children));
     }
 
     private void validateChildren(final Set<AbstractHtml> initialSet) {
@@ -2285,7 +2309,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * this object. <br>
      * Eg:-
      *
-     * <pre>
+     * <pre><code>
      * Div div = new Div(null, new Id("one")) {
      *     {
      *         new Div(this, new Id("child1"));
@@ -2302,18 +2326,18 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *
      * System.out.println(div.toHtmlString());
      *
-     * </pre>
+     * </code></pre>
      * <p>
      * This prints
      *
-     * <pre>
+     * <pre><code>
      * &lt;div id=&quot;one&quot;&gt;
      *     &lt;span&gt;&lt;/span&gt;
      *     &lt;p&gt;&lt;/p&gt;
      *     &lt;br/&gt;
      *     &lt;div id=&quot;child1&quot;&gt;&lt;/div&gt;
      * &lt;/div&gt;
-     * </pre>
+     * </code></pre>
      *
      * @param children children to prepend in this object's existing children.
      * @author WFF
@@ -4947,22 +4971,22 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         }
     }
 
-    /**
-     * Just kept for future reference
-     *
-     * @param removedAbstractHtmls
-     * @return the locks after locking
-     */
-    private List<Lock> initNewSharedObjectInAllNestedTagsAndSetSuperParentNullOld(
-            final AbstractHtml[] removedAbstractHtmls) {
-        // TODO remove this unused method later
-        final List<Lock> locks = new ArrayList<>(removedAbstractHtmls.length);
-        for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
-            final Lock lock = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, true);
-            locks.add(lock);
-        }
-        return locks;
-    }
+//    /**
+//     * Just kept for future reference
+//     *
+//     * @param removedAbstractHtmls
+//     * @return the locks after locking
+//     */
+//    private List<Lock> initNewSharedObjectInAllNestedTagsAndSetSuperParentNullOld(
+//            final AbstractHtml[] removedAbstractHtmls) {
+//        // TODO remove this unused method later
+//        final List<Lock> locks = new ArrayList<>(removedAbstractHtmls.length);
+//        for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
+//            final Lock lock = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, true);
+//            locks.add(lock);
+//        }
+//        return locks;
+//    }
 
     /**
      * @param abstractHtmls the removed tags from the current object
@@ -4991,17 +5015,17 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         return locks;
     }
 
-    /**
-     * @param removedAbstractHtmls
-     * @return the locks after locking
-     */
-    private void initNewSharedObjectInAllNestedTagsAndSetSuperParentNullLockless(
-            final AbstractHtml[] removedAbstractHtmls) {
-        // TODO remove this unused method later
-        for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
-            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, false);
-        }
-    }
+//    /**
+//     * @param removedAbstractHtmls
+//     * @return the locks after locking
+//     */
+//    private void initNewSharedObjectInAllNestedTagsAndSetSuperParentNullLockless(
+//            final AbstractHtml[] removedAbstractHtmls) {
+//        // TODO remove this unused method later
+//        for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
+//            initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, false);
+//        }
+//    }
 
     /**
      * @param abstractHtml
@@ -5241,6 +5265,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
+     * Note: different wffweb lib version will generate different bytes so use the
+     * same wffweb lib version for parsing.
+     *
      * @param charset
      * @return the Wff Binary Message bytes of this tag containing indexed tag name
      *         and attribute name
@@ -5377,12 +5404,14 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
+     * It uses algorithm version 2. Note: different wffweb lib version will generate
+     * different bytes so use the same wffweb lib version for parsing.
+     *
      * @param charset
      * @return the Wff Binary Message bytes of this tag containing indexed tag name
      *         and attribute name
      * @throws InvalidTagException
      * @author WFF
-     * @version algorithm version 2
      * @since 3.0.6
      */
     public byte[] toCompressedWffBMBytesV2(final Charset charset) {
@@ -5390,7 +5419,31 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
-     * Only for internal purpose
+     * It uses algorithm version 3.
+     *
+     * To create Tag object from the returned bytes follow the example:
+     *
+     * <pre><code>
+     * Div div = new Div(null, new Id("someId"), new Value("1401"));
+     * AbstractHtml parsedTag = TagCompressedWffBMBytesParser.VERSION_3.parse(div.toCompressedWffBMBytesV3(StandardCharsets.UTF_8), true, StandardCharsets.UTF_8);
+     * </code></pre> Note: different wffweb lib version will generate different
+     * bytes so use the same wffweb lib version for parsing.
+     *
+     * @param charset
+     * @return the Wff Binary Message bytes of this tag containing indexed tag name
+     *         and attribute name
+     * @throws InvalidTagException
+     * @author WFF
+     * @since 12.0.3
+     */
+    public byte[] toCompressedWffBMBytesV3(final Charset charset) {
+        return toCompressedWffBMBytesV3(charset, null);
+    }
+
+    /**
+     * Only for internal purpose. It uses algorithm version 2. Note: different
+     * wffweb lib version will generate different bytes so use the same wffweb lib
+     * version for parsing.
      *
      * @param charset
      * @param accessObject
@@ -5398,7 +5451,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *         and attribute name
      * @throws InvalidTagException
      * @author WFF
-     * @version algorithm version 2
      * @since 3.0.6
      * @since 3.0.15 accessObject added
      */
@@ -5552,15 +5604,183 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
-     * @param bmMessageBytes
+     * Only for internal purpose. It uses algorithm version 3. Note: different
+     * wffweb lib version will generate different bytes so use the same wffweb lib
+     * version for parsing.
+     *
+     * @param charset
+     * @param accessObject
+     * @return the Wff Binary Message bytes of this tag containing indexed tag name
+     *         and attribute name
+     * @throws InvalidTagException
+     * @author WFF
+     * @since 12.0.3
+     */
+    public final byte[] toCompressedWffBMBytesV3(final Charset charset,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+
+        final Lock lock;
+
+        if (accessObject != null) {
+            lock = null;
+            if (!IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType())) {
+                throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+            }
+        } else {
+            // writeLock is better as we are writing to wffSlotIndex
+            lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
+            lock.lock();
+        }
+
+        try {
+
+            final Deque<NameValue> nameValues = new ArrayDeque<>();
+
+            // ArrayDeque give better performance than Stack, LinkedList
+            final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
+            final Set<AbstractHtml> initialSet = Set.of(this);
+            childrenStack.push(initialSet);
+
+            Set<AbstractHtml> children;
+            while ((children = childrenStack.poll()) != null) {
+
+                for (final AbstractHtml tag : children) {
+
+                    final String nodeName = tag.tagName;
+
+                    final AbstractHtml parentLocal = tag.parent;
+
+                    if (nodeName != null && !nodeName.isEmpty()) {
+
+                        final NameValue nameValue = new NameValue();
+
+                        final byte[] nodeNameBytes;
+
+                        // just be initialized as local
+                        final byte[] tagNameIndexBytes = tag.tagNameIndexBytes;
+
+                        if (tagNameIndexBytes == null) {
+                            final byte[] rowNodeNameBytes = nodeName.getBytes(charset);
+                            nodeNameBytes = new byte[rowNodeNameBytes.length + 1];
+                            // if zero there is no optimized int bytes for index
+                            // because there is no tagNameIndex. second byte
+                            // onwards the bytes of tag name
+                            nodeNameBytes[0] = 0;
+                            System.arraycopy(rowNodeNameBytes, 0, nodeNameBytes, 1, rowNodeNameBytes.length);
+
+                            // logging is not required here
+                            // it is not an unusual case
+                            // if (LOGGER.isLoggable(Level.WARNING)) {
+                            // LOGGER.warning(nodeName
+                            // + " is not indexed, please register it with
+                            // TagRegistry");
+                            // }
+
+                        } else {
+
+                            if (tagNameIndexBytes.length == 1) {
+                                nodeNameBytes = tagNameIndexBytes;
+                            } else {
+                                nodeNameBytes = new byte[tagNameIndexBytes.length + 1];
+                                nodeNameBytes[0] = (byte) tagNameIndexBytes.length;
+                                System.arraycopy(tagNameIndexBytes, 0, nodeNameBytes, 1, tagNameIndexBytes.length);
+                            }
+
+                        }
+
+                        final byte[][] wffAttributeBytes = AttributeUtil.getAttributeHtmlBytesCompressedByIndexV2(false,
+                                charset, tag.attributes);
+
+                        final int parentWffSlotIndex = parentLocal == null ? -1 : parentLocal.wffSlotIndex;
+                        nameValue.setName(WffBinaryMessageUtil.getOptimizedBytesFromInt(parentWffSlotIndex));
+
+                        final byte[][] values = new byte[wffAttributeBytes.length + 1][0];
+
+                        values[0] = nodeNameBytes;
+
+                        System.arraycopy(wffAttributeBytes, 0, values, 1, wffAttributeBytes.length);
+
+                        nameValue.setValues(values);
+                        tag.wffSlotIndex = nameValues.size();
+                        nameValues.add(nameValue);
+
+                    } else {
+
+                        // tag.tagName == null means it is no tag
+                        // !tag.getClosingTag().isEmpty() SharedTagContet is
+                        // injecting NoTag with empty content so
+                        // !tag.getClosingTag().isEmpty() is not valid here
+
+                        final int parentWffSlotIndex = parentLocal == null ? -1 : parentLocal.wffSlotIndex;
+
+                        final NameValue nameValue = new NameValue();
+
+                        // # short for #text
+                        // @ short for html content
+                        // final byte[] nodeNameBytes = tag.noTagContentTypeHtml
+                        // ? encodedBytesForAtChar
+                        // : encodedByesForHashChar;
+                        final String tagContent = tag.getClosingTag();
+                        final boolean strictInt = NumberUtil.isStrictInt(tagContent);
+                        final byte[] nodeNameBytes = strictInt
+                                ? tag.noTagContentTypeHtml ? INDEXED_DOLLAR_CHAR_BYTES : INDEXED_PERCENT_CHAR_BYTES
+                                : tag.noTagContentTypeHtml ? INDEXED_AT_CHAR_BYTES : INDEXED_HASH_CHAR_BYTES;
+
+                        nameValue.setName(WffBinaryMessageUtil.getOptimizedBytesFromInt(parentWffSlotIndex));
+
+                        final byte[][] values = new byte[2][0];
+
+                        values[0] = nodeNameBytes;
+
+                        values[1] = strictInt
+                                ? WffBinaryMessageUtil.getOptimizedBytesFromInt(Integer.parseInt(tagContent))
+                                : tagContent.getBytes(charset);
+
+                        nameValue.setValues(values);
+
+                        tag.wffSlotIndex = nameValues.size();
+                        nameValues.add(nameValue);
+                    }
+
+                    final Set<AbstractHtml> subChildren = tag.children;
+
+                    if (subChildren != null && !subChildren.isEmpty()) {
+                        childrenStack.push(subChildren);
+                    }
+
+                }
+
+            }
+
+            final NameValue nameValue = nameValues.getFirst();
+            nameValue.setName(new byte[0]);
+
+            return WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
+        } catch (final NoSuchElementException e) {
+            throw new InvalidTagException(
+                    "Not possible to build wff bm bytes on this tag.\nDon't use an empty new NoTag(null, \"\") or new Blank(null, \"\")",
+                    e);
+        } catch (final Exception e) {
+            throw new WffRuntimeException(e.getMessage(), e);
+        } finally {
+            if (lock != null) {
+                lock.unlock();
+            }
+
+        }
+    }
+
+    /**
+     * @param bmBytes Wff Binary Message bytes of tag i.e. returned by *
+     *                {@link AbstractHtml#toWffBMBytes(String)}
      * @return the AbstractHtml instance from the given Wff BM bytes. It uses system
      *         default charset.
      * @author WFF
      * @since 2.0.0 initial implementation
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      */
-    public static AbstractHtml getTagFromWffBMBytes(final byte[] bmMessageBytes) {
-        return getTagFromWffBMBytes(bmMessageBytes, CommonConstants.DEFAULT_CHARSET);
+    public static AbstractHtml getTagFromWffBMBytes(final byte[] bmBytes) {
+        return getTagFromWffBMBytes(bmBytes, CommonConstants.DEFAULT_CHARSET);
     }
 
     /**
@@ -5588,6 +5808,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 3.0.2 improved to handle NoTag with contentTypeHtml true
      */
     public static AbstractHtml getTagFromWffBMBytes(final byte[] bmBytes, final Charset charset) {
+        // Note: it cannot parse bytes from toCompressedWffBMBytes... methods.
 
         final List<NameValue> nameValuesAsList = WffBinaryMessageUtil.VERSION_1.parse(bmBytes);
 
@@ -5688,6 +5909,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *        contentTypeHtml true
      */
     public static AbstractHtml getExactTagFromWffBMBytes(final byte[] bmBytes, final Charset charset) {
+        // Note: it cannot parse bytes from toCompressedWffBMBytes... methods.
 
         final List<NameValue> nameValuesAsList = WffBinaryMessageUtil.VERSION_1.parse(bmBytes);
 
@@ -6728,8 +6950,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * <br>
      * Eg:-
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * Html html = new Html(null) {{
      *      new Head(this) {{
      *          new TitleTag(this){{
@@ -6760,8 +6981,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *  true
      *  true
      *
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @return the sharedData object set by setSharedData method. This object is
      *         same across all of this tag hierarchy.
@@ -6780,8 +7000,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * <br>
      * Eg:-
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * Html html = new Html(null) {{
      *      new Head(this) {{
      *          new TitleTag(this){{
@@ -6812,8 +7031,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *  true
      *  true
      *
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param sharedData the object to access through all of this tag hierarchy.
      * @author WFF
@@ -7104,7 +7322,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * This method can avoid creating anonymous class coding. <br>
      * Eg: <br>
      *
-     * <pre>
+     * <pre><code>
      * Div rootDiv = new Div(null, new Id("rootDivId")).&lt;Div&gt;give(parent -&gt; {
      *     new Div(parent, new Id("parentDivId")).give(nestedTag1 -&gt; {
      *         new Div(nestedTag1, new Id("child1"));
@@ -7114,12 +7332,11 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * });
      *
      * System.out.println(rootDiv.toHtmlString());
-     * </pre>
+     * </code></pre>
      * <p>
      * produces
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * &lt;div id="rootDivId"&gt;
      *    &lt;div id="parentDivId"&gt;
      *         &lt;div id="child1"&gt;&lt;/div&gt;
@@ -7127,8 +7344,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *         &lt;div id="child3"&gt;&lt;/div&gt;
      *     &lt;/div&gt;
      * &lt;/div&gt;
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param consumer the consumer object
      * @return the same object on which give method is called.
@@ -7144,37 +7360,32 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * This method can avoid creating anonymous class coding. <br>
      * Eg: <br>
      *
-     * <pre>
+     * <pre><code>
      * Div div = new Div(null, new Id("rootDivId")).give(TagContent::text, "Hello World");
      * System.out.println(div.toHtmlString());
-     *
-     * </pre>
+     * </code></pre>
      * <p>
      * produces
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * &lt;div id="rootDivId"&gt;Hello World&lt;/div&gt;
-     * </code>
-     * </pre>
+     * </code></pre>
      * <p>
      * A mix of give methods will be
      *
-     * <pre>
+     * <pre><code>
      * Div div = new Div(null).give(dv -&gt; {
      *     new Span(dv).give(TagContent::text, "Hello World");
      * });
-     * </pre>
+     * </code></pre>
      * <p>
      * produces
      *
-     * <pre>
-     * <code>
+     * <pre><code>
      * &lt;div&gt;
      *     &lt;span&gt;Hello World&lt;/span&gt;
      * &lt;/div&gt;
-     * </code>
-     * </pre>
+     * </code></pre>
      *
      * @param consumer
      * @param input    the object to be passed as second argument of

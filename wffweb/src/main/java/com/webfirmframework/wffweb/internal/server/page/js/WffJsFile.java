@@ -29,12 +29,15 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.common.URIEventInitiator;
 import com.webfirmframework.wffweb.server.page.Task;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
 import com.webfirmframework.wffweb.util.StringUtil;
 
@@ -101,12 +104,17 @@ public enum WffJsFile {
     private static final String NDXD_ATRBS;
     private static final String NDXD_BLN_ATRBS;
     private static final String NDXD_VNT_ATRBS;
+    // DATA_WFF_ID_PREFIXES
+    private static final String WFF_ID_PFXS;
 
     // java record class is perfect for such use case
     private static final record FunctionOrVarName(String name, boolean function) {
     }
 
     static {
+
+        WFF_ID_PFXS = Stream.of(DataWffId.VALUE_PREFIXES).map(c -> "\"" + c + "\"")
+                .collect(Collectors.joining(",", "[", "]"));
 
         final StringBuilder tagsArraySB = new StringBuilder();
         final List<String> tagNames = TagRegistry.getTagNames();
@@ -177,6 +185,7 @@ public enum WffJsFile {
             functionNameList.add("getAttrNameValueFromCompressedBytes");
             functionNameList.add("createTagFromCompressedWffBMBytes");
             functionNameList.add("getLengthOfOptimizedBytesFromInt");
+            functionNameList.add("getAttrNameFromCompressedBytes");
             functionNameList.add("concatArrayValuesFromPosition");
             functionNameList.add("getTagNameFromCompressedBytes");
             functionNameList.add("invokeAsyncWithPreFilterFunPD");
@@ -332,7 +341,6 @@ public enum WffJsFile {
             variableNameList.add("argBytes");
             variableNameList.add("tgNamNdx");
             variableNameList.add("allTags");
-            variableNameList.add("allTags");
             variableNameList.add("rplcByt");
             variableNameList.add("wffIds");
             variableNameList.add("wffId");
@@ -418,6 +426,9 @@ public enum WffJsFile {
             String eachLine;
 
             while ((eachLine = reader.readLine()) != null) {
+                if (eachLine.isBlank()) {
+                    continue;
+                }
                 // replacing double spaces with single space
                 // by .replaceAll(" +", " ")
                 // will not be file as there could e double space variable
@@ -628,6 +639,8 @@ public enum WffJsFile {
         StringBuilderUtil.replaceFirst(globalContentBuider, "\"${NDXD_VNT_ATRBS}\"", NDXD_VNT_ATRBS);
 
         StringBuilderUtil.replaceFirst(globalContentBuider, "\"${NDXD_BLN_ATRBS}\"", NDXD_BLN_ATRBS);
+
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${WFF_ID_PFXS}\"", WFF_ID_PFXS);
 
         StringBuilderUtil.replaceFirst(globalContentBuider, "${WS_URL}", wsUrl);
 

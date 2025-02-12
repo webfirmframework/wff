@@ -54,9 +54,9 @@ public final class CssValueUtil {
      * values. <br>
      * Eg :-
      *
-     * <pre>
+     * <pre><code>
      * addCssValuePartStartEndValue(&quot;rgb(&quot;, &quot;)&quot;);
-     * </pre>
+     * </code></pre>
      *
      * And the following <code>"rgb(", ")"</code>, <code>"rgba(", ")"</code>,
      * <code>"hsl(", ")"</code>, <code>"hsla(", ")"</code> values are already added.
@@ -81,15 +81,15 @@ public final class CssValueUtil {
      * <br>
      * Sample code to test
      *
-     * <pre>
+     * <pre><code>
      * final List&lt;String&gt; splitTest = CssValueUtil.split(&quot;hsla(7, 8, 9, 1) red rgb(3, 5, 6) rgb(7, 8, 9) rgba(7, 8, 9, 1) middle hsl(10, 11, 12) green   blue&quot;);
      * for (final String each : splitTest) {
      *     System.out.println(each);
      * }
-     *
+     * </code></pre> <pre>
      * gives out as :
-     * <i>
-     * hsla(7, 8, 9, 1)
+     *
+     * <i>hsla(7, 8, 9, 1)
      * red
      * rgb(3, 5, 6)
      * rgb(7, 8, 9)

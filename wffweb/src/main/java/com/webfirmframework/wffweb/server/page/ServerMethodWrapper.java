@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
@@ -26,6 +27,7 @@ import com.webfirmframework.wffweb.tag.html.attribute.event.ServerMethod;
  */
 record ServerMethodWrapper(ServerMethod serverMethod, Object serverSideData) implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 12_0L;
 
     /**

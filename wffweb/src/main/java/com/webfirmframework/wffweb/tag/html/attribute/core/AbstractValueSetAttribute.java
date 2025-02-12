@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
+import java.io.Serial;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,6 +31,7 @@ import com.webfirmframework.wffweb.util.StringUtil;
  */
 public abstract class AbstractValueSetAttribute extends AbstractAttribute {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

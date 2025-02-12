@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.formsandinputs;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,6 +39,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  */
 public class Form extends AbstractHtml {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final Logger LOGGER = Logger.getLogger(Form.class.getName());

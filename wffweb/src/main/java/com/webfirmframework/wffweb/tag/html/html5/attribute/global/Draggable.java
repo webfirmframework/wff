@@ -16,6 +16,8 @@
  */
 package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
@@ -35,6 +37,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  */
 public class Draggable extends AbstractAttribute implements GlobalAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     public static final String AUTO = "auto";

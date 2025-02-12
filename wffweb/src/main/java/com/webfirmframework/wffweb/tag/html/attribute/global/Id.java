@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.global;
 
+import java.io.Serial;
 import java.util.UUID;
 
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
@@ -28,6 +29,7 @@ import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
  */
 public class Id extends AbstractAttribute implements GlobalAttributable {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private UUID uuid;

@@ -19,6 +19,8 @@
  */
 package com.webfirmframework.wffweb.view;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.io.OutputBuffer;
 
 /**
@@ -29,6 +31,7 @@ import com.webfirmframework.wffweb.io.OutputBuffer;
  */
 public abstract class AbstractHtmlView implements HtmlView {
 
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private boolean preserveOutputBufferContent;

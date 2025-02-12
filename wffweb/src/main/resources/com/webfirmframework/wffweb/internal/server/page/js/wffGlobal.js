@@ -50,6 +50,7 @@ window.wffGlobal = new function() {
 	this.NDXD_ATRBS = "${NDXD_ATRBS}";
 	this.NDXD_VNT_ATRBS = "${NDXD_VNT_ATRBS}";
 	this.NDXD_BLN_ATRBS = "${NDXD_BLN_ATRBS}";
+	this.WFF_ID_PFXS = "${WFF_ID_PFXS}";
 	this.taskValues = "${TASK_VALUES}";
 	this.uriEventInitiator = "${URI_EVENT_INITIATOR_VALUES}";
 	this.WS_URL = "${WS_URL}";
