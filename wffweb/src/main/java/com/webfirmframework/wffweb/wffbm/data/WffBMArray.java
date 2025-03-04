@@ -179,72 +179,58 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
 
             if (iterator.hasNext()) {
                 final NameValue nameValue = iterator.next();
-                final byte valueType = nameValue.getName()[0];
+                final byte valueTypeByte = nameValue.getName()[0];
+                final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
                 final byte[][] values = nameValue.getValues();
 
-                if (valueType == BMValueType.STRING.getType()) {
-
+                return switch (valueType) {
+                case STRING, REG_EXP, FUNCTION -> {
                     for (final byte[] value : values) {
                         this.add(new String(value, StandardCharsets.UTF_8));
                     }
-                } else if (valueType == BMValueType.NUMBER.getType()) {
-
+                    yield valueType;
+                }
+                case NUMBER -> {
                     for (final byte[] value : values) {
                         final double doubleValue = ByteBuffer.wrap(value).getDouble(0);
-
                         this.add(doubleValue);
                     }
-
-                } else if (valueType == BMValueType.UNDEFINED.getType()) {
-
+                    yield valueType;
+                }
+                case UNDEFINED, NULL -> {
                     for (@SuppressWarnings("unused")
                     final byte[] value : values) {
                         this.add(null);
                     }
-
-                } else if (valueType == BMValueType.NULL.getType()) {
-
-                    for (@SuppressWarnings("unused")
-                    final byte[] value : values) {
-                        this.add(null);
-                    }
-
-                } else if (valueType == BMValueType.BOOLEAN.getType()) {
+                    yield valueType;
+                }
+                case BOOLEAN -> {
                     for (final byte[] value : values) {
                         this.add(value[0] == 1);
                     }
-                } else if (valueType == BMValueType.BM_OBJECT.getType()) {
-
+                    yield valueType;
+                }
+                case BM_OBJECT -> {
                     for (final byte[] value : values) {
                         this.add(new WffBMObject(value, false));
                     }
-
-                } else if (valueType == BMValueType.BM_ARRAY.getType()) {
-
+                    yield valueType;
+                }
+                case BM_ARRAY -> {
                     for (final byte[] value : values) {
-
                         this.add(new WffBMArray(value, false));
                     }
-
-                } else if (valueType == BMValueType.REG_EXP.getType()) {
-                    for (final byte[] value : values) {
-                        this.add(new String(value, StandardCharsets.UTF_8));
-                    }
-                } else if (valueType == BMValueType.FUNCTION.getType()) {
-
-                    for (final byte[] value : values) {
-                        this.add(new String(value, StandardCharsets.UTF_8));
-                    }
-                } else if (valueType == BMValueType.BM_BYTE_ARRAY.getType()) {
+                    yield valueType;
+                }
+                case BM_BYTE_ARRAY -> {
                     for (final byte[] value : values) {
                         this.add(new WffBMByteArray(value, false));
                     }
-                } else if (valueType == BMValueType.INTERNAL_BYTE.getType()) {
-                    throw new WffRuntimeException(
-                            "BMValueType.BYTE is only for internal use, use WffBMByteArray for row bytes.");
+                    yield valueType;
                 }
-
-                return BMValueType.getInstanceByType(valueType);
+                case INTERNAL_BYTE -> throw new WffRuntimeException(
+                        "BMValueType.BYTE is only for internal use, use WffBMByteArray for row bytes.");
+                };
             }
         }
 
