@@ -67,7 +67,7 @@ public class ValueValueType implements Serializable {
     }
 
     public BMValueType getValueType() {
-        return BMValueType.values()[valueTypeByte];
+        return BMValueType.getInstanceByType(valueTypeByte);
     }
 
     public byte getValueTypeByte() {

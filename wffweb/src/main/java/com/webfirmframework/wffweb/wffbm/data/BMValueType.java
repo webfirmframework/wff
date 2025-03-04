@@ -87,6 +87,11 @@ public enum BMValueType {
      */
     INTERNAL_BYTE;
 
+    /**
+     * only for internal use.
+     */
+    private static final BMValueType[] VALUES = BMValueType.values();
+
     private byte type;
 
     private BMValueType() {
@@ -104,6 +109,6 @@ public enum BMValueType {
      * @author WFF
      */
     public static BMValueType getInstanceByType(final byte type) {
-        return BMValueType.values()[type];
+        return VALUES[type];
     }
 }
