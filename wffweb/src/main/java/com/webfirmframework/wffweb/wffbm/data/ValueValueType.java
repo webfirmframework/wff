@@ -67,7 +67,7 @@ public class ValueValueType implements Serializable {
     }
 
     public BMValueType getValueType() {
-        return BMValueType.values()[valueTypeByte];
+        return BMValueType.getInstanceByType(valueTypeByte);
     }
 
     public byte getValueTypeByte() {
@@ -104,28 +104,30 @@ public class ValueValueType implements Serializable {
     public final Double valueAsDouble() throws NumberFormatException {
         final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
         final Object value = this.value;
-        if (BMValueType.STRING.equals(valueType)) {
-            if (value != null) {
-                return Double.parseDouble(String.valueOf(value));
-            }
-            return null;
-        } else if (BMValueType.NUMBER.equals(valueType)) {
+        return switch (valueType) {
+        case STRING -> value != null ? Double.parseDouble(String.valueOf(value)) : null;
+        case NUMBER -> {
             if (value instanceof final Double number) {
-                return number;
-            } else if (value instanceof final Float number) {
-                return number.doubleValue();
-            } else if (value instanceof final Long number) {
-                return number.doubleValue();
-            } else if (value instanceof final Integer number) {
-                return number.doubleValue();
-            } else if (value instanceof final Number number) {
-                return number.doubleValue();
+                yield number;
             }
-            return null;
-        } else if (BMValueType.NULL.equals(valueType)) {
-            return null;
+            if (value instanceof final Float number) {
+                yield number.doubleValue();
+            }
+            if (value instanceof final Long number) {
+                yield number.doubleValue();
+            }
+            if (value instanceof final Integer number) {
+                yield number.doubleValue();
+            }
+            if (value instanceof final Number number) {
+                yield number.doubleValue();
+            }
+            yield null;
         }
-        throw new NumberFormatException("Unable to create Double from %s %s".formatted(value, valueType.name()));
+        case NULL -> null;
+        default -> throw new NumberFormatException(
+                "Unable to create Double from %s %s".formatted(value, valueType.name()));
+        };
     }
 
     /**
@@ -136,27 +138,27 @@ public class ValueValueType implements Serializable {
     public final Float valueAsFloat() throws NumberFormatException {
         final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
         final Object value = this.value;
-        if (BMValueType.STRING.equals(valueType)) {
-            if (value != null) {
-                return Float.parseFloat(String.valueOf(value));
-            }
-            return null;
-        } else if (BMValueType.NUMBER.equals(valueType)) {
+
+        return switch (valueType) {
+        case STRING -> value != null ? Float.parseFloat(String.valueOf(value)) : null;
+        case NUMBER -> {
             if (value instanceof final BigInteger number) {
                 final float floatValue = number.floatValue();
                 if (floatValue != number.longValue()) {
                     throw new NumberFormatException("Unable to create Float from ".concat(number.toString()));
                 }
-                return floatValue;
-            } else if (value instanceof final BigDecimal number) {
+                yield floatValue;
+            }
+            if (value instanceof final BigDecimal number) {
                 // Note: floatValue == doubleValue may be false for the same value in some cases
                 // so BigDecimal conversion is required for equalizing
                 final float floatValue = number.floatValue();
                 if (!NumberUtil.isEqual(number, new BigDecimal(Float.toString(floatValue)))) {
                     throw new NumberFormatException("Unable to create Float from ".concat(String.valueOf(number)));
                 }
-                return floatValue;
-            } else if (value instanceof final Double number) {
+                yield floatValue;
+            }
+            if (value instanceof final Double number) {
                 // Note: floatValue == doubleValue may be false for the same value in some cases
                 // so BigDecimal conversion is required for equalizing
                 final float floatValue = number.floatValue();
@@ -164,15 +166,17 @@ public class ValueValueType implements Serializable {
                         new BigDecimal(Float.toString(floatValue)))) {
                     throw new NumberFormatException("Unable to create Float from ".concat(String.valueOf(number)));
                 }
-                return floatValue;
-            } else if (value instanceof final Number number) {
-                return number.floatValue();
+                yield floatValue;
             }
-            return null;
-        } else if (BMValueType.NULL.equals(valueType)) {
-            return null;
+            if (value instanceof final Number number) {
+                yield number.floatValue();
+            }
+            yield null;
         }
-        throw new NumberFormatException("Unable to create Float from %s %s".formatted(value, valueType.name()));
+        case NULL -> null;
+        default -> throw new NumberFormatException(
+                "Unable to create Float from %s %s".formatted(value, valueType.name()));
+        };
     }
 
     /**
@@ -183,34 +187,38 @@ public class ValueValueType implements Serializable {
     public final BigDecimal valueAsBigDecimal() throws NumberFormatException {
         final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
         final Object value = this.value;
-        if (BMValueType.STRING.equals(valueType)) {
-            if (value != null) {
-                return new BigDecimal(String.valueOf(value));
-            }
-            return null;
-        } else if (BMValueType.NUMBER.equals(valueType)) {
+        return switch (valueType) {
+        case STRING -> value != null ? new BigDecimal(String.valueOf(value)) : null;
+        case NUMBER -> {
             if (value instanceof final BigDecimal number) {
-                return number;
-            } else if (value instanceof final BigInteger number) {
-                return new BigDecimal(number, MathContext.DECIMAL64);
-            } else if (value instanceof final Double number) {
-                return new BigDecimal(number, MathContext.DECIMAL64);
-            } else if (value instanceof final Float number) {
+                yield number;
+            }
+            if (value instanceof final BigInteger number) {
+                yield new BigDecimal(number, MathContext.DECIMAL64);
+            }
+            if (value instanceof final Double number) {
+                yield new BigDecimal(number, MathContext.DECIMAL64);
+            }
+            if (value instanceof final Float number) {
                 // may not reach to this line as the float is converted to double before saving
                 // into WffBMObject.
-                return new BigDecimal(number, MathContext.DECIMAL32);
-            } else if (value instanceof final Long number) {
-                return new BigDecimal(number, MathContext.DECIMAL64);
-            } else if (value instanceof final Integer number) {
-                return new BigDecimal(number, MathContext.DECIMAL32);
-            } else if (value instanceof final Number number) {
-                return BigDecimal.valueOf(number.doubleValue());
+                yield new BigDecimal(number, MathContext.DECIMAL32);
             }
-            return null;
-        } else if (BMValueType.NULL.equals(valueType)) {
-            return null;
+            if (value instanceof final Long number) {
+                yield new BigDecimal(number, MathContext.DECIMAL64);
+            }
+            if (value instanceof final Integer number) {
+                yield new BigDecimal(number, MathContext.DECIMAL32);
+            }
+            if (value instanceof final Number number) {
+                yield BigDecimal.valueOf(number.doubleValue());
+            }
+            yield null;
         }
-        throw new NumberFormatException("Unable to create BigDecimal from %s %s".formatted(value, valueType.name()));
+        case NULL -> null;
+        default -> throw new NumberFormatException(
+                "Unable to create BigDecimal from %s %s".formatted(value, valueType.name()));
+        };
     }
 
     /**
@@ -221,47 +229,52 @@ public class ValueValueType implements Serializable {
     public final BigInteger valueAsBigInteger() throws NumberFormatException {
         final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
         final Object value = this.value;
-        if (BMValueType.STRING.equals(valueType)) {
-            if (value != null) {
-                return new BigInteger(String.valueOf(value));
-            }
-            return null;
-        } else if (BMValueType.NUMBER.equals(valueType)) {
+
+        return switch (valueType) {
+        case STRING -> value != null ? new BigInteger(String.valueOf(value)) : null;
+        case NUMBER -> {
             if (value instanceof final BigInteger number) {
-                return number;
-            } else if (value instanceof final BigDecimal number) {
+                yield number;
+            }
+            if (value instanceof final BigDecimal number) {
                 if (number.longValue() != number.doubleValue()) {
                     throw new NumberFormatException(
                             "Unable to create BigInteger from ".concat(number.stripTrailingZeros().toPlainString()));
                 }
-                return number.toBigInteger();
-            } else if (value instanceof final Double number) {
+                yield number.toBigInteger();
+            }
+            if (value instanceof final Double number) {
                 final long longValue = number.longValue();
                 if (longValue != number) {
                     throw new NumberFormatException(
                             "Unable to create BigInteger from ".concat(Double.toString(number)));
                 }
-                return BigInteger.valueOf(longValue);
-            } else if (value instanceof final Float number) {
+                yield BigInteger.valueOf(longValue);
+            }
+            if (value instanceof final Float number) {
                 // may not reach to this line as the float is converted to double before saving
                 // into WffBMObject.
                 final int intValue = number.intValue();
                 if (intValue != number) {
                     throw new NumberFormatException("Unable to create BigInteger from ".concat(Float.toString(number)));
                 }
-                return BigInteger.valueOf(intValue);
-            } else if (value instanceof final Long number) {
-                return BigInteger.valueOf(number);
-            } else if (value instanceof final Integer number) {
-                return BigInteger.valueOf(number.longValue());
-            } else if (value instanceof final Number number) {
-                return BigInteger.valueOf(number.longValue());
+                yield BigInteger.valueOf(intValue);
             }
-            return null;
-        } else if (BMValueType.NULL.equals(valueType)) {
-            return null;
+            if (value instanceof final Long number) {
+                yield BigInteger.valueOf(number);
+            }
+            if (value instanceof final Integer number) {
+                yield BigInteger.valueOf(number.longValue());
+            }
+            if (value instanceof final Number number) {
+                yield BigInteger.valueOf(number.longValue());
+            }
+            yield null;
         }
-        throw new NumberFormatException("Unable to create BigInteger from %s %s".formatted(value, valueType.name()));
+        case NULL -> null;
+        default -> throw new NumberFormatException(
+                "Unable to create BigInteger from %s %s".formatted(value, valueType.name()));
+        };
     }
 
     /**
@@ -272,51 +285,56 @@ public class ValueValueType implements Serializable {
     public final Integer valueAsInteger() throws NumberFormatException {
         final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
         final Object value = this.value;
-        if (BMValueType.STRING.equals(valueType)) {
-            if (value != null) {
-                return Integer.parseInt(String.valueOf(value));
-            }
-            return null;
-        } else if (BMValueType.NUMBER.equals(valueType)) {
+
+        return switch (valueType) {
+        case STRING -> value != null ? Integer.parseInt(String.valueOf(value)) : null;
+        case NUMBER -> {
             if (value instanceof final BigInteger number) {
-                return Math.toIntExact(number.longValue());
-            } else if (value instanceof final BigDecimal number) {
+                yield Math.toIntExact(number.longValue());
+            }
+            if (value instanceof final BigDecimal number) {
                 final long longValue = number.longValue();
                 if (longValue != number.doubleValue()) {
                     throw new NumberFormatException(
                             "Unable to create Integer from ".concat(number.stripTrailingZeros().toPlainString()));
                 }
-                return Math.toIntExact(longValue);
-            } else if (value instanceof final Double number) {
+                yield Math.toIntExact(longValue);
+            }
+            if (value instanceof final Double number) {
                 final int intValue = number.intValue();
                 if (intValue != number) {
                     throw new NumberFormatException("Unable to create Integer from ".concat(Double.toString(intValue)));
                 }
-                return intValue;
-            } else if (value instanceof final Float number) {
+                yield intValue;
+            }
+            if (value instanceof final Float number) {
                 // may not reach to this line as the float is converted to double before saving
                 // into WffBMObject.
                 final int intValue = number.intValue();
                 if (intValue != number) {
                     throw new NumberFormatException("Unable to create Integer from ".concat(Float.toString(number)));
                 }
-                return intValue;
-            } else if (value instanceof final Long number) {
+                yield intValue;
+            }
+            if (value instanceof final Long number) {
                 final int intValue = number.intValue();
                 if (intValue != number) {
                     throw new NumberFormatException("Unable to create Integer from ".concat(Long.toString(number)));
                 }
-                return intValue;
-            } else if (value instanceof final Integer number) {
-                return number;
-            } else if (value instanceof final Number number) {
-                return number.intValue();
+                yield intValue;
             }
-            return null;
-        } else if (BMValueType.NULL.equals(valueType)) {
-            return null;
+            if (value instanceof final Integer number) {
+                yield number;
+            }
+            if (value instanceof final Number number) {
+                yield number.intValue();
+            }
+            yield null;
         }
-        throw new NumberFormatException("Unable to create Integer from %s %s".formatted(value, valueType.name()));
+        case NULL -> null;
+        default -> throw new NumberFormatException(
+                "Unable to create Integer from %s %s".formatted(value, valueType.name()));
+        };
     }
 
     /**
@@ -327,45 +345,51 @@ public class ValueValueType implements Serializable {
     public final Long valueAsLong() throws NumberFormatException {
         final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
         final Object value = this.value;
-        if (BMValueType.STRING.equals(valueType)) {
-            if (value != null) {
-                return Long.parseLong(String.valueOf(value));
-            }
-            return null;
-        } else if (BMValueType.NUMBER.equals(valueType)) {
+
+        return switch (valueType) {
+        case STRING -> value != null ? Long.parseLong(String.valueOf(value)) : null;
+        case NUMBER -> {
             if (value instanceof final BigInteger number) {
-                return number.longValue();
-            } else if (value instanceof final BigDecimal number) {
+                yield number.longValue();
+            }
+            if (value instanceof final BigDecimal number) {
                 final long longValue = number.longValue();
                 if (longValue != number.doubleValue()) {
                     throw new NumberFormatException(
                             "Unable to create Long from ".concat(number.stripTrailingZeros().toPlainString()));
                 }
-                return longValue;
-            } else if (value instanceof final Double number) {
+                yield longValue;
+            }
+            if (value instanceof final Double number) {
                 final long longValue = number.longValue();
                 if (longValue != number) {
                     throw new NumberFormatException("Unable to create Long from ".concat(Double.toString(number)));
                 }
-                return longValue;
-            } else if (value instanceof final Float number) {
+                yield longValue;
+            }
+            if (value instanceof final Float number) {
                 final long longValue = number.longValue();
                 if (longValue != number) {
                     throw new NumberFormatException("Unable to create Long from ".concat(Float.toString(number)));
                 }
-                return longValue;
-            } else if (value instanceof final Long number) {
-                return number;
-            } else if (value instanceof final Integer number) {
-                return number.longValue();
-            } else if (value instanceof final Number number) {
-                return number.longValue();
+                yield longValue;
             }
-            return null;
-        } else if (BMValueType.NULL.equals(valueType)) {
-            return null;
+            if (value instanceof final Long number) {
+                yield number;
+            }
+            if (value instanceof final Integer number) {
+                yield number.longValue();
+            }
+            if (value instanceof final Number number) {
+                yield number.longValue();
+            }
+            yield null;
         }
-        throw new NumberFormatException("Unable to create Long from %s %s".formatted(value, valueType.name()));
+        case NULL -> null;
+        default -> throw new NumberFormatException(
+                "Unable to create Long from %s %s".formatted(value, valueType.name()));
+        };
+
     }
 
     /**
@@ -375,25 +399,26 @@ public class ValueValueType implements Serializable {
     public final String valueAsString() {
         final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
         final Object value = this.value;
-        if (BMValueType.STRING.equals(valueType)) {
-            if (value instanceof final String s) {
-                return s;
-            }
-            return null;
-        } else if (BMValueType.NUMBER.equals(valueType)) {
+
+        return switch (valueType) {
+        case STRING -> value instanceof final String s ? s : null;
+        case NUMBER -> {
             if (value instanceof final BigDecimal number) {
-                return number.stripTrailingZeros().toPlainString();
+                yield number.stripTrailingZeros().toPlainString();
             }
             if (value instanceof final Number number) {
-                return number.toString();
+                yield number.toString();
             }
-            return null;
-        } else if (BMValueType.NULL.equals(valueType)) {
-            return null;
-        } else if (value != null) {
-            return String.valueOf(value);
+            yield null;
         }
-        return null;
+        case NULL -> null;
+        default -> {
+            if (value != null) {
+                yield String.valueOf(value);
+            }
+            yield null;
+        }
+        };
     }
 
     /**
@@ -404,25 +429,25 @@ public class ValueValueType implements Serializable {
     public final Boolean valueAsBoolean() throws InvalidValueException {
         final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
         final Object value = this.value;
-        if (BMValueType.STRING.equals(valueType)) {
+
+        return switch (valueType) {
+        case STRING -> {
             if (value != null) {
                 final String s = String.valueOf(value);
                 if (s.equalsIgnoreCase("true")) {
-                    return Boolean.TRUE;
+                    yield Boolean.TRUE;
                 }
                 if (s.equalsIgnoreCase("false")) {
-                    return Boolean.FALSE;
+                    yield Boolean.FALSE;
                 }
             }
-            return null;
-        } else if (BMValueType.BOOLEAN.equals(valueType)) {
-            if (value instanceof final Boolean b) {
-                return b;
-            }
-            return null;
-        } else if (BMValueType.NULL.equals(valueType)) {
-            return null;
+            yield null;
         }
-        throw new InvalidValueException("Unable to create Boolean from %s %s".formatted(value, valueType.name()));
+        case BOOLEAN -> value instanceof final Boolean b ? b : null;
+        case NULL -> null;
+        default -> throw new InvalidValueException(
+                "Unable to create Boolean from %s %s".formatted(value, valueType.name()));
+        };
     }
+
 }

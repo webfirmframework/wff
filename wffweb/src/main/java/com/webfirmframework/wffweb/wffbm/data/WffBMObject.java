@@ -162,63 +162,44 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
 
             nameValues.add(nameValue);
 
-            if (valueType == BMValueType.STRING.getType()) {
-
+            switch (BMValueType.getInstanceByType(valueType)) {
+            case STRING, REG_EXP, FUNCTION -> {
                 final String value = (String) valueValueType.getValue();
-
                 nameValue.setValues(new byte[] { valueType }, value.getBytes(StandardCharsets.UTF_8));
-
-            } else if (valueType == BMValueType.NUMBER.getType()) {
-
+            }
+            case NUMBER -> {
                 final Number value = (Number) valueValueType.getValue();
                 final byte[] valueBytes = WffBinaryMessageUtil.getOptimizedBytesFromDouble(value.doubleValue());
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
-
-            } else if (valueType == BMValueType.UNDEFINED.getType()) {
-
+            }
+            case UNDEFINED, NULL -> {
                 final byte[] valueBytes = {};
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
-
-            } else if (valueType == BMValueType.NULL.getType()) {
-                final byte[] valueBytes = {};
-                nameValue.setValues(new byte[] { valueType }, valueBytes);
-            } else if (valueType == BMValueType.BOOLEAN.getType()) {
-
+            }
+            case BOOLEAN -> {
                 final Boolean value = (Boolean) valueValueType.getValue();
                 final byte[] valueBytes = { (byte) (value.booleanValue() ? 1 : 0) };
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
-            } else if (valueType == BMValueType.BM_OBJECT.getType()) {
-
+            }
+            case BM_OBJECT -> {
                 final WffBMObject value = (WffBMObject) valueValueType.getValue();
                 final byte[] valueBytes = value.buildBytes(false);
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
-
-            } else if (valueType == BMValueType.BM_ARRAY.getType()) {
-
+            }
+            case BM_ARRAY -> {
                 final WffBMArray value = (WffBMArray) valueValueType.getValue();
                 final byte[] valueBytes = value.buildBytes(false);
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
-
-            } else if (valueType == BMValueType.BM_BYTE_ARRAY.getType()) {
-
+            }
+            case BM_BYTE_ARRAY -> {
                 final WffBMByteArray value = (WffBMByteArray) valueValueType.getValue();
                 final byte[] valueBytes = value.build(false);
                 nameValue.setValues(new byte[] { valueType }, valueBytes);
-
-            } else if (valueType == BMValueType.REG_EXP.getType()) {
-                final String value = (String) valueValueType.getValue();
-                nameValue.setValues(new byte[] { valueType }, value.getBytes(StandardCharsets.UTF_8));
-            } else if (valueType == BMValueType.FUNCTION.getType()) {
-
-                final String value = (String) valueValueType.getValue();
-
-                nameValue.setValues(new byte[] { valueType }, value.getBytes(StandardCharsets.UTF_8));
-
-            } else if (valueType == BMValueType.INTERNAL_BYTE.getType()) {
-                throw new WffRuntimeException(
-                        "BMValueType.BYTE is only for internal use, use WffBMByteArray for row bytes.");
             }
+            case INTERNAL_BYTE -> throw new WffRuntimeException(
+                    "BMValueType.BYTE is only for internal use, use WffBMByteArray for row bytes.");
 
+            }
         }
 
         return WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
@@ -253,50 +234,42 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
                 final byte valueType = values[0][0];
                 final byte[] value = values[1];
 
-                if (valueType == BMValueType.STRING.getType()) {
+                switch (BMValueType.getInstanceByType(valueType)) {
+                case STRING, REG_EXP, FUNCTION -> {
                     final ValueValueType valueValueType = new ValueValueType(name, valueType,
                             new String(value, StandardCharsets.UTF_8));
                     wffBMObject.put(name, valueValueType);
-                } else if (valueType == BMValueType.NUMBER.getType()) {
-
+                }
+                case NUMBER -> {
                     final double doubleValue = ByteBuffer.wrap(value).getDouble(0);
-
                     final ValueValueType valueValueType = new ValueValueType(name, valueType, doubleValue);
                     wffBMObject.put(name, valueValueType);
-                } else if (valueType == BMValueType.UNDEFINED.getType()) {
+                }
+                case UNDEFINED, NULL -> {
                     final ValueValueType valueValueType = new ValueValueType(name, valueType, null);
                     wffBMObject.put(name, valueValueType);
-                } else if (valueType == BMValueType.NULL.getType()) {
-                    final ValueValueType valueValueType = new ValueValueType(name, valueType, null);
-                    wffBMObject.put(name, valueValueType);
-                } else if (valueType == BMValueType.BOOLEAN.getType()) {
+                }
+                case BOOLEAN -> {
                     final ValueValueType valueValueType = new ValueValueType(name, valueType, value[0] == 1);
                     wffBMObject.put(name, valueValueType);
-                } else if (valueType == BMValueType.BM_OBJECT.getType()) {
-
+                }
+                case BM_OBJECT -> {
                     final ValueValueType valueValueType = new ValueValueType(name, valueType,
                             new WffBMObject(value, false));
                     wffBMObject.put(name, valueValueType);
-
-                } else if (valueType == BMValueType.BM_ARRAY.getType()) {
+                }
+                case BM_ARRAY -> {
                     final ValueValueType valueValueType = new ValueValueType(name, valueType,
                             new WffBMArray(value, false));
                     wffBMObject.put(name, valueValueType);
-                } else if (valueType == BMValueType.BM_BYTE_ARRAY.getType()) {
+                }
+                case BM_BYTE_ARRAY -> {
                     final WffBMByteArray byteArray = new WffBMByteArray(value, false);
                     final ValueValueType valueValueType = new ValueValueType(name, valueType, byteArray);
                     wffBMObject.put(name, valueValueType);
-                } else if (valueType == BMValueType.REG_EXP.getType()) {
-                    final ValueValueType valueValueType = new ValueValueType(name, valueType,
-                            new String(value, StandardCharsets.UTF_8));
-                    wffBMObject.put(name, valueValueType);
-                } else if (valueType == BMValueType.FUNCTION.getType()) {
-                    final ValueValueType valueValueType = new ValueValueType(name, valueType,
-                            new String(value, StandardCharsets.UTF_8));
-                    wffBMObject.put(name, valueValueType);
-                } else if (valueType == BMValueType.INTERNAL_BYTE.getType()) {
-                    throw new WffRuntimeException(
-                            "BMValueType.BYTE is only for internal use, use WffBMByteArray for row bytes.");
+                }
+                case INTERNAL_BYTE -> throw new WffRuntimeException(
+                        "BMValueType.BYTE is only for internal use, use WffBMByteArray for row bytes.");
                 }
 
             }
@@ -822,6 +795,174 @@ public class WffBMObject extends LinkedHashMap<String, ValueValueType> implement
         if (predicate == null
                 || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
             return valueValueType.valueAsBoolean();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the value as WffBMObject.
+     * @since 12.0.4
+     */
+    public WffBMObject getValueAsWffBMObject(final String key) {
+        return getValueAsWffBMObject(key, null, null);
+    }
+
+    /**
+     * To get value as WffBMObject if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForWffBMObject", new WffBMObject());
+     * WffBMObject valueAsWffBMObject = wffBMObject.getValueAsWffBMObject("keyForWffBMObject", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.BM_OBJECT.equals(valueValueType.valueType()), null);
+     * </code></pre> In the above code if the value is not null and valueType is
+     * BM_OBJECT then only it will convert the value to WffBMObject otherwise it
+     * will return the default value passed in the third argument, i.e null.
+     *
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the value as WffBMObject.
+     * @since 12.0.4
+     */
+    public WffBMObject getValueAsWffBMObject(final String key, final Predicate<ValueAndValueType> predicate,
+            final WffBMObject defaultValue) {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return (WffBMObject) valueValueType.getValue();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the value as WffBMArray.
+     * @since 12.0.4
+     */
+    public WffBMArray getValueAsWffBMArray(final String key) {
+        return getValueAsWffBMArray(key, null, null);
+    }
+
+    /**
+     * To get value as WffBMArray if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForWffBMArray", new WffBMArray(BMValueType.STRING));
+     * WffBMArray valueAsWffBMArray = wffBMObject.getValueAsWffBMArray("keyForWffBMArray", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.BM_ARRAY.equals(valueValueType.valueType()), null);
+     * </code></pre> In the above code if the value is not null and valueType is
+     * BM_ARRAY then only it will convert the value to WffBMArray otherwise it will
+     * return the default value passed in the third argument, i.e null.
+     *
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the value as WffBMArray.
+     * @since 12.0.4
+     */
+    public WffBMArray getValueAsWffBMArray(final String key, final Predicate<ValueAndValueType> predicate,
+            final WffBMArray defaultValue) {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return (WffBMArray) valueValueType.getValue();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the value as WffBMNumberArray.
+     * @since 12.0.4
+     */
+    public WffBMNumberArray<?> getValueAsWffBMNumberArray(final String key) {
+        return getValueAsWffBMNumberArray(key, null, null);
+    }
+
+    /**
+     * To get value as WffBMNumberArray if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForWffBMNumberArray", new WffBMNumberArray&lt;?&gt;());
+     * WffBMNumberArray&lt;?&gt; valueAsWffBMArray = wffBMObject.getValueAsWffBMNumberArray("keyForWffBMNumberArray", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.BM_ARRAY.equals(valueValueType.valueType()), null);
+     * </code></pre> In the above code if the value is not null and valueType is
+     * BM_ARRAY then only it will convert the value to WffBMNumberArray otherwise it
+     * will return the default value passed in the third argument, i.e null.
+     *
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the value as WffBMNumberArray.
+     * @since 12.0.4
+     */
+    public WffBMNumberArray<?> getValueAsWffBMNumberArray(final String key,
+            final Predicate<ValueAndValueType> predicate, final WffBMNumberArray<?> defaultValue) {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return (WffBMNumberArray<?>) valueValueType.getValue();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param key the key to get the value.
+     * @return the value as WffBMByteArray.
+     * @since 12.0.4
+     */
+    public WffBMByteArray getValueAsWffBMByteArray(final String key) {
+        return getValueAsWffBMByteArray(key, null, null);
+    }
+
+    /**
+     * To get value as WffBMByteArray if the predicate test returns true. Eg:
+     *
+     * <pre><code>
+     * WffBMObject wffBMObject = new WffBMObject();
+     * wffBMObject.put("keyForWffBMArray", new WffBMByteArray());
+     * WffBMByteArray valueAsWffBMByteArray = wffBMObject.getValueAsWffBMByteArray("keyForWffBMArray", valueValueType -> valueValueType.value() != null &amp;&amp; BMValueType.BM_BYTE_ARRAY.equals(valueValueType.valueType()), null);
+     * </code></pre> In the above code if the value is not null and valueType is
+     * BM_BYTE_ARRAY then only it will convert the value to WffBMByteArray otherwise
+     * it will return the default value passed in the third argument, i.e null.
+     *
+     * @param key          the key to get the value.
+     * @param predicate    to test the condition to return the converted value. If
+     *                     the predicate test returns true this method will return
+     *                     the converted value otherwise it will return default
+     *                     value.
+     * @param defaultValue the default value to return.
+     * @return the value as WffBMByteArray.
+     * @since 12.0.4
+     */
+    public WffBMByteArray getValueAsWffBMByteArray(final String key, final Predicate<ValueAndValueType> predicate,
+            final WffBMByteArray defaultValue) {
+        final ValueValueType valueValueType = super.get(key);
+        if (valueValueType == null) {
+            return defaultValue;
+        }
+        if (predicate == null
+                || predicate.test(new ValueAndValueType(valueValueType.getValue(), valueValueType.getValueType()))) {
+            return (WffBMByteArray) valueValueType.getValue();
         }
         return defaultValue;
     }

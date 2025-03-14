@@ -179,72 +179,58 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
 
             if (iterator.hasNext()) {
                 final NameValue nameValue = iterator.next();
-                final byte valueType = nameValue.getName()[0];
+                final byte valueTypeByte = nameValue.getName()[0];
+                final BMValueType valueType = BMValueType.getInstanceByType(valueTypeByte);
                 final byte[][] values = nameValue.getValues();
 
-                if (valueType == BMValueType.STRING.getType()) {
-
+                return switch (valueType) {
+                case STRING, REG_EXP, FUNCTION -> {
                     for (final byte[] value : values) {
                         this.add(new String(value, StandardCharsets.UTF_8));
                     }
-                } else if (valueType == BMValueType.NUMBER.getType()) {
-
+                    yield valueType;
+                }
+                case NUMBER -> {
                     for (final byte[] value : values) {
                         final double doubleValue = ByteBuffer.wrap(value).getDouble(0);
-
                         this.add(doubleValue);
                     }
-
-                } else if (valueType == BMValueType.UNDEFINED.getType()) {
-
+                    yield valueType;
+                }
+                case UNDEFINED, NULL -> {
                     for (@SuppressWarnings("unused")
                     final byte[] value : values) {
                         this.add(null);
                     }
-
-                } else if (valueType == BMValueType.NULL.getType()) {
-
-                    for (@SuppressWarnings("unused")
-                    final byte[] value : values) {
-                        this.add(null);
-                    }
-
-                } else if (valueType == BMValueType.BOOLEAN.getType()) {
+                    yield valueType;
+                }
+                case BOOLEAN -> {
                     for (final byte[] value : values) {
                         this.add(value[0] == 1);
                     }
-                } else if (valueType == BMValueType.BM_OBJECT.getType()) {
-
+                    yield valueType;
+                }
+                case BM_OBJECT -> {
                     for (final byte[] value : values) {
                         this.add(new WffBMObject(value, false));
                     }
-
-                } else if (valueType == BMValueType.BM_ARRAY.getType()) {
-
+                    yield valueType;
+                }
+                case BM_ARRAY -> {
                     for (final byte[] value : values) {
-
                         this.add(new WffBMArray(value, false));
                     }
-
-                } else if (valueType == BMValueType.REG_EXP.getType()) {
-                    for (final byte[] value : values) {
-                        this.add(new String(value, StandardCharsets.UTF_8));
-                    }
-                } else if (valueType == BMValueType.FUNCTION.getType()) {
-
-                    for (final byte[] value : values) {
-                        this.add(new String(value, StandardCharsets.UTF_8));
-                    }
-                } else if (valueType == BMValueType.BM_BYTE_ARRAY.getType()) {
+                    yield valueType;
+                }
+                case BM_BYTE_ARRAY -> {
                     for (final byte[] value : values) {
                         this.add(new WffBMByteArray(value, false));
                     }
-                } else if (valueType == BMValueType.INTERNAL_BYTE.getType()) {
-                    throw new WffRuntimeException(
-                            "BMValueType.BYTE is only for internal use, use WffBMByteArray for row bytes.");
+                    yield valueType;
                 }
-
-                return BMValueType.getInstanceByType(valueType);
+                case INTERNAL_BYTE -> throw new WffRuntimeException(
+                        "BMValueType.BYTE is only for internal use, use WffBMByteArray for row bytes.");
+                };
             }
         }
 
@@ -273,7 +259,7 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
      */
     @Override
     public byte[] buildBytes(final boolean outer) {
-
+        final BMValueType valueType = this.valueType;
         final Deque<NameValue> nameValues = new ArrayDeque<>(outer ? 2 : 1);
 
         if (outer) {
@@ -283,43 +269,40 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
         }
 
         final NameValue nameValue = new NameValue();
-        final byte valueType = this.valueType.getType();
-        nameValue.setName(valueType);
+        final byte valueTypeByte = valueType.getType();
+        nameValue.setName(valueTypeByte);
 
         nameValues.add(nameValue);
 
         final byte[][] values = new byte[size()][0];
         nameValue.setValues(values);
 
-        if (valueType == BMValueType.STRING.getType()) {
-
+        return switch (valueType) {
+        case STRING, REG_EXP, FUNCTION -> {
             int count = 0;
             for (final Object eachValue : this) {
                 final String value = (String) eachValue;
                 values[count] = value.getBytes(StandardCharsets.UTF_8);
                 count++;
             }
-        } else if (valueType == BMValueType.NUMBER.getType()) {
-
+            yield WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
+        }
+        case NUMBER -> {
             int count = 0;
             for (final Object eachValue : this) {
                 final Number value = (Number) eachValue;
                 values[count] = WffBinaryMessageUtil.getOptimizedBytesFromDouble(value.doubleValue());
                 count++;
             }
-
-        } else if (valueType == BMValueType.UNDEFINED.getType()) {
-
+            yield WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
+        }
+        case UNDEFINED, NULL -> {
             for (int i = 0; i < size(); i++) {
                 values[i] = new byte[] {};
             }
-
-        } else if (valueType == BMValueType.NULL.getType()) {
-
-            for (int i = 0; i < size(); i++) {
-                values[i] = new byte[] {};
-            }
-        } else if (valueType == BMValueType.BOOLEAN.getType()) {
+            yield WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
+        }
+        case BOOLEAN -> {
             int count = 0;
             for (final Object eachValue : this) {
                 final Boolean value = (Boolean) eachValue;
@@ -327,40 +310,27 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
                 values[count] = valueBytes;
                 count++;
             }
-        } else if (valueType == BMValueType.BM_OBJECT.getType()) {
+            yield WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
+        }
+        case BM_OBJECT -> {
             int count = 0;
             for (final Object eachValue : this) {
                 final WffBMObject value = (WffBMObject) eachValue;
                 values[count] = value.buildBytes(false);
                 count++;
             }
-
-        } else if (valueType == BMValueType.BM_ARRAY.getType()) {
-
+            yield WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
+        }
+        case BM_ARRAY -> {
             int count = 0;
             for (final Object eachValue : this) {
                 final WffBMArray value = (WffBMArray) eachValue;
                 values[count] = value.buildBytes(false);
                 count++;
             }
-
-        } else if (valueType == BMValueType.REG_EXP.getType()) {
-            int count = 0;
-            for (final Object eachValue : this) {
-                final String value = (String) eachValue;
-                values[count] = value.getBytes(StandardCharsets.UTF_8);
-                count++;
-            }
-        } else if (valueType == BMValueType.FUNCTION.getType()) {
-
-            int count = 0;
-            for (final Object eachValue : this) {
-                final String value = (String) eachValue;
-                values[count] = value.getBytes(StandardCharsets.UTF_8);
-                count++;
-            }
-        } else if (valueType == BMValueType.BM_BYTE_ARRAY.getType()) {
-
+            yield WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
+        }
+        case BM_BYTE_ARRAY -> {
             int count = 0;
             for (final Object eachValue : this) {
                 @SuppressWarnings("resource")
@@ -368,12 +338,11 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
                 values[count] = value.build(false);
                 count++;
             }
-        } else if (valueType == BMValueType.INTERNAL_BYTE.getType()) {
-            throw new WffRuntimeException(
-                    "BMValueType.BYTE is only for internal use, use WffBMByteArray for row bytes.");
+            yield WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
         }
-
-        return WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues);
+        case INTERNAL_BYTE -> throw new WffRuntimeException(
+                "BMValueType.BYTE is only for internal use, use WffBMByteArray for row bytes.");
+        };
     }
 
     /**
@@ -577,6 +546,58 @@ public class WffBMArray extends LinkedList<Object> implements WffBMData {
                         "Unable to parse boolean from value %s having valueType %s".formatted(value, valueType.name()));
             }
             return valueAsBoolean;
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as WffBMObject.
+     * @return the value as Boolean.
+     * @since 12.0.4
+     */
+    public WffBMObject getValueAsWffBMObject(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return (WffBMObject) value;
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as WffBMArray.
+     * @return the value as Boolean.
+     * @since 12.0.4
+     */
+    public WffBMArray getValueAsWffBMArray(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return (WffBMArray) value;
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as WffBMNumberArray.
+     * @return the value as WffBMNumberArray.
+     * @since 12.0.4
+     */
+    public WffBMNumberArray<?> getValueAsWffBMNumberArray(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return (WffBMNumberArray<?>) value;
+        }
+        return null;
+    }
+
+    /**
+     * @param index the index to get the value as WffBMByteArray.
+     * @return the value as WffBMByteArray.
+     * @since 12.0.4
+     */
+    public WffBMByteArray getValueAsWffBMByteArray(final int index) {
+        final Object value = get(index);
+        if (value != null) {
+            return (WffBMByteArray) value;
         }
         return null;
     }

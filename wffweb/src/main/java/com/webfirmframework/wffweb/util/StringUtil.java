@@ -25,34 +25,32 @@ import java.util.Collection;
  */
 public final class StringUtil {
 
-    private static final int SPACE_CODE_POINT;
+    // private static final int SPACE_CODE_POINT = " ".codePointAt(0);
+    private static final int SPACE_CODE_POINT = 32;
 
-    private static final int COMMA_CODE_POINT;
+//    private static final int COMMA_CODE_POINT = ",".codePointAt(0);
+    private static final int COMMA_CODE_POINT = 44;
 
-    private static final int SEMICOLON_CODE_POINT;
+//    private static final int SEMICOLON_CODE_POINT = ";".codePointAt(0);
+    private static final int SEMICOLON_CODE_POINT = 59;
 
-    private static final int COLON_CODE_POINT;
+//    private static final int COLON_CODE_POINT = ":".codePointAt(0);
+    private static final int COLON_CODE_POINT = 58;
 
-    static final int MINUS_CODE_POINT;
+//    static final int MINUS_CODE_POINT = "-".codePointAt(0) ;
+    static final int MINUS_CODE_POINT = 45;
 
-    private static final int PLUS_CODE_POINT;
+//    private static final int PLUS_CODE_POINT = "+".codePointAt(0) ;;
+    private static final int PLUS_CODE_POINT = 43;
 
-    private static final int SLASH_T_CODE_POINT;
+    // static final int SLASH_T_CODE_POINT = "\t".codePointAt(0);
+    static final int SLASH_T_CODE_POINT = 9;
 
-    private static final int SLASH_N_CODE_POINT;
+    // static final int SLASH_N_CODE_POINT = "\n".codePointAt(0);
+    static final int SLASH_N_CODE_POINT = 10;
 
-    static {
-        final int[] codePoints = " ,;:-+\t\n".codePoints().toArray();
-
-        SPACE_CODE_POINT = codePoints[0];
-        COMMA_CODE_POINT = codePoints[1];
-        SEMICOLON_CODE_POINT = codePoints[2];
-        COLON_CODE_POINT = codePoints[3];
-        MINUS_CODE_POINT = codePoints[4];
-        PLUS_CODE_POINT = codePoints[5];
-        SLASH_T_CODE_POINT = codePoints[6];
-        SLASH_N_CODE_POINT = codePoints[7];
-    }
+    // static final int SLASH_R_CODE_POINT = "\r".codePointAt(0);
+    static final int SLASH_R_CODE_POINT = 13;
 
     private StringUtil() {
         throw new AssertionError();
@@ -105,7 +103,10 @@ public final class StringUtil {
     }
 
     private static boolean isWhitespace(final int c) {
-        return c == SPACE_CODE_POINT || c == SLASH_N_CODE_POINT || c == SLASH_T_CODE_POINT || Character.isWhitespace(c);
+        return switch (c) {
+        case SPACE_CODE_POINT, SLASH_N_CODE_POINT, SLASH_T_CODE_POINT, SLASH_R_CODE_POINT -> true;
+        default -> Character.isWhitespace(c);
+        };
     }
 
     /**
@@ -1293,7 +1294,7 @@ public final class StringUtil {
 
         final int[] codePoints = string.codePoints().toArray();
 
-        final int[] delimPositionInit = new int[codePoints.length];
+        int[] delimPositionInit = new int[codePoints.length];
 
         final int[] sortedDelims = Arrays.copyOf(delims, delims.length);
         Arrays.sort(sortedDelims);
@@ -1312,8 +1313,8 @@ public final class StringUtil {
         }
 
         final int[] delimPositionsFinal = new int[delimCount];
-
         System.arraycopy(delimPositionInit, 0, delimPositionsFinal, 0, delimPositionsFinal.length);
+        delimPositionInit = null;
 
         final String[] splittedStrings = new String[delimCount + 1];
 

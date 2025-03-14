@@ -476,16 +476,13 @@ public enum PreIndexedAttributeName {
      * @since 3.0.3
      */
     public byte[] indexBytes() {
-        if (indexBytes.length == 1) {
-            return new byte[] { indexBytes[0] };
-        } else if (indexBytes.length == 2) {
-            return new byte[] { indexBytes[0], indexBytes[1] };
-        } else if (indexBytes.length == 3) {
-            return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2] };
-        } else if (indexBytes.length == 4) {
-            return new byte[] { indexBytes[0], indexBytes[1], indexBytes[2], indexBytes[3] };
-        }
-        return Arrays.copyOf(indexBytes, indexBytes.length);
+        return switch (indexBytes.length) {
+        case 1 -> new byte[] { indexBytes[0] };
+        case 2 -> new byte[] { indexBytes[0], indexBytes[1] };
+        case 3 -> new byte[] { indexBytes[0], indexBytes[1], indexBytes[2] };
+        case 4 -> new byte[] { indexBytes[0], indexBytes[1], indexBytes[2], indexBytes[3] };
+        default -> Arrays.copyOf(indexBytes, indexBytes.length);
+        };
     }
 
     /**

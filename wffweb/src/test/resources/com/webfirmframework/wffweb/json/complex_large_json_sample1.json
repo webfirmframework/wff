@@ -1,0 +1,87 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "timestamp": "2025-02-21T12:34:56Z",
+    "source": "test_data",
+    "valid": true
+  },
+  "data": {
+    "id": 9876543210,
+    "name": "Complex JSON Test",
+    "description": "This JSON contains multiple cases to validate parsers.",
+    "isActive": false,
+    "nullField": null,
+    "emptyObject": {},
+    "emptyArray": [],
+    "specialCharacters": "\" \\ / \b \f \n \r \t",
+    "unicodeText": "𝒜𝒷𝒸𝒹 → ©®✓😊",
+    "escapedUnicode": "\uD83D\uDE80 \u2022 \u00A9 \u2122",
+    "largeNumbers": {
+      "positive": 1.7976931348623157e+308,
+      "negative": -1.7976931348623157e+308,
+      "tiny": 5e-324,
+      "integer": 9223372036854775807
+    },
+    "arrayTests": {
+      "emptyArray": [],
+      "simpleArray": [1, 2, 3, 4, 5],
+      "mixedArray": [true, false, null, "text", 42, {"key": "value"}],
+      "nestedArray": [[[[[["deep_value"]]]]]],
+      "longArray": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    },
+    "deeplyNestedObject": {
+      "level1": {
+        "level2": {
+          "level3": {
+            "level4": {
+              "level5": {
+                "value": "Deep Value",
+                "more": {
+                  "nested": {
+                    "objects": {
+                      "finalLevel": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "circularReference": {
+      "self": { "reference": "This simulates circular reference indirectly" }
+    },
+    "complexObjectsArray": [
+      {
+        "id": 1,
+        "name": "Item 1",
+        "details": { "subDetail": "Value 1", "active": true }
+      },
+      {
+        "id": 2,
+        "name": "Item 2",
+        "details": { "subDetail": "Value 2", "active": false }
+      },
+      {
+        "id": 3,
+        "name": "Item 3",
+        "details": { "subDetail": "Value 3", "active": null }
+      }
+    ]
+  },
+  "booleanEdgeCases": {
+    "allTrue": [true, true, true, true],
+    "allFalse": [false, false, false, false],
+    "mixed": [true, false, null, true]
+  },
+  "numericEdgeCases": {
+    "zero": 0,
+    "negativeZero": -0,
+    "maxInt": 9007199254740991,
+    "minInt": -9007199254740991,
+    "floatingPoint": 3.141592653589793,
+    "scientificNotation": 6.022e23,
+    "smallNumber": 1e-10
+  }
+}
