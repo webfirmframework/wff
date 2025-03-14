@@ -18,6 +18,7 @@ module com.webfirmframework.wffweb {
     exports com.webfirmframework.wffweb.interpreter;
     exports com.webfirmframework.wffweb.io;
     exports com.webfirmframework.wffweb.js;
+    exports com.webfirmframework.wffweb.json;
     exports com.webfirmframework.wffweb.lang;
     exports com.webfirmframework.wffweb.server.page;
     exports com.webfirmframework.wffweb.server.page.action;

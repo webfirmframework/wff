@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.common.test;
 
+import com.webfirmframework.wffweb.json.*;
 import org.junit.FixMethodOrder;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -232,7 +233,8 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectTest;
         ExternalDriveClientTasksWrapperQueueTest.class, AttributeIdGeneratorTest.class,
         SharedObjectIdGeneratorTest.class, WhenURIUseCaseTest.class, URIUtilTest.class, EventInitiatorTest.class,
         ImmutableCustomAttributeTest.class, BrowserPageActionTest.class, WffConfigurationTest.class,
-        TagContentTest.class, WffBMObjectTest.class, WffBMArrayTest.class, TagCompressedWffBMBytesParserTest.class })
+        TagContentTest.class, WffBMObjectTest.class, WffBMArrayTest.class, TagCompressedWffBMBytesParserTest.class,
+        JsonCodePointUtilTest.class, JsonListTest.class, JsonMapTest.class, JsonParserTest.class, JsonValueTest.class })
 public class AllTests {
 
 }
