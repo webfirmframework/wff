@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The fastest way to parse JSON in the world.
+ * Refer {@link #newBuilder()} for creating object with custom config.
  *
  * @since 12.0.4
  */
