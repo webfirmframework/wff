@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.json;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -40,6 +41,9 @@ import java.util.LinkedList;
  * @since 12.0.4
  */
 public non-sealed class JsonLinkedList extends LinkedList<Object> implements JsonListNode, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private static final JsonParser JSON_PARSER = JsonParser.newBuilder()
             .jsonObjectType(JsonObjectType.JSON_CONCURRENT_MAP).jsonArrayType(JsonArrayType.JSON_LINKED_LIST)

@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.json;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,6 +45,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public non-sealed class JsonConcurrentMap extends ConcurrentHashMap<String, Object>
         implements JsonMapNode, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private static final JsonParser JSON_PARSER = JsonParser.newBuilder()
             .jsonObjectType(JsonObjectType.JSON_CONCURRENT_MAP).jsonArrayType(JsonArrayType.JSON_LINKED_LIST)

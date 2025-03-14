@@ -15,6 +15,7 @@
  */
 package com.webfirmframework.wffweb.json;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -43,6 +44,9 @@ import java.util.Map;
  * @since 12.0.4
  */
 public non-sealed class JsonLinkedMap extends LinkedHashMap<String, Object> implements JsonMapNode, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private static final JsonParser JSON_PARSER = JsonParser.newBuilder().jsonObjectType(JsonObjectType.JSON_LINKED_MAP)
             .jsonArrayType(JsonArrayType.JSON_LINKED_LIST).validateEscapeSequence(true).build();

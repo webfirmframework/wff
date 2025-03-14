@@ -15,12 +15,17 @@
  */
 package com.webfirmframework.wffweb.json;
 
+import java.io.Serial;
+
 import com.webfirmframework.wffweb.WffRuntimeException;
 
 /**
  * @since 12.0.4
  */
 public class IllegalJsonFormatException extends WffRuntimeException {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public IllegalJsonFormatException() {
     }
