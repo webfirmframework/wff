@@ -7182,6 +7182,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         do {
             if (lock != null) {
                 lock.unlock();
+                Thread.onSpinWait();
             }
             currentSO = sharedObject;
             lock = currentSO.getLock(ACCESS_OBJECT).writeLock();
@@ -7210,6 +7211,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         do {
             if (lock != null) {
                 lock.unlock();
+                Thread.onSpinWait();
             }
             currentSO = sharedObject;
             if (latestSharedObject != null && latestSharedObject.objectId().compareTo(currentSO.objectId()) > 0) {
@@ -7252,6 +7254,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         do {
             if (lock != null) {
                 lock.unlock();
+                Thread.onSpinWait();
             }
             currentSO = sharedObject;
             lock = currentSO.getLock(ACCESS_OBJECT).readLock();
@@ -7279,6 +7282,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         do {
             if (lock != null) {
                 lock.unlock();
+                Thread.onSpinWait();
             }
             currentSO = sharedObject;
             if (latestSharedObject != null && latestSharedObject.objectId().compareTo(currentSO.objectId()) > 0) {
