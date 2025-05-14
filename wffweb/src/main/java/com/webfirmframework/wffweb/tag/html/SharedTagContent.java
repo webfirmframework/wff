@@ -1420,7 +1420,7 @@ public class SharedTagContent<T> {
 
         if (shared) {
 
-            final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(4);
+            final Queue<AbstractHtml5SharedObject> sharedObjects = new ConcurrentLinkedQueue<>();
             Deque<Runnable> runnables = null;
             final long stamp = lock.writeLock();
             try {
@@ -1771,10 +1771,11 @@ public class SharedTagContent<T> {
      * @since 3.0.15 introduced executor
      */
     private void pushQueue(final Executor executor, final UpdateClientNature updateClientNature,
-            final List<AbstractHtml5SharedObject> sharedObjects) {
+            final Queue<AbstractHtml5SharedObject> sharedObjects) {
 
         final List<PushQueue> pushQueues = new ArrayList<>(sharedObjects.size());
-        for (final AbstractHtml5SharedObject sharedObject : sharedObjects) {
+        AbstractHtml5SharedObject sharedObject;
+        while ((sharedObject = sharedObjects.poll()) != null) {
             final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
             if (pushQueue != null) {
                 pushQueues.add(pushQueue);
@@ -2122,7 +2123,7 @@ public class SharedTagContent<T> {
             final Set<AbstractHtml> exclusionClientUpdateTags, final boolean parallelUpdateOnTags,
             final boolean calledByThread) {
 
-        final List<AbstractHtml5SharedObject> sharedObjects = new ArrayList<>(4);
+        final Queue<AbstractHtml5SharedObject> sharedObjects = new ConcurrentLinkedQueue<>();
         Deque<Runnable> runnables = null;
 
         final long stamp = lock.writeLock();

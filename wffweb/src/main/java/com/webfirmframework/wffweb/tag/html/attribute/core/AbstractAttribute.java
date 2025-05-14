@@ -1725,6 +1725,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
                 for (final Lock lock : writeLocks) {
                     lock.unlock();
                 }
+                Thread.onSpinWait();
             }
 
             tagContractRecords = new ArrayList<>(capacity);
@@ -1800,6 +1801,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
                     for (final Lock lock : writeLocks) {
                         lock.unlock();
                     }
+                    Thread.onSpinWait();
                 }
 
                 tagContractRecords = new ArrayList<>(capacity);
@@ -1875,6 +1877,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
                 for (final Lock lock : readLocks) {
                     lock.unlock();
                 }
+                Thread.onSpinWait();
             }
 
             tagContractRecords = new ArrayList<>(capacity);
@@ -1949,6 +1952,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
                     for (final Lock lock : readLocks) {
                         lock.unlock();
                     }
+                    Thread.onSpinWait();
                 }
 
                 tagContractRecords = new ArrayList<>(capacity);

@@ -160,6 +160,7 @@ public abstract class AbstractHtmlRepository {
                 for (final Lock lock : locks) {
                     lock.unlock();
                 }
+                Thread.onSpinWait();
             }
 
             tagContractRecords = new ArrayList<>(fromTags.length);

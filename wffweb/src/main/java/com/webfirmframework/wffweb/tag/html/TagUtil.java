@@ -182,6 +182,7 @@ public final class TagUtil {
                 for (final Lock lock : locks) {
                     lock.unlock();
                 }
+                Thread.onSpinWait();
             }
 
             tagContractRecords = new ArrayList<>(foreignTags.length + 1);
