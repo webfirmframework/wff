@@ -190,11 +190,11 @@ public final class AttributeUtil {
             final int lengthOfOptimizedBytesOfAttrNameIndex = compressedBytesByIndex[0];
 
             if (lengthOfOptimizedBytesOfAttrNameIndex > 0) {
-                final byte[] tagNameIndexBytes = new byte[lengthOfOptimizedBytesOfAttrNameIndex];
-                System.arraycopy(compressedBytesByIndex, 1, tagNameIndexBytes, 0,
+                final byte[] attrNameIndexBytes = new byte[lengthOfOptimizedBytesOfAttrNameIndex];
+                System.arraycopy(compressedBytesByIndex, 1, attrNameIndexBytes, 0,
                         lengthOfOptimizedBytesOfAttrNameIndex);
 
-                final int attrNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(tagNameIndexBytes);
+                final int attrNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(attrNameIndexBytes);
 
                 final String attrValue = new String(compressedBytesByIndex, compressedBytesByIndex[0] + 1,
                         compressedBytesByIndex.length - (compressedBytesByIndex[0] + 1), charset);

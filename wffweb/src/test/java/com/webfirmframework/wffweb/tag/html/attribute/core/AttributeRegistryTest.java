@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -28,6 +29,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.webfirmframework.wffweb.tag.html.TagNameConstants;
+import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -245,6 +248,35 @@ public class AttributeRegistryTest {
             }
         }
         assertEquals(names, booleanAttributeNames);
+    }
+
+    @Test
+    public void testGetNewAttributeInstanceOrNullIfFailed() {
+        for (PreIndexedAttributeName each : PreIndexedAttributeName.values()) {
+
+            AbstractAttribute attr = null;
+
+            String attrVal = switch (each.attrName()) {
+                case AttributeNameConstants.COLS, AttributeNameConstants.ROWS, AttributeNameConstants.COLSPAN,
+                     AttributeNameConstants.ROWSPAN, AttributeNameConstants.BORDER, AttributeNameConstants.TABINDEX,
+                     AttributeNameConstants.MAXLENGTH, AttributeNameConstants.MINLENGTH,
+                     AttributeNameConstants.CELLPADDING, AttributeNameConstants.CELLSPACING -> "1";
+                case AttributeNameConstants.LOOP, AttributeNameConstants.HIDDEN, AttributeNameConstants.CONTROLS ->
+                        each.attrName();
+                case AttributeNameConstants.WIDTH, AttributeNameConstants.HEIGHT -> "100%";
+                case AttributeNameConstants.DRAGGABLE, AttributeNameConstants.SPELLCHECK,
+                     AttributeNameConstants.CONTENTEDITABLE -> "true";
+                case AttributeNameConstants.TRANSLATE -> "yes";
+                case AttributeNameConstants.STYLE -> "customcss:customval;";
+                default -> "attrVal";
+            };
+
+            attr = AttributeRegistry.getNewAttributeInstanceOrNullIfFailed(each, attrVal);
+            assertNotNull(attr);
+            assertEquals(each.attrName(), attr.getAttributeName());
+            assertEquals(attrVal, attr.getAttributeValue());
+
+        }
     }
 
 

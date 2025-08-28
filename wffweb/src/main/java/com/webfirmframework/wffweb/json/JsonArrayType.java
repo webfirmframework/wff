@@ -31,5 +31,13 @@ public enum JsonArrayType {
     /**
      * represents immutable List in Java
      */
-    UNMODIFIABLE_LIST;
+    UNMODIFIABLE_LIST,
+
+    /**
+     * represents the user defined Map supplied by jsonListFactory of the
+     * JsonParser.
+     *
+     * @since 12.0.6
+     */
+    CUSTOM_JSON_LIST;
 }

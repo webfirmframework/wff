@@ -23,20 +23,24 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
+
+import com.webfirmframework.wffweb.InvalidUsageException;
 
 /**
  * Refer {@link #newBuilder()} for creating object with custom config.
  *
- * @since 12.0.4
+ * @since 12.0.6
  */
 public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayType,
         boolean jsonNumberArrayUniformValueType, JsonNumberValueType jsonNumberValueTypeForObject,
         JsonNumberValueType jsonNumberValueTypeForArray, JsonStringValueType jsonStringValueTypeForObject,
         JsonStringValueType jsonStringValueTypeForArray, JsonBooleanValueType jsonBooleanValueTypeForObject,
         JsonBooleanValueType jsonBooleanValueTypeForArray, JsonNullValueType jsonNullValueTypeForObject,
-        JsonNullValueType jsonNullValueTypeForArray, boolean validateEscapeSequence) {
+        JsonNullValueType jsonNullValueTypeForArray, boolean validateEscapeSequence,
+        Supplier<Map<String, Object>> jsonMapFactory, Supplier<List<Object>> jsonListFactory) {
 
-//    private static final int CURLY_BRACE_START_CODE_POINT = "{".codePointAt(0);
+    // private static final int CURLY_BRACE_START_CODE_POINT = "{".codePointAt(0);
     private static final int CURLY_BRACE_START_CODE_POINT = 123;
 
 //    private static final int CURLY_BRACE_END_CODE_POINT = "}".codePointAt(0);
@@ -155,6 +159,20 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
          */
         Builder validateEscapeSequence(final boolean validateEscapeSequence);
 
+        /**
+         * @param jsonMapFactory the supplier of Map implementation.
+         * @return the builder.
+         * @since 12.0.6
+         */
+        Builder jsonMapFactory(final Supplier<Map<String, Object>> jsonMapFactory);
+
+        /**
+         * @param jsonListFactory the supplier of List implementation.
+         * @return the builder.
+         * @since 12.0.6
+         */
+        Builder jsonListFactory(final Supplier<List<Object>> jsonListFactory);
+
         JsonParser build();
     }
 
@@ -165,7 +183,8 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
             final JsonStringValueType jsonStringValueTypeForArray,
             final JsonBooleanValueType jsonBooleanValueTypeForObject,
             final JsonBooleanValueType jsonBooleanValueTypeForArray, final JsonNullValueType jsonNullValueTypeForObject,
-            final JsonNullValueType jsonNullValueTypeForArray, final boolean validateEscapeSequence) {
+            final JsonNullValueType jsonNullValueTypeForArray, final boolean validateEscapeSequence,
+            final Supplier<Map<String, Object>> jsonMapFactory, final Supplier<List<Object>> jsonListFactory) {
         this.jsonObjectType = jsonObjectType != null ? jsonObjectType : JsonObjectType.UNMODIFIABLE_MAP;
         this.jsonArrayType = jsonArrayType != null ? jsonArrayType : JsonArrayType.UNMODIFIABLE_LIST;
         this.jsonNumberArrayUniformValueType = jsonNumberArrayUniformValueType;
@@ -186,13 +205,34 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
         this.jsonNullValueTypeForArray = jsonNullValueTypeForArray != null ? jsonNullValueTypeForArray
                 : JsonNullValueType.NULL;
         this.validateEscapeSequence = validateEscapeSequence;
+        this.jsonMapFactory = jsonMapFactory;
+        this.jsonListFactory = jsonListFactory;
+    }
+
+    /**
+     * Refer {@link #newBuilder()} for creating object with custom config.
+     *
+     * @since 12.0.4
+     */
+    public JsonParser(final JsonObjectType jsonObjectType, final JsonArrayType jsonArrayType,
+            final boolean jsonNumberArrayUniformValueType, final JsonNumberValueType jsonNumberValueTypeForObject,
+            final JsonNumberValueType jsonNumberValueTypeForArray,
+            final JsonStringValueType jsonStringValueTypeForObject,
+            final JsonStringValueType jsonStringValueTypeForArray,
+            final JsonBooleanValueType jsonBooleanValueTypeForObject,
+            final JsonBooleanValueType jsonBooleanValueTypeForArray, final JsonNullValueType jsonNullValueTypeForObject,
+            final JsonNullValueType jsonNullValueTypeForArray, final boolean validateEscapeSequence) {
+        this(jsonObjectType, jsonArrayType, jsonNumberArrayUniformValueType, jsonNumberValueTypeForObject,
+                jsonNumberValueTypeForArray, jsonStringValueTypeForObject, jsonStringValueTypeForArray,
+                jsonBooleanValueTypeForObject, jsonBooleanValueTypeForArray, jsonNullValueTypeForObject,
+                jsonNullValueTypeForArray, validateEscapeSequence, null, null);
     }
 
     public JsonParser() {
         this(JsonObjectType.UNMODIFIABLE_MAP, JsonArrayType.UNMODIFIABLE_LIST, false,
                 JsonNumberValueType.AUTO_INTEGER_LONG_BIG_DECIMAL, JsonNumberValueType.AUTO_INTEGER_LONG_BIG_DECIMAL,
                 JsonStringValueType.STRING, JsonStringValueType.STRING, JsonBooleanValueType.BOOLEAN,
-                JsonBooleanValueType.BOOLEAN, JsonNullValueType.NULL, JsonNullValueType.NULL, true);
+                JsonBooleanValueType.BOOLEAN, JsonNullValueType.NULL, JsonNullValueType.NULL, true, null, null);
     }
 
     /**
@@ -345,26 +385,38 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
     }
 
     private Map<String, Object> newMap(final int length) {
-        if (JsonObjectType.JSON_MAP.equals(jsonObjectType)) {
-            return new JsonMap(length);
+        return switch (jsonObjectType) {
+        case JSON_MAP, UNMODIFIABLE_MAP -> new JsonMap(length);
+        case JSON_CONCURRENT_MAP -> new JsonConcurrentMap(length);
+        case JSON_LINKED_MAP -> new JsonLinkedMap(length);
+        case CUSTOM_JSON_MAP -> {
+            if (jsonMapFactory != null) {
+                final Map<String, Object> map = jsonMapFactory.get();
+                if (map != null) {
+                    yield map;
+                }
+            }
+            throw new InvalidUsageException(
+                    "If JsonObjectType.JSON_CUSTOM_MAP is used jsonMapFactory should be provided and the supplier should always return an object.");
         }
-        if (JsonObjectType.JSON_CONCURRENT_MAP.equals(jsonObjectType)) {
-            return new JsonConcurrentMap(length);
-        }
-        if (JsonObjectType.JSON_LINKED_MAP.equals(jsonObjectType)) {
-            return new JsonLinkedMap(length);
-        }
-        return new JsonMap(length);
+        };
     }
 
     private List<Object> newList(final int initialCapacity) {
-        if (JsonArrayType.JSON_LIST.equals(jsonArrayType)) {
-            return new JsonList(initialCapacity);
+        return switch (jsonArrayType) {
+        case JSON_LIST, UNMODIFIABLE_LIST -> new JsonList(initialCapacity);
+        case JSON_LINKED_LIST -> new JsonLinkedList();
+        case CUSTOM_JSON_LIST -> {
+            if (jsonListFactory != null) {
+                final List<Object> list = jsonListFactory.get();
+                if (list != null) {
+                    yield list;
+                }
+            }
+            throw new InvalidUsageException(
+                    "If JsonArrayType.JSON_CUSTOM_LIST is used jsonListFactory should be provided and the supplier should always return an object.");
         }
-        if (JsonArrayType.JSON_LINKED_LIST.equals(jsonArrayType)) {
-            return new JsonLinkedList();
-        }
-        return new JsonList(initialCapacity);
+        };
     }
 
     private Map<String, Object> parseJsonObject(final int[] jsonCodePoints, final int startIndex, final int endIndex,

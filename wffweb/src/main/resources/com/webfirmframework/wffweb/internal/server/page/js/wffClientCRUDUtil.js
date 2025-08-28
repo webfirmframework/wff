@@ -104,32 +104,32 @@ var wffClientCRUDUtil = new function() {
 //			}
 //
 //		} 
-		
-		else if (taskValue == wffGlobal.taskValues.APPENDED_CHILD_TAG
-				|| taskValue == wffGlobal.taskValues.APPENDED_CHILDREN_TAGS) {
-
-			for (var i = 1; i < nameValues.length; i++) {
-				var wffId = wffTagUtil
-						.getWffIdFromWffIdBytes(nameValues[i].name);
-				var values = nameValues[i].values;
-				var tagName = wffTagUtil.getTagNameFromCompressedBytes(values[0]);
-
-				var parent = wffTagUtil.getTagByTagNameAndWffId(tagName, wffId);
-
-				for (var j = 1; j < values.length; j++) {
-					// var htmlString = getStringFromBytes(values[j]);
-
-					// var div = document.createElement('div');
-					// div.innerHTML = htmlString;
-					// var htmlNodes = div.firstChild;
-
-					var htmlNodes = wffTagUtil
-							.createTagFromWffBMBytes(values[j]);
-
-					parent.appendChild(htmlNodes);
-				}
-			}
-		} else if (taskValue == wffGlobal.taskValues.REMOVED_TAGS) {
+//		else if (taskValue == wffGlobal.taskValues.APPENDED_CHILD_TAG
+//				|| taskValue == wffGlobal.taskValues.APPENDED_CHILDREN_TAGS) {
+//
+//			for (var i = 1; i < nameValues.length; i++) {
+//				var wffId = wffTagUtil
+//						.getWffIdFromWffIdBytes(nameValues[i].name);
+//				var values = nameValues[i].values;
+//				var tagName = wffTagUtil.getTagNameFromCompressedBytes(values[0]);
+//
+//				var parent = wffTagUtil.getTagByTagNameAndWffId(tagName, wffId);
+//
+//				for (var j = 1; j < values.length; j++) {
+//					// var htmlString = getStringFromBytes(values[j]);
+//
+//					// var div = document.createElement('div');
+//					// div.innerHTML = htmlString;
+//					// var htmlNodes = div.firstChild;
+//
+//					var htmlNodes = wffTagUtil
+//							.createTagFromWffBMBytes(values[j]);
+//
+//					parent.appendChild(htmlNodes);
+//				}
+//			}
+//		}
+		else if (taskValue == wffGlobal.taskValues.REMOVED_TAGS) {
 
 			console.log('wffGlobal.taskValues.REMOVED_TAGS nameValues.length '
 					+ nameValues.length);
@@ -167,45 +167,139 @@ var wffClientCRUDUtil = new function() {
 				}
 			}
 
-		} else if (taskValue == wffGlobal.taskValues.MOVED_CHILDREN_TAGS) {
+		} else if (taskValue == wffGlobal.taskValues.MOVABLE_PREPENDED_CHILDREN_TO_TAG
+		|| taskValue == wffGlobal.taskValues.MOVABLE_APPENDED_CHILDREN_TO_TAG
+		|| taskValue == wffGlobal.taskValues.MOVABLE_INSERTED_BEFORE_TAG
+		|| taskValue == wffGlobal.taskValues.MOVABLE_INSERTED_AFTER_TAG
+		|| taskValue == wffGlobal.taskValues.MOVABLE_REPLACED_TAG
+		|| taskValue == wffGlobal.taskValues.MOVABLE_REPLACED_ALL_CHILDREN_OF_TAG) {
 
-			console.log('wffGlobal.taskValues.MOVED_CHILDREN_TAGS nameValues.length '
-							+ nameValues.length);
+			var prnd = taskValue == wffGlobal.taskValues.MOVABLE_PREPENDED_CHILDREN_TO_TAG
+			|| taskValue == wffGlobal.taskValues.MOVABLE_INSERTED_BEFORE_TAG
+			|| taskValue == wffGlobal.taskValues.MOVABLE_REPLACED_TAG;
 
-			for (var i = 1; i < nameValues.length; i++) {
-				
-				var currentParentWffId = wffTagUtil
-						.getWffIdFromWffIdBytes(nameValues[i].name);
-				var values = nameValues[i].values;				
-				
-				var currentParentTagName = wffTagUtil.getTagNameFromCompressedBytes(values[0]);
+			var targetTagName = wffTagUtil.getTagNameFromCompressedBytes(nameValues[1].name);
+			var targetTagWffId = wffTagUtil.getWffIdFromWffIdBytes(nameValues[1].values[0]);
+            var targetTag = wffTagUtil.getTagByTagNameAndWffId(targetTagName, targetTagWffId);
 
-				var currentParentTag = wffTagUtil.getTagByTagNameAndWffId(
-						currentParentTagName, currentParentWffId);
-				
+            //ttst stands for targetTagSiblingTag
+            var ttst = nameValues[1].values.length == 2 ? wffTagUtil.getChildByNthIndexBytes(targetTag, nameValues[1].values[1]) :
+            ((taskValue == wffGlobal.taskValues.MOVABLE_INSERTED_BEFORE_TAG
+            || taskValue == wffGlobal.taskValues.MOVABLE_INSERTED_AFTER_TAG
+            || taskValue == wffGlobal.taskValues.MOVABLE_REPLACED_TAG) ? targetTag : null);
+            var ttstP = ttst ? ttst.parentNode : null;
+
+            //ro stands for reverse order
+            var ro = (!prnd && ttst) || (prnd && !ttst);
+
+            //idrt stands for id to removal tag
+            var idrt = {};
+            for (var i = 2; i < nameValues.length; i++) {
+                var name = nameValues[i].name;
+                if (name.length != 0) {
+                    var values = nameValues[i].values;
+                    var childTagName = wffTagUtil.getTagNameFromCompressedBytes(name);
+					var childWffId = wffTagUtil.getWffIdFromWffIdBytes(values[0]);
+					var childTag = wffTagUtil.getTagByTagNameAndWffId(childTagName, childWffId);
+					if (childTag) {
+					    var tid = childTagName + '_' + childWffId;
+                    	idrt[tid] = childTag;
+					}
+                }
+            }
+            // should be after idrt mapping
+            if (taskValue == wffGlobal.taskValues.MOVABLE_REPLACED_ALL_CHILDREN_OF_TAG) {
+                while (targetTag.firstChild) {
+                    targetTag.removeChild(targetTag.firstChild);
+                }
+            }
+
+            // ttstE stands for ttst exists
+            var ttstE = false;
+			for (var i = ro ? nameValues.length - 1 : 2; ro ? i > 1 : i < nameValues.length; ro ? i-- : i++) {
+			    var name = nameValues[i].name;
+				var values = nameValues[i].values;
+
 				var childTag = null;
 				//if NoTag then length will be zero
-				if (values[2].length == 0) {
-					childTag = wffTagUtil.createTagFromWffBMBytes(values[3]);
+				if (name.length == 0) {
+					childTag = wffTagUtil.createTagFromWffBMBytes(values[0]);
 				} else {
-					var childTagName = wffTagUtil.getTagNameFromCompressedBytes(values[2]);
-					var childWffId = wffTagUtil.getWffIdFromWffIdBytes(values[1]);
-					
-					childTag = wffTagUtil.getTagByTagNameAndWffId(childTagName,
-							childWffId);
-					if (typeof childTag !== 'undefined') {
-						console.log('childTag !== undefined', childTag);
-						var previousParent = childTag.parentNode;
-						console.log('childTag.parentNode', previousParent);
-						if (typeof previousParent !== 'undefined') {						
-							previousParent.removeChild(childTag);
-						}
+					var childTagName = wffTagUtil.getTagNameFromCompressedBytes(name);
+					var childWffId = wffTagUtil.getWffIdFromWffIdBytes(values[0]);
+					childTag = wffTagUtil.getTagByTagNameAndWffId(childTagName, childWffId);
+					if (childTag) {
+					    if (ttst && ttst === childTag) {
+					        ttstE = true;
+					    } else {
+                            var pn = childTag.parentNode;
+						    if (pn) {
+							    pn.removeChild(childTag);
+						    }
+					    }
 					} else {
-						console.log('childTag === undefined', childTag);
-						childTag = wffTagUtil.createTagFromWffBMBytes(values[3]);
+					    var tid = childTagName + '_' + childWffId;
+					    childTag = idrt[tid];
+					    if (childTag) {
+                            var pn = childTag.parentNode;
+						    if (pn) {
+							    pn.removeChild(childTag);
+						    }
+					    } else {
+					        childTag = wffTagUtil.createTagFromWffBMBytes(values[1]);
+					    }
 					}
-				}				
-				currentParentTag.appendChild(childTag);
+				}
+				if (prnd) {
+				    if (ttst) {
+				        //incrementing i loop expected
+				        if (ttst === childTag) {
+				            ttst = ttst.nextSibling;
+				            if (!ttst) {
+				                prnd = false;
+				                targetTag = ttstP;
+				            }
+				        } else {
+				            ttstP.insertBefore(childTag, ttst);
+				        }
+				    } else {
+				        //decrementing i loop expected
+				        var fc = targetTag.firstChild;
+				        if (fc) {
+				            targetTag.insertBefore(childTag, fc);
+				        } else {
+				            targetTag.appendChild(childTag);
+				        }
+				    }
+				} else {
+				    if (ttst) {
+				        //decrementing i loop expected
+				        if (ttst === childTag) {
+				            ttst = ttst.previousSibling;
+				            if (!ttst) {
+				                prnd = true;
+				                targetTag = ttstP;
+				            }
+				        } else {
+                            var ns = ttst.nextSibling;
+				            if (ns) {
+				                ttstP.insertBefore(childTag, ns);
+				            } else {
+				                ttstP.appendChild(childTag);
+				            }
+				        }
+				    } else {
+				        //incrementing i loop expected
+				        targetTag.appendChild(childTag);
+				    }
+				}
+			}
+
+			if (!ttstE && taskValue == wffGlobal.taskValues.MOVABLE_REPLACED_TAG) {
+			    var pn = ttst.parentNode;
+			     if (pn) {
+			         pn.removeChild(ttst);
+			     }
 			}
 
 		} else if (taskValue == wffGlobal.taskValues.ADDED_ATTRIBUTES) {
@@ -311,98 +405,100 @@ var wffClientCRUDUtil = new function() {
 				parentTag.appendChild(htmlNodes);
 			}
 
-		} else if (taskValue == wffGlobal.taskValues.INSERTED_BEFORE_TAG) {
-			
-			console.log('wffGlobal.taskValues.INSERTED_BEFORE_TAG');
-			
-			var tagName = wffTagUtil.getTagNameFromCompressedBytes(nameValues[1].name);
-			var wffId = wffTagUtil.getWffIdFromWffIdBytes(nameValues[1].values[0]);
-			var parentTag = wffTagUtil.getTagByTagNameAndWffId(tagName, wffId);
-			
-			//beforeTag means replacingTag 
-			var beforeTagName = wffTagUtil.getTagNameFromCompressedBytes(nameValues[2].name);
-			var beforeTag;
-			
-			//# means NoTag
-			if (beforeTagName === '#') {
-				var chldNdxOptmzdIntByts = nameValues[2].values[0];
-				beforeTag = wffTagUtil.getChildByNthIndexBytes(parentTag, chldNdxOptmzdIntByts);				
-			} else {
-				var beforeTagWffId = wffTagUtil.getWffIdFromWffIdBytes(nameValues[2].values[0]);					
-				beforeTag = wffTagUtil.getTagByTagNameAndWffId(beforeTagName,
-						beforeTagWffId);
-			}
-
-			for (var i = 3; i < nameValues.length; i++) {
-				
-				var nm = nameValues[i].name;
-				var values = nameValues[i].values;			
-				
-				var htmlNodes = wffTagUtil.createTagFromWffBMBytes(values[0]);
-				
-				//if length is 1 then there is an existing tag with this id
-				if (nm.length == 1) {
-					console.log('nm.length == 1');
-					var existingTag = wffTagUtil.getTagByTagNameAndWffId(
-							htmlNodes.nodeName, htmlNodes
-									.getAttribute("data-wff-id"));
-					var parentOfExistingTag = existingTag.parentNode;
-					if (parentOfExistingTag) {parentOfExistingTag.removeChild(existingTag);}					
-				}
-				parentTag.insertBefore(htmlNodes, beforeTag);
-			}
-			
-			
-		} else if (taskValue == wffGlobal.taskValues.INSERTED_AFTER_TAG) {
-			
-			console.log('wffGlobal.taskValues.INSERTED_AFTER_TAG');
-			
-			var tagName = wffTagUtil.getTagNameFromCompressedBytes(nameValues[1].name);
-			var wffId = wffTagUtil.getWffIdFromWffIdBytes(nameValues[1].values[0]);
-			var parentTag = wffTagUtil.getTagByTagNameAndWffId(tagName, wffId);
-			
-			//beforeTag means replacingTag 
-			var beforeTagName = wffTagUtil.getTagNameFromCompressedBytes(nameValues[2].name);
-			var beforeTag;
-			
-			//# means NoTag
-			if (beforeTagName === '#') {
-				var chldNdxOptmzdIntByts = nameValues[2].values[0];
-				beforeTag = wffTagUtil.getChildByNthIndexBytes(parentTag, chldNdxOptmzdIntByts);				
-			} else {
-				var beforeTagWffId = wffTagUtil.getWffIdFromWffIdBytes(nameValues[2].values[0]);					
-				beforeTag = wffTagUtil.getTagByTagNameAndWffId(beforeTagName,
-						beforeTagWffId);
-			}
-
-			var firstNd;
-			for (var i = 3; i < nameValues.length; i++) {
-				
-				var nm = nameValues[i].name;
-				var values = nameValues[i].values;			
-				
-				var htmlNodes = wffTagUtil.createTagFromWffBMBytes(values[0]);
-				
-				//if length is 1 then there is an existing tag with this id
-				if (nm.length == 1) {
-					console.log('nm.length == 1');
-					var existingTag = wffTagUtil.getTagByTagNameAndWffId(
-							htmlNodes.nodeName, htmlNodes
-									.getAttribute("data-wff-id"));
-					var parentOfExistingTag = existingTag.parentNode;
-					if (parentOfExistingTag) {parentOfExistingTag.removeChild(existingTag);}
-				}
-				
-				parentTag.insertBefore(htmlNodes, beforeTag);
-				if (!firstNd) {
-					firstNd = htmlNodes;
-				}
-			}
-			if (firstNd) {
-				parentTag.removeChild(beforeTag);
-				parentTag.insertBefore(beforeTag, firstNd);					
-			}
-		} else if (taskValue == wffGlobal.taskValues.REPLACED_WITH_TAGS) {
+		}
+//		else if (taskValue == wffGlobal.taskValues.INSERTED_BEFORE_TAG) {
+//
+//			console.log('wffGlobal.taskValues.INSERTED_BEFORE_TAG');
+//
+//			var tagName = wffTagUtil.getTagNameFromCompressedBytes(nameValues[1].name);
+//			var wffId = wffTagUtil.getWffIdFromWffIdBytes(nameValues[1].values[0]);
+//			var parentTag = wffTagUtil.getTagByTagNameAndWffId(tagName, wffId);
+//
+//			//beforeTag means replacingTag
+//			var beforeTagName = wffTagUtil.getTagNameFromCompressedBytes(nameValues[2].name);
+//			var beforeTag;
+//
+//			//# means NoTag
+//			if (beforeTagName === '#') {
+//				var chldNdxOptmzdIntByts = nameValues[2].values[0];
+//				beforeTag = wffTagUtil.getChildByNthIndexBytes(parentTag, chldNdxOptmzdIntByts);
+//			} else {
+//				var beforeTagWffId = wffTagUtil.getWffIdFromWffIdBytes(nameValues[2].values[0]);
+//				beforeTag = wffTagUtil.getTagByTagNameAndWffId(beforeTagName,
+//						beforeTagWffId);
+//			}
+//
+//			for (var i = 3; i < nameValues.length; i++) {
+//
+//				var nm = nameValues[i].name;
+//				var values = nameValues[i].values;
+//
+//				var htmlNodes = wffTagUtil.createTagFromWffBMBytes(values[0]);
+//
+//				//if length is 1 then there is an existing tag with this id
+//				if (nm.length == 1) {
+//					console.log('nm.length == 1');
+//					var existingTag = wffTagUtil.getTagByTagNameAndWffId(
+//							htmlNodes.nodeName, htmlNodes
+//									.getAttribute("data-wff-id"));
+//					var parentOfExistingTag = existingTag.parentNode;
+//					if (parentOfExistingTag) {parentOfExistingTag.removeChild(existingTag);}
+//				}
+//				parentTag.insertBefore(htmlNodes, beforeTag);
+//			}
+//
+//
+//		} else if (taskValue == wffGlobal.taskValues.INSERTED_AFTER_TAG) {
+//
+//			console.log('wffGlobal.taskValues.INSERTED_AFTER_TAG');
+//
+//			var tagName = wffTagUtil.getTagNameFromCompressedBytes(nameValues[1].name);
+//			var wffId = wffTagUtil.getWffIdFromWffIdBytes(nameValues[1].values[0]);
+//			var parentTag = wffTagUtil.getTagByTagNameAndWffId(tagName, wffId);
+//
+//			//beforeTag means replacingTag
+//			var beforeTagName = wffTagUtil.getTagNameFromCompressedBytes(nameValues[2].name);
+//			var beforeTag;
+//
+//			//# means NoTag
+//			if (beforeTagName === '#') {
+//				var chldNdxOptmzdIntByts = nameValues[2].values[0];
+//				beforeTag = wffTagUtil.getChildByNthIndexBytes(parentTag, chldNdxOptmzdIntByts);
+//			} else {
+//				var beforeTagWffId = wffTagUtil.getWffIdFromWffIdBytes(nameValues[2].values[0]);
+//				beforeTag = wffTagUtil.getTagByTagNameAndWffId(beforeTagName,
+//						beforeTagWffId);
+//			}
+//
+//			var firstNd;
+//			for (var i = 3; i < nameValues.length; i++) {
+//
+//				var nm = nameValues[i].name;
+//				var values = nameValues[i].values;
+//
+//				var htmlNodes = wffTagUtil.createTagFromWffBMBytes(values[0]);
+//
+//				//if length is 1 then there is an existing tag with this id
+//				if (nm.length == 1) {
+//					console.log('nm.length == 1');
+//					var existingTag = wffTagUtil.getTagByTagNameAndWffId(
+//							htmlNodes.nodeName, htmlNodes
+//									.getAttribute("data-wff-id"));
+//					var parentOfExistingTag = existingTag.parentNode;
+//					if (parentOfExistingTag) {parentOfExistingTag.removeChild(existingTag);}
+//				}
+//
+//				parentTag.insertBefore(htmlNodes, beforeTag);
+//				if (!firstNd) {
+//					firstNd = htmlNodes;
+//				}
+//			}
+//			if (firstNd) {
+//				parentTag.removeChild(beforeTag);
+//				parentTag.insertBefore(beforeTag, firstNd);
+//			}
+//		}
+		else if (taskValue == wffGlobal.taskValues.REPLACED_WITH_TAGS) {
 
 			console.log('wffGlobal.taskValues.REPLACED_WITH_TAGS');
 			
@@ -417,7 +513,7 @@ var wffClientCRUDUtil = new function() {
 			//# means NoTag
 			if (beforeTagName === '#') {
 				var chldNdxOptmzdIntByts = nameValues[2].values[0];
-				beforeTag = wffTagUtil.getChildByNthIndexBytes(parentTag, chldNdxOptmzdIntByts);				
+				beforeTag = wffTagUtil.getChildByNthIndexBytes(parentTag, chldNdxOptmzdIntByts);
 			} else {
 				var beforeTagWffId = wffTagUtil.getWffIdFromWffIdBytes(nameValues[2].values[0]);					
 				beforeTag = wffTagUtil.getTagByTagNameAndWffId(beforeTagName,

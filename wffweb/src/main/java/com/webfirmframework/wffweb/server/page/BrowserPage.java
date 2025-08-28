@@ -68,6 +68,7 @@ import com.webfirmframework.wffweb.common.URIEventMask;
 import com.webfirmframework.wffweb.internal.security.object.BrowserPageSecurity;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
+import com.webfirmframework.wffweb.internal.tag.html.listener.TagManipulationListener;
 import com.webfirmframework.wffweb.server.page.action.BrowserPageAction;
 import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
@@ -1749,112 +1750,49 @@ public abstract class BrowserPage implements Serializable {
             return;
         }
 
-        final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
-        final Set<AbstractHtml> initialSet = Set.of(abstractHtml);
-        childrenStack.push(initialSet);
+        final AbstractHtml headOrBodyTag = enableDeferOnWffScript
+                ? TagRepository.findOneTagByTagName(TagNameConstants.HEAD, abstractHtml)
+                : TagRepository.findOneTagByTagName(TagNameConstants.BODY, abstractHtml);
 
-        boolean headAndbodyTagMissing = true;
+        final AbstractHtml scriptHolderTag = headOrBodyTag != null ? headOrBodyTag : abstractHtml;
 
-        Set<AbstractHtml> children;
+        final Script script = new Script(null, new Type(Type.TEXT_JAVASCRIPT));
 
-        outerLoop: while ((children = childrenStack.poll()) != null) {
+        final boolean losslessCommunication = onPayloadLoss != null;
+        final String onPayloadLossJS = losslessCommunication ? onPayloadLoss.javaScript : "";
 
-            for (final AbstractHtml child : children) {
+        final String wffJs = WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId, getInstanceId(),
+                removePrevFromBrowserContextOnTabInit, removeFromBrowserContextOnTabClose,
+                (wsHeartbeatInterval > 0 ? wsHeartbeatInterval : wsDefaultHeartbeatInterval),
+                (wsReconnectInterval > 0 ? wsReconnectInterval : wsDefaultReconnectInterval), autoremoveWffScript,
+                losslessCommunication, onPayloadLossJS);
 
-                if ((enableDeferOnWffScript && TagNameConstants.HEAD.equals(child.getTagName()))
-                        || (!enableDeferOnWffScript && TagNameConstants.BODY.equals(child.getTagName()))) {
-
-                    headAndbodyTagMissing = false;
-
-                    wffScriptTagId = getNewDataWffId();
-
-                    final Script script = new Script(null, new Type(Type.TEXT_JAVASCRIPT));
-
-                    script.setDataWffId(wffScriptTagId);
-
-                    final boolean losslessCommunication = onPayloadLoss != null;
-                    final String onPayloadLossJS = losslessCommunication ? onPayloadLoss.javaScript : "";
-
-                    final String wffJs = WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId, getInstanceId(),
-                            removePrevFromBrowserContextOnTabInit, removeFromBrowserContextOnTabClose,
-                            (wsHeartbeatInterval > 0 ? wsHeartbeatInterval : wsDefaultHeartbeatInterval),
-                            (wsReconnectInterval > 0 ? wsReconnectInterval : wsDefaultReconnectInterval),
-                            autoremoveWffScript, losslessCommunication, onPayloadLossJS);
-
-                    if (enableDeferOnWffScript) {
-                        // byes are in UTF-8 so charset=utf-8 is explicitly
-                        // specified
-                        // Defer must be first argument
-                        script.addAttributes(new Defer(null), new Src("data:text/javascript;charset=utf-8;base64,"
-                                + HashUtil.base64FromUtf8Bytes(wffJs.getBytes(StandardCharsets.UTF_8))));
-                    } else {
-                        new NoTag(script, wffJs);
-                    }
-
-                    if (nonceForWffScriptTag != null) {
-                        script.addAttributes(nonceForWffScriptTag);
-                    }
-
-                    // to avoid invoking listener
-                    child.addChild(ACCESS_OBJECT, script, false);
-
-                    // ConcurrentHashMap cannot contain null as value
-                    tagByWffId.put(wffScriptTagId.getValue(), script);
-
-                    break outerLoop;
-                }
-
-                final Set<AbstractHtml> subChildren = child.getChildren(ACCESS_OBJECT);
-
-                if (subChildren != null && !subChildren.isEmpty()) {
-                    childrenStack.push(subChildren);
-                }
-            }
-
+        if (enableDeferOnWffScript) {
+            // byes are in UTF-8 so charset=utf-8 is explicitly
+            // specified
+            // Defer must be first argument
+            script.addAttributes(new Defer(null), new Src("data:text/javascript;charset=utf-8;base64,"
+                    + HashUtil.base64FromUtf8Bytes(wffJs.getBytes(StandardCharsets.UTF_8))));
+        } else {
+            new NoTag(script, wffJs);
         }
 
-        if (headAndbodyTagMissing) {
-            wffScriptTagId = getNewDataWffId();
-
-            final Script script = new Script(null, new Type(Type.TEXT_JAVASCRIPT));
-
-            script.setDataWffId(wffScriptTagId);
-
-            final boolean losslessCommunication = onPayloadLoss != null;
-            final String onPayloadLossJS = losslessCommunication ? onPayloadLoss.javaScript : "";
-            final String wffJs = WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId, getInstanceId(),
-                    removePrevFromBrowserContextOnTabInit, removeFromBrowserContextOnTabClose,
-                    (wsHeartbeatInterval > 0 ? wsHeartbeatInterval : wsDefaultHeartbeatInterval),
-                    (wsReconnectInterval > 0 ? wsReconnectInterval : wsDefaultReconnectInterval), autoremoveWffScript,
-                    losslessCommunication, onPayloadLossJS);
-
-            if (enableDeferOnWffScript) {
-                // byes are in UTF-8 so charset=utf-8 is explicitly specified
-                // Defer must be first argument
-                script.addAttributes(new Defer(null), new Src("data:text/javascript;charset=utf-8;base64,"
-                        + HashUtil.base64FromUtf8Bytes(wffJs.getBytes(StandardCharsets.UTF_8))));
-            } else {
-                new NoTag(script, wffJs);
-            }
-
-            if (nonceForWffScriptTag != null) {
-                script.addAttributes(nonceForWffScriptTag);
-            }
-
-            // to avoid invoking listener
-            abstractHtml.addChild(ACCESS_OBJECT, script, false);
-
-            // ConcurrentHashMap cannot contain null as value
-            tagByWffId.put(wffScriptTagId.getValue(), script);
-
+        if (nonceForWffScriptTag != null) {
+            script.addAttributes(nonceForWffScriptTag);
         }
 
+        // to avoid invoking listener
+        scriptHolderTag.addChild(ACCESS_OBJECT, script, false);
+        wffScriptTagId = script.getDataWffId();
+
+        // ConcurrentHashMap cannot contain null as value
+        tagByWffId.put(wffScriptTagId.getValue(), script);
     }
 
-    private void addChildTagAppendListener(final AbstractHtml abstractHtml) {
-
-        abstractHtml.getSharedObject().setChildTagAppendListener(
-                new ChildTagAppendListenerImpl(this, ACCESS_OBJECT, tagByWffId), ACCESS_OBJECT);
+    private void addTagManipulationListener(final AbstractHtml abstractHtml) {
+        final TagManipulationListener tagManipulationListener = new TagManipulationListenerImpl(this, ACCESS_OBJECT,
+                tagByWffId);
+        abstractHtml.getSharedObject().setTagManipulationListener(tagManipulationListener, ACCESS_OBJECT);
     }
 
     private void addChildTagRemoveListener(final AbstractHtml abstractHtml) {
@@ -1876,21 +1814,6 @@ public abstract class BrowserPage implements Serializable {
     private void addInnerHtmlAddListener(final AbstractHtml abstractHtml) {
         abstractHtml.getSharedObject()
                 .setInnerHtmlAddListener(new InnerHtmlAddListenerImpl(this, ACCESS_OBJECT, tagByWffId), ACCESS_OBJECT);
-    }
-
-    private void addInsertTagsBeforeListener(final AbstractHtml abstractHtml) {
-        abstractHtml.getSharedObject().setInsertTagsBeforeListener(
-                new InsertTagsBeforeListenerImpl(this, ACCESS_OBJECT, tagByWffId), ACCESS_OBJECT);
-    }
-
-    private void addInsertAfterListener(final AbstractHtml abstractHtml) {
-        abstractHtml.getSharedObject()
-                .setInsertAfterListener(new InsertAfterListenerImpl(this, ACCESS_OBJECT, tagByWffId), ACCESS_OBJECT);
-    }
-
-    private void addReplaceListener(final AbstractHtml abstractHtml) {
-        abstractHtml.getSharedObject().setReplaceListener(new ReplaceListenerImpl(this, ACCESS_OBJECT, tagByWffId),
-                ACCESS_OBJECT);
     }
 
     private void addWffBMDataUpdateListener(final AbstractHtml abstractHtml) {
@@ -2307,14 +2230,11 @@ public abstract class BrowserPage implements Serializable {
                     // attribute value change listener
                     // should be added only after adding data-wff-id attribute
                     addAttrValueChangeListener(rootTag);
-                    addChildTagAppendListener(rootTag);
+                    addTagManipulationListener(rootTag);
                     addChildTagRemoveListener(rootTag);
                     addAttributeAddListener(rootTag);
                     addAttributeRemoveListener(rootTag);
                     addInnerHtmlAddListener(rootTag);
-                    addInsertAfterListener(rootTag);
-                    addInsertTagsBeforeListener(rootTag);
-                    addReplaceListener(rootTag);
                     addWffBMDataUpdateListener(rootTag);
                     addWffBMDataDeleteListener(rootTag);
                     addPushQueue(rootTag);
@@ -2362,7 +2282,9 @@ public abstract class BrowserPage implements Serializable {
                 ? webSocketUrl + "?wffInstanceId=" + getInstanceId()
                 : webSocketUrl + "&wffInstanceId=" + getInstanceId();
 
-        embedWffScriptIfRequired(rootTag, wsUrlWithInstanceId);
+        TagUtil.runAtomically(rootTag, () -> embedWffScriptIfRequired(rootTag, wsUrlWithInstanceId), true,
+                ACCESS_OBJECT);
+
     }
 
     /**

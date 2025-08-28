@@ -57,7 +57,9 @@ public enum TagCompressedWffBMBytesParser {
 
             AbstractHtml parent = null;
 
-            String tagName = parseTagName(superParentValues[0], charset);
+            PreIndexedTagName preIndexedTagName = parsePreIndexedTagName(superParentValues[0]);
+            String tagName = preIndexedTagName != null ? preIndexedTagName.tagName()
+                    : parseTagName(superParentValues[0], charset);
 
             // # short for #text
             // @ short for html content
@@ -83,8 +85,9 @@ public enum TagCompressedWffBMBytesParser {
                         attributeHtmlCompressedByIndexArray, StandardCharsets.UTF_8);
 
                 if (exactTag) {
-                    final AbstractHtml newTagInstance = TagRegistry.getNewTagInstanceOrNullIfFailed(tagName, null,
-                            attributes);
+                    final AbstractHtml newTagInstance = preIndexedTagName != null
+                            ? TagRegistry.getNewTagInstanceOrNullIfFailed(preIndexedTagName, null, attributes)
+                            : TagRegistry.getNewTagInstanceOrNullIfFailed(tagName, null, attributes);
                     if (newTagInstance != null) {
                         parent = newTagInstance;
                     } else {
@@ -103,7 +106,8 @@ public enum TagCompressedWffBMBytesParser {
 
                 final byte[][] values = nameValue.getValues();
 
-                tagName = parseTagName(values[0], charset);
+                preIndexedTagName = parsePreIndexedTagName(values[0]);
+                tagName = preIndexedTagName != null ? preIndexedTagName.tagName() : parseTagName(values[0], charset);
 
                 // # short for #text
                 // @ short for html content
@@ -133,8 +137,11 @@ public enum TagCompressedWffBMBytesParser {
                                     StandardCharsets.UTF_8);
 
                     if (exactTag) {
-                        final AbstractHtml newTagInstance = TagRegistry.getNewTagInstanceOrNullIfFailed(tagName,
-                                allTags[indexOfParent], attributes);
+                        final AbstractHtml newTagInstance = preIndexedTagName != null
+                                ? TagRegistry.getNewTagInstanceOrNullIfFailed(preIndexedTagName, allTags[indexOfParent],
+                                        attributes)
+                                : TagRegistry.getNewTagInstanceOrNullIfFailed(tagName, allTags[indexOfParent],
+                                        attributes);
                         if (newTagInstance != null) {
                             child = newTagInstance;
                         } else {
@@ -148,6 +155,27 @@ public enum TagCompressedWffBMBytesParser {
             }
 
             return parent;
+        }
+
+        /**
+         * @param tagNameRawBytes the raw tag name bytes
+         * @return the PreIndexedTagName or null.
+         * @since 12.0.6
+         */
+        private PreIndexedTagName parsePreIndexedTagName(final byte[] tagNameRawBytes) {
+            if (tagNameRawBytes.length == 1) {
+                final int tagNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(tagNameRawBytes);
+                return PreIndexedTagName.getPreIndexedTagName(tagNameIndex);
+            }
+            final int lengthOfOptimizedIndexBytesOfTagName = tagNameRawBytes[0];
+            if (lengthOfOptimizedIndexBytesOfTagName > 0) {
+                final byte[] tagNameIndexOptimizedBytes = new byte[lengthOfOptimizedIndexBytesOfTagName];
+                System.arraycopy(tagNameRawBytes, 1, tagNameIndexOptimizedBytes, 0,
+                        lengthOfOptimizedIndexBytesOfTagName);
+                final int tagNameIndex = WffBinaryMessageUtil.getIntFromOptimizedBytes(tagNameIndexOptimizedBytes);
+                return PreIndexedTagName.getPreIndexedTagName(tagNameIndex);
+            }
+            return null;
         }
 
         /**
@@ -175,6 +203,7 @@ public enum TagCompressedWffBMBytesParser {
             System.arraycopy(tagNameRawBytes, 1, tagNameBytes, 0, requiredBytesLength);
             return new String(tagNameBytes, charset);
         }
+
     };
 
     private TagCompressedWffBMBytesParser() {

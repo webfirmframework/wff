@@ -84,13 +84,11 @@ public enum WffJsFile {
 
     public static final boolean COMPRESSED_WFF_DATA = true;
 
-    private static String allOptimizedContent;
+    private static final String allOptimizedContent;
 
     private final String filename;
 
     private final String optimizedFileContent;
-
-    private static volatile Map<String, Boolean> functionAndVarNames;
 
     private static String[][] minifiableParts = { { "else {", "else{" }, { "} else", "}else" }, { "if (", "if(" },
             { ") {", "){" } };
@@ -364,7 +362,7 @@ public enum WffJsFile {
 
             // NB: passing descendingLength comparator as constructor argument
             // in TreeSet makes bug it also removes elements having same length
-            functionAndVarNames = new LinkedHashMap<>(functionAndVarNameList.size());
+            final Map<String, Boolean> functionAndVarNames = new LinkedHashMap<>(functionAndVarNameList.size());
             for (final FunctionOrVarName each : functionAndVarNameList) {
                 functionAndVarNames.put(each.name, each.function);
             }
@@ -394,12 +392,56 @@ public enum WffJsFile {
             functionAndVarNames.remove("h");
             functionAndVarNames.remove("action");
             functionAndVarNames.remove("perform");
+            allOptimizedContent = buildAllFilesContent(functionAndVarNames);
+        } else {
+            allOptimizedContent = buildAllFilesContent(null);
         }
     }
 
     private WffJsFile(final String filename) {
         this.filename = filename;
         optimizedFileContent = buildOptimizedFileContent();
+    }
+
+    private static String buildAllFilesContent(final Map<String, Boolean> functionAndVarNames) {
+        int totalContentLength = 0;
+        for (final WffJsFile wffJsFile : WffJsFile.values()) {
+            totalContentLength += wffJsFile.optimizedFileContent.length();
+        }
+
+        final StringBuilder builder = new StringBuilder(totalContentLength);
+
+        final WffJsFile[] wffJsFiles = WffJsFile.values();
+        for (int i = 2; i < wffJsFiles.length; i++) {
+            builder.append('\n').append(wffJsFiles[i].optimizedFileContent);
+        }
+
+        String allOptimizedContent = StringBuilderUtil.getTrimmedString(builder);
+
+        if (functionAndVarNames != null) {
+
+            int functionId = 0;
+            int variableId = 0;
+
+            for (final Entry<String, Boolean> entry : functionAndVarNames.entrySet()) {
+
+                final String minName = entry.getValue() ? "f" + (++functionId) : "v" + (++variableId);
+                allOptimizedContent = allOptimizedContent.replace(entry.getKey(), minName);
+            }
+
+            for (final String[] each : minifiableParts) {
+                allOptimizedContent = allOptimizedContent.replace(each[0], each[1]);
+            }
+
+            if (Task.SHORT_NAME_ENABLED) {
+                for (final Task task : Task.getSortedTasks()) {
+                    allOptimizedContent = allOptimizedContent.replace("taskValues.".concat(task.name()),
+                            "taskValues.".concat(task.getShortName()));
+                }
+            }
+        }
+
+        return allOptimizedContent;
     }
 
     private String buildOptimizedFileContent() {
@@ -520,100 +562,23 @@ public enum WffJsFile {
             final int wsReconnectInterval, final boolean autoremoveParentScript, final boolean losslessCommunication,
             final String onPayloadLossJS) {
 
-        if (allOptimizedContent != null) {
-
-            if (heartbeatInterval > 0) {
-                if (autoremoveParentScript) {
-                    return buildJsContentWithHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab,
-                            removePrevBPOnClosetTab, heartbeatInterval, wsReconnectInterval, losslessCommunication,
-                            onPayloadLossJS).append(AUTOREMOVE_PARENT_SCRIPT).toString();
-                }
-                return buildJsContentWithHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                        heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS).toString();
-            }
-
+        if (heartbeatInterval > 0) {
             if (autoremoveParentScript) {
-                return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                return buildJsContentWithHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
                         heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS)
                                 .append(AUTOREMOVE_PARENT_SCRIPT).toString();
             }
-            return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
+            return buildJsContentWithHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
                     heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS).toString();
         }
 
-        try {
-
-            int totalContentLength = 0;
-            for (final WffJsFile wffJsFile : WffJsFile.values()) {
-                totalContentLength += wffJsFile.optimizedFileContent.length();
-            }
-
-            final StringBuilder builder = new StringBuilder(totalContentLength);
-
-            final WffJsFile[] wffJsFiles = WffJsFile.values();
-            for (int i = 2; i < wffJsFiles.length; i++) {
-                builder.append('\n').append(wffJsFiles[i].optimizedFileContent);
-            }
-
-            allOptimizedContent = StringBuilderUtil.getTrimmedString(builder);
-
-            if (PRODUCTION_MODE && functionAndVarNames != null) {
-
-                synchronized (WffJsFile.class) {
-
-                    if (functionAndVarNames != null) {
-
-                        int functionId = 0;
-                        int variableId = 0;
-
-                        for (final Entry<String, Boolean> entry : functionAndVarNames.entrySet()) {
-
-                            final String minName = entry.getValue() ? "f" + (++functionId) : "v" + (++variableId);
-                            allOptimizedContent = allOptimizedContent.replace(entry.getKey(), minName);
-                        }
-
-                        for (final String[] each : minifiableParts) {
-                            allOptimizedContent = allOptimizedContent.replace(each[0], each[1]);
-                        }
-
-                        // there is bug while enabling this, also enable in Task
-                        // for (final Task task : Task.getSortedTasks()) {
-                        // allOptimizedContent = allOptimizedContent
-                        // .replace(task.name(), task.getShortName());
-                        // }
-
-                        functionAndVarNames = null;
-                        minifiableParts = null;
-
-                    }
-
-                }
-
-            }
-
-            if (heartbeatInterval > 0) {
-                if (autoremoveParentScript) {
-                    return buildJsContentWithHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab,
-                            removePrevBPOnClosetTab, heartbeatInterval, wsReconnectInterval, losslessCommunication,
-                            onPayloadLossJS).append(AUTOREMOVE_PARENT_SCRIPT).toString();
-                }
-                return buildJsContentWithHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                        heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS).toString();
-            }
-
-            if (autoremoveParentScript) {
-                return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                        heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS)
-                                .append(AUTOREMOVE_PARENT_SCRIPT).toString();
-            }
+        if (autoremoveParentScript) {
             return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                    heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS).toString();
-        } catch (final Exception e) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            }
+                    heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS)
+                            .append(AUTOREMOVE_PARENT_SCRIPT).toString();
         }
-        return "";
+        return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS).toString();
     }
 
     private static StringBuilder buildJsContentWithHeartbeat(final String wsUrl, final String instanceId,

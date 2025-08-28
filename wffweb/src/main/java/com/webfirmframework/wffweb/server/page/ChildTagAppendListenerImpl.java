@@ -16,19 +16,18 @@
 package com.webfirmframework.wffweb.server.page;
 
 import java.io.Serial;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.webfirmframework.wffweb.InvalidTagException;
+import com.webfirmframework.wffweb.MethodNotImplementedException;
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.server.page.js.WffJsFile;
 import com.webfirmframework.wffweb.internal.tag.html.listener.ChildTagAppendListener;
@@ -37,12 +36,13 @@ import com.webfirmframework.wffweb.tag.html.TagUtil;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.util.data.NameValue;
 
+@Deprecated(forRemoval = true, since = "12.0.6")
 public final class ChildTagAppendListenerImpl implements ChildTagAppendListener {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logger.getLogger(ChildTagRemoveListenerImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ChildTagAppendListenerImpl.class.getName());
 
     private final SecurityObject accessObject;
 
@@ -262,6 +262,7 @@ public final class ChildTagAppendListenerImpl implements ChildTagAppendListener 
     @Override
     public void childMoved(@SuppressWarnings("exports") final ChildMovedEvent event) {
 
+        // Note: data format is modified, check the currently used method
         // @formatter:off
         // moved children tags from some parents to another task format (in this method
         // moving only one child) :-
@@ -275,7 +276,7 @@ public final class ChildTagAppendListenerImpl implements ChildTagAppendListener 
         final AbstractHtml currentParentTag = event.currentParentTag();
         final AbstractHtml movedChildTag = event.movedChildTag();
 
-        final NameValue task = Task.MOVED_CHILDREN_TAGS.getTaskNameValue();
+        final NameValue task = Task.MOVABLE_APPENDED_CHILDREN_TO_TAG.getTaskNameValue();
 
         final DataWffId currentParentDataWffIdAttr = currentParentTag.getDataWffId();
 
@@ -313,105 +314,8 @@ public final class ChildTagAppendListenerImpl implements ChildTagAppendListener 
 
     @Override
     public void childrendAppendedOrMoved(@SuppressWarnings("exports") final Collection<ChildMovedEvent> events) {
-
-        // @formatter:off
-        // moved children tags from some parents to another task format (in this method
-        // moving only one child) :-
-        // { "name": task_byte, "values" : [MOVED_CHILDREN_TAGS_byte_from_Task_enum]}, {
-        // "name": new_parent_data-wff-id, "values" : [ new_parent_tag_name,
-        // child_data-wff-id, child_tag_name ]}
-        // { "name": 2, "values" : [[3]]}, { "name":"C55", "values" : ["div", "S255",
-        // "span"]}
-        // @formatter:on
-
-        try {
-
-            final NameValue task = Task.MOVED_CHILDREN_TAGS.getTaskNameValue();
-
-            final Deque<NameValue> nameValues = new ArrayDeque<>();
-            nameValues.add(task);
-
-            for (final ChildMovedEvent event : events) {
-
-                // if previousParentTag == null it means it's appending a new
-                // child tag
-                // this checking is done at client side
-                final AbstractHtml previousParentTag = event.previousParentTag();
-                final AbstractHtml currentParentTag = event.currentParentTag();
-                final AbstractHtml movedChildTag = event.movedChildTag();
-
-                final DataWffId currentParentDataWffIdAttr = currentParentTag.getDataWffId();
-
-                if (currentParentDataWffIdAttr != null) {
-
-                    final NameValue nameValue = new NameValue();
-
-                    final byte[][] currentParentTagNameAndWffId = DataWffIdUtil.getIndexedTagNameAndWffId(accessObject,
-                            currentParentTag);
-
-                    final byte[] parentWffIdBytes = currentParentTagNameAndWffId[1];
-
-                    nameValue.setName(parentWffIdBytes);
-
-                    final byte[] currentTagName = currentParentTagNameAndWffId[0];
-
-                    final boolean noTag = movedChildTag.getTagName() == null;
-
-                    final byte[][] movedChildTagNameAndWffId = noTag ? DataWffIdUtil.getTagNameAndWffIdForNoTag()
-                            : DataWffIdUtil.getIndexedTagNameAndWffId(accessObject, movedChildTag);
-
-                    final byte[] movedChildWffIdBytes = movedChildTagNameAndWffId[1];
-
-                    final byte[] movedChildTagName = movedChildTagNameAndWffId[0];
-
-                    if (previousParentTag == null) {
-                        try {
-                            // if the previousParentTag is null it means it's a
-                            // new
-                            // tag
-                            if (WffJsFile.COMPRESSED_WFF_DATA) {
-                                nameValue.setValues(currentTagName, movedChildWffIdBytes, movedChildTagName,
-                                        movedChildTag.toCompressedWffBMBytesV3(StandardCharsets.UTF_8, accessObject));
-                            } else {
-                                nameValue.setValues(currentTagName, movedChildWffIdBytes, movedChildTagName,
-                                        movedChildTag.toWffBMBytes(StandardCharsets.UTF_8, accessObject));
-                            }
-
-                        } catch (final InvalidTagException e) {
-                            if (LOGGER.isLoggable(Level.WARNING)) {
-                                LOGGER.log(Level.WARNING,
-                                        "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
-                                                .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."),
-                                        e);
-                            }
-                            continue;
-                        }
-                    } else {
-                        nameValue.setValues(currentTagName, movedChildWffIdBytes, movedChildTagName);
-                    }
-
-                    nameValues.add(nameValue);
-
-                    addInWffIdMap(movedChildTag);
-
-                } else {
-                    LOGGER.severe("Could not find data-wff-id from previousParentTag");
-                }
-
-            }
-
-            browserPage.push(nameValues.toArray(new NameValue[nameValues.size()]));
-
-        } catch (final NoSuchElementException e) {
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "Do not append/add an empty NoTag as child tag, eg: new NoTag(null, \"\").\n"
-                        .concat("To make a tag's children as empty then invoke removeAllChildren() method in it."), e);
-            }
-        } catch (final UnsupportedEncodingException e) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            }
-        }
-
+        throw new MethodNotImplementedException(
+                "use newly implemented alternative method which contains ChildCreatedOrMovedEvent");
     }
+
 }

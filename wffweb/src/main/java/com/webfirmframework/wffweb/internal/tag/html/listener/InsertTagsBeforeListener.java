@@ -25,6 +25,7 @@ import com.webfirmframework.wffweb.tag.html.AbstractHtml;
  * @since 3.0.7
  *
  */
+@Deprecated(forRemoval = true, since = "12.0.6")
 public sealed interface InsertTagsBeforeListener extends Serializable permits InsertTagsBeforeListenerImpl {
 
     public static record Event(AbstractHtml insertedTag, AbstractHtml previousParentTag) {
@@ -40,6 +41,7 @@ public sealed interface InsertTagsBeforeListener extends Serializable permits In
      * @since 3.0.7
      * @author WFF
      */
+    @Deprecated(forRemoval = true, since = "12.0.6")
     public void insertedBefore(final AbstractHtml parentTag, final AbstractHtml beforeTag, final Event... events);
 
 }

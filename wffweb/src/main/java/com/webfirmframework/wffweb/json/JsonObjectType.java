@@ -44,5 +44,12 @@ public enum JsonObjectType {
      *
      * @since 12.0.4
      */
-    UNMODIFIABLE_MAP;
+    UNMODIFIABLE_MAP,
+
+    /**
+     * represents the user defined Map supplied in jsonMapFactory of the JsonParser.
+     *
+     * @since 12.0.6
+     */
+    CUSTOM_JSON_MAP;
 }
