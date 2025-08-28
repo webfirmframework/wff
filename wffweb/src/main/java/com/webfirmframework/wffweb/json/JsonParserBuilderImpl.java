@@ -15,6 +15,10 @@
  */
 package com.webfirmframework.wffweb.json;
 
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
 /**
  * @since 12.0.4
  */
@@ -32,6 +36,8 @@ final class JsonParserBuilderImpl implements JsonParser.Builder {
     private JsonNullValueType jsonNullValueTypeForObject;
     private JsonNullValueType jsonNullValueTypeForArray;
     private boolean validateEscapeSequence = true;
+    private Supplier<Map<String, Object>> jsonMapFactory;
+    private Supplier<List<Object>> jsonListFactory;
 
     @Override
     public JsonParserBuilderImpl jsonObjectType(final JsonObjectType jsonObjectType) {
@@ -106,10 +112,23 @@ final class JsonParserBuilderImpl implements JsonParser.Builder {
     }
 
     @Override
+    public JsonParser.Builder jsonMapFactory(final Supplier<Map<String, Object>> jsonMapFactory) {
+        this.jsonMapFactory = jsonMapFactory;
+        return this;
+    }
+
+    @Override
+    public JsonParser.Builder jsonListFactory(final Supplier<List<Object>> jsonListFactory) {
+        this.jsonListFactory = jsonListFactory;
+        return this;
+    }
+
+    @Override
     public JsonParser build() {
         return new JsonParser(jsonObjectType, jsonArrayType, jsonNumberArrayUniformValueType,
                 jsonNumberValueTypeForObject, jsonNumberValueTypeForArray, jsonStringValueTypeForObject,
                 jsonStringValueTypeForArray, jsonBooleanValueTypeForObject, jsonBooleanValueTypeForArray,
-                jsonNullValueTypeForObject, jsonNullValueTypeForArray, validateEscapeSequence);
+                jsonNullValueTypeForObject, jsonNullValueTypeForArray, validateEscapeSequence, jsonMapFactory,
+                jsonListFactory);
     }
 }

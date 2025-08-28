@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -226,7 +228,7 @@ public class AttributeRegistry {
 
     private static final Map<String, Class<?>> ATTRIBUTE_CLASS_BY_ATTR_NAME;
 
-    private static final List<Class<?>> INDEXED_ATTR_CLASSES = new ArrayList<>();
+    private static final List<Class<?>> INDEXED_ATTR_CLASSES;
 
     private static volatile Map<String, Class<?>> attributeClassByAttrNameTmp = new ConcurrentHashMap<>();
 
@@ -479,13 +481,13 @@ public class AttributeRegistry {
             }
         }
 
-        int index = 0;
-        for (final String attrName : IndexedAttributeName.INSTANCE.sortedAttrNames()) {
+        final List<String> sortedAttrNames = IndexedAttributeName.INSTANCE.sortedAttrNames();
+        final List<Class<?>> indexedAttrClasses = new ArrayList<>(sortedAttrNames.size());
+        for (final String attrName : sortedAttrNames) {
             final Class<?> attrClass = ATTRIBUTE_CLASS_BY_ATTR_NAME.get(attrName);
-            INDEXED_ATTR_CLASSES.add(index, attrClass);
-
-            index++;
+            indexedAttrClasses.add(attrClass);
         }
+        INDEXED_ATTR_CLASSES = List.copyOf(indexedAttrClasses);
 
         // already sorted by length in ascending order and then by name in
         // ascending order in
@@ -495,6 +497,404 @@ public class AttributeRegistry {
         }
 
         SORTED_EVENT_ATTR_NAMES = List.copyOf(tmpSortedEventAttrNames);
+    }
+
+    /**
+     * @param preIndexedAttributeName the preIndexedAttributeName
+     * @return the lambda to create attribute object.
+     * @since 12.0.6
+     */
+    private static Function<String, AbstractAttribute> getAttributeCreatorLamda(
+            final PreIndexedAttributeName preIndexedAttributeName) {
+        // without this null checking it will throw java.lang.NullPointerException
+        if (preIndexedAttributeName == null) {
+            return null;
+        }
+        return switch (preIndexedAttributeName) {
+        case ID -> Id::new;
+        case ALT -> Alt::new;
+        case DIR -> Dir::new;
+        case FOR -> For::new;
+        case LOW -> Low::new;
+        case MAX -> Max::new;
+        case MIN -> Min::new;
+        case REL -> Rel::new;
+        case REV -> Rev::new;
+        case SRC -> com.webfirmframework.wffweb.tag.html.attribute.Src::new;
+        case COLS -> Cols::new;
+        case FACE -> Face::new;
+        case FORM -> FormAttribute::new;
+        case HIGH -> High::new;
+        case HREF -> Href::new;
+        case LANG -> Lang::new;
+        case LIST -> com.webfirmframework.wffweb.tag.html.html5.attribute.List::new;
+        case LOOP -> attrValue -> "loop".equals(attrValue) || "true".equals(attrValue) || "false".equals(attrValue)
+                ? new Loop(attrValue)
+                : null;
+        case NAME -> Name::new;
+        case OPEN -> Open::new;
+        case ROLE -> Role::new;
+        case ROWS -> Rows::new;
+        case SIZE -> Size::new;
+        case STEP -> Step::new;
+        case TYPE -> Type::new;
+        case WRAP -> Wrap::new;
+        case ALIGN -> Align::new;
+        case ASYNC -> Async::new;
+        case CLASS -> ClassAttribute::new;
+        case COLOR -> ColorAttribute::new;
+        case DEFER -> Defer::new;
+        case ISMAP -> IsMap::new;
+        case MEDIA -> Media::new;
+        case MUTED -> Muted::new;
+        case NONCE -> Nonce::new;
+        case ONCUT -> OnCut::new;
+        case SCOPE -> Scope::new;
+        case SHAPE -> Shape::new;
+        case SIZES -> Sizes::new;
+        case STYLE -> Style::new;
+        case TITLE -> Title::new;
+        case VALUE -> Value::new;
+        case WIDTH -> Width::new;
+        case ACCEPT -> Accept::new;
+        case ACTION -> Action::new;
+        case BORDER -> Border::new;
+        case COORDS -> CoOrds::new;
+        case HEIGHT -> Height::new;
+        case HIDDEN -> Hidden::new;
+        case METHOD -> Method::new;
+        case NOHREF -> NoHref::new;
+        case ONBLUR -> OnBlur::new;
+        case ONCOPY -> OnCopy::new;
+        case ONDRAG -> OnDrag::new;
+        case ONDROP -> OnDrop::new;
+        case ONLOAD -> OnLoad::new;
+        case ONPLAY -> OnPlay::new;
+        case ONSHOW -> OnShow::new;
+        case POSTER -> Poster::new;
+        case SORTED -> Sorted::new;
+        case SRCSET -> SrcSet::new;
+        case TARGET -> Target::new;
+        case USEMAP -> UseMap::new;
+        case CHARSET -> Charset::new;
+        case CHECKED -> Checked::new;
+        case COLSPAN -> ColSpan::new;
+        case CONTENT -> Content::new;
+        case DEFAULT -> Default::new;
+        case DIRNAME -> DirName::new;
+        case ENCTYPE -> EncType::new;
+        case HEADERS -> Headers::new;
+        case ONABORT -> OnAbort::new;
+        case ONCLICK -> OnClick::new;
+        case ONENDED -> OnEnded::new;
+        case ONERROR -> OnError::new;
+        case ONFOCUS -> OnFocus::new;
+        case ONINPUT -> OnInput::new;
+        case ONKEYUP -> OnKeyUp::new;
+        case ONPASTE -> OnPaste::new;
+        case ONPAUSE -> OnPause::new;
+        case ONRESET -> OnReset::new;
+        case ONWHEEL -> OnWheel::new;
+        case OPTIMUM -> Optimum::new;
+        case PATTERN -> Pattern::new;
+        case PRELOAD -> Preload::new;
+        case ROWSPAN -> RowSpan::new;
+        case SANDBOX -> Sandbox::new;
+        case AUTOPLAY -> AutoPlay::new;
+        case CONTROLS -> Controls::new;
+        case DATETIME -> DateTime::new;
+        case DISABLED -> Disabled::new;
+        case DOWNLOAD -> Download::new;
+        case DROPZONE -> Dropzone::new;
+        case HREFLANG -> HrefLang::new;
+        case MULTIPLE -> Multiple::new;
+        case ONCHANGE -> OnChange::new;
+        case ONONLINE -> OnOnline::new;
+        case ONRESIZE -> OnResize::new;
+        case ONSCROLL -> OnScroll::new;
+        case ONSEARCH -> OnSearch::new;
+        case ONSEEKED -> OnSeeked::new;
+        case ONSELECT -> OnSelect::new;
+        case ONSUBMIT -> OnSubmit::new;
+        case ONTOGGLE -> OnToggle::new;
+        case ONUNLOAD -> OnUnload::new;
+        case READONLY -> ReadOnly::new;
+        case REQUIRED -> Required::new;
+        case REVERSED -> Reversed::new;
+        case SELECTED -> Selected::new;
+        case TABINDEX -> TabIndex::new;
+        case ACCESSKEY -> AccessKey::new;
+        case AUTOFOCUS -> AutoFocus::new;
+        case DRAGGABLE -> Draggable::new;
+        case MAXLENGTH -> MaxLength::new;
+        case MINLENGTH -> MinLength::new;
+        case ONCANPLAY -> OnCanPlay::new;
+        case ONDRAGEND -> OnDragEnd::new;
+        case ONEMPTIED -> OnEmptied::new;
+        case ONFOCUSIN -> OnFocusIn::new;
+        case ONINVALID -> OnInvalid::new;
+        case ONKEYDOWN -> OnKeyDown::new;
+        case ONMOUSEUP -> OnMouseUp::new;
+        case ONOFFLINE -> OnOffline::new;
+        case ONPLAYING -> OnPlaying::new;
+        case ONSEEKING -> OnSeeking::new;
+        case ONSTALLED -> OnStalled::new;
+        case ONSTORAGE -> OnStorage::new;
+        case ONSUSPEND -> OnSuspend::new;
+        case ONWAITING -> OnWaiting::new;
+        case TRANSLATE -> Translate::new;
+        case FORMACTION -> FormAction::new;
+        case FORMMETHOD -> FormMethod::new;
+        case FORMTARGET -> FormTarget::new;
+        case HTTP_EQUIV -> HttpEquiv::new;
+        case ONDBLCLICK -> OnDblClick::new;
+        case ONDRAGOVER -> OnDragOver::new;
+        case ONFOCUSOUT -> OnFocusOut::new;
+        case ONKEYPRESS -> OnKeyPress::new;
+        case ONMOUSEOUT -> OnMouseOut::new;
+        case ONPAGEHIDE -> OnPageHide::new;
+        case ONPAGESHOW -> OnPageShow::new;
+        case ONPOPSTATE -> OnPopState::new;
+        case ONPROGRESS -> OnProgress::new;
+        case ONTOUCHEND -> OnTouchEnd::new;
+        case SPELLCHECK -> SpellCheck::new;
+        case CELLPADDING -> CellPadding::new;
+        case CELLSPACING -> CellSpacing::new;
+        case CONTEXTMENU -> ContextMenu::new;
+        case DATA_WFF_ID -> DataWffId::new;
+        case FORMENCTYPE -> FormEncType::new;
+        case ONDRAGENTER -> OnDragEnter::new;
+        case ONDRAGLEAVE -> OnDragLeave::new;
+        case ONDRAGSTART -> OnDragStart::new;
+        case ONLOADSTART -> OnLoadStart::new;
+        case ONMOUSEDOWN -> OnMouseDown::new;
+        case ONMOUSEMOVE -> OnMouseMove::new;
+        case ONMOUSEOVER -> OnMouseOver::new;
+        case ONTOUCHMOVE -> OnTouchMove::new;
+        case PLACEHOLDER -> Placeholder::new;
+        case ANIMATIONEND -> AnimationEnd::new;
+        case AUTOCOMPLETE -> AutoComplete::new;
+        case ONAFTERPRINT -> OnAfterPrint::new;
+        case ONHASHCHANGE -> OnHashChange::new;
+        case ONLOADEDDATA -> OnLoadedData::new;
+        case ONMOUSEENTER -> OnMouseEnter::new;
+        case ONMOUSELEAVE -> OnMouseLeave::new;
+        case ONRATECHANGE -> OnRateChange::new;
+        case ONTIMEUPDATE -> OnTimeUpdate::new;
+        case ONTOUCHSTART -> OnTouchStart::new;
+        case ONBEFOREPRINT -> OnBeforePrint::new;
+        case ONCONTEXTMENU -> OnContextMenu::new;
+        case ONTOUCHCANCEL -> OnTouchCancel::new;
+        case TRANSITIONEND -> TransitionEnd::new;
+        case ACCEPT_CHARSET -> AcceptCharset::new;
+        case ANIMATIONSTART -> AnimationStart::new;
+        case FORMNOVALIDATE -> FormNoValidate::new;
+        case ONBEFOREUNLOAD -> OnBeforeUnload::new;
+        case ONVOLUMECHANGE -> OnVolumeChange::new;
+        case CONTENTEDITABLE -> ContentEditable::new;
+        case ONCANPLAYTHROUGH -> OnCanPlayThrough::new;
+        case ONDURATIONCHANGE -> OnDurationChange::new;
+        case ONLOADEDMETADATA -> OnLoadedMetaData::new;
+        case ANIMATIONITERATION -> AnimationIteration::new;
+        };
+    }
+
+    /**
+     * @param preIndexedAttributeName the preIndexedAttributeName
+     * @return the lambda to create attribute object.
+     * @since 12.0.6
+     */
+    private static Supplier<AbstractAttribute> getAttributeWithoutValueCreatorLamda(
+            final PreIndexedAttributeName preIndexedAttributeName) {
+        // without this null checking it will throw java.lang.NullPointerException
+        if (preIndexedAttributeName == null) {
+            return null;
+        }
+        return switch (preIndexedAttributeName) {
+        case ID -> Id::new;
+        case ALT -> Alt::new;
+        case DIR -> Dir::new;
+        case FOR -> () -> new For(null);
+        case LOW -> () -> new Low(null);
+        case MAX -> () -> new Max(null);
+        case MIN -> () -> new Min(null);
+        case REL -> () -> new Rel((String) null);
+        case REV -> () -> new Rev(null);
+        case SRC -> () -> new com.webfirmframework.wffweb.tag.html.attribute.Src(null);
+        case COLS -> Cols::new;
+        case FACE -> () -> new Face(null);
+        case FORM -> () -> new FormAttribute(null);
+        case HIGH -> () -> new High(null);
+        case HREF -> () -> new Href(null);
+        case LANG -> Lang::new;
+        case LIST -> () -> new com.webfirmframework.wffweb.tag.html.html5.attribute.List(null);
+        case LOOP -> Loop::new;
+        case NAME -> () -> new Name(null);
+        case OPEN -> Open::new;
+        case ROLE -> () -> new Role(null);
+        case ROWS -> Rows::new;
+        case SIZE -> () -> new Size(null);
+        case STEP -> Step::new;
+        case TYPE -> () -> new Type(null);
+        case WRAP -> Wrap::new;
+        case ALIGN -> () -> new Align(null);
+        case ASYNC -> Async::new;
+        case CLASS -> ClassAttribute::new;
+        case COLOR -> () -> new ColorAttribute(null);
+        case DEFER -> Defer::new;
+        case ISMAP -> IsMap::new;
+        case MEDIA -> () -> new Media(null);
+        case MUTED -> Muted::new;
+        case NONCE -> () -> new Nonce(null);
+        case ONCUT -> OnCut::new;
+        case SCOPE -> () -> new Scope(null);
+        case SHAPE -> () -> new Shape(null);
+        case SIZES -> () -> new Sizes(null);
+        case STYLE -> Style::new;
+        case TITLE -> Title::new;
+        case VALUE -> () -> new Value(null);
+        case WIDTH -> Width::new;
+        case ACCEPT -> () -> new Accept(null);
+        case ACTION -> Action::new;
+        case BORDER -> () -> new Border(null);
+        case COORDS -> () -> new CoOrds(null);
+        case HEIGHT -> Height::new;
+        case HIDDEN -> Hidden::new;
+        case METHOD -> Method::new;
+        case NOHREF -> () -> new NoHref(null);
+        case ONBLUR -> OnBlur::new;
+        case ONCOPY -> OnCopy::new;
+        case ONDRAG -> OnDrag::new;
+        case ONDROP -> OnDrop::new;
+        case ONLOAD -> OnLoad::new;
+        case ONPLAY -> OnPlay::new;
+        case ONSHOW -> OnShow::new;
+        case POSTER -> () -> new Poster(null);
+        case SORTED -> () -> new Sorted(null);
+        case SRCSET -> () -> new SrcSet(null);
+        case TARGET -> () -> new Target(null);
+        case USEMAP -> () -> new UseMap(null);
+        case CHARSET -> () -> new Charset(null);
+        case CHECKED -> Checked::new;
+        case COLSPAN -> () -> new ColSpan(null);
+        case CONTENT -> () -> new Content(null);
+        case DEFAULT -> Default::new;
+        case DIRNAME -> () -> new DirName(null);
+        case ENCTYPE -> EncType::new;
+        case HEADERS -> Headers::new;
+        case ONABORT -> OnAbort::new;
+        case ONCLICK -> OnClick::new;
+        case ONENDED -> OnEnded::new;
+        case ONERROR -> OnError::new;
+        case ONFOCUS -> OnFocus::new;
+        case ONINPUT -> OnInput::new;
+        case ONKEYUP -> OnKeyUp::new;
+        case ONPASTE -> OnPaste::new;
+        case ONPAUSE -> OnPause::new;
+        case ONRESET -> OnReset::new;
+        case ONWHEEL -> OnWheel::new;
+        case OPTIMUM -> () -> new Optimum(null);
+        case PATTERN -> () -> new Pattern(null);
+        case PRELOAD -> () -> new Preload(null);
+        case ROWSPAN -> () -> new RowSpan(null);
+        case SANDBOX -> Sandbox::new;
+        case AUTOPLAY -> AutoPlay::new;
+        case CONTROLS -> Controls::new;
+        case DATETIME -> () -> new DateTime(null);
+        case DISABLED -> Disabled::new;
+        case DOWNLOAD -> Download::new;
+        case DROPZONE -> Dropzone::new;
+        case HREFLANG -> () -> new HrefLang((String) null);
+        case MULTIPLE -> Multiple::new;
+        case ONCHANGE -> OnChange::new;
+        case ONONLINE -> OnOnline::new;
+        case ONRESIZE -> OnResize::new;
+        case ONSCROLL -> OnScroll::new;
+        case ONSEARCH -> OnSearch::new;
+        case ONSEEKED -> OnSeeked::new;
+        case ONSELECT -> OnSelect::new;
+        case ONSUBMIT -> OnSubmit::new;
+        case ONTOGGLE -> OnToggle::new;
+        case ONUNLOAD -> OnUnload::new;
+        case READONLY -> ReadOnly::new;
+        case REQUIRED -> Required::new;
+        case REVERSED -> Reversed::new;
+        case SELECTED -> Selected::new;
+        case TABINDEX -> () -> new TabIndex(null);
+        case ACCESSKEY -> AccessKey::new;
+        case AUTOFOCUS -> AutoFocus::new;
+        case DRAGGABLE -> Draggable::new;
+        case MAXLENGTH -> MaxLength::new;
+        case MINLENGTH -> () -> new MinLength(null);
+        case ONCANPLAY -> OnCanPlay::new;
+        case ONDRAGEND -> OnDragEnd::new;
+        case ONEMPTIED -> OnEmptied::new;
+        case ONFOCUSIN -> OnFocusIn::new;
+        case ONINVALID -> OnInvalid::new;
+        case ONKEYDOWN -> OnKeyDown::new;
+        case ONMOUSEUP -> OnMouseUp::new;
+        case ONOFFLINE -> OnOffline::new;
+        case ONPLAYING -> OnPlaying::new;
+        case ONSEEKING -> OnSeeking::new;
+        case ONSTALLED -> OnStalled::new;
+        case ONSTORAGE -> OnStorage::new;
+        case ONSUSPEND -> OnSuspend::new;
+        case ONWAITING -> OnWaiting::new;
+        case TRANSLATE -> Translate::new;
+        case FORMACTION -> () -> new FormAction(null);
+        case FORMMETHOD -> () -> new FormMethod(null);
+        case FORMTARGET -> () -> new FormTarget(null);
+        case HTTP_EQUIV -> () -> new HttpEquiv(null);
+        case ONDBLCLICK -> OnDblClick::new;
+        case ONDRAGOVER -> OnDragOver::new;
+        case ONFOCUSOUT -> OnFocusOut::new;
+        case ONKEYPRESS -> OnKeyPress::new;
+        case ONMOUSEOUT -> OnMouseOut::new;
+        case ONPAGEHIDE -> OnPageHide::new;
+        case ONPAGESHOW -> OnPageShow::new;
+        case ONPOPSTATE -> OnPopState::new;
+        case ONPROGRESS -> OnProgress::new;
+        case ONTOUCHEND -> OnTouchEnd::new;
+        case SPELLCHECK -> SpellCheck::new;
+        case CELLPADDING -> () -> new CellPadding(null);
+        case CELLSPACING -> () -> new CellSpacing(null);
+        case CONTEXTMENU -> () -> new ContextMenu(null);
+        case DATA_WFF_ID -> () -> new DataWffId(null);
+        case FORMENCTYPE -> () -> new FormEncType(null);
+        case ONDRAGENTER -> OnDragEnter::new;
+        case ONDRAGLEAVE -> OnDragLeave::new;
+        case ONDRAGSTART -> OnDragStart::new;
+        case ONLOADSTART -> OnLoadStart::new;
+        case ONMOUSEDOWN -> OnMouseDown::new;
+        case ONMOUSEMOVE -> OnMouseMove::new;
+        case ONMOUSEOVER -> OnMouseOver::new;
+        case ONTOUCHMOVE -> OnTouchMove::new;
+        case PLACEHOLDER -> () -> new Placeholder(null);
+        case ANIMATIONEND -> AnimationEnd::new;
+        case AUTOCOMPLETE -> AutoComplete::new;
+        case ONAFTERPRINT -> OnAfterPrint::new;
+        case ONHASHCHANGE -> OnHashChange::new;
+        case ONLOADEDDATA -> OnLoadedData::new;
+        case ONMOUSEENTER -> OnMouseEnter::new;
+        case ONMOUSELEAVE -> OnMouseLeave::new;
+        case ONRATECHANGE -> OnRateChange::new;
+        case ONTIMEUPDATE -> OnTimeUpdate::new;
+        case ONTOUCHSTART -> OnTouchStart::new;
+        case ONBEFOREPRINT -> OnBeforePrint::new;
+        case ONCONTEXTMENU -> OnContextMenu::new;
+        case ONTOUCHCANCEL -> OnTouchCancel::new;
+        case TRANSITIONEND -> TransitionEnd::new;
+        case ACCEPT_CHARSET -> () -> new AcceptCharset(null);
+        case ANIMATIONSTART -> AnimationStart::new;
+        case FORMNOVALIDATE -> () -> new FormNoValidate(null);
+        case ONBEFOREUNLOAD -> OnBeforeUnload::new;
+        case ONVOLUMECHANGE -> OnVolumeChange::new;
+        case CONTENTEDITABLE -> ContentEditable::new;
+        case ONCANPLAYTHROUGH -> OnCanPlayThrough::new;
+        case ONDURATIONCHANGE -> OnDurationChange::new;
+        case ONLOADEDMETADATA -> OnLoadedMetaData::new;
+        case ANIMATIONITERATION -> AnimationIteration::new;
+        };
     }
 
     /**
@@ -702,32 +1102,38 @@ public class AttributeRegistry {
      * @param attributeValue
      * @return new instance or null if failed
      * @since 3.0.3
+     * @since 12.0.6 improvements for performance gain and reliability.
      */
     public static AbstractAttribute getNewAttributeInstanceOrNullIfFailed(final int attributeNameIndex,
             final String attributeValue) {
-
-        final Class<?> attrClass = INDEXED_ATTR_CLASSES.get(attributeNameIndex);
-
-        if (attrClass == null) {
-            return null;
+        if (attributeNameIndex != -1) {
+            final PreIndexedAttributeName preIndexedAttributeName = PreIndexedAttributeName
+                    .forAttrIndex(attributeNameIndex);
+            return getNewAttributeInstanceOrNullIfFailed(preIndexedAttributeName, attributeValue);
         }
+        return null;
+    }
 
-        try {
-
-            if (attributeValue == null) {
-                final AbstractAttribute newInstance = (AbstractAttribute) attrClass.getConstructor().newInstance();
-                return newInstance;
+    /**
+     * @param preIndexedAttributeName the preIndexedAttributeName
+     * @param attributeValue
+     * @return new instance or null if failed
+     * @since 12.0.6
+     */
+    static AbstractAttribute getNewAttributeInstanceOrNullIfFailed(
+            final PreIndexedAttributeName preIndexedAttributeName, final String attributeValue) {
+        if (attributeValue != null) {
+            final Function<String, AbstractAttribute> attributeCreatorLamda = getAttributeCreatorLamda(
+                    preIndexedAttributeName);
+            if (attributeCreatorLamda != null) {
+                return attributeCreatorLamda.apply(attributeValue);
             }
-
-            final AbstractAttribute newInstance = (AbstractAttribute) attrClass.getConstructor(String.class)
-                    .newInstance(attributeValue);
-
-            return newInstance;
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException e) {
-            // NOP
         }
-
+        final Supplier<AbstractAttribute> attributeCreatorLamda = getAttributeWithoutValueCreatorLamda(
+                preIndexedAttributeName);
+        if (attributeCreatorLamda != null) {
+            return attributeCreatorLamda.get();
+        }
         return null;
     }
 

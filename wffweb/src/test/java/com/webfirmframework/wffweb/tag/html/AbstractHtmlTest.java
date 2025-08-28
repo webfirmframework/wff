@@ -15,17 +15,10 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,6 +32,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
+import com.webfirmframework.wffweb.tag.html.html5.images.FigCaption;
+import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -76,6 +73,9 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.tag.htmlwff.TagContent;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
+
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class AbstractHtmlTest {
 
@@ -372,11 +372,32 @@ public class AbstractHtmlTest {
 
     }
 
+    @Test
+    public void testInsertBefore2() {
+        Div parentDiv = new Div(null, new Id("parentDivId"));
+        Div childDiv1 = new Div(parentDiv, new Id("child1"));
+        Div childDiv2 = new Div(parentDiv, new Id("child2"));
+        Div childDiv3 = new Div(parentDiv, new Id("child3"));
+        childDiv2.insertBefore(new Div(null, new Id("inserted1BeforeChild2")),
+                new Div(null, new Id("inserted2BeforeChild2")));
+        assertEquals(
+                "<div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"inserted1BeforeChild2\"></div><div id=\"inserted2BeforeChild2\"></div><div id=\"child2\"></div><div id=\"child3\"></div></div>",
+                parentDiv.toHtmlString());
+
+    }
+
     @Test(expected = NoParentException.class)
     public void testReplaceWithWithNoParentException() {
         Div div = new Div(null);
         div.replaceWith(new Div(null, new Id("innerDivId")));
 
+    }
+
+    @Test
+    public void testReplaceWithIfPossible() {
+        final Div div = new Div(null);
+        final boolean replaced = div.replaceWithIfPossible(new Div(null, new Id("innerDivId")));
+        Assert.assertFalse(replaced);
     }
 
     @Test
@@ -468,23 +489,32 @@ public class AbstractHtmlTest {
     @SuppressWarnings("unused")
     @Test
     public void testReplaceWith2() {
+        Div parentDiv = new Div(null, new Id("parentDivId"));
+        Div childDiv1 = new Div(parentDiv, new Id("child1"));
+        Div childDiv2 = new Div(parentDiv, new Id("child2"));
+        Div childDiv3 = new Div(parentDiv, new Id("child3"));
 
-        {
-            Div parentDiv = new Div(null, new Id("parentDivId"));
-            Div childDiv1 = new Div(parentDiv, new Id("child1"));
-            Div childDiv2 = new Div(parentDiv, new Id("child2"));
-            Div childDiv3 = new Div(parentDiv, new Id("child3"));
+        assertEquals(
+                "<div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"child2\"></div><div id=\"child3\"></div></div>",
+                parentDiv.toHtmlString());
 
-            assertEquals(
-                    "<div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"child2\"></div><div id=\"child3\"></div></div>",
-                    parentDiv.toHtmlString());
+        childDiv3.replaceWith(childDiv2);
 
-            childDiv3.replaceWith(childDiv2);
+        assertEquals("<div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"child2\"></div></div>",
+                parentDiv.toHtmlString());
 
-            assertEquals("<div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"child2\"></div></div>",
-                    parentDiv.toHtmlString());
-        }
+        assertNull(childDiv3.getParent());
 
+        NoTag noTag1 = new NoTag(null, " noTag1 ");
+        childDiv1.insertAfter(noTag1);
+
+        assertEquals("<div id=\"parentDivId\"><div id=\"child1\"></div> noTag1 <div id=\"child2\"></div></div>",
+                parentDiv.toHtmlString());
+
+        noTag1.replaceWith(new NoTag(null, "replacementNoTag"));
+
+        assertEquals("<div id=\"parentDivId\"><div id=\"child1\"></div>replacementNoTag<div id=\"child2\"></div></div>",
+                parentDiv.toHtmlString());
     }
 
     @Test
@@ -566,6 +596,19 @@ public class AbstractHtmlTest {
                 "<div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"inserted1BeforeChild1\"></div><div id=\"inserted2BeforeChild1\"></div><div id=\"child2\"></div></div>",
                 parentDiv.toHtmlString());
 
+    }
+
+    @Test
+    public void insertAfter3() {
+        Div parentDiv = new Div(null, new Id("parentDivId"));
+        Div childDiv1 = new Div(parentDiv, new Id("child1"));
+        Div childDiv2 = new Div(parentDiv, new Id("child2"));
+        Div childDiv3 = new Div(parentDiv, new Id("child3"));
+        childDiv2.insertAfter(new Div(null, new Id("inserted1BeforeChild2")),
+                new Div(null, new Id("inserted2BeforeChild2")));
+        assertEquals(
+                "<div id=\"parentDivId\"><div id=\"child1\"></div><div id=\"child2\"></div><div id=\"inserted1BeforeChild2\"></div><div id=\"inserted2BeforeChild2\"></div><div id=\"child3\"></div></div>",
+                parentDiv.toHtmlString());
     }
 
     @Test
@@ -2320,7 +2363,7 @@ public class AbstractHtmlTest {
         mainDivId2OuterFirstChild.insertBefore(mainDivId2);
 
         assertEquals(
-                "<div data-wff-id=\"S17\" id=\"mainDivId2\"><span data-wff-id=\"S18\" id=\"mainDivId2\">Sample text</span></div>",
+                "<div id=\"mainDivId2\"><span id=\"mainDivId2\">Sample text</span></div>",
                 mainDivId2.toHtmlString());
 
         mainDivId1.insertAfter(outerdv);
@@ -2353,9 +2396,17 @@ public class AbstractHtmlTest {
                 mainDivId2.toHtmlString());
 
         assertNotNull(mainDivId2.getParent());
+        assertEquals(browserPage.getTagRepository().findHeadTag().getSharedObject(), mainDivId2.getSharedObject());
+        assertTrue(browserPage.contains(mainDivId2));
         body.addInnerHtml(mainDivId2);
+        assertEquals(body.getChildrenSize(), 1);
+        assertEquals(body.getFirstChild(), mainDivId2);
+        assertEquals(body.getSharedObject(), mainDivId2.getSharedObject());
+        assertTrue(browserPage.contains(tagRepository.findBodyTag()));
+        assertTrue(browserPage.contains(mainDivId2));
+
         assertEquals(
-                "<div data-wff-id=\"S25\" id=\"mainDivId2\"><span data-wff-id=\"S26\" id=\"mainDivId2\">Sample text</span></div>",
+                "<div data-wff-id=\"S23\" id=\"mainDivId2\"><span data-wff-id=\"S24\" id=\"mainDivId2\">Sample text</span></div>",
                 mainDivId2.toHtmlString());
 
         body.removeAllChildren();
@@ -2364,12 +2415,20 @@ public class AbstractHtmlTest {
         Div div2 = new Div(null, new Id("div2"));
         body.appendChildren(div1, div2);
 
-        div1.addInnerHtml(mainDivId2);
         assertEquals(
-                "<div data-wff-id=\"S29\" id=\"mainDivId2\"><span data-wff-id=\"S30\" id=\"mainDivId2\">Sample text</span></div>",
+                "<div data-wff-id=\"S23\" id=\"mainDivId2\"><span data-wff-id=\"S24\" id=\"mainDivId2\">Sample text</span></div>",
+                mainDivId2.toHtmlString());
+
+        assertNull(mainDivId2.getParent());
+        div1.addInnerHtml(mainDivId2);
+        assertNotNull(mainDivId2.getParent());
+        assertEquals(div1, mainDivId2.getParent());
+        assertEquals(body.getSharedObject(), mainDivId2.getSharedObject());
+        assertEquals(
+                "<div data-wff-id=\"S27\" id=\"mainDivId2\"><span data-wff-id=\"S28\" id=\"mainDivId2\">Sample text</span></div>",
                 mainDivId2.toHtmlString());
         assertEquals(
-                "<div data-wff-id=\"S29\" id=\"mainDivId2\"><span data-wff-id=\"S30\" id=\"mainDivId2\">Sample text</span></div>",
+                "<div data-wff-id=\"S27\" id=\"mainDivId2\"><span data-wff-id=\"S28\" id=\"mainDivId2\">Sample text</span></div>",
                 mainDivId2.toHtmlString());
 
         assertNotNull(mainDivId2.getParent());
@@ -4057,6 +4116,1087 @@ public class AbstractHtmlTest {
             assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 4, 0, 0, 0, 0, 14, 1, 3, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV2);
             assertArrayEquals(new byte[] { 1, 1, 0, 2, 1, 36, 1, 0, 14, 1, 3, 11, 48, 50, 49, 52, 55, 52, 56, 51, 54, 52, 55 }, compressedWffBMBytesV3);
         }
+    }
+
+    @Test
+    public void testAppendChildren() {
+        Div parentDiv = new Div(null);
+
+        Div existingParentDiv = new Div(null);
+        Div childDiv0 = new Div(existingParentDiv);
+        Div childDiv1 = new Div(existingParentDiv);
+        Div childDiv2 = new Div(existingParentDiv);
+        Div childDiv3 = new Div(existingParentDiv);
+        Div childDiv4 = new Div(existingParentDiv);
+        Div childDiv5 = new Div(existingParentDiv);
+
+        Assert.assertEquals(childDiv0, existingParentDiv.getChildAt(0));
+        Assert.assertEquals(childDiv1, existingParentDiv.getChildAt(1));
+        Assert.assertEquals(childDiv2, existingParentDiv.getChildAt(2));
+        Assert.assertEquals(childDiv3, existingParentDiv.getChildAt(3));
+        Assert.assertEquals(childDiv4, existingParentDiv.getChildAt(4));
+        Assert.assertEquals(childDiv5, existingParentDiv.getChildAt(5));
+
+        parentDiv.appendChildren(childDiv0, childDiv1, childDiv2, childDiv3, childDiv4, childDiv5);
+
+        Assert.assertEquals(childDiv0, parentDiv.getChildAt(0));
+        Assert.assertEquals(childDiv1, parentDiv.getChildAt(1));
+        Assert.assertEquals(childDiv2, parentDiv.getChildAt(2));
+        Assert.assertEquals(childDiv3, parentDiv.getChildAt(3));
+        Assert.assertEquals(childDiv4, parentDiv.getChildAt(4));
+        Assert.assertEquals(childDiv5, parentDiv.getChildAt(5));
+
+        Assert.assertEquals(0, existingParentDiv.getChildrenSize());
+        Assert.assertEquals(0, existingParentDiv.getChildren().size());
+
+        parentDiv.appendChildren(childDiv0, childDiv1, childDiv2, childDiv3, childDiv4, childDiv5);
+
+        Assert.assertEquals(childDiv0, parentDiv.getChildAt(0));
+        Assert.assertEquals(childDiv1, parentDiv.getChildAt(1));
+        Assert.assertEquals(childDiv2, parentDiv.getChildAt(2));
+        Assert.assertEquals(childDiv3, parentDiv.getChildAt(3));
+        Assert.assertEquals(childDiv4, parentDiv.getChildAt(4));
+        Assert.assertEquals(childDiv5, parentDiv.getChildAt(5));
+
+
+        //reverse order
+        parentDiv.appendChildren(childDiv5, childDiv4, childDiv3, childDiv2, childDiv1, childDiv0);
+
+        Assert.assertEquals(childDiv0, parentDiv.getChildAt(5));
+        Assert.assertEquals(childDiv1, parentDiv.getChildAt(4));
+        Assert.assertEquals(childDiv2, parentDiv.getChildAt(3));
+        Assert.assertEquals(childDiv3, parentDiv.getChildAt(2));
+        Assert.assertEquals(childDiv4, parentDiv.getChildAt(1));
+        Assert.assertEquals(childDiv5, parentDiv.getChildAt(0));
+
+        existingParentDiv.appendChildren(childDiv5, childDiv4, childDiv3, childDiv2, childDiv1, childDiv0);
+        Assert.assertEquals(6, existingParentDiv.getChildrenSize());
+        Assert.assertEquals(6, existingParentDiv.getChildren().size());
+        Assert.assertEquals(0, parentDiv.getChildrenSize());
+        Assert.assertEquals(0, parentDiv.getChildren().size());
+
+        Assert.assertArrayEquals(new Object[]{childDiv5, childDiv4, childDiv3, childDiv2, childDiv1, childDiv0}, existingParentDiv.getChildrenAsArray());
+
+    }
+
+    @Test
+    public void testPrependChildren() {
+        Div parentDiv = new Div(null);
+
+        Div existingParentDiv = new Div(null);
+        Div childDiv0 = new Div(existingParentDiv);
+        Div childDiv1 = new Div(existingParentDiv);
+        Div childDiv2 = new Div(existingParentDiv);
+        Div childDiv3 = new Div(existingParentDiv);
+        Div childDiv4 = new Div(existingParentDiv);
+        Div childDiv5 = new Div(existingParentDiv);
+
+        Assert.assertEquals(childDiv0, existingParentDiv.getChildAt(0));
+        Assert.assertEquals(childDiv1, existingParentDiv.getChildAt(1));
+        Assert.assertEquals(childDiv2, existingParentDiv.getChildAt(2));
+        Assert.assertEquals(childDiv3, existingParentDiv.getChildAt(3));
+        Assert.assertEquals(childDiv4, existingParentDiv.getChildAt(4));
+        Assert.assertEquals(childDiv5, existingParentDiv.getChildAt(5));
+
+        parentDiv.prependChildren(childDiv0, childDiv1, childDiv2, childDiv3, childDiv4, childDiv5);
+
+        Assert.assertEquals(childDiv0, parentDiv.getChildAt(0));
+        Assert.assertEquals(childDiv1, parentDiv.getChildAt(1));
+        Assert.assertEquals(childDiv2, parentDiv.getChildAt(2));
+        Assert.assertEquals(childDiv3, parentDiv.getChildAt(3));
+        Assert.assertEquals(childDiv4, parentDiv.getChildAt(4));
+        Assert.assertEquals(childDiv5, parentDiv.getChildAt(5));
+
+        Assert.assertEquals(0, existingParentDiv.getChildrenSize());
+        Assert.assertEquals(0, existingParentDiv.getChildren().size());
+
+        parentDiv.prependChildren(childDiv0, childDiv1, childDiv2, childDiv3, childDiv4, childDiv5);
+
+        Assert.assertEquals(childDiv0, parentDiv.getChildAt(0));
+        Assert.assertEquals(childDiv1, parentDiv.getChildAt(1));
+        Assert.assertEquals(childDiv2, parentDiv.getChildAt(2));
+        Assert.assertEquals(childDiv3, parentDiv.getChildAt(3));
+        Assert.assertEquals(childDiv4, parentDiv.getChildAt(4));
+        Assert.assertEquals(childDiv5, parentDiv.getChildAt(5));
+
+
+        //reverse order
+        parentDiv.prependChildren(childDiv5, childDiv4, childDiv3, childDiv2, childDiv1, childDiv0);
+
+        Assert.assertEquals(childDiv0, parentDiv.getChildAt(5));
+        Assert.assertEquals(childDiv1, parentDiv.getChildAt(4));
+        Assert.assertEquals(childDiv2, parentDiv.getChildAt(3));
+        Assert.assertEquals(childDiv3, parentDiv.getChildAt(2));
+        Assert.assertEquals(childDiv4, parentDiv.getChildAt(1));
+        Assert.assertEquals(childDiv5, parentDiv.getChildAt(0));
+
+        existingParentDiv.prependChildren(childDiv5, childDiv4, childDiv3, childDiv2, childDiv1, childDiv0);
+        Assert.assertEquals(6, existingParentDiv.getChildrenSize());
+        Assert.assertEquals(6, existingParentDiv.getChildren().size());
+        Assert.assertEquals(0, parentDiv.getChildrenSize());
+        Assert.assertEquals(0, parentDiv.getChildren().size());
+
+        Assert.assertArrayEquals(new Object[]{childDiv5, childDiv4, childDiv3, childDiv2, childDiv1, childDiv0}, existingParentDiv.getChildrenAsArray());
+
+    }
+
+    @Test
+    public void testAddInnerHtmls() {
+        final FigCaption figCaption = new FigCaption(null, new ClassAttribute("cls1"), new Value("1401"));
+        NoTag noTag = new NoTag(null, "140119");
+        figCaption.addInnerHtmls(noTag);
+        Assert.assertEquals(figCaption.getSharedObject(), noTag.getSharedObject());
+        Assert.assertEquals(figCaption, noTag.getParent());
+        Assert.assertEquals("<figcaption class=\"cls1\" value=\"1401\">140119</figcaption>", figCaption.toHtmlString());
+        figCaption.give(TagContent::text, "1401198");
+        Assert.assertEquals("<figcaption class=\"cls1\" value=\"1401\">1401198</figcaption>", figCaption.toHtmlString());
+    }
+
+    @Test
+    public void testAddInnerHtmls1() {
+        Div parentDiv = new Div(null);
+        Span spn1 = new Span(parentDiv).give(TagContent::text, " spn1 ");
+        Span spn2 = new Span(parentDiv).give(TagContent::text, " spn2 ");
+        new Span(spn2).give(TagContent::text, " spn21 ");
+        Span spn3 = new Span(parentDiv).give(TagContent::text, " spn3 ");
+
+        Assert.assertEquals("<div><span> spn1 </span><span> spn2 <span> spn21 </span></span><span> spn3 </span></div>", parentDiv.toHtmlString());
+        parentDiv.addInnerHtmls(spn2);
+        Assert.assertEquals("<div><span> spn2 <span> spn21 </span></span></div>", parentDiv.toHtmlString());
+
+        Assert.assertNull(spn1.getParent());
+        Assert.assertNull(spn3.getParent());
+        Assert.assertNotNull(spn1.getSharedObject());
+        Assert.assertNotNull(spn3.getSharedObject());
+        Assert.assertNotEquals(spn1.getSharedObject(), spn3.getSharedObject());
+        Assert.assertNotEquals(parentDiv.getSharedObject(), spn1.getSharedObject());
+        Assert.assertNotEquals(parentDiv.getSharedObject(), spn3.getSharedObject());
+        Assert.assertEquals(parentDiv, spn2.getParent());
+        Assert.assertEquals(parentDiv.getSharedObject(), spn2.getSharedObject());
+    }
+
+    @Test
+    public void testAddInnerHtmls2() {
+        Div parentDiv = new Div(null);
+        Span spn1 = new Span(parentDiv).give(TagContent::text, " spn1 ");
+        Span spn2 = new Span(parentDiv).give(TagContent::text, " spn2 ");
+        Span spn21 = new Span(spn2).give(TagContent::text, " spn21 ");
+        Span spn3 = new Span(parentDiv).give(TagContent::text, " spn3 ");
+
+        Assert.assertEquals("<div><span> spn1 </span><span> spn2 <span> spn21 </span></span><span> spn3 </span></div>", parentDiv.toHtmlString());
+        parentDiv.addInnerHtmls(spn21);
+        Assert.assertEquals("<div><span> spn21 </span></div>", parentDiv.toHtmlString());
+
+        Assert.assertNull(spn1.getParent());
+        Assert.assertNull(spn2.getParent());
+        Assert.assertNull(spn3.getParent());
+        Assert.assertNotNull(spn1.getSharedObject());
+        Assert.assertNotNull(spn2.getSharedObject());
+        Assert.assertNotNull(spn3.getSharedObject());
+        Assert.assertNotEquals(spn1.getSharedObject(), spn3.getSharedObject());
+        Assert.assertNotEquals(parentDiv.getSharedObject(), spn1.getSharedObject());
+        Assert.assertNotEquals(parentDiv.getSharedObject(), spn2.getSharedObject());
+        Assert.assertNotEquals(parentDiv.getSharedObject(), spn3.getSharedObject());
+        Assert.assertEquals(parentDiv, spn21.getParent());
+        Assert.assertEquals(parentDiv.getSharedObject(), spn21.getSharedObject());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testTagManipulationsInMultipleBrowserPages() throws NoSuchFieldException, IllegalAccessException {
+
+        final Field tagByWffIdField = AbstractHtml5SharedObject.class.getDeclaredField("tagByWffId");
+        tagByWffIdField.setAccessible(true);
+
+        BrowserPage browserPage1 = new BrowserPage() {
+
+            @Override
+            public String webSocketUrl() {
+                return "ws://localhost/indexws";
+            }
+
+            @Override
+            public AbstractHtml render() {
+
+                Html rootTag = new Html(null).give(html -> {
+                    new Head(html).give(head -> {
+                        new Link(head, new Id("appbasicCssLink"), new Src("https://localhost/appbasic.css"));
+                    });
+                    new Body(html).give(body -> {
+
+                        new Div(body, new Id("divId1")).give(dv -> {
+                            new Span(dv).give(TagContent::text, "spn1");
+                            new Span(dv).give(TagContent::text, "spn2");
+                            new Span(dv).give(TagContent::text, "spn3");
+                        });
+                        new Div(body, new Id("divId2"));
+                        new Div(body, new Id("divId3"));
+                        new Div(body, new Id("divId4"));
+                        new Div(body, new Id("divId5"));
+
+                    });
+                });
+                return rootTag;
+            }
+        };
+
+        assertNull(browserPage1.getTagRepository());
+        assertEquals("""
+                <html data-wff-id="S0"><head data-wff-id="S1">
+                <link src="https://localhost/appbasic.css" data-wff-id="S11" id="appbasicCssLink"/>
+                <script defer src="data" data-wff-id="S12" type="text/javascript"></script>
+                </head>
+                <body data-wff-id="S2">
+                <div data-wff-id="S3" id="divId1">
+                <span data-wff-id="S8">spn1</span>
+                <span data-wff-id="S9">spn2</span>
+                <span data-wff-id="S10">spn3</span>
+                </div>
+                <div data-wff-id="S4" id="divId2"></div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                </html>
+                """.replace("\n", "").strip(),
+                browserPage1.toHtmlString().replace(browserPage1.getTagRepository()
+                        .findOneTagAssignableToTag(Script.class)
+                        .getAttributeByName("src").getAttributeValue(), "data"));
+        assertNotNull(browserPage1.getTagRepository());
+
+
+        BrowserPage browserPage2 = new BrowserPage() {
+
+            @Override
+            public String webSocketUrl() {
+                return "ws://localhost/indexws";
+            }
+
+            @Override
+            public AbstractHtml render() {
+
+                Html rootTag = new Html(null).give(html -> {
+                    new Head(html).give(head -> {
+                        new Link(head, new Id("appbasicCssLink"), new Src("https://localhost/appbasic.css"));
+                    });
+                    new Body(html).give(body -> {
+
+                        new Div(body, new Id("parentDivId"));
+
+                    });
+                });
+                return rootTag;
+            }
+        };
+
+        assertNull(browserPage2.getTagRepository());
+        browserPage2.toHtmlString();
+        assertEquals("""
+                <html data-wff-id="S0">
+                <head data-wff-id="S1">
+                <link src="https://localhost/appbasic.css" data-wff-id="S4" id="appbasicCssLink"/>
+                <script defer src="data" data-wff-id="S5" type="text/javascript"></script>
+                </head>
+                <body data-wff-id="S2">
+                <div data-wff-id="S3" id="parentDivId"></div>
+                </body>
+                </html>
+                """.replace("\n", "").strip(),
+                browserPage2.toHtmlString().replace(browserPage2.getTagRepository()
+                        .findOneTagAssignableToTag(Script.class)
+                        .getAttributeByName("src").getAttributeValue(), "data"));
+        assertNotNull(browserPage2.getTagRepository());
+
+        Body bodyTagFromBP1 = browserPage1.getTagRepository().findBodyTag();
+        Body bodyTagFromBP2 = browserPage2.getTagRepository().findBodyTag();
+
+        AbstractHtml divId1 = browserPage1.getTagRepository().findTagById("divId1");
+        assertNotNull(divId1);
+        assertEquals("""
+                <div data-wff-id="S3" id="divId1"><span data-wff-id="S8">spn1</span><span data-wff-id="S9">spn2</span><span data-wff-id="S10">spn3</span></div>
+                """.strip(), divId1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S3" id="divId1">
+                <span data-wff-id="S8">spn1</span>
+                <span data-wff-id="S9">spn2</span>
+                <span data-wff-id="S10">spn3</span>
+                </div>
+                <div data-wff-id="S4" id="divId2"></div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        AbstractHtml divId1FromBP2 = browserPage2.getTagRepository().findTagById("divId1");
+        assertNull(divId1FromBP2);
+
+        assertEquals("""
+                <body data-wff-id="S2"><div data-wff-id="S3" id="parentDivId"></div></body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+
+        // ------For prependChildren------
+
+        bodyTagFromBP2.prependChildren(divId1);
+
+        assertEquals("""
+                <div data-wff-id="S6" id="divId1">
+                <span data-wff-id="S7">spn1</span>
+                <span data-wff-id="S8">spn2</span>
+                <span data-wff-id="S9">spn3</span>
+                </div>
+                """.replace("\n", "").strip(), divId1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S6" id="divId1">
+                <span data-wff-id="S7">spn1</span>
+                <span data-wff-id="S8">spn2</span>
+                <span data-wff-id="S9">spn3</span>
+                </div>
+                <div data-wff-id="S3" id="parentDivId"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S4" id="divId2"></div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        // moving tag using prependChildren & appendChildren in the same browser page - start
+        AbstractHtml parentDivId = TagRepository.findTagById("parentDivId", bodyTagFromBP2);
+        assertEquals("parentDivId", parentDivId.getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        bodyTagFromBP2.prependChildren(parentDivId);
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S3" id="parentDivId"></div>
+                <div data-wff-id="S6" id="divId1">
+                <span data-wff-id="S7">spn1</span>
+                <span data-wff-id="S8">spn2</span>
+                <span data-wff-id="S9">spn3</span>
+                </div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+        bodyTagFromBP2.appendChildren(parentDivId);
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S6" id="divId1">
+                <span data-wff-id="S7">spn1</span>
+                <span data-wff-id="S8">spn2</span>
+                <span data-wff-id="S9">spn3</span>
+                </div>
+                <div data-wff-id="S3" id="parentDivId"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+
+        assertEquals(divId1, TagRepository.findTagById("divId1", bodyTagFromBP2));
+        AbstractHtml[] divId1Children = divId1.getChildrenAsArray();
+
+        divId1.prependChildren(divId1Children[1], divId1Children[2]);
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S6" id="divId1">
+                <span data-wff-id="S8">spn2</span>
+                <span data-wff-id="S9">spn3</span>
+                <span data-wff-id="S7">spn1</span>
+                </div>
+                <div data-wff-id="S3" id="parentDivId"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+        divId1.appendChildren(divId1Children[1], divId1Children[2]);
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S6" id="divId1">
+                <span data-wff-id="S7">spn1</span>
+                <span data-wff-id="S8">spn2</span>
+                <span data-wff-id="S9">spn3</span>
+                </div>
+                <div data-wff-id="S3" id="parentDivId"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+
+        // -- end
+
+        Map<String, AbstractHtml> tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP2.getSharedObject());
+        assertEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP1.getSharedObject());
+        assertNotEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        bodyTagFromBP1.prependChildren(divId1);
+
+        assertEquals("""
+                <div data-wff-id="S13" id="divId1">
+                <span data-wff-id="S14">spn1</span>
+                <span data-wff-id="S15">spn2</span>
+                <span data-wff-id="S16">spn3</span>
+                </div>
+                """.replace("\n", "").strip(), divId1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S13" id="divId1">
+                <span data-wff-id="S14">spn1</span>
+                <span data-wff-id="S15">spn2</span>
+                <span data-wff-id="S16">spn3</span>
+                </div>
+                <div data-wff-id="S4" id="divId2"></div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S3" id="parentDivId"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP1.getSharedObject());
+        assertEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP2.getSharedObject());
+        assertNotEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        // ------For appendChildren------
+
+        bodyTagFromBP2.appendChildren(divId1);
+
+        assertEquals("""
+                <div data-wff-id="S10" id="divId1">
+                <span data-wff-id="S11">spn1</span>
+                <span data-wff-id="S12">spn2</span>
+                <span data-wff-id="S13">spn3</span>
+                </div>
+                """.replace("\n", "").strip(), divId1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S3" id="parentDivId"></div>
+                <div data-wff-id="S10" id="divId1">
+                <span data-wff-id="S11">spn1</span>
+                <span data-wff-id="S12">spn2</span>
+                <span data-wff-id="S13">spn3</span>
+                </div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S4" id="divId2"></div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP2.getSharedObject());
+        assertEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP1.getSharedObject());
+        assertNotEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        bodyTagFromBP1.appendChildren(divId1);
+
+        assertEquals("""
+                <div data-wff-id="S17" id="divId1">
+                <span data-wff-id="S18">spn1</span>
+                <span data-wff-id="S19">spn2</span>
+                <span data-wff-id="S20">spn3</span>
+                </div>
+                """.replace("\n", "").strip(), divId1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S4" id="divId2"></div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                <div data-wff-id="S17" id="divId1">
+                <span data-wff-id="S18">spn1</span>
+                <span data-wff-id="S19">spn2</span>
+                <span data-wff-id="S20">spn3</span>
+                </div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S3" id="parentDivId"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP1.getSharedObject());
+        assertEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP2.getSharedObject());
+        assertNotEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        // ------For insertBefore------
+
+        AbstractHtml parentDivIdFromBP2 = browserPage2.getTagRepository().findTagById("parentDivId");
+
+        parentDivIdFromBP2.insertBefore(divId1);
+
+        assertEquals("""
+                <div data-wff-id="S14" id="divId1">
+                <span data-wff-id="S15">spn1</span>
+                <span data-wff-id="S16">spn2</span>
+                <span data-wff-id="S17">spn3</span>
+                </div>
+                """.replace("\n", "").strip(), divId1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S14" id="divId1">
+                <span data-wff-id="S15">spn1</span>
+                <span data-wff-id="S16">spn2</span>
+                <span data-wff-id="S17">spn3</span>
+                </div>
+                <div data-wff-id="S3" id="parentDivId"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S4" id="divId2"></div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP2.getSharedObject());
+        assertEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP1.getSharedObject());
+        assertNotEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        AbstractHtml divId2FromBP1 = browserPage1.getTagRepository().findTagById("divId2");
+        divId2FromBP1.insertBefore(divId1);
+
+        assertEquals("""
+                <div data-wff-id="S21" id="divId1">
+                <span data-wff-id="S22">spn1</span>
+                <span data-wff-id="S23">spn2</span>
+                <span data-wff-id="S24">spn3</span>
+                </div>
+                """.replace("\n", "").strip(), divId1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S21" id="divId1">
+                <span data-wff-id="S22">spn1</span>
+                <span data-wff-id="S23">spn2</span>
+                <span data-wff-id="S24">spn3</span>
+                </div>
+                <div data-wff-id="S4" id="divId2"></div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S3" id="parentDivId"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP1.getSharedObject());
+        assertEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP2.getSharedObject());
+        assertNotEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        // ------For insertAfter------
+
+        parentDivIdFromBP2.insertAfter(divId1);
+
+        assertEquals("""
+                <div data-wff-id="S18" id="divId1">
+                <span data-wff-id="S19">spn1</span>
+                <span data-wff-id="S20">spn2</span>
+                <span data-wff-id="S21">spn3</span>
+                </div>
+                """.replace("\n", "").strip(), divId1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S3" id="parentDivId"></div>
+                <div data-wff-id="S18" id="divId1">
+                <span data-wff-id="S19">spn1</span>
+                <span data-wff-id="S20">spn2</span>
+                <span data-wff-id="S21">spn3</span>
+                </div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S4" id="divId2"></div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP2.getSharedObject());
+        assertEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP1.getSharedObject());
+        assertNotEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        divId2FromBP1.insertAfter(divId1);
+
+        assertEquals("""
+                <div data-wff-id="S25" id="divId1">
+                <span data-wff-id="S26">spn1</span>
+                <span data-wff-id="S27">spn2</span>
+                <span data-wff-id="S28">spn3</span>
+                </div>
+                """.replace("\n", "").strip(), divId1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S4" id="divId2"></div>
+                <div data-wff-id="S25" id="divId1">
+                <span data-wff-id="S26">spn1</span>
+                <span data-wff-id="S27">spn2</span>
+                <span data-wff-id="S28">spn3</span>
+                </div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S3" id="parentDivId"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP1.getSharedObject());
+        assertEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP2.getSharedObject());
+        assertNotEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        //moving tags using insertBefore & insertAfter in the same browser page - start
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S4" id="divId2"></div>
+                <div data-wff-id="S25" id="divId1">
+                <span data-wff-id="S26">spn1</span>
+                <span data-wff-id="S27">spn2</span>
+                <span data-wff-id="S28">spn3</span>
+                </div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        AbstractHtml divId2 = TagRepository.findTagById("divId2", bodyTagFromBP1);
+        AbstractHtml[] last3ChildrenOfBodyTag = {bodyTagFromBP1.getChildAt(bodyTagFromBP1.getChildrenSize() - 3), bodyTagFromBP1.getChildAt(bodyTagFromBP1.getChildrenSize() - 2), bodyTagFromBP1.getChildAt(bodyTagFromBP1.getChildrenSize() - 1)};
+        assertEquals(divId2, TagRepository.findTagById("divId2", bodyTagFromBP1));
+        divId2.insertBefore(last3ChildrenOfBodyTag);
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                <div data-wff-id="S4" id="divId2"></div>
+                <div data-wff-id="S25" id="divId1">
+                <span data-wff-id="S26">spn1</span>
+                <span data-wff-id="S27">spn2</span>
+                <span data-wff-id="S28">spn3</span>
+                </div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+        assertEquals(divId1, TagRepository.findTagById("divId1", bodyTagFromBP1));
+        divId1.insertAfter(last3ChildrenOfBodyTag);
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S4" id="divId2"></div>
+                <div data-wff-id="S25" id="divId1">
+                <span data-wff-id="S26">spn1</span>
+                <span data-wff-id="S27">spn2</span>
+                <span data-wff-id="S28">spn3</span>
+                </div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+        //end
+
+        //------ addInnerHtmls ------
+
+        parentDivIdFromBP2.addInnerHtmls(divId1);
+
+        assertEquals("""
+                <div data-wff-id="S22" id="divId1">
+                <span data-wff-id="S23">spn1</span>
+                <span data-wff-id="S24">spn2</span>
+                <span data-wff-id="S25">spn3</span>
+                </div>
+                """.replace("\n", "").strip(), divId1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S3" id="parentDivId">
+                <div data-wff-id="S22" id="divId1">
+                <span data-wff-id="S23">spn1</span>
+                <span data-wff-id="S24">spn2</span>
+                <span data-wff-id="S25">spn3</span>
+                </div>
+                </div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S4" id="divId2"></div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP2.getSharedObject());
+        assertEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP1.getSharedObject());
+        assertNotEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        divId2FromBP1.addInnerHtmls(divId1);
+
+        assertEquals("""
+                <div data-wff-id="S29" id="divId1">
+                <span data-wff-id="S30">spn1</span>
+                <span data-wff-id="S31">spn2</span>
+                <span data-wff-id="S32">spn3</span>
+                </div>
+                """.replace("\n", "").strip(), divId1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S4" id="divId2">
+                <div data-wff-id="S29" id="divId1">
+                <span data-wff-id="S30">spn1</span>
+                <span data-wff-id="S31">spn2</span>
+                <span data-wff-id="S32">spn3</span>
+                </div>
+                </div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S3" id="parentDivId"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP1.getSharedObject());
+        assertEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP2.getSharedObject());
+        assertNotEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        //----- replaceWith ------
+
+        parentDivIdFromBP2.replaceWith(divId1);
+
+        assertEquals("""
+                <div data-wff-id="S26" id="divId1">
+                <span data-wff-id="S27">spn1</span>
+                <span data-wff-id="S28">spn2</span>
+                <span data-wff-id="S29">spn3</span>
+                </div>
+                """.replace("\n", "").strip(), divId1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S26" id="divId1">
+                <span data-wff-id="S27">spn1</span>
+                <span data-wff-id="S28">spn2</span>
+                <span data-wff-id="S29">spn3</span>
+                </div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S4" id="divId2"></div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP2.getSharedObject());
+        assertEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP1.getSharedObject());
+        assertNotEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        divId2FromBP1.replaceWith(divId1);
+
+        assertEquals("""
+                <div data-wff-id="S33" id="divId1">
+                <span data-wff-id="S34">spn1</span>
+                <span data-wff-id="S35">spn2</span>
+                <span data-wff-id="S36">spn3</span>
+                </div>
+                """.replace("\n", "").strip(), divId1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S33" id="divId1">
+                <span data-wff-id="S34">spn1</span>
+                <span data-wff-id="S35">spn2</span>
+                <span data-wff-id="S36">spn3</span>
+                </div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        assertEquals("""
+                <body data-wff-id="S2"></body>
+                """.replace("\n", "").strip(), bodyTagFromBP2.toHtmlString());
+
+
+        //moving tags using innerHtmls & replaceWith in the same browser page - start
+
+        assertEquals(divId1, TagRepository.findTagById("divId1", bodyTagFromBP1));
+        AbstractHtml divId3 = TagRepository.findTagById("divId3", bodyTagFromBP1);
+        AbstractHtml divId4 = TagRepository.findTagById("divId4", bodyTagFromBP1);
+        AbstractHtml divId5 = TagRepository.findTagById("divId5", bodyTagFromBP1);
+
+        AbstractHtml[] divId1ChildrenPrev = divId1.getChildrenAsArray();
+        divId1.addInnerHtmls(divId3, divId4, divId5);
+        for (AbstractHtml each : divId1ChildrenPrev) {
+            assertNull(each.getParent());
+            assertNotEquals(divId1.getSharedObject(), each.getSharedObject());
+        }
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S33" id="divId1">
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        bodyTagFromBP1.appendChildren(divId1.getChildrenAsArray());
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S33" id="divId1">
+                </div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        divId1.addInnerHtmls(divId1ChildrenPrev);
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S33" id="divId1">
+                <span data-wff-id="S37">spn1</span>
+                <span data-wff-id="S38">spn2</span>
+                <span data-wff-id="S39">spn3</span>
+                </div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        AbstractHtml divId1ChildAt1 = divId1.getChildAt(1);
+        assertEquals("<span data-wff-id=\"S38\">spn2</span>", divId1ChildAt1.toHtmlString());
+
+        divId1ChildAt1.replaceWith(divId3, divId4, divId5);
+        assertNull(divId1ChildAt1.getParent());
+        assertNotEquals(divId1.getSharedObject(), divId1ChildAt1.getSharedObject());
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S33" id="divId1">
+                <span data-wff-id="S37">spn1</span>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                <span data-wff-id="S39">spn3</span>
+                </div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        bodyTagFromBP1.appendChildren(divId3, divId4, divId5);
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S33" id="divId1">
+                <span data-wff-id="S37">spn1</span>
+                <span data-wff-id="S39">spn3</span>
+                </div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        divId1.getChildAt(0).insertAfter(divId1ChildAt1);
+
+        assertEquals("""
+                <body data-wff-id="S2">
+                <div data-wff-id="S33" id="divId1">
+                <span data-wff-id="S37">spn1</span>
+                <span data-wff-id="S40">spn2</span>
+                <span data-wff-id="S39">spn3</span>
+                </div>
+                <div data-wff-id="S5" id="divId3"></div>
+                <div data-wff-id="S6" id="divId4"></div>
+                <div data-wff-id="S7" id="divId5"></div>
+                </body>
+                """.replace("\n", "").strip(), bodyTagFromBP1.toHtmlString());
+
+        //end
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP1.getSharedObject());
+        assertEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(bodyTagFromBP2.getSharedObject());
+        assertNotEquals(divId1, tagByWffId.get(divId1.getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(0), tagByWffId.get(divId1.getChildAt(0).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(1), tagByWffId.get(divId1.getChildAt(1).getDataWffId().getValue()));
+        assertNotEquals(divId1.getChildAt(2), tagByWffId.get(divId1.getChildAt(2).getDataWffId().getValue()));
+
+        List<AbstractHtml> childrenOfDivId1 = divId1.getChildren();
+        AbstractHtml divId1Child1 = childrenOfDivId1.get(0);
+        AbstractHtml divId1Child2 = childrenOfDivId1.get(1);
+        AbstractHtml divId1Child3 = childrenOfDivId1.get(2);
+
+        AbstractAttribute divId1Child1DataWffId = divId1Child1.getAttributeByName(DataWffId.ATTRIBUTE_NAME);
+        AbstractAttribute divId1Child2DataWffId = divId1Child2.getAttributeByName(DataWffId.ATTRIBUTE_NAME);
+        AbstractAttribute divId1Child3DataWffId = divId1Child3.getAttributeByName(DataWffId.ATTRIBUTE_NAME);
+
+        assertNotNull(divId1Child1DataWffId);
+        assertNotNull(divId1Child2DataWffId);
+        assertNotNull(divId1Child3DataWffId);
+
+        divId1.removeChildren(false, List.of(divId1.getFirstChild()));
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(divId1.getSharedObject());
+
+        assertNotEquals(divId1Child1, tagByWffId.get(divId1Child1DataWffId.getAttributeValue()));
+        assertEquals(divId1Child2, tagByWffId.get(divId1Child2DataWffId.getAttributeValue()));
+        assertEquals(divId1Child3, tagByWffId.get(divId1Child3DataWffId.getAttributeValue()));
+
+        assertFalse(tagByWffId.containsKey(divId1Child1DataWffId.getAttributeValue()));
+        assertTrue(tagByWffId.containsKey(divId1Child2DataWffId.getAttributeValue()));
+        assertTrue(tagByWffId.containsKey(divId1Child3DataWffId.getAttributeValue()));
+
+        divId1.removeAllChildren(false);
+
+        tagByWffId = (Map<String, AbstractHtml>) tagByWffIdField.get(divId1.getSharedObject());
+
+        assertNotEquals(divId1Child1, tagByWffId.get(divId1Child1DataWffId.getAttributeValue()));
+        assertNotEquals(divId1Child2, tagByWffId.get(divId1Child2DataWffId.getAttributeValue()));
+        assertNotEquals(divId1Child3, tagByWffId.get(divId1Child3DataWffId.getAttributeValue()));
+
+        assertFalse(tagByWffId.containsKey(divId1Child1DataWffId.getAttributeValue()));
+        assertFalse(tagByWffId.containsKey(divId1Child2DataWffId.getAttributeValue()));
+        assertFalse(tagByWffId.containsKey(divId1Child3DataWffId.getAttributeValue()));
+
+
+
     }
 
 }

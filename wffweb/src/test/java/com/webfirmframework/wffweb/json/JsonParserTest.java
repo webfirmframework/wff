@@ -1086,4 +1086,35 @@ public class JsonParserTest {
         String somevalue = new JsonValue("somevalue", JsonValueType.STRING).asString();
         Assert.assertEquals("somevalue", somevalue);
     }
+
+    @Test
+    public void testJsonMapFactory() {
+        class CustomJsonMap extends JsonMap {
+        }
+        final JsonParser jsonParser = JsonParser.newBuilder().jsonObjectType(JsonObjectType.CUSTOM_JSON_MAP).jsonMapFactory(CustomJsonMap::new).build();
+        final Object parsedJsonObject = jsonParser.parseJson("""
+                {
+                "key1": "value1",
+                "key2": "value2"
+                }
+                """);
+        final CustomJsonMap customJsonMap = parsedJsonObject instanceof CustomJsonMap map ? map : null;
+        Assert.assertNotNull(customJsonMap);
+        Assert.assertEquals("value1", customJsonMap.getValueAsString("key1"));
+        Assert.assertEquals("value2", customJsonMap.getValueAsString("key2"));
+    }
+
+    @Test
+    public void testJsonListFactory() {
+        class CustomJsonList extends JsonList {
+        }
+        final JsonParser jsonParser = JsonParser.newBuilder().jsonArrayType(JsonArrayType.CUSTOM_JSON_LIST).jsonListFactory(CustomJsonList::new).build();
+        final Object parsedJsonObject = jsonParser.parseJson("""
+                ["value1", "value2"]                
+                """);
+        final CustomJsonList customJsonList = parsedJsonObject instanceof CustomJsonList list ? list : null;
+        Assert.assertNotNull(customJsonList);
+        Assert.assertEquals("value1", customJsonList.getValueAsString(0));
+        Assert.assertEquals("value2", customJsonList.getValueAsString(1));
+    }
 }

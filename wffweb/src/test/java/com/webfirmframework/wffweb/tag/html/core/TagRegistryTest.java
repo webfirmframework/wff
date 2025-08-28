@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
+import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -172,4 +174,41 @@ public class TagRegistryTest {
                 .sort(Comparator.comparingInt(String::length).thenComparing(String::compareTo));
         assertEquals(multiSortedNames, names);
     }
+
+    @Test
+    public void testGetNewTagInstanceOrNullIfFailed() {
+        final PreIndexedTagName[] preIndexedTagNames = PreIndexedTagName.values();
+        for (final PreIndexedTagName preIndexedTagName : preIndexedTagNames) {
+            Div parent = new Div(null);
+            if (preIndexedTagName.ordinal() > 3) {
+                AbstractHtml tag = TagRegistry.getNewTagInstanceOrNullIfFailed(preIndexedTagName, parent, new CustomAttribute("attrname", "attrvalue"));
+                assertNotNull(tag);
+
+                tag = TagRegistry.getNewTagInstanceOrNullIfFailed(preIndexedTagName, parent, null);
+                assertNotNull(tag);
+
+                tag = TagRegistry.getNewTagInstanceOrNullIfFailed(preIndexedTagName, null, new CustomAttribute("attrname", "attrvalue"));
+                assertNotNull(tag);
+
+                tag = TagRegistry.getNewTagInstanceOrNullIfFailed(preIndexedTagName, null, (AbstractAttribute[]) null);
+                assertNotNull(tag);
+            } else {
+                AbstractHtml tag = TagRegistry.getNewTagInstanceOrNullIfFailed((PreIndexedTagName) null, parent, new CustomAttribute("attrname", "attrvalue"));
+                assertNull(tag);
+
+                tag = TagRegistry.getNewTagInstanceOrNullIfFailed((PreIndexedTagName) null, parent, null);
+                assertNull(tag);
+
+                tag = TagRegistry.getNewTagInstanceOrNullIfFailed((PreIndexedTagName) null, null, new CustomAttribute("attrname", "attrvalue"));
+                assertNull(tag);
+
+                tag = TagRegistry.getNewTagInstanceOrNullIfFailed((PreIndexedTagName) null, null, (AbstractAttribute[]) null);
+                assertNull(tag);
+
+                tag = TagRegistry.getNewTagInstanceOrNullIfFailed((PreIndexedTagName) null, null, null);
+                assertNull(tag);
+            }
+        }
+    }
+
 }

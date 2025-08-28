@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -345,6 +346,150 @@ public class TagRegistry {
     }
 
     /**
+     * @param preIndexedTagName
+     * @return the lambda to create tag object.
+     * @since 12.0.6
+     */
+    private static BiFunction<AbstractHtml, AbstractAttribute[], AbstractHtml> getTagCreatorLamda(
+            final PreIndexedTagName preIndexedTagName) {
+        // without this null checking it will throw
+        // java.lang.NullPointerException: Cannot invoke
+        // "com.webfirmframework.wffweb.tag.html.core.PreIndexedTagName.ordinal()"
+        // because "preIndexedTagName" is null
+        if (preIndexedTagName == null) {
+            return null;
+        }
+        return switch (preIndexedTagName) {
+        case HASH, DOLLAR, PERCENT, AT -> null;
+        case A -> A::new;
+        case B -> B::new;
+        case I -> I::new;
+        case P -> P::new;
+        case Q -> Q::new;
+        case S -> S::new;
+        case U -> U::new;
+        case BR -> Br::new;
+        case DD -> Dd::new;
+        case DL -> Dl::new;
+        case DT -> Dt::new;
+        case EM -> Em::new;
+        case H1 -> H1::new;
+        case H2 -> H2::new;
+        case H3 -> H3::new;
+        case H4 -> H4::new;
+        case H5 -> H5::new;
+        case H6 -> H6::new;
+        case HR -> Hr::new;
+        case LI -> Li::new;
+        case OL -> Ol::new;
+        case RP -> Rp::new;
+        case RT -> Rt::new;
+        case TD -> Td::new;
+        case TH -> Th::new;
+        case TR -> Tr::new;
+        case UL -> Ul::new;
+        case BDI -> Bdi::new;
+        case BDO -> Bdo::new;
+        case COL -> Col::new;
+        case DEL -> Del::new;
+        case DFN -> Dfn::new;
+        case DIV -> Div::new;
+        case IMG -> Img::new;
+        case INS -> Ins::new;
+        case KBD -> Kbd::new;
+        case MAP -> MapTag::new;
+        case NAV -> Nav::new;
+        case PRE -> Pre::new;
+        case QFN -> Qfn::new;
+        case SUB -> Sub::new;
+        case SUP -> Sup::new;
+        case SVG -> Svg::new;
+        case VAR -> Var::new;
+        case WBR -> Wbr::new;
+        case ABBR -> Abbr::new;
+        case AREA -> Area::new;
+        case BASE -> Base::new;
+        case BODY -> Body::new;
+        case CITE -> Cite::new;
+        case CODE -> Code::new;
+        case DATA -> Data::new;
+        case FORM -> Form::new;
+        case HEAD -> Head::new;
+        case HTML -> Html::new;
+        case LINE -> Line::new;
+        case LINK -> Link::new;
+        case MAIN -> Main::new;
+        case MARK -> Mark::new;
+        case MATH -> MathTag::new;
+        case MENU -> Menu::new;
+        case META -> Meta::new;
+        case PATH -> Path::new;
+        case RECT -> Rect::new;
+        case RUBY -> Ruby::new;
+        case SAMP -> Samp::new;
+        case SPAN -> Span::new;
+        case TEXT -> Text::new;
+        case TIME -> Time::new;
+        case ASIDE -> Aside::new;
+        case AUDIO -> Audio::new;
+        case EMBED -> Embed::new;
+        case INPUT -> Input::new;
+        case LABEL -> Label::new;
+        case METER -> Meter::new;
+        case PARAM -> Param::new;
+        case SMALL -> Small::new;
+        case STYLE -> StyleTag::new;
+        case TABLE -> Table::new;
+        case TBODY -> TBody::new;
+        case TFOOT -> TFoot::new;
+        case THEAD -> THead::new;
+        case TITLE -> TitleTag::new;
+        case TRACK -> Track::new;
+        case VIDEO -> Video::new;
+        case BUTTON -> Button::new;
+        case CANVAS -> Canvas::new;
+        case CIRCLE -> Circle::new;
+        case DIALOG -> Dialog::new;
+        case FIGURE -> Figure::new;
+        case FOOTER -> Footer::new;
+        case HEADER -> Header::new;
+        case HGROUP -> HGroup::new;
+        case IFRAME -> IFrame::new;
+        case KEYGEN -> KeyGen::new;
+        case LEGEND -> Legend::new;
+        case OBJECT -> ObjectTag::new;
+        case OPTION -> Option::new;
+        case OUTPUT -> Output::new;
+        case SCRIPT -> Script::new;
+        case SELECT -> Select::new;
+        case SOURCE -> Source::new;
+        case STRONG -> Strong::new;
+        case ADDRESS -> Address::new;
+        case ARTICLE -> Article::new;
+        case CAPTION -> Caption::new;
+        case DETAILS -> Details::new;
+        case ELLIPSE -> Ellipse::new;
+        case PICTURE -> Picture::new;
+        case POLYGON -> Polygon::new;
+        case SECTION -> Section::new;
+        case SUMMARY -> Summary::new;
+        case BASEFONT -> BaseFont::new;
+        case COLGROUP -> ColGroup::new;
+        case DATALIST -> DataList::new;
+        case FIELDSET -> FieldSet::new;
+        case MENUITEM -> MenuItem::new;
+        case NOSCRIPT -> NoScript::new;
+        case OPTGROUP -> OptGroup::new;
+        case POLYLINE -> Polyline::new;
+        case PROGRESS -> Progress::new;
+        case TEMPLATE -> Template::new;
+        case TEXTAREA -> TextArea::new;
+        case BLOCKQUOTE -> BlockQuote::new;
+        case FIGCAPTION -> FigCaption::new;
+        };
+    }
+
+    /**
      * @return the list of tag names sorted in the ascending order of its length
      * @since 1.1.3
      * @since 12.0.0-beta.7 immutable list
@@ -507,6 +652,23 @@ public class TagRegistry {
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {
             // NOP
+        }
+        return null;
+    }
+
+    /**
+     * @param preIndexedTagName the preIndexedTagName
+     * @param parent
+     * @param attributes
+     * @return new instance or null if failed
+     * @since 12.0.6
+     */
+    public static AbstractHtml getNewTagInstanceOrNullIfFailed(final PreIndexedTagName preIndexedTagName,
+            final AbstractHtml parent, final AbstractAttribute... attributes) {
+        final BiFunction<AbstractHtml, AbstractAttribute[], AbstractHtml> tagCreatorLamda = getTagCreatorLamda(
+                preIndexedTagName);
+        if (tagCreatorLamda != null) {
+            return tagCreatorLamda.apply(parent, attributes);
         }
         return null;
     }

@@ -41,6 +41,7 @@ import com.webfirmframework.wffweb.internal.tag.html.listener.InsertBeforeListen
 import com.webfirmframework.wffweb.internal.tag.html.listener.InsertTagsBeforeListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
 import com.webfirmframework.wffweb.internal.tag.html.listener.ReplaceListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.TagManipulationListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.URIChangeTagSupplier;
 import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataDeleteListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.WffBMDataUpdateListener;
@@ -86,6 +87,8 @@ public final class AbstractHtml5SharedObject implements Serializable {
     private boolean childModified;
 
     private ChildTagAppendListener childTagAppendListener;
+
+    private TagManipulationListener tagManipulationListener;
 
     private ChildTagRemoveListener childTagRemoveListener;
 
@@ -275,6 +278,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @return the childTagAppendListener
      */
     @SuppressWarnings("exports")
+    @Deprecated(forRemoval = true, since = "12.0.6")
     public ChildTagAppendListener getChildTagAppendListener(final SecurityObject accessObject) {
         if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
@@ -285,9 +289,24 @@ public final class AbstractHtml5SharedObject implements Serializable {
     /**
      * NB:- This method is only for internal use
      *
+     * @param accessObject
+     * @return the childTagPrependListener
+     */
+    @SuppressWarnings("exports")
+    public TagManipulationListener getTagManipulationListener(final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.ABSTRACT_HTML.equals(accessObject.forClassType()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        return tagManipulationListener;
+    }
+
+    /**
+     * NB:- This method is only for internal use
+     *
      * @param childTagAppendListener the childTagAppendListener to set
      * @param accessObject
      */
+    @Deprecated(forRemoval = true, since = "12.0.6")
     public void setChildTagAppendListener(
             @SuppressWarnings("exports") final ChildTagAppendListener childTagAppendListener,
             @SuppressWarnings("exports") final SecurityObject accessObject) {
@@ -295,6 +314,21 @@ public final class AbstractHtml5SharedObject implements Serializable {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
         this.childTagAppendListener = childTagAppendListener;
+    }
+
+    /**
+     * NB:- This method is only for internal use
+     *
+     * @param tagManipulationListener the childTagPrependListener to set
+     * @param accessObject
+     */
+    public void setTagManipulationListener(
+            @SuppressWarnings("exports") final TagManipulationListener tagManipulationListener,
+            @SuppressWarnings("exports") final SecurityObject accessObject) {
+        if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
+            throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
+        }
+        this.tagManipulationListener = tagManipulationListener;
     }
 
     /**
@@ -508,6 +542,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *
      * @since 3.0.7
      */
+    @Deprecated(forRemoval = true, since = "12.0.6")
     @SuppressWarnings("exports")
     public ReplaceListener getReplaceListener(final SecurityObject accessObject) {
 
@@ -525,6 +560,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject
      * @since 3.0.7
      */
+    @Deprecated(forRemoval = true, since = "12.0.6")
     public void setReplaceListener(@SuppressWarnings("exports") final ReplaceListener replaceListener,
             @SuppressWarnings("exports") final SecurityObject accessObject) {
 
@@ -543,6 +579,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *
      * @since 3.0.7
      */
+    @Deprecated(forRemoval = true, since = "12.0.6")
     @SuppressWarnings("exports")
     public InsertTagsBeforeListener getInsertTagsBeforeListener(final SecurityObject accessObject) {
 
@@ -560,6 +597,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject
      * @since 3.0.7
      */
+    @Deprecated(forRemoval = true, since = "12.0.6")
     public void setInsertTagsBeforeListener(
             @SuppressWarnings("exports") final InsertTagsBeforeListener insertTagsBeforeListener,
             @SuppressWarnings("exports") final SecurityObject accessObject) {
@@ -579,6 +617,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      *
      * @since 3.0.7
      */
+    @Deprecated(forRemoval = true, since = "12.0.6")
     @SuppressWarnings("exports")
     public InsertAfterListener getInsertAfterListener(final SecurityObject accessObject) {
 
@@ -596,6 +635,7 @@ public final class AbstractHtml5SharedObject implements Serializable {
      * @param accessObject
      * @since 3.0.7
      */
+    @Deprecated(forRemoval = true, since = "12.0.6")
     public void setInsertAfterListener(@SuppressWarnings("exports") final InsertAfterListener insertAfterListener,
             @SuppressWarnings("exports") final SecurityObject accessObject) {
 

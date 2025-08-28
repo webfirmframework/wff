@@ -155,7 +155,19 @@ public enum Task {
     /**
      * To clear localStorage. LS stands for localStorage
      */
-    CLEAR_LS;
+    CLEAR_LS,
+
+    MOVABLE_PREPENDED_CHILDREN_TO_TAG,
+
+    MOVABLE_APPENDED_CHILDREN_TO_TAG,
+
+    MOVABLE_INSERTED_BEFORE_TAG,
+
+    MOVABLE_INSERTED_AFTER_TAG,
+
+    MOVABLE_REPLACED_TAG,
+
+    MOVABLE_REPLACED_ALL_CHILDREN_OF_TAG;
 
     private final String shortName;
 
@@ -166,7 +178,7 @@ public enum Task {
     private static String jsObjectString;
 
     // WffJsFile.PRODUCTION_MODE, there is bug while enabling this
-    private static final boolean SHORT_NAME_ENABLED = false;
+    public static final boolean SHORT_NAME_ENABLED = true;
 
     private Task() {
         valueByte = (byte) ordinal();
@@ -307,9 +319,8 @@ public enum Task {
         for (final Task task : values) {
             tasks.add(task);
         }
-        final Comparator<Task> asc = (o1, o2) -> Integer.compare(o1.name().length(), o2.name().length());
 
-        tasks.sort(asc.thenComparing(Task::name));
+        tasks.sort(Comparator.comparingInt((final Task t) -> t.name().length()).thenComparing(Task::name));
 
         Collections.reverse(tasks);
 

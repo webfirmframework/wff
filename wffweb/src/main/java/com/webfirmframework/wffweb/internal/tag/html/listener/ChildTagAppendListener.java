@@ -21,6 +21,7 @@ import java.util.Collection;
 import com.webfirmframework.wffweb.server.page.ChildTagAppendListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
+@Deprecated(forRemoval = true, since = "12.0.6")
 public sealed interface ChildTagAppendListener extends Serializable permits ChildTagAppendListenerImpl {
 
     public static record Event(AbstractHtml parentTag, AbstractHtml appendedChildTag,
@@ -33,8 +34,10 @@ public sealed interface ChildTagAppendListener extends Serializable permits Chil
 
     }
 
+    @Deprecated(forRemoval = true, since = "12.0.6")
     public void childAppended(Event event);
 
+    @Deprecated(forRemoval = true, since = "12.0.6")
     public void childrenAppended(Event event);
 
     /**
@@ -44,8 +47,10 @@ public sealed interface ChildTagAppendListener extends Serializable permits Chil
      * @since 2.0.0
      * @author WFF
      */
+    @Deprecated(forRemoval = true, since = "12.0.6")
     public void childMoved(ChildMovedEvent event);
 
+    @Deprecated(forRemoval = true, since = "12.0.6")
     public void childrendAppendedOrMoved(Collection<ChildMovedEvent> events);
 
 }

@@ -15,27 +15,7 @@
  */
 package com.webfirmframework.wffweb.internal.tag.html.listener;
 
-import java.io.Serializable;
-
-import com.webfirmframework.wffweb.server.page.InsertBeforeListenerImpl;
 import com.webfirmframework.wffweb.tag.html.AbstractHtml;
 
-@Deprecated(forRemoval = true, since = "12.0.6")
-public sealed interface InsertBeforeListener extends Serializable permits InsertBeforeListenerImpl {
-
-    public static record Event(AbstractHtml parentTag, AbstractHtml insertedTag, AbstractHtml beforeTag,
-            AbstractHtml previousParentTag) {
-
-    }
-
-    /**
-     * Tags insertedTags inserted before tag beforeTag having parent parentTag.
-     *
-     * @param events
-     * @since 2.1.1
-     * @author WFF
-     */
-    @Deprecated(forRemoval = true, since = "12.0.6")
-    public void insertedBefore(Event... events);
-
+public record ChildCreatedOrMovedEvent(AbstractHtml childTag, boolean movable) {
 }

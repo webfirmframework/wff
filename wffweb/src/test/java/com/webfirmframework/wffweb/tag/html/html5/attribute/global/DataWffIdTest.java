@@ -18,6 +18,10 @@ package com.webfirmframework.wffweb.tag.html.html5.attribute.global;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import com.webfirmframework.wffweb.tag.html.tables.Td;
+import com.webfirmframework.wffweb.tag.html.tables.Tr;
+import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.tag.html.attribute.Value;
@@ -40,6 +44,27 @@ public class DataWffIdTest {
             assertEquals((int) AttributeRegistry.getIndexByAttributeName(DataWffId.ATTRIBUTE_NAME), dataWffId.getAttrNameIndex());
             assertNotEquals(-1, dataWffId.getAttrNameIndex());
         }
+    }
+
+    @Test
+    public void testGetIndexedTagNameAndChildIndexForNoTag() {
+        Tr tr = new Tr(null);
+        Td td1 = new Td(tr);
+        Td td2 = new Td(tr);
+        NoTag noTag = new NoTag(tr, "some text");
+        Td td3 = new Td(tr);
+        Assert.assertEquals(2, tr.getIndexByChild(noTag));
+    }
+
+    @Test
+    public void testGetIndexedTagNameAndChildIndexForNoTag2() {
+        Tr tr = new Tr(null);
+        Td td1 = new Td(tr);
+        Td td2 = new Td(tr);
+        NoTag noTag = new NoTag(null, "some text");
+        tr.appendChildren(noTag);
+        Td td3 = new Td(tr);
+        Assert.assertEquals(2, tr.getIndexByChild(noTag));
     }
 
 }

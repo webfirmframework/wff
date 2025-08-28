@@ -219,106 +219,274 @@ public class SharedTagContent<T> {
 
     }
 
+    /**
+     * Only for internal use.
+     *
+     * @since 12.0.6
+     */
+    private static enum MethodCallId {
+
+        SET_CONTENT_CALL,
+
+        DETACH_CALL,
+
+        ADD_CONTENT_CHANGE_LISTENER_CALL,
+
+        ADD_DETACH_LISTENER_CALL,
+
+        REMOVE_CONTENT_CHANGE_LISTENER_CALL,
+
+        REMOVE_CONTENT_CHANGE_LISTENER_CALL_2,
+
+        REMOVE_DETACH_LISTENER_CALL,
+
+        REMOVE_DETACH_LISTENER_CALL_2,
+
+        REMOVE_CONTENT_CHANGE_LISTENERS_CALL,
+
+        REMOVE_DETACH_LISTENERS_CALL,
+
+        REMOVE_ALL_CONTENT_CHANGE_LISTENERS_CALL,
+
+        REMOVE_ALL_CONTENT_CHANGE_LISTENERS_NO_ARG_CALL,
+
+        REMOVE_ALL_DETACH_LISTENERS_CALL,
+
+        REMOVE_ALL_DETACH_LISTENERS_NO_ARG_CALL,
+
+        SET_UPDATE_CLIENT_NATURE_CALL,
+
+        SET_UPDATE_CLIENT_CALL,
+
+        SET_SHARED_CALL,
+
+        SET_EXECUTOR_CALL,
+
+        ADD_NO_TAG_CALL,
+
+        REMOVE_NO_TAG_CALL,
+
+        REMOVE_LISTENERS_CALL,
+
+        READ_STATE_CALL;
+
+        private MethodCallId() {
+        }
+    }
+
     private static interface QueuedMethodCall<T> {
+        MethodCallId methodCallId();
     }
 
     private static record SetContentCall<T> (boolean updateClient, UpdateClientNature updateClientNature,
             Set<AbstractHtml> exclusionTags, T content, boolean contentTypeHtml, boolean shared)
             implements QueuedMethodCall<T> {
+
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.SET_CONTENT_CALL;
+        }
+
     }
 
     private static record DetachCall<T> (boolean removeContent, Set<AbstractHtml> exclusionTags,
             Set<AbstractHtml> exclusionClientUpdateTags) implements QueuedMethodCall<T> {
+
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.DETACH_CALL;
+        }
+
     }
 
     private static record AddContentChangeListenerCall<T> (AbstractHtml tag,
             ContentChangeListener<T> contentChangeListener) implements QueuedMethodCall<T> {
+
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.ADD_CONTENT_CHANGE_LISTENER_CALL;
+        }
 
     }
 
     private static record AddDetachListenerCall<T> (AbstractHtml tag, DetachListener<T> detachListener)
             implements QueuedMethodCall<T> {
 
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.ADD_DETACH_LISTENER_CALL;
+        }
+
     }
 
     private static record RemoveContentChangeListenerCall<T> (ContentChangeListener<T> contentChangeListener)
             implements QueuedMethodCall<T> {
+
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.REMOVE_CONTENT_CHANGE_LISTENER_CALL;
+        }
 
     }
 
     private static record RemoveContentChangeListenerCall2<T> (AbstractHtml tag,
             ContentChangeListener<T> contentChangeListener) implements QueuedMethodCall<T> {
 
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.REMOVE_CONTENT_CHANGE_LISTENER_CALL_2;
+        }
+
     }
 
     private static record RemoveDetachListenerCall<T> (DetachListener<T> detachListener)
             implements QueuedMethodCall<T> {
+
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.REMOVE_DETACH_LISTENER_CALL;
+        }
 
     }
 
     private static record RemoveDetachListenerCall2<T> (AbstractHtml tag, DetachListener<T> detachListener)
             implements QueuedMethodCall<T> {
 
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.REMOVE_DETACH_LISTENER_CALL_2;
+        }
+
     }
 
     private static record RemoveContentChangeListenersCall<T> (AbstractHtml tag,
             Collection<ContentChangeListener<T>> contentChangeListeners) implements QueuedMethodCall<T> {
+
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.REMOVE_CONTENT_CHANGE_LISTENERS_CALL;
+        }
 
     }
 
     private static record RemoveDetachListenersCall<T> (AbstractHtml tag, Collection<DetachListener<T>> detachListeners)
             implements QueuedMethodCall<T> {
 
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.REMOVE_DETACH_LISTENERS_CALL;
+        }
+
     }
 
     private static record RemoveAllContentChangeListenersCall<T> (AbstractHtml tag) implements QueuedMethodCall<T> {
+
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.REMOVE_ALL_CONTENT_CHANGE_LISTENERS_CALL;
+        }
 
     }
 
     private static record RemoveAllContentChangeListenersNoArgCall<T> () implements QueuedMethodCall<T> {
 
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.REMOVE_ALL_CONTENT_CHANGE_LISTENERS_NO_ARG_CALL;
+        }
+
     }
 
     private static record RemoveAllDetachListenersCall<T> (AbstractHtml tag) implements QueuedMethodCall<T> {
 
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.REMOVE_ALL_DETACH_LISTENERS_CALL;
+        }
+
     }
 
     private static record RemoveAllDetachListenersNoArgCall<T> () implements QueuedMethodCall<T> {
+
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.REMOVE_ALL_DETACH_LISTENERS_NO_ARG_CALL;
+        }
 
     }
 
     private static record SetUpdateClientNatureCall<T> (UpdateClientNature updateClientNature)
             implements QueuedMethodCall<T> {
 
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.SET_UPDATE_CLIENT_NATURE_CALL;
+        }
+
     }
 
     private static record SetUpdateClientCall<T> (boolean updateClient) implements QueuedMethodCall<T> {
+
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.SET_UPDATE_CLIENT_CALL;
+        }
 
     }
 
     private static record SetSharedCall<T> (boolean shared) implements QueuedMethodCall<T> {
 
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.SET_SHARED_CALL;
+        }
+
     }
 
     private static record SetExecutorCall<T> (Executor executor) implements QueuedMethodCall<T> {
+
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.SET_EXECUTOR_CALL;
+        }
 
     }
 
     private static record RemoveNoTagCall<T> (AbstractHtml insertedTag, AbstractHtml parentTag)
             implements QueuedMethodCall<T> {
 
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.REMOVE_NO_TAG_CALL;
+        }
+
     }
 
     private static record AddNoTagCall<T> (NoTag noTag, InsertedTagData<T> insertedTagData)
             implements QueuedMethodCall<T> {
 
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.ADD_NO_TAG_CALL;
+        }
+
     }
 
     private static record RemoveListenersCall<T> (InternalId tagId) implements QueuedMethodCall<T> {
 
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.REMOVE_LISTENERS_CALL;
+        }
+
     }
 
     private static record ReadStateCall<T> (StateConsumer<T> stateConsumer) implements QueuedMethodCall<T> {
+
+        @Override
+        public MethodCallId methodCallId() {
+            return MethodCallId.READ_STATE_CALL;
+        }
 
     }
 
@@ -472,15 +640,14 @@ public class SharedTagContent<T> {
      *                           So it could be declared as a static final object.
      *                           Eg: <br>
      *
-     * <pre><code>
+     *                           <pre><code>
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
-     * When Java releases Virtual Thread we may be able to use as follows
-     * <pre><code>
+     * </code>                </pre> When Java releases Virtual Thread we may be
+     *                           able to use as follows <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
+     * </code>                </pre>
      *
      * @param updateClientNature
      *
@@ -553,15 +720,14 @@ public class SharedTagContent<T> {
      *                 sharedTagContent instances in the project. So it could be
      *                 declared as a static final object. Eg: <br>
      *
-     * <pre><code>
+     *                 <pre><code>
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
-     * When Java releases Virtual Thread we may be able to use as follows
-     * <pre><code>
+     * </code>      </pre> When Java releases Virtual Thread we may be able to
+     *                 use as follows <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
+     * </code>      </pre>
      *
      * @param content  the content its content type will be considered as plain
      *                 text, i.e. contentTypeHtml will be false.
@@ -617,15 +783,14 @@ public class SharedTagContent<T> {
      *                           So it could be declared as a static final object.
      *                           Eg: <br>
      *
-     * <pre><code>
+     *                           <pre><code>
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
-     * When Java releases Virtual Thread we may be able to use as follows
-     * <pre><code>
+     * </code>                </pre> When Java releases Virtual Thread we may be
+     *                           able to use as follows <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
+     * </code>                </pre>
      *
      * @param updateClientNature
      *
@@ -674,15 +839,14 @@ public class SharedTagContent<T> {
      *                        NB: You may need only one copy of executor object for
      *                        all sharedTagContent instances in the project. So it
      *                        could be declared as a static final object. Eg: <br>
-     * <pre><code>
+     *                        <pre><code>
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
-     * When Java releases Virtual Thread we may be able to use as follows
-     * <pre><code>
+     * </code>             </pre> When Java releases Virtual Thread we may be
+     *                        able to use as follows <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
+     * </code>             </pre>
      *
      * @param content         the content to embed in the consumer tags.
      * @param contentTypeHtml true to treat the given content as HTML otherwise
@@ -729,15 +893,14 @@ public class SharedTagContent<T> {
      *                           So it could be declared as a static final object.
      *                           Eg: <br>
      *
-     * <pre><code>
+     *                           <pre><code>
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
-     * When Java releases Virtual Thread we may be able to use as follows
-     * <pre><code>
+     * </code>                </pre> When Java releases Virtual Thread we may be
+     *                           able to use as follows <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
+     * </code>                </pre>
      *
      * @param updateClientNature
      *
@@ -798,15 +961,14 @@ public class SharedTagContent<T> {
      *                           So it could be declared as a static final object.
      *                           Eg: <br>
      *
-     * <pre><code>
+     *                           <pre><code>
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
-     * When Java releases Virtual Thread we may be able to use as follows
-     * <pre><code>
+     * </code>                </pre> When Java releases Virtual Thread we may be
+     *                           able to use as follows <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
+     * </code>                </pre>
      *
      * @param updateClientNature
      *
@@ -856,15 +1018,14 @@ public class SharedTagContent<T> {
      *                        all sharedTagContent instances in the project. So it
      *                        could be declared as a static final object. Eg: <br>
      *
-     * <pre><code>
+     *                        <pre><code>
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
-     * When Java releases Virtual Thread we may be able to use as follows
-     * <pre><code>
+     * </code>             </pre> When Java releases Virtual Thread we may be
+     *                        able to use as follows <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
+     * </code>             </pre>
      *
      * @param shared          true to share its content across all consuming tags
      *                        when {@link SharedTagContent#setContent} is called.
@@ -901,15 +1062,14 @@ public class SharedTagContent<T> {
      *                 sharedTagContent instances in the project. So it could be
      *                 declared as a static final object. Eg: <br>
      *
-     * <pre><code>
+     *                 <pre><code>
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
-     * When Java releases Virtual Thread we may be able to use as follows
-     * <pre><code>
+     * </code>      </pre> When Java releases Virtual Thread we may be able to
+     *                 use as follows <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
+     * </code>      </pre>
      *
      * @param shared   true to share its content across all consuming tags when
      *                 {@link SharedTagContent#setContent} is called.
@@ -1086,15 +1246,14 @@ public class SharedTagContent<T> {
      *                 NB: You may need only one copy of executor object for all
      *                 sharedTagContent instances in the project. So it could be
      *                 declared as a static final object. Eg: <br>
-     * <pre><code>
+     *                 <pre><code>
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
-     * When Java releases Virtual Thread we may be able to use as follows
-     * <pre><code>
+     * </code>      </pre> When Java releases Virtual Thread we may be able to
+     *                 use as follows <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
+     * </code>      </pre>
      *
      * @since 3.0.15
      */
@@ -1114,15 +1273,14 @@ public class SharedTagContent<T> {
      *                 NB: You may need only one copy of executor object for all
      *                 sharedTagContent instances in the project. So it could be
      *                 declared as a static final object. Eg: <br>
-     * <pre><code>
+     *                 <pre><code>
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
-     * When Java releases Virtual Thread we may be able to use as follows
-     * <pre><code>
+     * </code>      </pre> When Java releases Virtual Thread we may be able to
+     *                 use as follows <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
+     * </code>      </pre>
      *
      * @since 3.0.15
      */
@@ -1333,58 +1491,171 @@ public class SharedTagContent<T> {
     private void processMethodCallQ(final Executor executor, final boolean parallelUpdateOnTags,
             final boolean calledByThread) {
         QueuedMethodCall<T> eachItem;
+
         while ((eachItem = methodCallQ.poll()) != null) {
-            if (eachItem instanceof final SetContentCall<T> each) {
-                setContentForQ(each.updateClient, each.updateClientNature, each.exclusionTags, each.content,
-                        each.contentTypeHtml, each.shared, executor, parallelUpdateOnTags, calledByThread);
-            } else if (eachItem instanceof final DetachCall<T> each) {
-                detachForQ(each.removeContent, each.exclusionTags, each.exclusionClientUpdateTags, parallelUpdateOnTags,
-                        calledByThread);
-            } else if (eachItem instanceof final AddContentChangeListenerCall<T> each) {
-                addContentChangeListenerForQ(each.tag, each.contentChangeListener);
-            } else if (eachItem instanceof final AddDetachListenerCall<T> each) {
-                addDetachListenerForQ(each.tag, each.detachListener);
-            } else if (eachItem instanceof final RemoveContentChangeListenerCall<T> each) {
-                removeContentChangeListenerForQ(each.contentChangeListener);
-            } else if (eachItem instanceof final RemoveContentChangeListenerCall2<T> each) {
-                removeContentChangeListenerForQ(each.tag, each.contentChangeListener);
-            } else if (eachItem instanceof final RemoveDetachListenerCall<T> each) {
-                removeDetachListenerForQ(each.detachListener);
-            } else if (eachItem instanceof final RemoveDetachListenerCall2<T> each) {
-                removeDetachListenerForQ(each.tag, each.detachListener);
-            } else if (eachItem instanceof final RemoveContentChangeListenersCall<T> each) {
-                removeContentChangeListenersForQ(each.tag, each.contentChangeListeners);
-            } else if (eachItem instanceof final RemoveDetachListenersCall<T> each) {
-                removeDetachListenersForQ(each.tag, each.detachListeners);
-            } else if (eachItem instanceof final RemoveAllContentChangeListenersCall<T> each) {
-                removeAllContentChangeListenersForQ(each.tag);
-            } else if (eachItem instanceof RemoveAllContentChangeListenersNoArgCall<T>) {
-                removeAllContentChangeListenersForQ();
-            } else if (eachItem instanceof final RemoveAllDetachListenersCall<T> each) {
-                removeAllDetachListenersForQ(each.tag);
-            } else if (eachItem instanceof RemoveAllDetachListenersNoArgCall<T>) {
-                removeAllDetachListenersForQ();
-            } else if (eachItem instanceof final SetUpdateClientNatureCall<T> each) {
-                setUpdateClientNatureForQ(each.updateClientNature);
-            } else if (eachItem instanceof final SetUpdateClientCall<T> each) {
-                setUpdateClientForQ(each.updateClient);
-            } else if (eachItem instanceof final SetSharedCall<T> each) {
-                setSharedForQ(each.shared);
-            } else if (eachItem instanceof final SetExecutorCall<T> each) {
-                setExecutorForQ(each.executor);
-            } else if (eachItem instanceof final AddNoTagCall<T> each) {
-                final long stamp = lock.writeLock();
-                try {
-                    insertedTags.put(each.noTag, each.insertedTagData);
-                } finally {
-                    lock.unlockWrite(stamp);
+            switch (eachItem.methodCallId()) {
+            case SET_CONTENT_CALL -> {
+                if (eachItem instanceof final SetContentCall<T> each) {
+                    setContentForQ(each.updateClient, each.updateClientNature, each.exclusionTags, each.content,
+                            each.contentTypeHtml, each.shared, executor, parallelUpdateOnTags, calledByThread);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
                 }
-            } else if (eachItem instanceof final RemoveNoTagCall<T> each) {
-                removeForQ(each.insertedTag, each.parentTag);
-            } else if (eachItem instanceof final RemoveListenersCall<T> each) {
-                removeListenersForQ(each.tagId);
-            } else if (eachItem instanceof final SharedTagContent.ReadStateCall<T> each) {
-                readStateForQ(each.stateConsumer);
+            }
+            case DETACH_CALL -> {
+                if (eachItem instanceof final DetachCall<T> each) {
+                    detachForQ(each.removeContent, each.exclusionTags, each.exclusionClientUpdateTags,
+                            parallelUpdateOnTags, calledByThread);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case ADD_CONTENT_CHANGE_LISTENER_CALL -> {
+                if (eachItem instanceof final AddContentChangeListenerCall<T> each) {
+                    addContentChangeListenerForQ(each.tag, each.contentChangeListener);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case ADD_DETACH_LISTENER_CALL -> {
+                if (eachItem instanceof final AddDetachListenerCall<T> each) {
+                    addDetachListenerForQ(each.tag, each.detachListener);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case REMOVE_CONTENT_CHANGE_LISTENER_CALL -> {
+                if (eachItem instanceof final RemoveContentChangeListenerCall<T> each) {
+                    removeContentChangeListenerForQ(each.contentChangeListener);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case REMOVE_CONTENT_CHANGE_LISTENER_CALL_2 -> {
+                if (eachItem instanceof final RemoveContentChangeListenerCall2<T> each) {
+                    removeContentChangeListenerForQ(each.tag, each.contentChangeListener);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case REMOVE_DETACH_LISTENER_CALL -> {
+                if (eachItem instanceof final RemoveDetachListenerCall<T> each) {
+                    removeDetachListenerForQ(each.detachListener);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case REMOVE_DETACH_LISTENER_CALL_2 -> {
+                if (eachItem instanceof final RemoveDetachListenerCall2<T> each) {
+                    removeDetachListenerForQ(each.tag, each.detachListener);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case REMOVE_CONTENT_CHANGE_LISTENERS_CALL -> {
+                if (eachItem instanceof final RemoveContentChangeListenersCall<T> each) {
+                    removeContentChangeListenersForQ(each.tag, each.contentChangeListeners);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case REMOVE_DETACH_LISTENERS_CALL -> {
+                if (eachItem instanceof final RemoveDetachListenersCall<T> each) {
+                    removeDetachListenersForQ(each.tag, each.detachListeners);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case REMOVE_ALL_CONTENT_CHANGE_LISTENERS_CALL -> {
+                if (eachItem instanceof final RemoveAllContentChangeListenersCall<T> each) {
+                    removeAllContentChangeListenersForQ(each.tag);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case REMOVE_ALL_CONTENT_CHANGE_LISTENERS_NO_ARG_CALL -> {
+                if (eachItem instanceof RemoveAllContentChangeListenersNoArgCall<T>) {
+                    removeAllContentChangeListenersForQ();
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case REMOVE_ALL_DETACH_LISTENERS_CALL -> {
+                if (eachItem instanceof final RemoveAllDetachListenersCall<T> each) {
+                    removeAllDetachListenersForQ(each.tag);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case REMOVE_ALL_DETACH_LISTENERS_NO_ARG_CALL -> {
+                if (eachItem instanceof RemoveAllDetachListenersNoArgCall<T>) {
+                    removeAllDetachListenersForQ();
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case SET_UPDATE_CLIENT_NATURE_CALL -> {
+                if (eachItem instanceof final SetUpdateClientNatureCall<T> each) {
+                    setUpdateClientNatureForQ(each.updateClientNature);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case SET_UPDATE_CLIENT_CALL -> {
+                if (eachItem instanceof final SetUpdateClientCall<T> each) {
+                    setUpdateClientForQ(each.updateClient);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case SET_SHARED_CALL -> {
+                if (eachItem instanceof final SetSharedCall<T> each) {
+                    setSharedForQ(each.shared);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case SET_EXECUTOR_CALL -> {
+                if (eachItem instanceof final SetExecutorCall<T> each) {
+                    setExecutorForQ(each.executor);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case ADD_NO_TAG_CALL -> {
+                if (eachItem instanceof final AddNoTagCall<T> each) {
+                    final long stamp = lock.writeLock();
+                    try {
+                        insertedTags.put(each.noTag, each.insertedTagData);
+                    } finally {
+                        lock.unlockWrite(stamp);
+                    }
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case REMOVE_NO_TAG_CALL -> {
+                if (eachItem instanceof final RemoveNoTagCall<T> each) {
+                    removeForQ(each.insertedTag, each.parentTag);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case REMOVE_LISTENERS_CALL -> {
+                if (eachItem instanceof final RemoveListenersCall<T> each) {
+                    removeListenersForQ(each.tagId);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            case READ_STATE_CALL -> {
+                if (eachItem instanceof final ReadStateCall<T> each) {
+                    readStateForQ(each.stateConsumer);
+                } else {
+                    throw new IllegalArgumentException("Invalid method call mapping!");
+                }
+            }
+            default -> throw new IllegalArgumentException("%s method call is not implemented!");
             }
         }
         cleanup();
@@ -1754,16 +2025,16 @@ public class SharedTagContent<T> {
      *                           for all sharedTagContent instances in the project.
      *                           So it could be declared as a static final object.
      *                           Eg: <br>
-     * <pre><code>
+     *                           <pre><code>
      * public static final Executor EXECUTOR = Executors.newCachedThreadPool();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
-     * <p>
-     * When Java releases Virtual Thread we may be able to use as follows
-     * <pre><code>
+     * </code>                </pre>
+     *                           <p>
+     *                           When Java releases Virtual Thread we may be able to
+     *                           use as follows <pre><code>
      * public static final Executor EXECUTOR = Executors.newVirtualThreadExecutor();
      * sharedTagContent.setExecutor(EXECUTOR);
-     * </code></pre>
+     * </code>                </pre>
      *
      * @param updateClientNature
      * @param sharedObjects

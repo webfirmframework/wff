@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
@@ -64,14 +66,11 @@ import com.webfirmframework.wffweb.internal.security.object.AbstractHtmlSecurity
 import com.webfirmframework.wffweb.internal.security.object.SecurityObject;
 import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeAddListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.AttributeRemoveListener;
-import com.webfirmframework.wffweb.internal.tag.html.listener.ChildTagAppendListener;
-import com.webfirmframework.wffweb.internal.tag.html.listener.ChildTagAppendListener.ChildMovedEvent;
+import com.webfirmframework.wffweb.internal.tag.html.listener.ChildCreatedOrMovedEvent;
 import com.webfirmframework.wffweb.internal.tag.html.listener.ChildTagRemoveListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.InnerHtmlAddListener;
-import com.webfirmframework.wffweb.internal.tag.html.listener.InsertAfterListener;
-import com.webfirmframework.wffweb.internal.tag.html.listener.InsertTagsBeforeListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.PushQueue;
-import com.webfirmframework.wffweb.internal.tag.html.listener.ReplaceListener;
+import com.webfirmframework.wffweb.internal.tag.html.listener.TagManipulationListener;
 import com.webfirmframework.wffweb.internal.tag.html.listener.URIChangeTagSupplier;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.settings.WffConfiguration;
@@ -241,7 +240,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         }
     }
 
-    private enum WhenURIMethodType {
+    private static enum WhenURIMethodType {
 
         SUCCESS_SUPPLIER_FAIL_CONSUMER,
 
@@ -250,6 +249,31 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         SUCCESS_SUPPLIER_FAIL_SUPPLIER,
 
         SUCCESS_CONSUMER_FAIL_CONSUMER;
+    }
+
+    private static enum TagManipulationType {
+
+        PREPEND_CHILDREN,
+
+        APPEND_CHILDREN,
+
+        INSERT_BEFORE,
+
+        INSERT_AFTER,
+
+        REPLACE_WITH,
+
+        ADD_INNER_HTML;
+    }
+
+    /**
+     * Note: do not change T[] to T...
+     *
+     * @param asCollection
+     * @param asArray
+     * @param <T>
+     */
+    private static record CollectionArrayHolder<T> (Collection<T> asCollection, T[] asArray) {
     }
 
     private static record URIChangeContent(Predicate<URIEvent> uriEventPredicate, Supplier<AbstractHtml[]> successTags,
@@ -526,7 +550,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             buildOpeningTag(false);
             closingTag = buildClosingTag();
             if (base != null) {
-                base.addChildLockless(this);
+                base.addChildLocklessFromConstructor(this);
                 // base.children.add(this);
                 // should not uncomment the below codes as it is handled in the
                 // above add method
@@ -585,7 +609,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             buildOpeningTag(false);
             closingTag = buildClosingTag();
             if (base != null) {
-                base.addChildLockless(this);
+                base.addChildLocklessFromConstructor(this);
                 // base.children.add(this);
                 // should not uncomment the below codes as it is handled in the
                 // above add method
@@ -652,7 +676,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             buildOpeningTag(false);
             closingTag = buildClosingTag();
             if (base != null) {
-                base.addChildLockless(this);
+                base.addChildLocklessFromConstructor(this);
                 // base.children.add(this);
                 // should not uncomment the below codes as it is handled in the
                 // above add method
@@ -724,7 +748,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             buildOpeningTag(false);
             closingTag = buildClosingTag();
             if (base != null) {
-                base.addChildLockless(this);
+                base.addChildLocklessFromConstructor(this);
                 // base.children.add(this);
                 // should not uncomment the below codes as it is handled in the
                 // above add method
@@ -780,7 +804,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         // this method works fine
         // lock is called inside appendChildren
-        appendChildren(child);
+        manipulateTag(new AbstractHtml[] { child }, TagManipulationType.APPEND_CHILDREN);
         return true;
     }
 
@@ -817,6 +841,17 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @author WFF
      */
     public void removeAllChildren() {
+        removeAllChildren(true);
+    }
+
+    /**
+     * @param updateClient true to remove all children from this tag and update it
+     *                     with the client browser page and false to remove all
+     *                     children from this tag but not to update it with the
+     *                     client browser page.
+     * @since 12.0.6
+     */
+    public void removeAllChildren(final boolean updateClient) {
 
         boolean listenerInvoked = false;
         final Lock lock = lockAndGetWriteLock();
@@ -834,7 +869,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
             newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
 
-            final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
+            final ChildTagRemoveListener listener = updateClient ? sharedObject.getChildTagRemoveListener(ACCESS_OBJECT)
+                    : null;
             if (listener != null) {
                 listener.allChildrenRemoved(new ChildTagRemoveListener.Event(this, null, removedAbstractHtmls));
                 listenerInvoked = true;
@@ -911,12 +947,18 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     /**
      * Removes all children and adds the given tags as children.
      *
-     * @param innerHtmls the inner html tags to add
+     * @param innerHtmls the inner html tags to add.
      * @author WFF
      * @since 2.1.3
+     * @since 12.0.6 better implementation.
      */
     public void addInnerHtmls(final AbstractHtml... innerHtmls) {
-        addInnerHtmls(true, innerHtmls);
+//        addInnerHtmls(true, innerHtmls);
+        if (innerHtmls.length == 0) {
+            removeAllChildren();
+        } else {
+            manipulateTag(innerHtmls, TagManipulationType.ADD_INNER_HTML);
+        }
     }
 
     /**
@@ -925,12 +967,17 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @param updateClient true to update client browser page if it is available.
      *                     The default value is true but it will be ignored if there
      *                     is no client browser page.
-     * @param innerHtmls   the inner html tags to add
+     * @param innerHtmls   the inner html tags to add.
      * @author WFF
      * @since 2.1.15
+     * @since 12.0.6 better implementation.
      */
     protected void addInnerHtmls(final boolean updateClient, final AbstractHtml... innerHtmls) {
-        addInnerHtmls(false, updateClient, innerHtmls);
+        if (updateClient && innerHtmls.length == 0) {
+            removeAllChildren();
+        } else {
+            manipulateTag(false, updateClient, this, innerHtmls, TagManipulationType.ADD_INNER_HTML, false);
+        }
     }
 
     /**
@@ -939,124 +986,14 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @param updateClient true to update client browser page if it is available.
      *                     The default value is true but it will be ignored if there
      *                     is no client browser page.
-     * @param innerHtmls   the inner html tags to add
+     * @param innerHtmls   the inner html tags to add.
      * @author WFF
      * @since 12.0.0-beta.1
+     * @since 12.0.6 better implementation.
      */
     protected void addInnerHtmls(final boolean ignoreApplyURIChange, final boolean updateClient,
             final AbstractHtml... innerHtmls) {
-
-        boolean listenerInvoked = false;
-//        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-//        lock.lock();
-
-        final List<Lock> locks = lockAndGetWriteLocks(innerHtmls);
-
-        // sharedObject should be after locking
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-
-        List<Lock> newSOLocks = null;
-
-        final Deque<AbstractHtml> parentGainedListenerTags;
-        final Deque<AbstractHtml> parentLostListenerTags;
-
-        try {
-            validateChildren(innerHtmls);
-            if (!ignoreApplyURIChange) {
-                for (final AbstractHtml each : innerHtmls) {
-                    each.applyURIChange(sharedObject);
-                }
-            }
-
-            final Set<AbstractHtml> children = this.children;
-            final AbstractHtml[] removedTags = children.toArray(new AbstractHtml[children.size()]);
-
-            parentGainedListenerTags = buildParentGainedListenerTags(innerHtmls);
-            parentLostListenerTags = buildParentLostListenerTags(innerHtmls, removedTags);
-
-            children.clear();
-
-            removeFromSharedTagContent(removedTags);
-
-            newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedTags);
-
-            final InnerHtmlAddListener listener = sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT);
-
-            if (listener != null && updateClient) {
-
-                final InnerHtmlAddListener.Event[] events = new InnerHtmlAddListener.Event[innerHtmls.length];
-
-                int index = 0;
-
-                for (final AbstractHtml innerHtml : innerHtmls) {
-
-                    final boolean alreadyHasParent = innerHtml.parent != null;
-                    AbstractHtml previousParentTag = null;
-
-                    if (alreadyHasParent) {
-                        if (innerHtml.parent.sharedObject == sharedObject) {
-                            previousParentTag = innerHtml.parent;
-                        } else {
-                            if (innerHtml.parent.sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT) == null) {
-                                removeFromTagByWffIdMap(innerHtml,
-                                        innerHtml.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                            } // else {TODO also write the code to push
-                              // changes to the other BrowserPage}
-
-                        }
-                    } else {
-                        removeDataWffIdFromHierarchyLockless(innerHtml);
-                    }
-
-                    addChild(innerHtml, false);
-
-                    events[index] = new InnerHtmlAddListener.Event(this, innerHtml, previousParentTag);
-                    index++;
-
-                }
-
-                listener.innerHtmlsAdded(this, events);
-                listenerInvoked = true;
-            } else {
-                for (final AbstractHtml innerHtml : innerHtmls) {
-
-                    if (innerHtml.parent != null) {
-                        if (innerHtml.parent.sharedObject.getInnerHtmlAddListener(ACCESS_OBJECT) == null) {
-                            removeFromTagByWffIdMap(innerHtml,
-                                    innerHtml.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                        } // else {TODO also write the code to push
-                          // changes to the other BrowserPage}
-                    } else {
-                        removeDataWffIdFromHierarchy(sharedObject, innerHtml);
-                    }
-
-                    addChild(innerHtml, false);
-                }
-            }
-
-        } finally {
-            if (newSOLocks != null) {
-                for (final Lock newSOLock : newSOLocks) {
-                    newSOLock.unlock();
-                }
-            }
-
-//            lock.unlock();
-            for (final Lock lck : locks) {
-                lck.unlock();
-            }
-        }
-
-        if (listenerInvoked) {
-            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
-            if (pushQueue != null) {
-                pushQueue.push();
-            }
-        }
-
-        pollAndInvokeParentLostListeners(parentLostListenerTags);
-        // Note: GainedListener should be invoked after ParentLostListener
-        pollAndInvokeParentGainedListeners(parentGainedListenerTags);
+        manipulateTag(ignoreApplyURIChange, updateClient, this, innerHtmls, TagManipulationType.ADD_INNER_HTML, false);
     }
 
     /**
@@ -1503,7 +1440,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         return removed;
     }
 
-    private AbstractHtml[] removeAllChildren(final Collection<AbstractHtml> children,
+    private AbstractHtml[] removeAllChildren(final boolean updateClient, final Collection<AbstractHtml> children,
             final Collection<AbstractHtml> childrenToBeRemoved) {
 // NB: must be LinkedHashSet to keep order of removal
         final Set<AbstractHtml> validChildren = new LinkedHashSet<>(calcCapacity(childrenToBeRemoved.size()));
@@ -1525,7 +1462,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             final List<Lock> newSOLocks = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(removedAbstractHtmls);
 
             try {
-                final ChildTagRemoveListener listener = sharedObject.getChildTagRemoveListener(ACCESS_OBJECT);
+                final ChildTagRemoveListener listener = updateClient
+                        ? sharedObject.getChildTagRemoveListener(ACCESS_OBJECT)
+                        : null;
 
                 if (listener != null) {
                     listener.childrenRemoved(
@@ -1548,10 +1487,25 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * Removes the given tags from its children tags.
      *
      * @param children the tags to remove from its children.
-     * @return true given given children tags have been removed.
+     * @return true if the given children tags have been removed.
      * @author WFF
      */
     public boolean removeChildren(final Collection<AbstractHtml> children) {
+        return removeChildren(true, children);
+    }
+
+    /**
+     * Removes the given tags from its children tags.
+     *
+     * @param updateClient true to remove all children from this tag and update it
+     *                     with the client browser page and false to remove all
+     *                     children from this tag but not to update it with the
+     *                     client browser page.
+     * @param children     the tags to remove from its children.
+     * @return true if the given children tags have been removed.
+     * @author WFF
+     */
+    public boolean removeChildren(final boolean updateClient, final Collection<AbstractHtml> children) {
 
         final List<Lock> locks = lockAndGetWriteLocks(children.toArray(new AbstractHtml[0]));
 
@@ -1563,7 +1517,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         final boolean removed;
         final AbstractHtml[] removedChildren;
         try {
-            removedChildren = removeAllChildren(this.children, children);
+            removedChildren = removeAllChildren(updateClient, this.children, children);
             removed = removedChildren.length > 0;
         } finally {
 //            lock.unlock();
@@ -1653,60 +1607,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         return removed;
     }
 
-    @SuppressWarnings("unused")
-    private boolean addChild(final AbstractHtml child) {
-        // this method should contain lock even if it is a private method
-        // because this method is called in constructors.
-//        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-//        lock.lock();
-
-        final List<Lock> locks = lockAndGetWriteLocks(child);
-
-        // sharedObject should be after locking
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-        boolean result = false;
-        try {
-
-            child.applyURIChange(sharedObject);
-
-            if (child.parent != null) {
-                if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                    removeFromTagByWffIdMap(child, child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                } // else {TODO also write the code to push
-                  // changes to the other BrowserPage}
-            } else {
-                removeDataWffIdFromHierarchyLockless(child);
-            }
-
-            result = addChild(child, true);
-        } finally {
-//            lock.unlock();
-            for (final Lock lck : locks) {
-                lck.unlock();
-            }
-        }
-        final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
-        if (pushQueue != null) {
-            pushQueue.push();
-        }
-        return result;
-    }
-
-    private boolean addChildLockless(final AbstractHtml child) {
-
+    private boolean addChildLocklessFromConstructor(final AbstractHtml child) {
         child.applyURIChange(sharedObject);
-
-        boolean result = false;
-        if (child.parent != null) {
-            if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                removeFromTagByWffIdMap(child, child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-            } // else {TODO also write the code to push
-              // changes to the other BrowserPage}
-        } else {
-            removeDataWffIdFromHierarchy(sharedObject, child);
-        }
-
-        result = addChild(child, true);
+        final boolean result = addChild(child, true);
         final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
         if (pushQueue != null) {
             pushQueue.push();
@@ -1729,43 +1632,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         if (accessObject == null || !(IndexedClassType.BROWSER_PAGE.equals(accessObject.forClassType()))) {
             throw new WffSecurityException("Not allowed to consume this method. This method is for internal use.");
         }
-
-//        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-//        lock.lock();
-
-        final List<Lock> locks = lockAndGetWriteLocks(child);
-
-        // sharedObject should be after locking
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-
-        boolean result = false;
-        try {
-
-            final boolean alreadyHasParent = child.parent != null;
-
-            if (alreadyHasParent) {
-                if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                    removeFromTagByWffIdMap(child, child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                } // else {TODO also write the code to push
-                  // changes to the other BrowserPage}
-            } else {
-                removeDataWffIdFromHierarchy(sharedObject, child);
-            }
-
-            result = addChild(child, invokeListener);
-        } finally {
-//            lock.unlock();
-            for (final Lock lck : locks) {
-                lck.unlock();
-            }
-        }
-        if (invokeListener) {
-            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
-            if (pushQueue != null) {
-                pushQueue.push();
-            }
-        }
-        return result;
+        return manipulateTag(true, invokeListener, this,
+                new CollectionArrayHolder<>(null, new AbstractHtml[] { child }), TagManipulationType.APPEND_CHILDREN,
+                false);
     }
 
     private boolean addChild(final AbstractHtml child, final boolean invokeListener) {
@@ -1818,21 +1687,9 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             initParentAndSharedObject(child);
 
             if (invokeListener) {
-
-                if (alreadyHasParent) {
-                    final ChildTagAppendListener listener = sharedObject.getChildTagAppendListener(ACCESS_OBJECT);
-
-                    if (listener != null) {
-                        listener.childMoved(new ChildTagAppendListener.ChildMovedEvent(previousParent, this, child));
-                    }
-
-                } else {
-
-                    final ChildTagAppendListener listener = sharedObject.getChildTagAppendListener(ACCESS_OBJECT);
-                    if (listener != null) {
-                        final ChildTagAppendListener.Event event = new ChildTagAppendListener.Event(this, child, null);
-                        listener.childAppended(event);
-                    }
+                final TagManipulationListener listener = sharedObject.getTagManipulationListener(ACCESS_OBJECT);
+                if (listener != null) {
+                    listener.childrenAppendedOrMoved(this, List.of(new ChildCreatedOrMovedEvent(child, false)));
                 }
             }
 
@@ -1842,6 +1699,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
+     * It also removes DataWffId from Hierarchy.
+     *
      * @param tagByWffId
      * @param tag
      * @since 3.0.7
@@ -1926,7 +1785,17 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 3.0.11
      */
     private static void removeDataWffIdFromHierarchyLockless(final AbstractHtml tag) {
-        final Set<AbstractHtml> applicableTags = extractParentTagsForDataWffIdRemoval(tag);
+        removeDataWffIdFromHierarchyLockless(tag, false);
+    }
+
+    /**
+     * @param tag
+     * @param fromAll to remove from all tags without parentNullifiedOnce
+     *                conditional checking.
+     * @since 12.0.6
+     */
+    private static void removeDataWffIdFromHierarchyLockless(final AbstractHtml tag, final boolean fromAll) {
+        final Set<AbstractHtml> applicableTags = fromAll ? Set.of(tag) : extractParentTagsForDataWffIdRemoval(tag);
 
         final Deque<Set<AbstractHtml>> childrenStack = new ArrayDeque<>();
         childrenStack.push(applicableTags);
@@ -2106,57 +1975,376 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @author WFF
      */
     public void appendChildren(final Collection<AbstractHtml> children) {
+        manipulateTag(children, TagManipulationType.APPEND_CHILDREN);
+    }
+
+    /**
+     * adds the given children to the last position of the current children of this
+     * object.
+     *
+     * @param children            children to append in this object's existing
+     *                            children.
+     * @param tagManipulationType based on the type the action will be done.
+     * @author WFF
+     * @since 12.0.6
+     */
+    private void manipulateTag(final Collection<AbstractHtml> children, final TagManipulationType tagManipulationType) {
+        manipulateTag(false, true, this, children, tagManipulationType, false);
+    }
+
+    /**
+     * adds the given children to the last position of the current children of this
+     * object.
+     *
+     * @param children            children to append in this object's existing
+     *                            children.
+     * @param tagManipulationType based on the type the action will be done.
+     * @author WFF
+     * @since 12.0.6
+     */
+    private void manipulateTag(final AbstractHtml[] children, final TagManipulationType tagManipulationType) {
+        manipulateTag(false, true, this, children, tagManipulationType, false);
+    }
+
+    /**
+     * adds the given children to the last position of the current children of this
+     * object.
+     *
+     * @param ignoreApplyURIChange
+     * @param updateClient
+     * @param targetTag            the target tag.
+     * @param children             children to append in this object's existing
+     *                             children.
+     * @param tagManipulationType  based on the type the action will be done.
+     * @param skipException
+     * @return
+     * @author WFF
+     * @since 12.0.6
+     */
+    private static boolean manipulateTag(final boolean ignoreApplyURIChange, final boolean updateClient,
+            final AbstractHtml targetTag, final Collection<AbstractHtml> children,
+            final TagManipulationType tagManipulationType, final boolean skipException) {
+
+        return manipulateTag(ignoreApplyURIChange, updateClient, targetTag, new CollectionArrayHolder<>(children, null),
+                tagManipulationType, skipException);
+    }
+
+    /**
+     * adds the given children to the last position of the current children of this
+     * object.
+     *
+     * @param ignoreApplyURIChange
+     * @param updateClient
+     * @param targetTag            the target tag.
+     * @param children             children to append in this object's existing
+     *                             children.
+     * @param tagManipulationType  based on the type the action will be done.
+     * @param skipException
+     * @return true if updated otherwise false.
+     * @author WFF
+     * @since 12.0.6
+     */
+    private static boolean manipulateTag(final boolean ignoreApplyURIChange, final boolean updateClient,
+            final AbstractHtml targetTag, final AbstractHtml[] children, final TagManipulationType tagManipulationType,
+            final boolean skipException) {
+
+        return manipulateTag(ignoreApplyURIChange, updateClient, targetTag, new CollectionArrayHolder<>(null, children),
+                tagManipulationType, skipException);
+    }
+
+    /**
+     * adds the given children to the last position of the current children of this
+     * object.
+     *
+     * @param ignoreApplyURIChange
+     * @param updateClient
+     * @param targetTag            the target tag.
+     * @param childrenHolder       children to append in this object's existing
+     *                             children.
+     * @param tagManipulationType  based on the type the action will be done.
+     * @param skipException
+     * @return true if updated otherwise false.
+     * @author WFF
+     * @since 12.0.6
+     */
+    private static boolean manipulateTag(final boolean ignoreApplyURIChange, final boolean updateClient,
+            final AbstractHtml targetTag, final CollectionArrayHolder<AbstractHtml> childrenHolder,
+            final TagManipulationType tagManipulationType, final boolean skipException) {
+
+        final Collection<AbstractHtml> children = childrenHolder.asCollection != null ? childrenHolder.asCollection
+                : List.of(childrenHolder.asArray);
+
+        // just to throw exception if it contains null or duplicate element
+        Set.copyOf(children);
 
         boolean listenerInvoked = false;
 
-        final List<Lock> locks = lockAndGetWriteLocks(children.toArray(new AbstractHtml[0]));
+        final AbstractHtml[] childrenArray = childrenHolder.asArray != null ? childrenHolder.asArray
+                : childrenHolder.asCollection.toArray(new AbstractHtml[0]);
+        final List<Lock> locks = targetTag.lockAndGetWriteLocks(childrenArray);
+        final Queue<Lock> foreignLocks = childrenArray.length < 16 ? new ArrayDeque<>(childrenArray.length)
+                : new ArrayDeque<>();
+        final Queue<AbstractHtml5SharedObject> foreignSharedObjects = childrenArray.length < 16
+                ? new ArrayDeque<>(childrenArray.length)
+                : new ArrayDeque<>();
 
         // sharedObject should be after locking
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
+        final AbstractHtml5SharedObject sharedObject = targetTag.sharedObject;
         final Deque<AbstractHtml> parentGainedListenerTags;
         final Deque<AbstractHtml> parentLostListenerTags;
 
-//        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-//        lock.lock();
         try {
 
-            validateChildren(children);
-            parentGainedListenerTags = buildParentGainedListenerTags(children);
-            parentLostListenerTags = buildParentLostListenerTags(children);
-            for (final AbstractHtml each : children) {
-                each.applyURIChange(sharedObject);
+            final AbstractHtml currentTag = switch (tagManipulationType) {
+            case INSERT_BEFORE, INSERT_AFTER, REPLACE_WITH -> targetTag.parent;
+            case PREPEND_CHILDREN, APPEND_CHILDREN, ADD_INNER_HTML -> targetTag;
+            };
+
+            final boolean parentRequired = switch (tagManipulationType) {
+            case INSERT_BEFORE, INSERT_AFTER, REPLACE_WITH -> true;
+            case PREPEND_CHILDREN, APPEND_CHILDREN, ADD_INNER_HTML -> false;
+            };
+
+            if (parentRequired) {
+                if (targetTag.parent == null) {
+                    if (skipException) {
+                        return false;
+                    }
+                    throw new NoParentException("There must be a parent for the target tag.");
+                }
+            }
+            targetTag.validateChildren(children);
+
+            final Set<AbstractHtml> currentChildren = switch (tagManipulationType) {
+            case INSERT_BEFORE, INSERT_AFTER, REPLACE_WITH -> targetTag.parent.children;
+            case PREPEND_CHILDREN, APPEND_CHILDREN, ADD_INNER_HTML -> targetTag.children;
+            };
+
+            parentGainedListenerTags = switch (tagManipulationType) {
+            case INSERT_BEFORE, INSERT_AFTER, REPLACE_WITH -> targetTag.buildParentGainedListenerTags(targetTag.parent,
+                    childrenArray);
+            case PREPEND_CHILDREN, APPEND_CHILDREN, ADD_INNER_HTML -> targetTag
+                    .buildParentGainedListenerTags(childrenArray);
+            };
+            parentLostListenerTags = switch (tagManipulationType) {
+            case INSERT_BEFORE, INSERT_AFTER -> targetTag.buildParentLostListenerTags(targetTag.parent, childrenArray);
+            case REPLACE_WITH -> targetTag.buildParentLostListenerTags(targetTag.parent, childrenArray, targetTag);
+            case ADD_INNER_HTML -> targetTag.buildParentLostListenerTags(childrenArray,
+                    currentChildren.toArray(new AbstractHtml[0]));
+            case PREPEND_CHILDREN, APPEND_CHILDREN -> targetTag.buildParentLostListenerTags(childrenArray);
+            };
+
+            if (!ignoreApplyURIChange) {
+                for (final AbstractHtml each : children) {
+                    each.applyURIChange(sharedObject);
+                }
             }
 
-            final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(children.size());
+            final Iterator<AbstractHtml> iterator = currentChildren.iterator();
+            if (iterator.hasNext()) {
+                final AbstractHtml firstExistingChild = iterator.next();
+                currentTag.removeFromSharedTagContent(firstExistingChild);
+            }
+
+            final List<AbstractHtml> childrenToBeRemoved = switch (tagManipulationType) {
+            case PREPEND_CHILDREN, APPEND_CHILDREN, INSERT_BEFORE, INSERT_AFTER -> List.of();
+            case REPLACE_WITH -> new HashSet<>(children).contains(targetTag) ? List.of() : List.of(targetTag);
+            case ADD_INNER_HTML -> {
+                final List<AbstractHtml> effectiveChildren = new ArrayList<>(currentChildren.size());
+                final Set<AbstractHtml> childrenSet = new HashSet<>(children);
+                for (final AbstractHtml currentChild : currentChildren) {
+                    if (!childrenSet.contains(currentChild)) {
+                        effectiveChildren.add(currentChild);
+                    }
+                }
+                yield effectiveChildren;
+            }
+            };
+
+            final List<AbstractHtml> childrenToBeRestored = switch (tagManipulationType) {
+            case PREPEND_CHILDREN -> {
+                final List<AbstractHtml> copyOfCurrentChildren = List.copyOf(currentChildren);
+                currentChildren.clear();
+                yield copyOfCurrentChildren;
+            }
+            case APPEND_CHILDREN -> null;
+            case INSERT_BEFORE -> {
+                final List<AbstractHtml> filteredChildren = new ArrayList<>(currentChildren.size());
+                boolean targetFound = false;
+                for (final AbstractHtml child : currentChildren) {
+                    if (child.equals(targetTag)) {
+                        targetFound = true;
+                    }
+                    if (targetFound) {
+                        filteredChildren.add(child);
+                    }
+                }
+                for (final AbstractHtml removedChild : filteredChildren) {
+                    currentChildren.remove(removedChild);
+                }
+                yield filteredChildren;
+            }
+            case INSERT_AFTER -> {
+                final List<AbstractHtml> filteredChildren = new ArrayList<>(currentChildren.size());
+                boolean targetFound = false;
+                for (final AbstractHtml child : currentChildren) {
+                    if (child.equals(targetTag)) {
+                        targetFound = true;
+                        continue;
+                    }
+                    if (targetFound) {
+                        filteredChildren.add(child);
+                    }
+                }
+                for (final AbstractHtml removedChild : filteredChildren) {
+                    currentChildren.remove(removedChild);
+                }
+                yield filteredChildren;
+            }
+            case REPLACE_WITH -> {
+                final List<AbstractHtml> filteredChildren = new ArrayList<>(currentChildren.size());
+                boolean targetFound = false;
+                for (final AbstractHtml child : currentChildren) {
+                    if (child.equals(targetTag)) {
+                        targetFound = true;
+                        continue;
+                    }
+                    if (targetFound) {
+                        filteredChildren.add(child);
+                    }
+                }
+                currentChildren.remove(targetTag);
+                for (final AbstractHtml removedChild : filteredChildren) {
+                    currentChildren.remove(removedChild);
+                }
+                yield filteredChildren;
+            }
+            case ADD_INNER_HTML -> {
+                currentChildren.clear();
+                yield null;
+            }
+            };
+
+            final TagManipulationListener listener = updateClient
+                    ? sharedObject.getTagManipulationListener(ACCESS_OBJECT)
+                    : null;
+            final Collection<ChildCreatedOrMovedEvent> events = listener != null ? new ArrayDeque<>(children.size())
+                    : null;
+
+            final Map<AbstractHtml5SharedObject, Queue<AbstractHtml>> removableForeignTags = new HashMap<>();
 
             for (final AbstractHtml child : children) {
                 final AbstractHtml previousParent = child.parent;
-
-                if (child.parent != null) {
-                    if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                        removeFromTagByWffIdMap(child, child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                    } // else {TODO also write the code to push
-                      // changes to the other BrowserPage}
+                final AbstractHtml5SharedObject foreignSO = child.sharedObject;
+                final boolean movable = currentTag.sharedObject.equals(foreignSO);
+                if (previousParent != null) {
+                    final boolean hasListener = foreignSO.getTagManipulationListener(ACCESS_OBJECT) != null;
+                    if (!movable) {
+                        if (hasListener) {
+                            removableForeignTags.computeIfAbsent(foreignSO,
+                                    key -> childrenArray.length < 16 ? new ArrayDeque<>(childrenArray.length)
+                                            : new ArrayDeque<>())
+                                    .add(child);
+                        } else {
+                            removeDataWffIdFromHierarchyLockless(child, true);
+                        }
+                    } else if (!hasListener) {
+                        removeFromTagByWffIdMap(child, foreignSO.getTagByWffId(ACCESS_OBJECT));
+                        removeDataWffIdFromHierarchyLockless(child, true);
+                    }
                 } else {
-                    removeDataWffIdFromHierarchyLockless(child);
+                    removeDataWffIdFromHierarchyLockless(child, true);
                 }
 
-                addChild(child, false);
-
-                final ChildMovedEvent event = new ChildMovedEvent(previousParent, this, child);
-                movedOrAppended.add(event);
-
+                if (events != null) {
+                    final ChildCreatedOrMovedEvent event = new ChildCreatedOrMovedEvent(child, movable);
+                    events.add(event);
+                }
             }
 
-            final ChildTagAppendListener listener = sharedObject.getChildTagAppendListener(ACCESS_OBJECT);
+            for (final Map.Entry<AbstractHtml5SharedObject, Queue<AbstractHtml>> entry : removableForeignTags
+                    .entrySet()) {
+                final AbstractHtml5SharedObject foreignSO = entry.getKey();
+                final Queue<AbstractHtml> removedAbstractHtmls = entry.getValue();
+                final ChildTagRemoveListener removeListener = foreignSO.getChildTagRemoveListener(ACCESS_OBJECT);
+                if (removeListener != null) {
+                    removeListener.childrenRemoved(new ChildTagRemoveListener.Event(null, null,
+                            removedAbstractHtmls.toArray(new AbstractHtml[0])));
+                    foreignSharedObjects.add(foreignSO);
+
+                }
+                for (final AbstractHtml tag : removedAbstractHtmls) {
+                    removeDataWffIdFromHierarchyLockless(tag, true);
+                }
+                foreignSO.setChildModified(true, ACCESS_OBJECT);
+            }
+            for (final AbstractHtml child : children) {
+                final AbstractHtml prevParent = child.parent;
+                if (prevParent != null) {
+                    prevParent.children.remove(child);
+                }
+                currentChildren.add(child);
+                currentTag.initParentAndSharedObject(child);
+            }
+
+            if (childrenToBeRestored != null) {
+                for (final AbstractHtml tempRemovedChild : childrenToBeRestored) {
+                    currentChildren.add(tempRemovedChild);
+                }
+            }
             if (listener != null) {
-                listener.childrendAppendedOrMoved(movedOrAppended);
-                listenerInvoked = true;
+                switch (tagManipulationType) {
+                case PREPEND_CHILDREN -> {
+                    listener.childrenPrependedOrMoved(targetTag, events);
+                    listenerInvoked = true;
+                }
+                case APPEND_CHILDREN -> {
+                    listener.childrenAppendedOrMoved(targetTag, events);
+                    listenerInvoked = true;
+                }
+                case INSERT_BEFORE -> {
+                    listener.childrenInsertedOrMovedBeforeTag(targetTag, events);
+                    listenerInvoked = true;
+                }
+                case INSERT_AFTER -> {
+                    listener.childrenInsertedOrMovedAfterTag(targetTag, events);
+                    listenerInvoked = true;
+                }
+                case REPLACE_WITH -> {
+                    listener.tagReplacedOrMovedWithChildren(targetTag, events);
+                    listenerInvoked = true;
+                }
+                case ADD_INNER_HTML -> {
+                    listener.tagChildrenReplacedOrMovedWithChildren(targetTag, events);
+                    listenerInvoked = true;
+                }
+                default -> throw new MethodNotImplementedException(
+                        "Implementation missing for tagManipulationType ".concat(String.valueOf(tagManipulationType)));
+                }
             }
+
+            final Map<String, AbstractHtml> tagByWffId = sharedObject.getTagByWffId(ACCESS_OBJECT);
+            for (final AbstractHtml each : childrenToBeRemoved) {
+                removeFromTagByWffIdMap(each, tagByWffId);
+            }
+            foreignLocks.addAll(targetTag.initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(
+                    childrenToBeRemoved.toArray(new AbstractHtml[0])));
+
         } finally {
-//            lock.unlock();
+            for (final Lock lck : foreignLocks) {
+                lck.unlock();
+            }
             for (final Lock lck : locks) {
                 lck.unlock();
+            }
+        }
+
+        if (!foreignSharedObjects.isEmpty()) {
+            for (final AbstractHtml5SharedObject so : foreignSharedObjects) {
+                final PushQueue pushQueue = so.getPushQueue(ACCESS_OBJECT);
+                if (pushQueue != null) {
+                    pushQueue.push();
+                }
             }
         }
         if (listenerInvoked) {
@@ -2168,6 +2356,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
         pollAndInvokeParentLostListeners(parentLostListenerTags);
         pollAndInvokeParentGainedListeners(parentGainedListenerTags);
+
+        return true;
     }
 
     /**
@@ -2179,89 +2369,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 2.1.6
      */
     public void appendChildren(final AbstractHtml... children) {
-
-        // NB: any changes to this method should also be applied in
-        // appendChildrenLockless(AbstractHtml... children)
-        // this method in consumed in constructor
-
-        boolean listenerInvoked = false;
-
-        final List<Lock> locks = lockAndGetWriteLocks(children);
-
-        // sharedObject should be after locking
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-
-        final Deque<AbstractHtml> parentGainedListenerTags;
-        final Deque<AbstractHtml> parentLostListenerTags;
-
-//        List<Lock> foreignLocks = TagUtil.lockAndGetWriteLocks(ACCESS_OBJECT, children);
-//        List<Lock> attrLocks = TagUtil.lockAndGetNestedAttributeWriteLocks(ACCESS_OBJECT, children);
-
-//        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-//        lock.lock();
-        try {
-            validateChildren(children);
-            parentLostListenerTags = buildParentLostListenerTags(children);
-            parentGainedListenerTags = buildParentGainedListenerTags(children);
-            for (final AbstractHtml each : children) {
-                each.applyURIChange(sharedObject);
-            }
-
-            final Iterator<AbstractHtml> iterator = this.children.iterator();
-            if (iterator.hasNext()) {
-                final AbstractHtml firstExistingChild = iterator.next();
-                removeFromSharedTagContent(firstExistingChild);
-            }
-
-            final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(children.length);
-
-            for (final AbstractHtml child : children) {
-                final AbstractHtml previousParent = child.parent;
-
-                if (previousParent != null) {
-                    if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                        removeFromTagByWffIdMap(child, child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                    } // else {TODO also write the code to push
-                      // changes to the other BrowserPage}
-                } else {
-                    removeDataWffIdFromHierarchyLockless(child);
-                }
-
-                addChild(child, false);
-
-                final ChildMovedEvent event = new ChildMovedEvent(previousParent, this, child);
-                movedOrAppended.add(event);
-
-            }
-
-            final ChildTagAppendListener listener = sharedObject.getChildTagAppendListener(ACCESS_OBJECT);
-            if (listener != null) {
-                listener.childrendAppendedOrMoved(movedOrAppended);
-                listenerInvoked = true;
-            }
-
-        } finally {
-//            lock.unlock();
-//            for (final Lock attrLock : attrLocks) {
-//                attrLock.unlock();
-//            }
-//            for (final Lock foreignLock : foreignLocks) {
-//                foreignLock.unlock();
-//            }
-
-            for (final Lock lck : locks) {
-                lck.unlock();
-            }
-        }
-        if (listenerInvoked) {
-            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
-            if (pushQueue != null) {
-                pushQueue.push();
-            }
-        }
-        pollAndInvokeParentLostListeners(parentLostListenerTags);
-        // Note: GainedListener should be invoked after ParentLostListener
-        pollAndInvokeParentGainedListeners(parentGainedListenerTags);
+        manipulateTag(children, TagManipulationType.APPEND_CHILDREN);
     }
 
     private void validateChildren(final AbstractHtml... children) {
@@ -2344,91 +2452,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @since 3.0.1
      */
     public void prependChildren(final AbstractHtml... children) {
-
-        // inserted, listener invoked
-        boolean[] results = { false, false };
-
-        final List<Lock> locks = lockAndGetWriteLocks(children);
-
-        // sharedObject should be after locking
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-
-        final Deque<AbstractHtml> parentGainedListenerTags;
-        final Deque<AbstractHtml> parentLostListenerTags;
-
-//        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-//        lock.lock();
-
-        try {
-            validateChildren(children);
-            parentGainedListenerTags = buildParentGainedListenerTags(children);
-            parentLostListenerTags = buildParentLostListenerTags(children);
-            for (final AbstractHtml each : children) {
-                each.applyURIChange(sharedObject);
-            }
-
-            final Set<AbstractHtml> thisChildren = this.children;
-            final Iterator<AbstractHtml> iterator = thisChildren.iterator();
-            if (iterator.hasNext()) {
-                final AbstractHtml firstChild = iterator.next();
-
-                removeFromSharedTagContent(firstChild);
-
-                final AbstractHtml[] removedParentChildren = thisChildren
-                        .toArray(new AbstractHtml[thisChildren.size()]);
-
-                results = firstChild.insertBefore(removedParentChildren, children);
-
-            } else {
-
-                // NB: similar impl is done in appendChildren(AbstractHtml...
-                // children) so any improvements here will be applicable in
-                // there also
-                final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(children.length);
-
-                for (final AbstractHtml child : children) {
-                    final AbstractHtml previousParent = child.parent;
-
-                    if (child.parent != null) {
-                        if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
-                            removeFromTagByWffIdMap(child, child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                        } // else {TODO also write the code to push
-                          // changes to the other BrowserPage}
-                    } else {
-                        removeDataWffIdFromHierarchyLockless(child);
-                    }
-
-                    addChild(child, false);
-
-                    final ChildMovedEvent event = new ChildMovedEvent(previousParent, this, child);
-                    movedOrAppended.add(event);
-
-                }
-
-                final ChildTagAppendListener listener = sharedObject.getChildTagAppendListener(ACCESS_OBJECT);
-                if (listener != null) {
-                    listener.childrendAppendedOrMoved(movedOrAppended);
-                    results[1] = true;
-                }
-
-            }
-        } finally {
-//            lock.unlock();
-            for (final Lock lck : locks) {
-                lck.unlock();
-            }
-        }
-
-        if (results[1]) {
-            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
-            if (pushQueue != null) {
-                pushQueue.push();
-            }
-        }
-
-        pollAndInvokeParentLostListeners(parentLostListenerTags);
-        // Note: GainedListener should be invoked after ParentLostListener
-        pollAndInvokeParentGainedListeners(parentGainedListenerTags);
+        manipulateTag(children, TagManipulationType.PREPEND_CHILDREN);
     }
 
     /**
@@ -2461,13 +2485,13 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         // inserted, listener invoked
         final boolean[] results = { false, false };
 
-        final Collection<ChildMovedEvent> movedOrAppended = new ArrayDeque<>(children.length);
+        final Collection<ChildCreatedOrMovedEvent> movedOrAppended = new ArrayDeque<>(children.length);
 
         for (final AbstractHtml child : children) {
-            final AbstractHtml previousParent = child.parent;
+            final boolean movable = sharedObject.equals(child.sharedObject);
 
             if (child.parent != null) {
-                if (child.parent.sharedObject.getChildTagAppendListener(ACCESS_OBJECT) == null) {
+                if (child.parent.sharedObject.getTagManipulationListener(ACCESS_OBJECT) == null) {
                     removeFromTagByWffIdMap(child, child.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
                 } // else {TODO also write the code to push
                   // changes to the other BrowserPage}
@@ -2479,14 +2503,14 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                 results[0] = true;
             }
 
-            final ChildMovedEvent event = new ChildMovedEvent(previousParent, this, child);
+            final ChildCreatedOrMovedEvent event = new ChildCreatedOrMovedEvent(child, movable);
             movedOrAppended.add(event);
 
         }
 
-        final ChildTagAppendListener listener = sharedObject.getChildTagAppendListener(ACCESS_OBJECT);
+        final TagManipulationListener listener = sharedObject.getTagManipulationListener(ACCESS_OBJECT);
         if (listener != null) {
-            listener.childrendAppendedOrMoved(movedOrAppended);
+            listener.childrenAppendedOrMoved(this, movedOrAppended);
             results[1] = true;
         }
 
@@ -3115,7 +3139,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
             closingTag = TagType.OPENING_CLOSING.equals(tagType) ? buildClosingTag() : "";
 
             if (base != null) {
-                base.addChildLockless(this);
+                base.addChildLocklessFromConstructor(this);
                 // base.children.add(this);
                 // not required it is handled in the above add method
                 // parent = base;
@@ -3289,7 +3313,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         if (children == null || children.isEmpty()) {
             removeAllChildren();
         } else {
-            addInnerHtmls(children.toArray(new AbstractHtml[children.size()]));
+            manipulateTag(children, TagManipulationType.ADD_INNER_HTML);
         }
     }
 
@@ -4970,23 +4994,6 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         }
     }
 
-//    /**
-//     * Just kept for future reference
-//     *
-//     * @param removedAbstractHtmls
-//     * @return the locks after locking
-//     */
-//    private List<Lock> initNewSharedObjectInAllNestedTagsAndSetSuperParentNullOld(
-//            final AbstractHtml[] removedAbstractHtmls) {
-//        // TODO remove this unused method later
-//        final List<Lock> locks = new ArrayList<>(removedAbstractHtmls.length);
-//        for (final AbstractHtml abstractHtml : removedAbstractHtmls) {
-//            final Lock lock = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(abstractHtml, true);
-//            locks.add(lock);
-//        }
-//        return locks;
-//    }
-
     /**
      * @param abstractHtmls the removed tags from the current object
      * @return locks after locking
@@ -6088,10 +6095,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @throws NoParentException if this tag has no parent
      * @author WFF
      * @since 2.1.1
-     *
+     * @since 12.0.6 better than before implementation
      */
     public boolean insertBefore(final AbstractHtml... abstractHtmls) throws NoParentException {
-        return insertBefore(false, abstractHtmls);
+        return manipulateTag(false, true, this, abstractHtmls, TagManipulationType.INSERT_BEFORE, false);
     }
 
     /**
@@ -6101,86 +6108,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @return true if inserted otherwise false.
      * @author WFF
      * @since 3.0.15
+     * @since 12.0.6 better than before implementation
      */
     public boolean insertBeforeIfPossible(final AbstractHtml... abstractHtmls) {
-        return insertBefore(true, abstractHtmls);
-    }
-
-    /**
-     * Inserts the given tags before this tag. There must be a parent for this
-     * method tag.
-     *
-     * @param skipException skips NoParentException
-     * @param abstractHtmls to insert before this tag
-     * @return true if inserted otherwise false.
-     * @author WFF
-     * @since 3.0.15
-     */
-    private boolean insertBefore(final boolean skipException, final AbstractHtml... abstractHtmls) {
-
-        AbstractHtml parent = this.parent;
-        if (parent == null) {
-            if (skipException) {
-                return false;
-            }
-            throw new NoParentException("There must be a parent for this tag.");
-        }
-
-        // inserted, listener invoked
-        boolean[] results = { false, false };
-
-        final List<Lock> locks = lockAndGetWriteLocks(abstractHtmls);
-
-        // sharedObject should be after locking
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-
-        final Deque<AbstractHtml> parentGainedListenerTags;
-        final Deque<AbstractHtml> parentLostListenerTags;
-
-//        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-//        lock.lock();
-
-        try {
-            validateChildren(abstractHtmls);
-            parent = this.parent;
-            parentGainedListenerTags = buildParentGainedListenerTags(parent, abstractHtmls);
-            parentLostListenerTags = buildParentLostListenerTags(parent, abstractHtmls);
-
-            for (final AbstractHtml each : children) {
-                each.applyURIChange(sharedObject);
-            }
-
-            if (parent == null) {
-                if (skipException) {
-                    return false;
-                }
-                throw new NoParentException("There must be a parent for this tag.");
-            }
-
-            final AbstractHtml[] removedParentChildren = parent.children
-                    .toArray(new AbstractHtml[parent.children.size()]);
-
-            results = insertBefore(removedParentChildren, abstractHtmls);
-
-        } finally {
-//            lock.unlock();
-            for (final Lock lck : locks) {
-                lck.unlock();
-            }
-        }
-
-        if (results[1]) {
-            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
-            if (pushQueue != null) {
-                pushQueue.push();
-            }
-        }
-
-        pollAndInvokeParentLostListeners(parentLostListenerTags);
-        // Note: GainedListener should be invoked after ParentLostListener
-        pollAndInvokeParentGainedListeners(parentGainedListenerTags);
-
-        return results[0];
+        return manipulateTag(false, true, this, abstractHtmls, TagManipulationType.INSERT_BEFORE, true);
     }
 
     /**
@@ -6192,9 +6123,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @return true if replaced otherwise false.
      * @throws NoParentException if this tag has no parent
      * @since 3.0.7
+     * @since 12.0.6 better implementation
      */
     public boolean replaceWith(final AbstractHtml... tags) throws NoParentException {
-        return replaceWith(false, tags);
+        return manipulateTag(false, true, this, tags, TagManipulationType.REPLACE_WITH, false);
     }
 
     /**
@@ -6204,527 +6136,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @param tags tags for the replacement of this tag
      * @return true if replaced otherwise false.
      * @since 3.0.15
+     * @since 12.0.6 better implementation
      */
     public boolean replaceWithIfPossible(final AbstractHtml... tags) {
-        return replaceWith(true, tags);
-    }
-
-    /**
-     * Replaces this tag with the given tags. There must be a parent for this method
-     * tag. Obviously, this tag will be removed from its parent if this method is
-     * called.
-     *
-     * @param skipException skips NoParentException
-     * @param tags          tags for the replacement of this tag
-     * @return true if replaced otherwise false.
-     * @since 3.0.15
-     */
-    private boolean replaceWith(final boolean skipException, final AbstractHtml... tags) {
-
-        AbstractHtml parent = this.parent;
-        if (parent == null) {
-            if (skipException) {
-                return false;
-            }
-            throw new NoParentException("There must be a parent for this tag.");
-        }
-
-        // inserted, listener invoked
-        boolean[] results = { false, false };
-
-//        final Lock lock = thisSharedObject.getLock(ACCESS_OBJECT).writeLock();
-//        lock.lock();
-
-        // NB: this tag itself is getting replaced after replaceWith so
-        // this.sharedObject will be different object after that and calling
-        // this.sharedObject.getPushQueue is invalid. So keeping the right
-        // object in thisSharedObject.
-
-        final List<Lock> locks = lockAndGetWriteLocks(tags);
-
-        // sharedObject should be after locking
-        final AbstractHtml5SharedObject thisSharedObject = sharedObject;
-
-        final Deque<AbstractHtml> parentGainedListenerTags;
-        final Deque<AbstractHtml> parentLostListenerTags;
-
-        try {
-            validateChildren(tags);
-            parent = this.parent;
-            parentGainedListenerTags = buildParentGainedListenerTags(parent, tags);
-            parentLostListenerTags = buildParentLostListenerTags(parent, tags, this);
-            for (final AbstractHtml each : tags) {
-                each.applyURIChange(thisSharedObject);
-            }
-
-            if (parent == null) {
-                if (skipException) {
-                    return false;
-                }
-                throw new NoParentException("There must be a parent for this tag.");
-            }
-
-            final AbstractHtml[] removedParentChildren = parent.children
-                    .toArray(new AbstractHtml[parent.children.size()]);
-
-            results = replaceWith(removedParentChildren, tags);
-        } finally {
-//            lock.unlock();
-            for (final Lock lck : locks) {
-                lck.unlock();
-            }
-        }
-
-        if (results[1]) {
-            final PushQueue pushQueue = thisSharedObject.getPushQueue(ACCESS_OBJECT);
-            if (pushQueue != null) {
-                pushQueue.push();
-            }
-        }
-
-        pollAndInvokeParentLostListeners(parentLostListenerTags);
-        // Note: GainedListener should be invoked after ParentLostListener
-        pollAndInvokeParentGainedListeners(parentGainedListenerTags);
-
-        return results[0];
-    }
-
-    /**
-     * should be used inside a synchronized block. NB:- It's removing
-     * removedParentChildren by parent.children.clear(); in this method.
-     *
-     * @param removedParentChildren just pass the parent children, no need to remove
-     *                              it from parent. It's removing by
-     *                              parent.children.clear();
-     * @param abstractHtmls
-     * @return in zeroth index: true if inserted otherwise false. in first index:
-     *         true if listener invoked otherwise false.
-     * @author WFF
-     * @since 3.0.7
-     */
-    private boolean[] insertBefore(final AbstractHtml[] removedParentChildren, final AbstractHtml[] abstractHtmls) {
-
-        // inserted, listener invoked
-        final boolean[] results = { false, false };
-
-        final int parentChildrenSize = parent.children.size();
-        if (parentChildrenSize > 0) {
-
-            final InsertTagsBeforeListener insertBeforeListener = sharedObject
-                    .getInsertTagsBeforeListener(ACCESS_OBJECT);
-
-            // this.parent will be nullified in
-            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull so kept a
-            // local copy
-            final AbstractHtml thisParent = parent;
-            final AbstractHtml5SharedObject thisSharedObject = sharedObject;
-
-            thisParent.children.clear();
-
-            final InsertTagsBeforeListener.Event[] events = new InsertTagsBeforeListener.Event[abstractHtmls.length];
-
-            int count = 0;
-
-            for (final AbstractHtml parentChild : removedParentChildren) {
-
-                if (equals(parentChild)) {
-
-                    for (final AbstractHtml tagToInsert : abstractHtmls) {
-
-                        final boolean alreadyHasParent = tagToInsert.parent != null;
-
-                        if (insertBeforeListener != null) {
-                            AbstractHtml previousParent = null;
-
-                            if (alreadyHasParent) {
-                                if (tagToInsert.parent.sharedObject == thisSharedObject) {
-                                    previousParent = tagToInsert.parent;
-                                } else {
-
-                                    if (tagToInsert.parent.sharedObject
-                                            .getInsertTagsBeforeListener(ACCESS_OBJECT) == null) {
-                                        removeFromTagByWffIdMap(tagToInsert,
-                                                tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                                    } // else {TODO also write the code to push
-                                      // changes to the other BrowserPage}
-
-                                }
-
-                            }
-
-                            // if parentChild == tagToInsert then
-                            // tagToInsert.parent i.e. previousParent
-                            // will be null (because we are calling
-                            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild))
-                            // that is useful for not removing it
-                            // from the browser UI.
-                            final InsertTagsBeforeListener.Event event = new InsertTagsBeforeListener.Event(tagToInsert,
-                                    previousParent);
-                            events[count] = event;
-                            count++;
-                        } else if (alreadyHasParent) {
-                            if (tagToInsert.parent.sharedObject.getInsertTagsBeforeListener(ACCESS_OBJECT) == null) {
-                                removeFromTagByWffIdMap(tagToInsert,
-                                        tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                            } // else {TODO also write the code to push
-                              // changes to the other BrowserPage}
-                        }
-
-                        // if alreadyHasParent = true then it means the
-                        // child is
-                        // moving from one tag to another.
-
-                        if (alreadyHasParent) {
-                            Lock foreignLock = null;
-                            AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
-                            if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
-                                foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
-                                foreignSO = null;
-                                foreignLock.lock();
-                            }
-                            try {
-                                tagToInsert.parent.children.remove(tagToInsert);
-                                initSharedObject(tagToInsert);
-                                tagToInsert.parent = thisParent;
-                            } finally {
-                                if (foreignLock != null) {
-                                    foreignLock.unlock();
-                                }
-                            }
-                        } else {
-                            Lock foreignLock = null;
-                            AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
-                            if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
-                                foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
-                                foreignSO = null;
-                                foreignLock.lock();
-                            }
-                            try {
-                                removeDataWffIdFromHierarchyLockless(tagToInsert);
-                                initSharedObject(tagToInsert);
-                                tagToInsert.parent = thisParent;
-                            } finally {
-                                if (foreignLock != null) {
-                                    foreignLock.unlock();
-                                }
-                            }
-
-                        }
-
-                        thisParent.children.add(tagToInsert);
-                    }
-
-                }
-
-                thisParent.children.add(parentChild);
-            }
-
-            if (insertBeforeListener != null) {
-                insertBeforeListener.insertedBefore(thisParent, this, events);
-                results[1] = true;
-            }
-
-            results[0] = true;
-
-        }
-        return results;
-    }
-
-    /**
-     * should be used inside a synchronized block. NB:- It's removing
-     * removedParentChildren by parent.children.clear(); in this method.
-     *
-     * @param removedParentChildren just pass the parent children, no need to remove
-     *                              it from parent. It's removing by
-     *                              parent.children.clear();
-     * @param abstractHtmls
-     * @return in zeroth index: true if inserted otherwise false. in first index:
-     *         true if listener invoked otherwise false.
-     * @author WFF
-     * @since 3.0.7
-     */
-    private boolean[] insertAfter(final AbstractHtml[] removedParentChildren, final AbstractHtml[] abstractHtmls) {
-
-        // inserted, listener invoked
-        final boolean[] results = { false, false };
-
-        final int parentChildrenSize = parent.children.size();
-        if (parentChildrenSize > 0) {
-
-            final InsertAfterListener insertAfterListener = sharedObject.getInsertAfterListener(ACCESS_OBJECT);
-
-            // this.parent will be nullified in
-            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull so kept a
-            // local copy
-            final AbstractHtml thisParent = parent;
-            final AbstractHtml5SharedObject thisSharedObject = sharedObject;
-
-            thisParent.children.clear();
-
-            final InsertAfterListener.Event[] events = new InsertAfterListener.Event[abstractHtmls.length];
-
-            int count = 0;
-
-            for (final AbstractHtml parentChild : removedParentChildren) {
-
-                thisParent.children.add(parentChild);
-
-                if (equals(parentChild)) {
-
-                    for (final AbstractHtml tagToInsert : abstractHtmls) {
-
-                        final boolean alreadyHasParent = tagToInsert.parent != null;
-
-                        if (insertAfterListener != null) {
-                            AbstractHtml previousParent = null;
-
-                            if (alreadyHasParent) {
-                                if (tagToInsert.parent.sharedObject == thisSharedObject) {
-                                    previousParent = tagToInsert.parent;
-                                } else {
-
-                                    if (tagToInsert.parent.sharedObject.getInsertAfterListener(ACCESS_OBJECT) == null) {
-                                        removeFromTagByWffIdMap(tagToInsert,
-                                                tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                                    } // else {TODO also write the code to push
-                                      // changes to the other BrowserPage}
-
-                                }
-
-                            }
-
-                            // if parentChild == tagToInsert then
-                            // tagToInsert.parent i.e. previousParent
-                            // will be null (because we are calling
-                            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild))
-                            // that is useful for not removing it
-                            // from the browser UI.
-                            final InsertAfterListener.Event event = new InsertAfterListener.Event(tagToInsert,
-                                    previousParent);
-                            events[count] = event;
-                            count++;
-                        } else if (alreadyHasParent) {
-                            if (tagToInsert.parent.sharedObject.getInsertAfterListener(ACCESS_OBJECT) == null) {
-                                removeFromTagByWffIdMap(tagToInsert,
-                                        tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                            } // else {TODO also write the code to push
-                              // changes to the other BrowserPage}
-                        }
-
-                        // if alreadyHasParent = true then it means the
-                        // child is
-                        // moving from one tag to another.
-
-                        if (alreadyHasParent) {
-
-                            Lock foreignLock = null;
-                            AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
-                            if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
-                                foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
-                                foreignSO = null;
-                                foreignLock.lock();
-                            }
-                            try {
-                                tagToInsert.parent.children.remove(tagToInsert);
-                                initSharedObject(tagToInsert);
-                                tagToInsert.parent = thisParent;
-                            } finally {
-                                if (foreignLock != null) {
-                                    foreignLock.unlock();
-                                }
-                            }
-
-                        } else {
-
-                            Lock foreignLock = null;
-                            AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
-                            if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
-                                foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
-                                foreignSO = null;
-                                foreignLock.lock();
-                            }
-                            try {
-                                removeDataWffIdFromHierarchyLockless(tagToInsert);
-                                initSharedObject(tagToInsert);
-                                tagToInsert.parent = thisParent;
-                            } finally {
-                                if (foreignLock != null) {
-                                    foreignLock.unlock();
-                                }
-                            }
-
-                        }
-
-                        thisParent.children.add(tagToInsert);
-                    }
-
-                }
-
-            }
-
-            if (insertAfterListener != null) {
-                insertAfterListener.insertedAfter(thisParent, this, events);
-                results[1] = true;
-            }
-
-            results[0] = true;
-
-        }
-        return results;
-    }
-
-    /**
-     * should be used inside a synchronized block. NB:- It's removing
-     * removedParentChildren by parent.children.clear(); in this method.
-     *
-     * @param removedParentChildren just pass the parent children, no need to remove
-     *                              it from parent. It's removing by
-     *                              parent.children.clear();
-     * @param abstractHtmls
-     * @return in zeroth index: true if inserted otherwise false. in first index:
-     *         true if listener invoked otherwise false.
-     * @author WFF
-     * @since 3.0.7
-     */
-    private boolean[] replaceWith(final AbstractHtml[] removedParentChildren, final AbstractHtml[] abstractHtmls) {
-
-        // inserted, listener invoked
-        final boolean[] results = { false, false };
-
-        final int parentChildrenSize = parent.children.size();
-        if (parentChildrenSize > 0) {
-
-            final ReplaceListener replaceListener = sharedObject.getReplaceListener(ACCESS_OBJECT);
-
-            // this.parent will be nullified in
-            // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull so kept a
-            // local copy
-            final AbstractHtml thisParent = parent;
-            final AbstractHtml5SharedObject thisSharedObject = sharedObject;
-
-            thisParent.children.clear();
-
-            final ReplaceListener.Event[] events = new ReplaceListener.Event[abstractHtmls.length];
-
-            int count = 0;
-
-            final List<Lock> newSOLocks = new ArrayList<>(1);
-
-            try {
-
-                for (final AbstractHtml parentChild : removedParentChildren) {
-
-                    if (equals(parentChild)) {
-
-                        // must be the first statement, the replacing tag and
-                        // replacement tag could be same
-                        final Lock newSOLock = initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild,
-                                true);
-                        newSOLocks.add(newSOLock);
-
-                        for (final AbstractHtml tagToInsert : abstractHtmls) {
-
-                            final boolean alreadyHasParent = tagToInsert.parent != null;
-
-                            if (replaceListener != null) {
-                                AbstractHtml previousParent = null;
-
-                                if (alreadyHasParent) {
-                                    if (tagToInsert.parent.sharedObject == thisSharedObject) {
-                                        previousParent = tagToInsert.parent;
-                                    } else {
-
-                                        if (tagToInsert.parent.sharedObject.getReplaceListener(ACCESS_OBJECT) == null) {
-                                            removeFromTagByWffIdMap(tagToInsert,
-                                                    tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                                        } // else {TODO also write the code to push
-                                          // changes to the other BrowserPage}
-
-                                    }
-
-                                }
-
-                                // if parentChild == tagToInsert then
-                                // tagToInsert.parent i.e. previousParent
-                                // will be null (because we are calling
-                                // initNewSharedObjectInAllNestedTagsAndSetSuperParentNull(parentChild))
-                                // that is useful for not removing it
-                                // from the browser UI.
-                                final ReplaceListener.Event event = new ReplaceListener.Event(tagToInsert,
-                                        previousParent);
-                                events[count] = event;
-                                count++;
-                            } else if (alreadyHasParent) {
-                                if (tagToInsert.parent.sharedObject.getReplaceListener(ACCESS_OBJECT) == null) {
-                                    removeFromTagByWffIdMap(tagToInsert,
-                                            tagToInsert.parent.sharedObject.getTagByWffId(ACCESS_OBJECT));
-                                } // else {TODO also write the code to push
-                                  // changes to the other BrowserPage}
-                            }
-
-                            // if alreadyHasParent = true then it means the
-                            // child is
-                            // moving from one tag to another.
-
-                            if (alreadyHasParent) {
-                                Lock foreignLock = null;
-                                AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
-                                if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
-                                    foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
-                                    foreignSO = null;
-                                    foreignLock.lock();
-                                }
-                                try {
-                                    tagToInsert.parent.children.remove(tagToInsert);
-                                    initSharedObject(tagToInsert, thisSharedObject);
-                                    tagToInsert.parent = thisParent;
-                                } finally {
-                                    if (foreignLock != null) {
-                                        foreignLock.unlock();
-                                    }
-                                }
-                            } else {
-                                Lock foreignLock = null;
-                                AbstractHtml5SharedObject foreignSO = tagToInsert.sharedObject;
-                                if (foreignSO != null && !thisSharedObject.equals(foreignSO)) {
-                                    foreignLock = foreignSO.getLock(ACCESS_OBJECT).writeLock();
-                                    foreignSO = null;
-                                    foreignLock.lock();
-                                }
-                                try {
-                                    removeDataWffIdFromHierarchyLockless(tagToInsert);
-                                    initSharedObject(tagToInsert, thisSharedObject);
-                                    tagToInsert.parent = thisParent;
-                                } finally {
-                                    if (foreignLock != null) {
-                                        foreignLock.unlock();
-                                    }
-                                }
-                            }
-
-                            thisParent.children.add(tagToInsert);
-                        }
-
-                    } else {
-                        thisParent.children.add(parentChild);
-                    }
-
-                }
-
-                if (replaceListener != null) {
-                    replaceListener.replacedWith(thisParent, this, events);
-                    results[1] = true;
-                }
-
-                results[0] = true;
-            } finally {
-                for (final Lock newSOLock : newSOLocks) {
-                    newSOLock.unlock();
-                }
-            }
-
-        }
-        return results;
+        return manipulateTag(false, true, this, tags, TagManipulationType.REPLACE_WITH, true);
     }
 
     /**
@@ -6739,9 +6154,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @author WFF
      * @since 2.1.6
      * @since 3.0.7 better implementation
+     * @since 12.0.6 better than before implementation
      */
     public boolean insertAfter(final AbstractHtml... abstractHtmls) {
-        return insertAfter(false, abstractHtmls);
+        return manipulateTag(false, true, this, abstractHtmls, TagManipulationType.INSERT_AFTER, false);
     }
 
     /**
@@ -6752,88 +6168,10 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      * @return true if inserted otherwise false.
      * @author WFF
      * @since 3.0.15
+     * @since 12.0.6 better than before implementation
      */
     public boolean insertAfterIfPossible(final AbstractHtml... abstractHtmls) {
-        return insertAfter(true, abstractHtmls);
-    }
-
-    /**
-     * Inserts the given tags after this tag. There must be a parent for this method
-     * tag. <br>
-     * Note : As promised this method is improved and works as performing and
-     * reliable as insertBefore method.
-     *
-     * @param skipException skips NoParentException
-     * @param abstractHtmls to insert after this tag
-     * @return true if inserted otherwise false.
-     * @author WFF
-     * @since 3.0.15 better implementation
-     */
-    private boolean insertAfter(final boolean skipException, final AbstractHtml... abstractHtmls) {
-
-        AbstractHtml parent = this.parent;
-        if (parent == null) {
-            if (skipException) {
-                return false;
-            }
-            throw new NoParentException("There must be a parent for this tag.");
-        }
-
-        // inserted, listener invoked
-        boolean[] results = { false, false };
-
-        final List<Lock> locks = lockAndGetWriteLocks(abstractHtmls);
-
-        // sharedObject should be after locking
-        final AbstractHtml5SharedObject sharedObject = this.sharedObject;
-
-        final Deque<AbstractHtml> parentGainedListenerTags;
-        final Deque<AbstractHtml> parentLostListenerTags;
-
-//        final Lock lock = sharedObject.getLock(ACCESS_OBJECT).writeLock();
-//        lock.lock();
-//
-
-        try {
-            validateChildren(abstractHtmls);
-            parent = this.parent;
-            parentGainedListenerTags = buildParentGainedListenerTags(parent, abstractHtmls);
-            parentLostListenerTags = buildParentLostListenerTags(parent, abstractHtmls);
-
-            for (final AbstractHtml each : abstractHtmls) {
-                each.applyURIChange(sharedObject);
-            }
-
-            if (parent == null) {
-                if (skipException) {
-                    return false;
-                }
-                throw new NoParentException("There must be a parent for this tag.");
-            }
-
-            final AbstractHtml[] removedParentChildren = parent.children
-                    .toArray(new AbstractHtml[parent.children.size()]);
-
-            results = insertAfter(removedParentChildren, abstractHtmls);
-        } finally {
-//            lock.unlock();
-            for (final Lock lck : locks) {
-                lck.unlock();
-            }
-        }
-
-        if (results[1]) {
-            final PushQueue pushQueue = sharedObject.getPushQueue(ACCESS_OBJECT);
-            if (pushQueue != null) {
-                pushQueue.push();
-            }
-        }
-
-        pollAndInvokeParentLostListeners(parentLostListenerTags);
-        // Note: GainedListener should be invoked after ParentLostListener
-        pollAndInvokeParentGainedListeners(parentGainedListenerTags);
-
-        return results[0];
+        return manipulateTag(false, true, this, abstractHtmls, TagManipulationType.INSERT_AFTER, true);
     }
 
     /**
@@ -8067,7 +7405,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                                 // just to throw exception if it contains null or duplicate element
                                 Set.of(innerHtmls);
                                 if (children == null || !Arrays.equals(children.toArray(), innerHtmls)) {
-                                    addInnerHtmls(true, updateClient, innerHtmls);
+                                    manipulateTag(true, updateClient, this, innerHtmls,
+                                            TagManipulationType.ADD_INNER_HTML, false);
                                 }
                                 insertedHtmls = innerHtmls;
                             }
@@ -8106,7 +7445,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
                                     // just to throw exception if it contains null or duplicate element
                                     Set.of(innerHtmls);
                                     if (children == null || !Arrays.equals(children.toArray(), innerHtmls)) {
-                                        addInnerHtmls(true, updateClient, innerHtmls);
+                                        manipulateTag(true, updateClient, this, innerHtmls,
+                                                TagManipulationType.ADD_INNER_HTML, false);
                                     }
                                     insertedHtmls = innerHtmls;
                                 }
@@ -8279,7 +7619,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     }
 
-    private void pollAndInvokeParentLostListeners(final Deque<AbstractHtml> parentLostListenerTags) {
+    private static void pollAndInvokeParentLostListeners(final Deque<AbstractHtml> parentLostListenerTags) {
         if (parentLostListenerTags != null) {
             AbstractHtml tag;
             while ((tag = parentLostListenerTags.poll()) != null) {
@@ -8461,7 +7801,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         }
     }
 
-    private void pollAndInvokeParentGainedListeners(final Deque<AbstractHtml> parentGainedListenerTags) {
+    private static void pollAndInvokeParentGainedListeners(final Deque<AbstractHtml> parentGainedListenerTags) {
         if (parentGainedListenerTags != null) {
             AbstractHtml tag;
             while ((tag = parentGainedListenerTags.poll()) != null) {

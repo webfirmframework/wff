@@ -38,6 +38,7 @@ import com.webfirmframework.wffweb.util.data.NameValue;
  * @author WFF
  * @since 2.1.1
  */
+@Deprecated(forRemoval = true, since = "12.0.6")
 public final class InsertBeforeListenerImpl implements InsertBeforeListener {
 
     @Serial
