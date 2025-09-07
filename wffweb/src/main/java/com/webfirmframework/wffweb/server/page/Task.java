@@ -40,20 +40,26 @@ public enum Task {
 
     TASK,
 
+    @Deprecated(since = "12.0.8")
     APPENDED_CHILD_TAG,
 
     REMOVED_TAGS,
 
+    @Deprecated(since = "12.0.8")
     APPENDED_CHILDREN_TAGS,
 
     REMOVED_ALL_CHILDREN_TAGS,
 
+    @Deprecated(since = "12.0.8")
     MOVED_CHILDREN_TAGS,
 
+    @Deprecated(since = "12.0.8")
     INSERTED_BEFORE_TAG,
 
+    @Deprecated(since = "12.0.8")
     INSERTED_AFTER_TAG,
 
+    @Deprecated(since = "12.0.8")
     REPLACED_WITH_TAGS,
 
     REMOVED_ATTRIBUTES,
