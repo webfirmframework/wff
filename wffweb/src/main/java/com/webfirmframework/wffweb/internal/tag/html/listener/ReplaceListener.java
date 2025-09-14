@@ -40,6 +40,7 @@ public sealed interface ReplaceListener extends Serializable permits ReplaceList
      * @since 3.0.7
      * @author WFF
      */
+    @Deprecated(forRemoval = true, since = "12.0.8")
     public void replacedWith(final AbstractHtml parentTag, final AbstractHtml replacingTag, final Event... events);
 
 }
