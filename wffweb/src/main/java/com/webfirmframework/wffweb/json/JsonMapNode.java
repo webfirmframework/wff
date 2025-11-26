@@ -15,8 +15,11 @@
  */
 package com.webfirmframework.wffweb.json;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -192,6 +195,34 @@ public sealed interface JsonMapNode
     }
 
     /**
+     * @param outputStream the OutputStream to write the json.
+     * @param charset      the charset
+     * @param flushOnWrite true to flush after each write operation otherwise false.
+     * @throws IOException if writing to OutputStream throws an exception.
+     * @since 12.0.9
+     */
+    @Override
+    default void toOutputStream(final OutputStream outputStream, final Charset charset, final boolean flushOnWrite)
+            throws IOException {
+        final byte curlyBraceOpen = "{".getBytes(charset)[0];
+        final byte curlyBraceClose = "}".getBytes(charset)[0];
+        final byte comma = ",".getBytes(charset)[0];
+        outputStream.write(curlyBraceOpen);
+        boolean first = true;
+        for (final Map.Entry<String, Object> entry : entrySet()) {
+            if (!first) {
+                outputStream.write(comma);
+            }
+            JsonStringUtil.writeJsonKeyValue(outputStream, charset, flushOnWrite, entry);
+            first = false;
+        }
+        outputStream.write(curlyBraceClose);
+        if (flushOnWrite) {
+            outputStream.flush();
+        }
+    }
+
+    /**
      * It internally utilizes parallel stream to build json string. The order of
      * json object entries will be unpredictable but the json array will maintain
      * its values order.
@@ -199,6 +230,7 @@ public sealed interface JsonMapNode
      * @return the JSON object string.
      * @since 12.0.4
      */
+    @Override
     default String toBigJsonString() {
         return entrySet().stream().parallel().map(JsonStringUtil::buildBigJsonKeyValue)
                 .collect(Collectors.joining(",", "{", "}"));

@@ -25,13 +25,27 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class JsonMapTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
+
+    private void testToOutputStreamAndToBigOutputStream(JsonBaseNode jsonBaseNode) {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            jsonBaseNode.toOutputStream(outputStream, StandardCharsets.UTF_8, true);
+            String outputStreamString = outputStream.toString(StandardCharsets.UTF_8);
+            Assert.assertEquals(jsonBaseNode.toJsonString(), outputStreamString);
+        } catch (IOException e) {
+            Assert.fail("IOException white testing toOutputStream");
+        }
+    }
 
     @Test
     public void testJsonMapParse() throws JsonProcessingException {
@@ -85,7 +99,8 @@ public class JsonMapTest {
         System.out.println("Arrays.toString(value.codePoints().toArray()) = " + Arrays.toString(value.codePoints().toArray()));
         System.out.println("jsonMap.toJsonString = " + jsonMap.toJsonString());
 
-         Assert.assertEquals("{\"string\":\"Hello, World!\\nNew Line • Bullet\",\"escaped_unicode\":\"\uD83D\uDE80 \\\\uWXYZ\",\"null_value\":null,\"empty_object\":{},\"negative_number\":-0.000123,\"nested_object\":{\"level1\":{\"level2\":{\"level3\":{\"key\":\"value\"}}}},\"special_chars\":\" \\\" \\\\ / \\b \\f \\n \\r \\t \\/ \",\"nested_array\":[[[[[\"deep\"]]]]],\"number\":12345678901234567890,\"empty_array\":[],\"boolean_false\":false,\"mixed_array\":[123,\"text\",true,null,{\"key\":\"value\"},[1,2,3]],\"unicode\":\"\uD835\uDC9C\uD835\uDCB7\uD835\uDCB8\uD835\uDCB9\",\"large_number\":1.7976931348623157E+308,\"boolean_true\":true}", jsonMap.toJsonString());
+        Assert.assertEquals("{\"string\":\"Hello, World!\\nNew Line • Bullet\",\"escaped_unicode\":\"\uD83D\uDE80 \\\\uWXYZ\",\"null_value\":null,\"empty_object\":{},\"negative_number\":-0.000123,\"nested_object\":{\"level1\":{\"level2\":{\"level3\":{\"key\":\"value\"}}}},\"special_chars\":\" \\\" \\\\ / \\b \\f \\n \\r \\t \\/ \",\"nested_array\":[[[[[\"deep\"]]]]],\"number\":12345678901234567890,\"empty_array\":[],\"boolean_false\":false,\"mixed_array\":[123,\"text\",true,null,{\"key\":\"value\"},[1,2,3]],\"unicode\":\"\uD835\uDC9C\uD835\uDCB7\uD835\uDCB8\uD835\uDCB9\",\"large_number\":1.7976931348623157E+308,\"boolean_true\":true}", jsonMap.toJsonString());
+        testToOutputStreamAndToBigOutputStream(jsonMap);
 //         Assert.assertEquals(objectMapper.readTree(json), objectMapper.readTree(jsonMap.toString()));
 //         Assert.assertEquals(objectMapper.readTree(json).toString(), objectMapper.readTree(jsonMap.toString()).toString());
     }
@@ -101,6 +116,7 @@ public class JsonMapTest {
         Assert.assertNotNull(jsonMap);
 
         Assert.assertEquals(objectMapper.readTree(json), objectMapper.readTree(jsonMap.toJsonString()));
+        testToOutputStreamAndToBigOutputStream(jsonMap);
     }
 
     @Test
@@ -282,10 +298,12 @@ public class JsonMapTest {
                 {"%s":"%s"}
                 """.formatted(key, value).strip();
         Assert.assertEquals(expected, jsonMap.toJsonString());
+        testToOutputStreamAndToBigOutputStream(jsonMap);
         jsonMap.put("anotherkey", "val\\");
         Assert.assertEquals("""
                 {"anotherkey":"val\\\\","key4String":"{\\"k\\":\\"v\\"} with \\\\ \\" "}
                 """.strip(), jsonMap.toJsonString());
+        testToOutputStreamAndToBigOutputStream(jsonMap);
     }
 
     @Test
@@ -579,10 +597,12 @@ public class JsonMapTest {
         JsonMap jsonMap = new JsonMap();
         jsonMap.put("k", value);
         Assert.assertEquals(expectedJson, jsonMap.toJsonString());
+        testToOutputStreamAndToBigOutputStream(jsonMap);
         JsonMap jsonMap1 = new JsonMap();
         jsonMap1.put("k2", "val2");
         jsonMap.put("map", jsonMap1);
         Assert.assertEquals("{\"k\":\"\\\\\",\"map\":{\"k2\":\"val2\"}}", jsonMap.toJsonString());
+        testToOutputStreamAndToBigOutputStream(jsonMap);
     }
 
     @Test
@@ -620,6 +640,7 @@ public class JsonMapTest {
         JsonMap jsonMap = JsonMap.parse(json);
 
         Assert.assertEquals(objectMapper.readTree(json), objectMapper.readTree(jsonMap.toJsonString()));
+        testToOutputStreamAndToBigOutputStream(jsonMap);
 
     }
 
@@ -660,6 +681,8 @@ public class JsonMapTest {
         System.out.println("toBigJsonString diff = " + diff);
 
         System.out.println("(jsonStringDiff - jsonBigStringDiff) = " + (jsonStringDiff - jsonBigStringDiff));
+        testToOutputStreamAndToBigOutputStream(jsonMap);
+
     }
 
 }

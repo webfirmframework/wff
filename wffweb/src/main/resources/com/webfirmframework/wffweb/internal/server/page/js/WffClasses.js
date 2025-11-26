@@ -1,32 +1,6 @@
-var getValueTypeByte = function(valueType) {
 
-	if (valueType === '[object String]') {
-		return 0;
-	} else if (valueType === '[object Number]') {
-		return 1;
-	} else if (valueType === '[object Undefined]') {
-		return 2;
-	} else if (valueType === '[object Null]') {
-		return 3;
-	} else if (valueType === '[object Boolean]') {
-		return 4;
-	} else if (valueType === '[object Object]') {
-		return 5;
-	} else if (valueType === '[object Array]') {
-		return 6;
-	} else if (valueType === '[object RegExp]') {
-		return 7;
-	} else if (valueType === '[object Function]') {
-		return 8;
-	} else if (valueType === '[object Int8Array]' 
-		|| valueType == "[object Uint8Array]") {
-		return 9;
-	}
-
-	return -1;
-};
-
-var WffBMArray = function(jsArray, outer) {
+wffGlobalConst('WffBMArray',
+function(jsArray, outer) {
 
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
@@ -56,7 +30,7 @@ var WffBMArray = function(jsArray, outer) {
 			var arrayValType;
 
 			for (var i = 0; i < jsArray.length; i++) {
-				arrayValType = getValueTypeByte(Object.prototype.toString
+				arrayValType = wffBMUtil.getValueTypeByte(Object.prototype.toString
 						.call(jsArray[i]));
 				if (arrayValType != 2 && arrayValType != 3) {
 					break;
@@ -154,9 +128,10 @@ var WffBMArray = function(jsArray, outer) {
 	};
 
 	return this;
-};
+});
 
-var WffBMByteArray = function(int8Array, outer) {
+wffGlobalConst('WffBMByteArray',
+function(int8Array, outer) {
 
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
@@ -204,9 +179,10 @@ var WffBMByteArray = function(int8Array, outer) {
 	};
 
 	return this;
-};
+});
 
-var WffBMObject = function(jsObject, outer) {
+wffGlobalConst('WffBMObject',
+function(jsObject, outer) {
 
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
@@ -237,7 +213,7 @@ var WffBMObject = function(jsObject, outer) {
 			var value = jsObj[k];
 
 			console.log('k', k, 'jsObj[k]', jsObj[k]);
-			var valType = getValueTypeByte(Object.prototype.toString
+			var valType = wffBMUtil.getValueTypeByte(Object.prototype.toString
 					.call(value));
 
 			console.log(valType);
@@ -310,9 +286,9 @@ var WffBMObject = function(jsObject, outer) {
 	this.getBMBytes = function getBMBytes() {
 		return getWffBMObject(this.jsObject, this.outer);
 	};
-};
-
-var JsObjectFromBMBytes = function(wffBMBytes, outer) {
+});
+wffGlobalConst('JsObjectFromBMBytes',
+function(wffBMBytes, outer) {
 
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
@@ -382,9 +358,10 @@ var JsObjectFromBMBytes = function(wffBMBytes, outer) {
 	}
 
 	return this;
-};
+});
 
-var JsArrayFromBMBytes = function(wffBMBytes, outer) {
+wffGlobalConst('JsArrayFromBMBytes',
+function(wffBMBytes, outer) {
 
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
@@ -489,4 +466,4 @@ var JsArrayFromBMBytes = function(wffBMBytes, outer) {
 
 	return jsArray;
 
-};
+});

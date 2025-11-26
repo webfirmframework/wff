@@ -15,8 +15,11 @@
  */
 package com.webfirmframework.wffweb.json;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -166,6 +169,45 @@ public sealed interface JsonListNode extends JsonBaseNode, List<Object>permits J
     @Override
     default String toJsonString() {
         return stream().map(JsonStringUtil::buildJsonValue).collect(Collectors.joining(",", "[", "]"));
+    }
+
+    /**
+     * @return the JSON array string.
+     * @since 12.0.9
+     */
+    @Override
+    default String toBigJsonString() {
+        // Note: never use parallel stream as its index order of values should be
+        // unchanged.
+        return stream().map(JsonStringUtil::buildBigJsonValue).collect(Collectors.joining(",", "[", "]"));
+    }
+
+    /**
+     * @param outputStream the OutputStream to write the json.
+     * @param charset      the charset
+     * @param flushOnWrite true to flush after each write operation otherwise false.
+     * @throws IOException if writing to OutputStream throws an exception.
+     * @since 12.0.9
+     */
+    @Override
+    default void toOutputStream(final OutputStream outputStream, final Charset charset, final boolean flushOnWrite)
+            throws IOException {
+        final byte squareBracketOpen = "[".getBytes(charset)[0];
+        final byte squareBracketClose = "]".getBytes(charset)[0];
+        final byte comma = ",".getBytes(charset)[0];
+        outputStream.write(squareBracketOpen);
+        boolean first = true;
+        for (final Object value : this) {
+            if (!first) {
+                outputStream.write(comma);
+            }
+            JsonStringUtil.writeJsonValue(outputStream, charset, flushOnWrite, value);
+            first = false;
+        }
+        outputStream.write(squareBracketClose);
+        if (flushOnWrite) {
+            outputStream.flush();
+        }
     }
 
     /**

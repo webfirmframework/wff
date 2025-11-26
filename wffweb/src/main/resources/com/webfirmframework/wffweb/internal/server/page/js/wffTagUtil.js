@@ -253,8 +253,15 @@ var wffTagUtil = new function() {
 				var attrNameValue = splitAttrNameValue(getStringFromBytes(superParentValues[i]));
 				//value attribute doesn't work with setAttribute method
 				//should be called before setAttribute method
-				parent[attrNameValue[0]] = attrNameValue[1];
-				parent.setAttribute(attrNameValue[0], attrNameValue[1]);
+				var attrName = attrNameValue[0];
+				var attrValue = attrNameValue[1];
+				if (wffGlobal.SM) {
+                    try {parent[attrName] = attrValue;}catch(e){}
+                    try {parent.setAttribute(attrName, attrValue);}catch(e){}
+				} else {
+                    parent[attrName] = attrValue;
+                    parent.setAttribute(attrName, attrValue);
+				}
 			}
 		}
 
@@ -285,8 +292,15 @@ var wffTagUtil = new function() {
 					var attrNameValue = splitAttrNameValue(getStringFromBytes(values[j]));
 					//value attribute doesn't work with setAttribute method
 					//should be called before setAttribute method
-					child[attrNameValue[0]] = attrNameValue[1];
-					child.setAttribute(attrNameValue[0], attrNameValue[1]);
+					var attrName = attrNameValue[0];
+                    var attrValue = attrNameValue[1];
+                    if (wffGlobal.SM) {
+                        try {child[attrName] = attrValue;}catch(e){}
+                        try {child.setAttribute(attrName, attrValue);}catch(e){}
+                    } else {
+                        child[attrName] = attrValue;
+                        child.setAttribute(attrName, attrValue);
+                    }
 				}
 			}
 
@@ -326,8 +340,15 @@ var wffTagUtil = new function() {
 				var attrNameValue = getAttrNameValueFromCompressedBytes(superParentValues[i]);
 				//value attribute doesn't work with setAttribute method
 				//should be called before setAttribute method
-				parent[attrNameValue[0]] = attrNameValue[1];
-				parent.setAttribute(attrNameValue[0], attrNameValue[1]);
+				var attrName = attrNameValue[0];
+                var attrValue = attrNameValue[1];
+                if (wffGlobal.SM) {
+                    try {parent[attrName] = attrValue;}catch(e){}
+                    try {parent.setAttribute(attrName, attrValue);}catch(e){}
+                } else {
+                    parent[attrName] = attrValue;
+                    parent.setAttribute(attrName, attrValue);
+                }
 			}
 		}
 
@@ -359,8 +380,15 @@ var wffTagUtil = new function() {
 					var attrNameValue = getAttrNameValueFromCompressedBytes(values[j]);
 					//value attribute doesn't work with setAttribute method
 					//should be called before setAttribute method
-					child[attrNameValue[0]] = attrNameValue[1];
-					child.setAttribute(attrNameValue[0], attrNameValue[1]);
+					var attrName = attrNameValue[0];
+                    var attrValue = attrNameValue[1];
+                    if (wffGlobal.SM) {
+                        try {child[attrName] = attrValue;}catch(e){}
+                        try {child.setAttribute(attrName, attrValue);}catch(e){}
+                    } else {
+                        child[attrName] = attrValue;
+                        child.setAttribute(attrName, attrValue);
+                    }
 				}
 			}
 

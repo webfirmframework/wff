@@ -1,7 +1,8 @@
 /*
  * this file must be loaded first.
  */
-window.wffGlobal = new function() {
+wffGlobalConst('wffGlobal',
+new function() {
 
 	var wffId = -1;
 	// serverSidePayloadIdGenerator
@@ -29,7 +30,7 @@ window.wffGlobal = new function() {
 	this.getUniqueClientSidePayloadId = function() {
 	    var id = ++clientPIdGen;
 	    if (id == 0) {
-	        id = ++serverPIdGen;
+	        id = ++clientPIdGen;
 	    } else if (id > MAX_INT_VALUE) {
 	        id = id * -1;
 	    }
@@ -43,6 +44,9 @@ window.wffGlobal = new function() {
 		cLoc = {pathname: l.pathname, search: l.search, hash: h};
 		return prevCLoc;
     };
+
+    //SM stands for strict mode. true if strict mode is enabled
+    this.SM = (function(){return !this;})();
 
 	//COMPRESSED WFF DATA
 	this.CPRSD_DATA = "${CPRSD_DATA}";
@@ -60,9 +64,11 @@ window.wffGlobal = new function() {
 	this.REMOVE_PREV_BP_ON_TABCLOSE = "${REMOVE_PREV_BP_ON_TABCLOSE}";
 	//reconnect time interval for WebSocket
 	this.WS_RECON = "${WS_RECON}";
-	this.WS_HRTBT = "${WS_HRTBT}";	
+	this.WS_HRTBT = "${WS_HRTBT}";
+	this.WS_HRTBT_TMT = "${WS_HRTBT_TMT}";
 	this.LOSSLESS_COMM = "${LOSSLESS_COMM}";
-	this.onPayloadLoss = function() {if (!this.onPLI) { this.onPLI = true; "${ON_PAYLOAD_LOSS}"}};
+	//should not call this.onPLI as this object is frozen by wffGlobalConst
+	this.onPayloadLoss = function() {if (!onPLI) { onPLI = true; "${ON_PAYLOAD_LOSS}"}};
 
 	if ((typeof TextEncoder) === "undefined") {
 
@@ -153,5 +159,5 @@ window.wffGlobal = new function() {
 		this.decoder = new TextDecoder("utf-8");
 	}
 
-};
+});
 

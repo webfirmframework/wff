@@ -1,4 +1,5 @@
-var wffClientMethods = new function() {
+wffGlobalConst('wffClientMethods',
+new function() {
 
 	var getStringFromBytes = function(utf8Bytes) {
 		return wffGlobal.decoder.decode(new Uint8Array(utf8Bytes));
@@ -69,4 +70,4 @@ var wffClientMethods = new function() {
 
 		return true;
 	};
-};
+});

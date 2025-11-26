@@ -1,4 +1,5 @@
-var wffClientCRUDUtil = new function() {
+wffGlobalConst('wffClientCRUDUtil',
+new function() {
 
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
@@ -63,9 +64,13 @@ var wffClientCRUDUtil = new function() {
 //						applicableTag[attrName] = "";
 //						applicableTag.setAttribute(attrName, "");
 //					}
-					
-					applicableTag[attrName] = attrValue;
-					applicableTag.setAttribute(attrName, attrValue);
+                    if (wffGlobal.SM) {
+                        try{applicableTag[attrName] = attrValue;}catch(e){}
+                        try{applicableTag.setAttribute(attrName, attrValue);}catch(e){}
+                    } else {
+                        applicableTag[attrName] = attrValue;
+                        applicableTag.setAttribute(attrName, attrValue);
+                    }
 				}
 
 			}
@@ -262,8 +267,13 @@ var wffClientCRUDUtil = new function() {
 						var attrValue = attrNameValue[1];
 						//value attribute doesn't work with setAttribute method
 						//should be called before setAttribute method
-						applicableTag[attrName] = attrValue;
-						applicableTag.setAttribute(attrName, attrValue);
+						if (wffGlobal.SM) {
+                            try{applicableTag[attrName] = attrValue;}catch(e){}
+                            try{applicableTag.setAttribute(attrName, attrValue);}catch(e){}
+						} else {
+                            applicableTag[attrName] = attrValue;
+                            applicableTag.setAttribute(attrName, attrValue);
+						}
 					}
 				}
 
@@ -685,7 +695,10 @@ var wffClientCRUDUtil = new function() {
 			if(typeof wffObjects !== 'undefined') {
 				delete wffObjects[ky];
 			}
-		} 
+		}
+//		else if (taskValue == wffGlobal.taskValues.SERVER_SIDE_PONG_ON_NEW_WS_OPEN) {
+//		    wffLog('SERVER_SIDE_PONG_ON_NEW_WS_OPEN received, kept it for testing');
+//		}
 		
 		return true;
 	};
@@ -719,8 +732,8 @@ var wffClientCRUDUtil = new function() {
 		return true;
 	};
 
-	this.getAttributeUpdates = function(wffBMBytes) {
-		var nameValue = wffBMUtil.parseWffBinaryMessageBytes(wffBMBytes)[1];
-	};
+//	this.getAttributeUpdates = function(wffBMBytes) {
+//		var nameValue = wffBMUtil.parseWffBinaryMessageBytes(wffBMBytes)[1];
+//	};
 
-};
+});

@@ -1,8 +1,8 @@
 /**
  * this is wff binary message version 1 implementation
  */
-
-var wffBMCRUIDUtil = new function() {
+wffGlobalConst('wffBMCRUIDUtil',
+new function() {
 
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
@@ -116,9 +116,7 @@ var wffBMCRUIDUtil = new function() {
 
 		for (var i = 0; i < tag.childNodes.length; i++) {
 			recurChild(nameValues, tag.childNodes[i], parentIndex);
-
 		}
-
 	};
 
 	this.getTagCreatedWffBMBytes = function(tag, parentDocIndex) {
@@ -139,7 +137,5 @@ var wffBMCRUIDUtil = new function() {
 		return wffBMUtil.getWffBinaryMessageBytes(nameValues);
 	};
 
-	
-
-};
+});
 

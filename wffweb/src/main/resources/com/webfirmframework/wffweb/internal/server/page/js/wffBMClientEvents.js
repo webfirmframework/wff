@@ -1,10 +1,10 @@
-var wffBMClientEvents = new function() {
+wffGlobalConst('wffBMClientEvents',
+new function() {
 
-	window.wffRemovePrevBPInstanceInvoked = false;
-	
-	
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
+
+	var wffRemovePrevBPInstanceInvoked = false;
 	
 	var wffRemoveBPInstance = function(wffInstanceId) {
 		var nameValues = [];
@@ -36,14 +36,14 @@ var wffBMClientEvents = new function() {
 		
 		console.log('wffRemovePrevBPInstance ');
 		console.log('wffGlobal.REMOVE_PREV_BP_ON_INITTAB ' + wffGlobal.REMOVE_PREV_BP_ON_INITTAB);
-		console.log('window.wffRemovePrevBPInstanceInvoked ' + window.wffRemovePrevBPInstanceInvoked);
+		console.log('wffRemovePrevBPInstanceInvoked ' + wffRemovePrevBPInstanceInvoked);
 		
 		if (!wffGlobal.REMOVE_PREV_BP_ON_INITTAB || 
-				window.wffRemovePrevBPInstanceInvoked) {
+				wffRemovePrevBPInstanceInvoked) {
 			return;
 		}
 		
-		window.wffRemovePrevBPInstanceInvoked = true;
+		wffRemovePrevBPInstanceInvoked = true;
 		console.log('sessionStorage WFF_INSTANCE_ID ' + sessionStorage.getItem('WFF_INSTANCE_ID'));
 		
 
@@ -111,4 +111,4 @@ var wffBMClientEvents = new function() {
 		wffWS.send(wffBM);
 	};
 
-};
+});

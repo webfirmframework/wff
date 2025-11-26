@@ -1,8 +1,8 @@
 /**
  * this is wff binary message version 1 implementation
  */
-
-var wffBMUtil = new function() {
+wffGlobalConst('wffBMUtil',
+new function() {
 
 	/**
 	 * gets the wff binary message bytes from the given array of name-values
@@ -395,4 +395,30 @@ var wffBMUtil = new function() {
 
 	this.getDoubleFromOptimizedBytes = getDoubleFromOptimizedBytes;
 
-};
+	this.getValueTypeByte = function(vt) {
+    	if (vt === '[object String]') {
+    		return 0;
+    	} else if (vt === '[object Number]') {
+    		return 1;
+    	} else if (vt === '[object Undefined]') {
+    		return 2;
+    	} else if (vt === '[object Null]') {
+    		return 3;
+    	} else if (vt === '[object Boolean]') {
+    		return 4;
+    	} else if (vt === '[object Object]') {
+    		return 5;
+    	} else if (vt === '[object Array]') {
+    		return 6;
+    	} else if (vt === '[object RegExp]') {
+    		return 7;
+    	} else if (vt === '[object Function]') {
+    		return 8;
+    	} else if (vt === '[object Int8Array]'
+    		|| vt == "[object Uint8Array]") {
+    		return 9;
+    	}
+    	return -1;
+    };
+
+});

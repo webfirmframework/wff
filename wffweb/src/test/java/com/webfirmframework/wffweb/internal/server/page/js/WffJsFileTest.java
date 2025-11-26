@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.internal.server.page.js;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class WffJsFileTest {
@@ -49,7 +50,10 @@ public class WffJsFileTest {
             .call(T, kValue, k);} else {
             A[k] = kValue;}
             k += 1;}
-            A.length = len;return A;};}());}window.wffGlobal = new function() {
+            A.length = len;return A;};}());}
+            window.wffGlobalConst = function(n, v) {
+            Object.defineProperty(window,n,{value:v,configurable:false,writable:false,enumerable:true});Object.freeze(v);};wffGlobalConst('wffGlobal',
+            new function() {
             var wffId = -1;var serverPIdGen = 0;var clientPIdGen = 0;var MAX_INT_VALUE = 2147483647;var onPLI = false;var cLoc = undefined;this.getUniqueWffIntId = function() {
             return ++wffId;};this.getUniqueServerSidePayloadId = function() {
             var id = ++serverPIdGen;if (id == 0) {
@@ -57,10 +61,10 @@ public class WffJsFileTest {
             id = id * -1;}
             return id;};this.getUniqueClientSidePayloadId = function() {
             var id = ++clientPIdGen;if (id == 0) {
-            id = ++serverPIdGen;} else if (id > MAX_INT_VALUE) {
+            id = ++clientPIdGen;} else if (id > MAX_INT_VALUE) {
             id = id * -1;}
             return id;};this.getAndUpdateLocation = function() {
-            var prevCLoc = cLoc;var l = window.location;var h = l.href.endsWith('#') ? '#' : l.hash;cLoc = {pathname: l.pathname, search: l.search, hash: h};return prevCLoc;};this.CPRSD_DATA = true;this.NDXD_TGS = ["#","$","%","@","a","b","i","p","q","s","u","br","dd","dl","dt","em","h1","h2","h3","h4","h5","h6","hr","li","ol","rp","rt","td","th","tr","ul","bdi","bdo","col","del","dfn","div","img","ins","kbd","map","nav","pre","qfn","sub","sup","svg","var","wbr","abbr","area","base","body","cite","code","data","form","head","html","line","link","main","mark","math","menu","meta","path","rect","ruby","samp","span","text","time","aside","audio","embed","input","label","meter","param","small","style","table","tbody","tfoot","thead","title","track","video","button","canvas","circle","dialog","figure","footer","header","hgroup","iframe","keygen","legend","object","option","output","script","select","source","strong","address","article","caption","details","ellipse","picture","polygon","section","summary","basefont","colgroup","datalist","fieldset","menuitem","noscript","optgroup","polyline","progress","template","textarea","blockquote","figcaption"];this.NDXD_ATRBS = ["id","alt","dir","for","low","max","min","rel","rev","src","cols","face","form","high","href","lang","list","loop","name","open","role","rows","size","step","type","wrap","align","async","class","color","defer","ismap","media","muted","nonce","oncut","scope","shape","sizes","style","title","value","width","accept","action","border","coords","height","hidden","method","nohref","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","poster","sorted","srcset","target","usemap","charset","checked","colspan","content","default","dirname","enctype","headers","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","optimum","pattern","preload","rowspan","sandbox","autoplay","controls","datetime","disabled","download","dropzone","hreflang","multiple","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","readonly","required","reversed","selected","tabindex","accesskey","autofocus","draggable","maxlength","minlength","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","translate","formaction","formmethod","formtarget","http-equiv","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","spellcheck","cellpadding","cellspacing","contextmenu","data-wff-id","formenctype","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","placeholder","animationend","autocomplete","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","transitionend","accept-charset","animationstart","formnovalidate","onbeforeunload","onvolumechange","contenteditable","oncanplaythrough","ondurationchange","onloadedmetadata","animationiteration"];this.NDXD_VNT_ATRBS = ["oncut","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","onbeforeunload","onvolumechange","oncanplaythrough","ondurationchange","onloadedmetadata"];this.NDXD_BLN_ATRBS = ["open","async","defer","ismap","hidden","checked","default","controls","disabled","multiple","readonly","reversed","selected"];this.WFF_ID_PFXS = ["S","C"];this.taskValues = {T0:0,T1:1,T2:2,T3:3,T4:4,T5:5,T6:6,T7:7,T8:8,T9:9,T10:10,T11:11,T12:12,T13:13,T14:14,T15:15,T16:16,T17:17,T18:18,T19:19,T20:20,T21:21,T22:22,T23:23,T24:24,T25:25,T26:26,T27:27,T28:28,T29:29,T30:30,T31:31,T32:32,T33:33,T34:34,T35:35,T36:36,T37:37,T38:38,T39:39,T40:40,T41:41,T42:42,T43:43,T44:44,T45:45,T46:46};this.uriEventInitiator = {SERVER_CODE:0,CLIENT_CODE:1,BROWSER:2,size:3};this.WS_URL = "ws://webfirmframework.com";this.INSTANCE_ID = "instance-id-1234585-451";this.NODE_ID = "4791c82e-8071-4ae5-8906-78a6a2d74041";this.REMOVE_PREV_BP_ON_INITTAB = true;this.REMOVE_PREV_BP_ON_TABCLOSE = true;this.WS_RECON = 2000;this.WS_HRTBT = 1000;this.LOSSLESS_COMM = true;this.onPayloadLoss = function() {if (!this.onPLI) { this.onPLI = true; location.reload();}};if ((typeof TextEncoder) === "undefined") {
+            var prevCLoc = cLoc;var l = window.location;var h = l.href.endsWith('#') ? '#' : l.hash;cLoc = {pathname: l.pathname, search: l.search, hash: h};return prevCLoc;};this.SM = (function(){return !this;})();this.CPRSD_DATA = true;this.NDXD_TGS = ["#","$","%","@","a","b","i","p","q","s","u","br","dd","dl","dt","em","h1","h2","h3","h4","h5","h6","hr","li","ol","rp","rt","td","th","tr","ul","bdi","bdo","col","del","dfn","div","img","ins","kbd","map","nav","pre","qfn","sub","sup","svg","var","wbr","abbr","area","base","body","cite","code","data","form","head","html","line","link","main","mark","math","menu","meta","path","rect","ruby","samp","span","text","time","aside","audio","embed","input","label","meter","param","small","style","table","tbody","tfoot","thead","title","track","video","button","canvas","circle","dialog","figure","footer","header","hgroup","iframe","keygen","legend","object","option","output","script","select","source","strong","address","article","caption","details","ellipse","picture","polygon","section","summary","basefont","colgroup","datalist","fieldset","menuitem","noscript","optgroup","polyline","progress","template","textarea","blockquote","figcaption"];this.NDXD_ATRBS = ["id","alt","dir","for","low","max","min","rel","rev","src","cols","face","form","high","href","lang","list","loop","name","open","role","rows","size","step","type","wrap","align","async","class","color","defer","ismap","media","muted","nonce","oncut","scope","shape","sizes","style","title","value","width","accept","action","border","coords","height","hidden","method","nohref","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","poster","sorted","srcset","target","usemap","charset","checked","colspan","content","default","dirname","enctype","headers","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","optimum","pattern","preload","rowspan","sandbox","autoplay","controls","datetime","disabled","download","dropzone","hreflang","multiple","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","readonly","required","reversed","selected","tabindex","accesskey","autofocus","draggable","maxlength","minlength","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","translate","formaction","formmethod","formtarget","http-equiv","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","spellcheck","cellpadding","cellspacing","contextmenu","data-wff-id","formenctype","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","placeholder","animationend","autocomplete","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","transitionend","accept-charset","animationstart","formnovalidate","onbeforeunload","onvolumechange","contenteditable","oncanplaythrough","ondurationchange","onloadedmetadata","animationiteration"];this.NDXD_VNT_ATRBS = ["oncut","onblur","oncopy","ondrag","ondrop","onload","onplay","onshow","onabort","onclick","onended","onerror","onfocus","oninput","onkeyup","onpaste","onpause","onreset","onwheel","onchange","ononline","onresize","onscroll","onsearch","onseeked","onselect","onsubmit","ontoggle","onunload","oncanplay","ondragend","onemptied","onfocusin","oninvalid","onkeydown","onmouseup","onoffline","onplaying","onseeking","onstalled","onstorage","onsuspend","onwaiting","ondblclick","ondragover","onfocusout","onkeypress","onmouseout","onpagehide","onpageshow","onpopstate","onprogress","ontouchend","ondragenter","ondragleave","ondragstart","onloadstart","onmousedown","onmousemove","onmouseover","ontouchmove","onafterprint","onhashchange","onloadeddata","onmouseenter","onmouseleave","onratechange","ontimeupdate","ontouchstart","onbeforeprint","oncontextmenu","ontouchcancel","onbeforeunload","onvolumechange","oncanplaythrough","ondurationchange","onloadedmetadata"];this.NDXD_BLN_ATRBS = ["open","async","defer","ismap","hidden","checked","default","controls","disabled","multiple","readonly","reversed","selected"];this.WFF_ID_PFXS = ["S","C"];this.taskValues = {T0:0,T1:1,T2:2,T3:3,T4:4,T5:5,T6:6,T7:7,T8:8,T9:9,T10:10,T11:11,T12:12,T13:13,T14:14,T15:15,T16:16,T17:17,T18:18,T19:19,T20:20,T21:21,T22:22,T23:23,T24:24,T25:25,T26:26,T27:27,T28:28,T29:29,T30:30,T31:31,T32:32,T33:33,T34:34,T35:35,T36:36,T37:37,T38:38,T39:39,T40:40,T41:41,T42:42,T43:43,T44:44,T45:45,T46:46,T47:47,T48:48};this.uriEventInitiator = {SERVER_CODE:0,CLIENT_CODE:1,BROWSER:2,size:3};this.WS_URL = "ws://webfirmframework.com";this.INSTANCE_ID = "instance-id-1234585-451";this.NODE_ID = "0ea15019-8fc8-44d1-97f1-2b357a217dbd";this.REMOVE_PREV_BP_ON_INITTAB = true;this.REMOVE_PREV_BP_ON_TABCLOSE = true;this.WS_RECON = 2000;this.WS_HRTBT = 1000;this.WS_HRTBT_TMT = 5000;this.LOSSLESS_COMM = true;this.onPayloadLoss = function() {if (!onPLI) { onPLI = true; location.reload();}};if ((typeof TextEncoder) === "undefined") {
             this.encoder = new function TextEncoder(charset) {
             if (charset === "utf-8") {
             this.encode = function(text) {
@@ -102,7 +106,8 @@ public class WffJsFileTest {
             return text;};}
             }("utf-8");} else {
             this.decoder = new TextDecoder("utf-8");}
-            };var wffBMUtil = new function(){
+            });wffGlobalConst('wffBMUtil',
+            new function(){
             
             this.f15 = function(v77){
             var v34 = 0;var v22 = 0;for (var i = 0; i < v77.length; i++){
@@ -199,7 +204,20 @@ public class WffJsFileTest {
             var f9 = function(bytes){
             var buffer = new ArrayBuffer(8);var int8Array = new Int8Array(buffer);for (var i = 0; i < bytes.length; i++){
             int8Array[i] = bytes[bytes.length - 1 - i];}
-            return new Float64Array(buffer)[0];};this.f9 = f9;};
+            return new Float64Array(buffer)[0];};this.f9 = f9;this.f37 = function(vt){
+            if(vt === '[object String]'){
+            return 0;}else if(vt === '[object Number]'){
+            return 1;}else if(vt === '[object Undefined]'){
+            return 2;}else if(vt === '[object Null]'){
+            return 3;}else if(vt === '[object Boolean]'){
+            return 4;}else if(vt === '[object Object]'){
+            return 5;}else if(vt === '[object Array]'){
+            return 6;}else if(vt === '[object RegExp]'){
+            return 7;}else if(vt === '[object Function]'){
+            return 8;}else if(vt === '[object Int8Array]'
+            || vt == "[object Uint8Array]"){
+            return 9;}
+            return -1;};});
             var wffTagUtil = new function(){
             var encoder = wffGlobal.encoder;var decoder = wffGlobal.decoder;var f32 = function(utf8Bytes){
             return decoder.decode(new Uint8Array(utf8Bytes));};var subarray = wffBMUtil.subarray;var f6 = function(utf8Bytes){
@@ -252,14 +270,24 @@ public class WffJsFileTest {
             var text = f32(v29[1]);parent = document.createDocumentFragment();parent.appendChild(document.createTextNode(text));}else if(v55 === '@'){
             var text = f32(v29[1]);parent = document.createDocumentFragment();f28(parent, text);}else{
             parent = document.createElement(v55);for (var i = 1; i < v29.length; i++){
-            var v57 = f33(f32(v29[i]));parent[v57[0]] = v57[1];parent.setAttribute(v57[0], v57[1]);}
+            var v57 = f33(f32(v29[i]));var v93 = v57[0];var v88 = v57[1];if(wffGlobal.SM){
+            try {parent[v93] = v88;}catch(e){}
+            try {parent.setAttribute(v93, v88);}catch(e){}
+            }else{
+            parent[v93] = v88;parent.setAttribute(v93, v88);}
+            }
             }
             v98.push(parent);for (var i = 1; i < v77.length; i++){
             var name = v77[i].name;var values = v77[i].values;var tn = f32(values[0]);var child;if(tn === '#'){
             var text = f32(values[1]);child = document.createDocumentFragment();child.appendChild(document.createTextNode(text));}else if(tn === '@'){
             var text = f32(values[1]);child = document.createDocumentFragment();f28(child, text);}else{
             child = document.createElement(tn);for (var j = 1; j < values.length; j++){
-            var v57 = f33(f32(values[j]));child[v57[0]] = v57[1];child.setAttribute(v57[0], v57[1]);}
+            var v57 = f33(f32(values[j]));var v93 = v57[0];var v88 = v57[1];if(wffGlobal.SM){
+            try {child[v93] = v88;}catch(e){}
+            try {child.setAttribute(v93, v88);}catch(e){}
+            }else{
+            child[v93] = v88;child.setAttribute(v93, v88);}
+            }
             }
             v98.push(child);var v62 = wffBMUtil.f16(name);v98[v62].appendChild(child);}
             return parent;};this.f2 = function(bytes){
@@ -268,7 +296,12 @@ public class WffJsFileTest {
             : v55 === '#' ? f32(v29[1]) : '';parent = document.createDocumentFragment();parent.appendChild(document.createTextNode(txt));}else if(v55 === '@'){
             var txt = f32(v29[1]);parent = document.createDocumentFragment();f28(parent, txt);}else{
             parent = document.createElement(v55);for (var i = 1; i < v29.length; i++){
-            var v57 = f1(v29[i]);parent[v57[0]] = v57[1];parent.setAttribute(v57[0], v57[1]);}
+            var v57 = f1(v29[i]);var v93 = v57[0];var v88 = v57[1];if(wffGlobal.SM){
+            try {parent[v93] = v88;}catch(e){}
+            try {parent.setAttribute(v93, v88);}catch(e){}
+            }else{
+            parent[v93] = v88;parent.setAttribute(v93, v88);}
+            }
             }
             v98.push(parent);for (var i = 1; i < v77.length; i++){
             var name = v77[i].name;var values = v77[i].values;var tn = f6(values[0]);var child;if(tn === '#' || tn === '$' || tn === '%'){
@@ -276,14 +309,20 @@ public class WffJsFileTest {
             : tn === '#' ? f32(values[1]) : '';child = document.createDocumentFragment();child.appendChild(document.createTextNode(txt));}else if(tn === '@'){
             var text = f32(values[1]);child = document.createDocumentFragment();f28(child, text);}else{
             child = document.createElement(tn);for (var j = 1; j < values.length; j++){
-            var v57 = f1(values[j]);child[v57[0]] = v57[1];child.setAttribute(v57[0], v57[1]);}
+            var v57 = f1(values[j]);var v93 = v57[0];var v88 = v57[1];if(wffGlobal.SM){
+            try {child[v93] = v88;}catch(e){}
+            try {child.setAttribute(v93, v88);}catch(e){}
+            }else{
+            child[v93] = v88;child.setAttribute(v93, v88);}
+            }
             }
             v98.push(child);var v62 = wffBMUtil.f16(name);v98[v62].appendChild(child);}
             return parent;};if(wffGlobal.CPRSD_DATA){
             this.f20 = this.f2;}
             this.f23 = function(p, v20){
             var i = wffBMUtil.f16(v20);return p.childNodes[i];};};
-            var wffBMCRUIDUtil = new function(){
+            wffGlobalConst('wffBMCRUIDUtil',
+            new function(){
             var encoder = wffGlobal.encoder;var decoder = wffGlobal.decoder;var encodedBytesForHash = encoder.encode('#');this.f19 = function(tag){
             var v77 = [];var tUtf8Bytes = encoder.encode("T");var cUtf8Bytes = encoder.encode("DT");var v47 = {
             'name' : tUtf8Bytes,
@@ -322,14 +361,20 @@ public class WffJsFileTest {
             var v77 = [];var tUtf8Bytes = encoder.encode("T");var cUtf8Bytes = encoder.encode("C");var v47 = {
             'name' : tUtf8Bytes,
             'values' : [ cUtf8Bytes ]
-            };v77.push(v47);var v62 = 0;f45(v77, tag, v62);v77[1].name = wffBMUtil.f17(v42);return wffBMUtil.f15(v77);};};
-            var wffClientCRUDUtil = new function(){
+            };v77.push(v47);var v62 = 0;f45(v77, tag, v62);v77[1].name = wffBMUtil.f17(v42);return wffBMUtil.f15(v77);};});
+            wffGlobalConst('wffClientCRUDUtil',
+            new function(){
             var encoder = wffGlobal.encoder;var decoder = wffGlobal.decoder;var uriChangeQ = [];var f32 = function(utf8Bytes){
             return decoder.decode(new Uint8Array(utf8Bytes));};var f46 = function(v77){
             var v47 = v77[0];var taskValue = v47.values[0][0];if(taskValue == wffGlobal.taskValues.T2){
             for (var i = 1; i < v77.length; i++){
             var v57 = wffTagUtil.f1(v77[i].name);var v93 = v57[0];var v88 = v57[1];var v100 = v77[i].values;for (var j = 0; j < v100.length; j++){
-            var v101 = wffTagUtil.f25(v100[j]);var v50 = wffTagUtil.f42(v101);v50[v93] = v88;v50.setAttribute(v93, v88);}
+            var v101 = wffTagUtil.f25(v100[j]);var v50 = wffTagUtil.f42(v101);if(wffGlobal.SM){
+            try{v50[v93] = v88;}catch(e){}
+            try{v50.setAttribute(v93, v88);}catch(e){}
+            }else{
+            v50[v93] = v88;v50.setAttribute(v93, v88);}
+            }
             }
             }else if(taskValue == wffGlobal.taskValues.T5){
             for (var i = 1; i < v77.length; i++){
@@ -412,7 +457,12 @@ public class WffJsFileTest {
             var tagName = wffTagUtil.f6(v85.values[0]);var v101 = wffTagUtil
             .f25(v85.values[1]);var v50 = wffTagUtil.f18(
             tagName, v101);for (var j = 2; j < v85.values.length; j++){
-            var v57 = wffTagUtil.f1(v85.values[j]);var v93 = v57[0];var v88 = v57[1];v50[v93] = v88;v50.setAttribute(v93, v88);}
+            var v57 = wffTagUtil.f1(v85.values[j]);var v93 = v57[0];var v88 = v57[1];if(wffGlobal.SM){
+            try{v50[v93] = v88;}catch(e){}
+            try{v50.setAttribute(v93, v88);}catch(e){}
+            }else{
+            v50[v93] = v88;v50.setAttribute(v93, v88);}
+            }
             }
             }
             }else if(taskValue == wffGlobal.taskValues.T12){
@@ -608,14 +658,15 @@ public class WffJsFileTest {
             var v46 = wffBMUtil.f11(tasksBM[i]);f46(v46);}
             }else{
             return false;}
-            return true;};this.f31 = function(v80){
-            var v85 = wffBMUtil.f11(v80)[1];};};
-            var wffTaskUtil = new function (){
+            return true;};});
+            wffGlobalConst('wffTaskUtil',
+            new function (){
             var encoder = wffGlobal.encoder;this.f36 = function(v95, valueByte){
             var v47 = {
             'name' : [v95],
             'values' : [ [valueByte] ]
-            };return v47;};};var wffServerMethods = new function (){
+            };return v47;};});wffGlobalConst('wffSM',
+            new function (){
             var encoder = wffGlobal.encoder;var f26 = function(v71){
             var v89 = [];if(typeof v71 === 'string'){
             var ndx = wffGlobal.NDXD_VNT_ATRBS.indexOf(v71);if(ndx != -1){
@@ -661,8 +712,9 @@ public class WffJsFileTest {
             event.preventDefault();}
             var v47 = wffTaskUtil.f36(wffGlobal.taskValues.T3, wffGlobal.taskValues.T1);var v89 = f26(v71);var jsObject = filterFun(event, tag);var v32 = new WffBMObject(jsObject);var v96 = v32.getBMBytes();var v85 = {'name':wffTagUtil.f27(tag), 'values':[v89, v96]};var v77 = [v47, v85];var wffBM = wffBMUtil.f15(v77);wffWS.send(wffBM);};this.d = function(event, tag, v71, filterFun){
             f12(event, tag, v71, filterFun, true);};var invokeAsyncWithFilterFun = function(event, tag, v71, filterFun){
-            f12(event, tag, v71, filterFun, false);};this.c = invokeAsyncWithFilterFun;};var wffSM = wffServerMethods;
-            var wffClientMethods = new function(){
+            f12(event, tag, v71, filterFun, false);};this.c = invokeAsyncWithFilterFun;});wffGlobalConst('wffServerMethods',window.wffSM);
+            wffGlobalConst('wffClientMethods',
+            new function(){
             var f32 = function(utf8Bytes){
             return wffGlobal.decoder.decode(new Uint8Array(utf8Bytes));};this.exePostFun = function(v80){
             var v77 = wffBMUtil.f11(v80);var v47 = v77[0];var taskValue = v47.values[0][0];if(v47.name[0] != wffGlobal.taskValues.T3){
@@ -683,21 +735,9 @@ public class WffJsFileTest {
             }
             cbFun(jsObject);delete wffAsync.v27[funKey];}else{
             return false;}
-            return true;};};
-            var f37 = function(valueType){
-            if(valueType === '[object String]'){
-            return 0;}else if(valueType === '[object Number]'){
-            return 1;}else if(valueType === '[object Undefined]'){
-            return 2;}else if(valueType === '[object Null]'){
-            return 3;}else if(valueType === '[object Boolean]'){
-            return 4;}else if(valueType === '[object Object]'){
-            return 5;}else if(valueType === '[object Array]'){
-            return 6;}else if(valueType === '[object RegExp]'){
-            return 7;}else if(valueType === '[object Function]'){
-            return 8;}else if(valueType === '[object Int8Array]'
-            || valueType == "[object Uint8Array]"){
-            return 9;}
-            return -1;};var WffBMArray = function(jsArray, outer){
+            return true;};});
+            wffGlobalConst('WffBMArray',
+            function(jsArray, outer){
             var encoder = wffGlobal.encoder;var decoder = wffGlobal.decoder;this.jsArray = jsArray;this.outer = outer;var getWffBMArray = function(jsArray, outer){
             var v77 = [];if(typeof outer === 'undefined' || outer){
             var typeNameValue = {
@@ -706,7 +746,7 @@ public class WffJsFileTest {
             };v77.push(typeNameValue);}
             if(jsArray.length > 0){
             var arrayValType;for (var i = 0; i < jsArray.length; i++){
-            arrayValType = f37(Object.prototype.toString
+            arrayValType = wffBMUtil.f37(Object.prototype.toString
             .call(jsArray[i]));if(arrayValType != 2 && arrayValType != 3){
             break;}
             }
@@ -762,7 +802,8 @@ public class WffJsFileTest {
             values.push([]);}
             }
             return wffBMUtil.f15(v77);};this.getBMBytes = function getBMBytes(){
-            return getWffBMArray(this.jsArray, this.outer);};return this;};var WffBMByteArray = function(int8Array, outer){
+            return getWffBMArray(this.jsArray, this.outer);};return this;});wffGlobalConst('WffBMByteArray',
+            function(int8Array, outer){
             var encoder = wffGlobal.encoder;var decoder = wffGlobal.decoder;this.jsArray = int8Array;this.outer = outer;var getWffBMByteArray = function(int8Array, outer){
             var v77 = [];if(typeof outer === 'undefined' || outer){
             var typeNameValue = {
@@ -772,7 +813,8 @@ public class WffJsFileTest {
             var arrayValType = 10;var v85 = {
             name : [ arrayValType ]
             };v77.push(v85);v85.values = [ int8Array ];return wffBMUtil.f15(v77);};this.getBMBytes = function getBMBytes(){
-            return getWffBMByteArray(this.jsArray, this.outer);};return this;};var WffBMObject = function(jsObject, outer){
+            return getWffBMByteArray(this.jsArray, this.outer);};return this;});wffGlobalConst('WffBMObject',
+            function(jsObject, outer){
             var encoder = wffGlobal.encoder;var decoder = wffGlobal.decoder;this.jsObject = jsObject;this.outer = outer;var getWffBMObject = function(jsObj, outer){
             var jsObjType = Object.prototype.toString.call(jsObj);var v77 = [];if(typeof outer === 'undefined' || outer){
             var typeNameValue = {
@@ -780,7 +822,7 @@ public class WffJsFileTest {
             values : []
             };v77.push(typeNameValue);}
             for ( var k in jsObj){
-            var value = jsObj[k];var valType = f37(Object.prototype.toString
+            var value = jsObj[k];var valType = wffBMUtil.f37(Object.prototype.toString
             .call(value));var v85 = {};v85.name = encoder.encode(k);var values = [ [ valType ] ];v85.values = values;var typeByte = [ valType ];if(valType == 0){
             values.push(encoder.encode(value));}else if(valType == 1){
             values.push(wffBMUtil.f34(value));}else if(valType == 2){
@@ -800,7 +842,8 @@ public class WffJsFileTest {
             values.push([]);}
             v77.push(v85);}
             return wffBMUtil.f15(v77);};this.getBMBytes = function getBMBytes(){
-            return getWffBMObject(this.jsObject, this.outer);};};var JsObjectFromBMBytes = function(v80, outer){
+            return getWffBMObject(this.jsObject, this.outer);};});wffGlobalConst('JsObjectFromBMBytes',
+            function(v80, outer){
             var encoder = wffGlobal.encoder;var decoder = wffGlobal.decoder;var f32 = function(utf8Bytes){
             return wffGlobal.decoder.decode(new Uint8Array(utf8Bytes));};var v77 = wffBMUtil.f11(v80);var i = 0;if(typeof outer === 'undefined' || outer){
             i = 1;}
@@ -822,7 +865,8 @@ public class WffJsFileTest {
             this[name] = new JsArrayFromBMBytes(values[1], false);}else if(values[0] == 10){
             this[name] = new Int8Array(values[1]);}
             }
-            return this;};var JsArrayFromBMBytes = function(v80, outer){
+            return this;});wffGlobalConst('JsArrayFromBMBytes',
+            function(v80, outer){
             var encoder = wffGlobal.encoder;var decoder = wffGlobal.decoder;var f32 = function(utf8Bytes){
             return decoder.decode(new Uint8Array(utf8Bytes));};var v77 = wffBMUtil.f11(v80);var i = 0;if(typeof outer === 'undefined' || outer){
             i = 1;}
@@ -869,11 +913,13 @@ public class WffJsFileTest {
             jsArray.push(new Int8Array(values[j]));}
             }
             }
-            return jsArray;};
-            window.wffAsync = new function(){
+            return jsArray;});
+            wffGlobalConst('wffAsync',
+            new function(){
             var encoder = wffGlobal.encoder;this.v27 = {};var uuid = 0;this.generateUUID = function(){
             return (++uuid).toString();};this.serverMethod = function(v82, jsObject){
-            this.invoke = function(callback){
+            return {
+            invoke: function(callback){
             var v48;if(typeof callback === "function"){
             v48 = wffAsync.generateUUID();wffAsync.v27[v48] = callback;}else if(typeof callback === "undefined"){
             }else{
@@ -893,7 +939,8 @@ public class WffJsFileTest {
             'name' : encoder.encode(v48),
             'values' : []
             };v77.push(v15);}
-            var wffBM = wffBMUtil.f15(v77);wffWS.send(wffBM);};return this;};var f10 = function(uri, callback, initiator, rplc){
+            var wffBM = wffBMUtil.f15(v77);wffWS.send(wffBM);}
+            };};var f10 = function(uri, callback, initiator, rplc){
             var v47 = wffTaskUtil.f36(
             wffGlobal.taskValues.T3,
             wffGlobal.taskValues.T31);var v85 = {
@@ -952,9 +999,10 @@ public class WffJsFileTest {
             } catch (e){
             wffLog("The second argument threw exception when wffAsync.setURI is called", e);}
             f10(uriAfter, callbackWrapper, wffGlobal.uriEventInitiator.CLIENT_CODE, replace);}
-            };};
-            var wffBMClientEvents = new function(){
-            window.v1 = false;var encoder = wffGlobal.encoder;var decoder = wffGlobal.decoder;var f29 = function(wffInstanceId){
+            };});
+            wffGlobalConst('wffBMClientEvents',
+            new function(){
+            var encoder = wffGlobal.encoder;var decoder = wffGlobal.decoder;var v1 = false;var f29 = function(wffInstanceId){
             var v77 = [];var v23 = encoder.encode(wffInstanceId);var tnv = wffTaskUtil.f36(
             wffGlobal.taskValues.T3,
             wffGlobal.taskValues.T27);v77.push(tnv);var v85 = {
@@ -962,9 +1010,9 @@ public class WffJsFileTest {
             'values' : []
             };v77.push(v85);var wffBM = wffBMUtil.f15(v77);wffWS.send(wffBM);};this.f29 = f29;this.f22 = function(){
             if(!wffGlobal.REMOVE_PREV_BP_ON_INITTAB ||
-            window.v1){
+            v1){
             return;}
-            window.v1 = true;var wffInstanceId = sessionStorage.getItem('WFF_INSTANCE_ID');if(typeof wffInstanceId !== "undefined"
+            v1 = true;var wffInstanceId = sessionStorage.getItem('WFF_INSTANCE_ID');if(typeof wffInstanceId !== "undefined"
             && wffInstanceId !== wffGlobal.INSTANCE_ID){
             f29(wffInstanceId);}
             sessionStorage.setItem('WFF_INSTANCE_ID', wffGlobal.INSTANCE_ID);};this.f39 = function(){
@@ -989,26 +1037,35 @@ public class WffJsFileTest {
             'values': [bmBts]
             };v77.push(nv);}
             }
-            var wffBM = wffBMUtil.f15(v77);wffWS.send(wffBM);};};
-            var wffWS = new function(){
-            var encoder = wffGlobal.encoder;var decoder = wffGlobal.decoder;var prevIntvl = null;var webSocket = null;var inDataQ = [];var sendQData = null;var v40 = new Date().getTime();this.openSocket = function(wsUrl){
+            var wffBM = wffBMUtil.f15(v77);wffWS.send(wffBM);};});
+            wffGlobalConst('wffWS',
+            new function(){
+            var encoder = wffGlobal.encoder;var decoder = wffGlobal.decoder;var getTime = function(){
+            return Date.now ? Date.now() : new Date().getTime();};var prevTmt = null;var prevIntvl = null;var webSocket = null;var inDataQ = [];var sendQData = null;var v40 = getTime();this.ping = function(){
+            if(wffGlobal.WS_HRTBT > 0 && wffGlobal.WS_HRTBT_TMT > 0){
+            if(prevTmt !== null){
+            clearTimeout(prevTmt);}
+            prevTmt = setTimeout(function(){
+            v40 = getTime();prevTmt = null;try{wffWS.send([]);}catch(e){wffWS.closeSocket();}
+            }, wffGlobal.WS_HRTBT);}
+            };this.openSocket = function(wsUrl){
             if(webSocket !== null
             && webSocket.readyState !== WebSocket.CLOSED
             && webSocket.readyState !== WebSocket.CLOSING){
             return;}
+            if(webSocket){
+            var fn = function(event){};webSocket.onopen = fn;webSocket.onmessage = fn;webSocket.onclose = fn;webSocket.onerror = fn;}
             webSocket = new WebSocket(wsUrl);sendQData = function(){
             if(webSocket !== null && webSocket.readyState === WebSocket.OPEN){
-            var inData = [];var ndx = 0;var xp = false;var dataSent = false;for (ndx = 0; ndx < inDataQ.length; ndx++){
+            var inData = [];var ndx = 0;var xp = false;for (ndx = 0; ndx < inDataQ.length; ndx++){
             var each = inDataQ[ndx];if(!xp){
             try {
-            webSocket.send(new Int8Array(each).buffer);dataSent = true;} catch(e){
+            webSocket.send(new Int8Array(each).buffer);} catch(e){
             xp = true;inData.push(each);}
             }else{
             inData.push(each);}
             }
-            inDataQ = inData;if(dataSent){
-            v40 = new Date().getTime();}
-            }
+            inDataQ = inData;}
             };webSocket.binaryType = 'arraybuffer';webSocket.onopen = function(event){
             try {
             if(prevIntvl !== null){
@@ -1018,6 +1075,8 @@ public class WffJsFileTest {
             if(typeof event.data === 'undefined'){
             return;}
             var binary = new Int8Array(event.data);if(binary.length < 4){
+            if(binary.length == 0){
+            v40 = getTime();wffWS.ping();}
             return;}
             if((wffGlobal.LOSSLESS_COMM || binary[0] == 0) && binary.length > 4){
             var v91 = wffBMUtil.f16([binary[0], binary[1], binary[2], binary[3]]);if(v91 != 0 && v91 != wffGlobal.getUniqueServerSidePayloadId()){
@@ -1027,17 +1086,14 @@ public class WffJsFileTest {
             wffClientCRUDUtil.f44(bin);}
             }else{
             wffClientCRUDUtil.f44(binary);}
-            }catch(e){
+            v40 = getTime();wffWS.ping();}catch(e){
             wffLog(e);}
             };webSocket.onmessage = function(event){
             try {
             var binary = new Int8Array(event.data);if(binary.length < 4){
+            if(binary.length == 0){
+            v40 = getTime();wffWS.ping();}
             return;}
-            if(wffGlobal.WS_HRTBT > 0 && (new Date().getTime() - v40) >= wffGlobal.WS_HRTBT){
-            try{
-            webSocket.send(new Int8Array([]).buffer);v40 = new Date().getTime();} catch(e){
-            }
-            }
             if((wffGlobal.LOSSLESS_COMM || binary[0] == 0) && binary.length > 4){
             var v91 = wffBMUtil.f16([binary[0], binary[1], binary[2], binary[3]]);if(v91 != 0 && v91 != wffGlobal.getUniqueServerSidePayloadId()){
             wffGlobal.onPayloadLoss();return;}else{
@@ -1047,6 +1103,8 @@ public class WffJsFileTest {
             }
             var executed = wffClientMethods.exePostFun(binary);if(!executed){
             wffClientCRUDUtil.f44(binary);}
+            v40 = getTime();if(prevTmt === null){
+            wffWS.ping();}
             }catch(e){
             wffLog(e);}
             };webSocket.onclose = function(event){
@@ -1054,9 +1112,11 @@ public class WffJsFileTest {
             clearInterval(prevIntvl);prevIntvl = null;}
             prevIntvl = setInterval(function(){
             if(webSocket === null || webSocket.readyState === WebSocket.CLOSED){
-            wffWS.openSocket(wffGlobal.WS_URL);}
+            wffWS.openSocket(wffGlobal.WS_URL);}else if(prevIntvl !== null && webSocket
+            && (webSocket.readyState === WebSocket.CONNECTING || webSocket.readyState === WebSocket.OPEN)){
+            clearInterval(prevIntvl);prevIntvl = null;}
             }, wffGlobal.WS_RECON);};webSocket.onerror = function(event){
-            try{webSocket.close();}catch(e){wffLog("ws.close error");}
+            try{webSocket.close();}catch(e){wffLog(e);}
             };};
             this.send = function(bytes){
             if(bytes.length > 0){
@@ -1066,19 +1126,34 @@ public class WffJsFileTest {
             }
             inDataQ.push(bin);if(sendQData !== null){
             sendQData();}
-            }else{
-            webSocket.send(new Int8Array(bytes).buffer);v40 = new Date().getTime();}
+            }else if(webSocket !== null && webSocket.readyState === WebSocket.OPEN){
+            webSocket.send(new Int8Array(bytes).buffer);}
             };this.closeSocket = function(){
             try {
             if(webSocket !== null
-            && webSocket.readyState !== WebSocket.CONNECTING
-            && webSocket.readyState !== WebSocket.CLOSED){
+            && webSocket.readyState === WebSocket.OPEN){
             webSocket.close();}
-            } catch(e){}
+            } catch(e){wffLog(e);}
             };this.getState = function(){
             if(webSocket !== null){
             return webSocket.readyState;}
-            return -1;};};
+            return -1;};this.checkCon = function(){
+            if(webSocket !== null && wffWS
+            && wffGlobal.WS_HRTBT > 0 && wffGlobal.WS_HRTBT_TMT > 0
+            && (getTime() - v40) >= (wffGlobal.WS_HRTBT + wffGlobal.WS_HRTBT_TMT)){
+            if(webSocket.readyState === WebSocket.CONNECTING){
+            v40 = getTime();}else{
+            if(prevIntvl !== null){
+            clearInterval(prevIntvl);prevIntvl = null;}
+            var oldWS = webSocket;var fn = function(event){};oldWS.onopen = fn;oldWS.onmessage = fn;oldWS.onclose = fn;oldWS.onerror = fn;webSocket = null;if(wffGlobal.LOSSLESS_COMM){
+            var v47 = wffTaskUtil.f36(wffGlobal.taskValues.T3, wffGlobal.taskValues.T47);var v77 = [v47];var wffBM = wffBMUtil.f15(v77);wffWS.send(wffBM);}
+            v40 = getTime();wffWS.openSocket(wffGlobal.WS_URL);try {
+            if(oldWS !== null && oldWS.readyState === WebSocket.OPEN){
+            oldWS.close();}
+            } catch(e){wffLog(e);}
+            }
+            }
+            };});
             document.addEventListener("DOMContentLoaded",
             function(event){
             wffGlobal.getAndUpdateLocation();var encoder = wffGlobal.encoder;if(typeof window.f39Invoked === 'undefined'){
@@ -1091,8 +1166,6 @@ public class WffJsFileTest {
             el.setAttribute(eventName, 'return;');isSupported = typeof el[eventName] == 'function';}
             el = null;return isSupported;};if(f13('beforeunload')){
             window.addEventListener("beforeunload", f38, false);}
-            if(f13('unload')){
-            window.addEventListener("unload", f38, false);}
             if(f13('popstate')){
             window.addEventListener('popstate', function(event){
             var prevLoc = wffGlobal.getAndUpdateLocation();var uriBefore;var uriBeforeNoHash;if(prevLoc){
@@ -1148,7 +1221,7 @@ public class WffJsFileTest {
             }
             }
             });}
-            });setInterval(function(){try{wffWS.send([]);}catch(e){wffWS.closeSocket();}},1000);""";
+            });setInterval(function(){wffWS.checkCon();},1000);""";
 
     @Test
     public void testGetAllOptimizedContent() {
@@ -1159,12 +1232,14 @@ public class WffJsFileTest {
         final boolean losslessCommunication = true;
         final String onLossyCommunicationJS = losslessCommunication ? "location.reload()" : "";
         final String allContent = WffJsFile.getAllOptimizedContent("ws://webfirmframework.com",
-                "instance-id-1234585-451", true, true, 1000, 2000, false, losslessCommunication,
+                "instance-id-1234585-451", true, true, 1000, 5000, 2000, false, losslessCommunication,
                 onLossyCommunicationJS);
         // just for modifying expectedContent after dev changes
 //        assertEquals(expectedContent, allContent);
         assertEquals(expectedContentDynamicValueAdjusted, allContent
                 .replace(allContent.substring(indexOfNodeId, endOfNodeId + 1), "this.NODE_ID = \"xxxxxxxxxxxxxxx\";"));
+        Assert.assertTrue(WffJsFile.PRODUCTION_MODE);
+        Assert.assertFalse(WffJsFile.DEV_MODE);
     }
 
 }

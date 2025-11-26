@@ -82,6 +82,8 @@ public enum WffJsFile {
     // should be static final
     public static final boolean PRODUCTION_MODE = true;
 
+    static final boolean DEV_MODE = false;
+
     public static final boolean COMPRESSED_WFF_DATA = true;
 
     private static final String allOptimizedContent;
@@ -93,7 +95,9 @@ public enum WffJsFile {
     private static String[][] minifiableParts = { { "else {", "else{" }, { "} else", "}else" }, { "if (", "if(" },
             { ") {", "){" } };
 
-    private static final String HEART_BEAT_JS = "setInterval(function(){try{wffWS.send([]);}catch(e){wffWS.closeSocket();}},\"${HEARTBEAT_INTERVAL}\");";
+    private static final String HEART_BEAT_JS = """
+            setInterval(function(){wffWS.checkCon();},"${HEARTBEAT_INTERVAL}");
+            """.trim();
 
     /**
      * INDEXED_TAGS_ARRAY
@@ -555,43 +559,75 @@ public enum WffJsFile {
      * @param losslessCommunication
      * @param onPayloadLossJS
      * @return the js string for the client
-     * @author WFF
+     * @deprecated since 12.0.9. It will be removed in future version as there
+     *             another overloading method available for the same purpose.
      */
+    @Deprecated(forRemoval = true, since = "12.0.9")
     public static String getAllOptimizedContent(final String wsUrl, final String instanceId,
             final boolean removePrevBPOnInitTab, final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
             final int wsReconnectInterval, final boolean autoremoveParentScript, final boolean losslessCommunication,
             final String onPayloadLossJS) {
+        return getAllOptimizedContent(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
+                heartbeatInterval, 5000, wsReconnectInterval, autoremoveParentScript, losslessCommunication,
+                onPayloadLossJS);
+    }
+
+    /**
+     * NB :- This method is only for internal use.
+     *
+     * @param wsUrl                   the complete websocket url
+     * @param instanceId              the instanceId of browserPage
+     * @param removePrevBPOnInitTab   true or false
+     * @param removePrevBPOnClosetTab true or false
+     * @param heartbeatInterval       in milliseconds
+     * @param wsHeartbeatTimeout
+     * @param wsReconnectInterval     in milliseconds
+     * @param autoremoveParentScript  true or false
+     * @param losslessCommunication
+     * @param onPayloadLossJS
+     * @return the js string for the client
+     * @since 12.0.9 Added heartbeat timeout.
+     */
+    public static String getAllOptimizedContent(final String wsUrl, final String instanceId,
+            final boolean removePrevBPOnInitTab, final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
+            final int wsHeartbeatTimeout, final int wsReconnectInterval, final boolean autoremoveParentScript,
+            final boolean losslessCommunication, final String onPayloadLossJS) {
 
         if (heartbeatInterval > 0) {
             if (autoremoveParentScript) {
                 return buildJsContentWithHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                        heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS)
-                                .append(AUTOREMOVE_PARENT_SCRIPT).toString();
+                        heartbeatInterval, wsHeartbeatTimeout, wsReconnectInterval, losslessCommunication,
+                        onPayloadLossJS).append(AUTOREMOVE_PARENT_SCRIPT).toString();
             }
             return buildJsContentWithHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                    heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS).toString();
+                    heartbeatInterval, wsHeartbeatTimeout, wsReconnectInterval, losslessCommunication, onPayloadLossJS)
+                            .toString();
         }
 
         if (autoremoveParentScript) {
             return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                    heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS)
+                    heartbeatInterval, wsHeartbeatTimeout, wsReconnectInterval, losslessCommunication, onPayloadLossJS)
                             .append(AUTOREMOVE_PARENT_SCRIPT).toString();
         }
         return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS).toString();
+                heartbeatInterval, wsHeartbeatTimeout, wsReconnectInterval, losslessCommunication, onPayloadLossJS)
+                        .toString();
     }
 
     private static StringBuilder buildJsContentWithHeartbeat(final String wsUrl, final String instanceId,
             final boolean removePrevBPOnInitTab, final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
-            final int wsReconnectInterval, final boolean losslessCommunication, final String onPayloadLossJS) {
+            final int wsHeartbeatTimeout, final int wsReconnectInterval, final boolean losslessCommunication,
+            final String onPayloadLossJS) {
         return buildJsContentWithoutHeartbeat(wsUrl, instanceId, removePrevBPOnInitTab, removePrevBPOnClosetTab,
-                heartbeatInterval, wsReconnectInterval, losslessCommunication, onPayloadLossJS).append(
-                        HEART_BEAT_JS.replace("\"${HEARTBEAT_INTERVAL}\"", Integer.toString(heartbeatInterval)));
+                heartbeatInterval, wsHeartbeatTimeout, wsReconnectInterval, losslessCommunication, onPayloadLossJS)
+                        .append(HEART_BEAT_JS.replace("\"${HEARTBEAT_INTERVAL}\"",
+                                Integer.toString(heartbeatInterval)));
     }
 
     private static StringBuilder buildJsContentWithoutHeartbeat(final String wsUrl, final String instanceId,
             final boolean removePrevBPOnInitTab, final boolean removePrevBPOnClosetTab, final int heartbeatInterval,
-            final int wsReconnectInterval, final boolean losslessCommunication, final String onPayloadLossJS) {
+            final int wsHeartbeatTimeout, final int wsReconnectInterval, final boolean losslessCommunication,
+            final String onPayloadLossJS) {
 
         final StringBuilder globalContentBuider = new StringBuilder(WFF_GLOBAL.optimizedFileContent);
 
@@ -626,6 +662,7 @@ public enum WffJsFile {
 
         StringBuilderUtil.replaceFirst(globalContentBuider, "\"${WS_RECON}\"", String.valueOf(wsReconnectInterval));
         StringBuilderUtil.replaceFirst(globalContentBuider, "\"${WS_HRTBT}\"", String.valueOf(heartbeatInterval));
+        StringBuilderUtil.replaceFirst(globalContentBuider, "\"${WS_HRTBT_TMT}\"", String.valueOf(wsHeartbeatTimeout));
         StringBuilderUtil.replaceFirst(globalContentBuider, "\"${LOSSLESS_COMM}\"",
                 String.valueOf(losslessCommunication));
         String onLossyCommJS = onPayloadLossJS != null ? onPayloadLossJS.strip() : "";
@@ -634,8 +671,8 @@ public enum WffJsFile {
 
         final String globalContent = globalContentBuider.toString();
 
-        return new StringBuilder("var wffLog = console.log;").append(JS_WORK_AROUND.optimizedFileContent)
-                .append(globalContent).append(allOptimizedContent);
+        return new StringBuilder(DEV_MODE ? "\"use strict\"\nvar wffLog = console.log;" : "var wffLog = console.log;")
+                .append(JS_WORK_AROUND.optimizedFileContent).append(globalContent).append(allOptimizedContent);
     }
 
 }

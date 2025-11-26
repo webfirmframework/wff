@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded",
 				if (!window.wffOnWindowClosed) {
 					
 					wffBMClientEvents.wffRemoveBPInstance(sessionStorage.getItem('WFF_INSTANCE_ID'));
-					
+
 					//alert will now execute here
 					console.log("onWffWindowClose!");
 					
@@ -45,10 +45,6 @@ document.addEventListener("DOMContentLoaded",
 			
 			if (isWffWindowEventSupported('beforeunload')) {
 				window.addEventListener("beforeunload", onWffWindowClose, false);
-			}
-
-			if (isWffWindowEventSupported('unload')) {
-				window.addEventListener("unload", onWffWindowClose, false);
 			}
 			
 			if (isWffWindowEventSupported('popstate')) {

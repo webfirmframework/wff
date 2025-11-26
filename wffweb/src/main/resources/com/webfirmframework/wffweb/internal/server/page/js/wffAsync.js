@@ -1,7 +1,8 @@
 /*
  * these methods are for wffweb developers
  */
-window.wffAsync = new function() {
+wffGlobalConst('wffAsync',
+new function() {
 
 	var encoder = wffGlobal.encoder;
 
@@ -15,67 +16,66 @@ window.wffAsync = new function() {
 
 		console.log('methodName', methodName);
 
-		this.invoke = function(callback) {
+		return {
+		    invoke: function(callback) {
 
-			console.log('callback', callback);
+                console.log('callback', callback);
 
-			var callbackFunId;
+                var callbackFunId;
 
-			if (typeof callback === "function") {
+                if (typeof callback === "function") {
 
-				callbackFunId = wffAsync.generateUUID();
+                    callbackFunId = wffAsync.generateUUID();
 
-				wffAsync.callbackFunctions[callbackFunId] = callback;
+                    wffAsync.callbackFunctions[callbackFunId] = callback;
 
-				console.log('callback', callback);
+                    console.log('callback', callback);
 
-			} else if (typeof callback === "undefined") {
-				// NOP
-			} else {
-				throw "invoke function takes function argument";
-			}
+                } else if (typeof callback === "undefined") {
+                    // NOP
+                } else {
+                    throw "invoke function takes function argument";
+                }
 
-			var taskNameValue = wffTaskUtil.getTaskNameValue(
-					wffGlobal.taskValues.TASK,
-					wffGlobal.taskValues.INVOKE_CUSTOM_SERVER_METHOD);
+                var taskNameValue = wffTaskUtil.getTaskNameValue(
+                        wffGlobal.taskValues.TASK,
+                        wffGlobal.taskValues.INVOKE_CUSTOM_SERVER_METHOD);
 
-			var methodNameBytes = encoder.encode(methodName);
+                var methodNameBytes = encoder.encode(methodName);
 
-			var values = [];
+                var values = [];
 
-			if (typeof jsObject !== "undefined") {
+                if (typeof jsObject !== "undefined") {
 
-				if (typeof jsObject === "object") {
-					var argumentBMObject = new WffBMObject(jsObject);
-					var argBytes = argumentBMObject.getBMBytes();
-					values.push(argBytes);
-				} else {
-					throw "argument value should be an object";
-				}
-			}
+                    if (typeof jsObject === "object") {
+                        var argumentBMObject = new WffBMObject(jsObject);
+                        var argBytes = argumentBMObject.getBMBytes();
+                        values.push(argBytes);
+                    } else {
+                        throw "argument value should be an object";
+                    }
+                }
 
-			var nameValue = {
-				'name' : methodNameBytes,
-				'values' : values
-			};
+                var nameValue = {
+                    'name' : methodNameBytes,
+                    'values' : values
+                };
 
-			var nameValues = [ taskNameValue, nameValue ];
+                var nameValues = [ taskNameValue, nameValue ];
 
-			if (typeof callbackFunId !== "undefined") {
-				var nameValueCallbackFun = {
-					'name' : encoder.encode(callbackFunId),
-					'values' : []
-				};
-				nameValues.push(nameValueCallbackFun);
-			}
+                if (typeof callbackFunId !== "undefined") {
+                    var nameValueCallbackFun = {
+                        'name' : encoder.encode(callbackFunId),
+                        'values' : []
+                    };
+                    nameValues.push(nameValueCallbackFun);
+                }
 
-			var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+                var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
 
-			wffWS.send(wffBM);
-
+                wffWS.send(wffBM);
+            }
 		};
-
-		return this;
 	};
 
 
@@ -217,7 +217,7 @@ window.wffAsync = new function() {
 		}
 	};
 
-};
+});
 
 // sample usage
 //

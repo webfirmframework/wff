@@ -7867,4 +7867,102 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
 
     // ParentGainedListener ends
 
+    /**
+     * gets this tag and its parent tags without accounting their sibling tags in
+     * the parent child relationship. <pre><code>
+     * H1 h11 = new H1(null, new Id("h11"));
+     * new Div(null, new Id("div1")).give(div1 -> {
+     *     new Div(div1, new Id("div2"));
+     *     new Div(div1, new Id("div3")).give(div3 -> {
+     *         new Span(div3, new Id("span1")).give(span1 -> {
+     *             new Span(span1, new Id("span2"));
+     *             new Span(span1, new Id("span3")).give(span3 -> {
+     *                 span3.appendChild(h11);
+     *             });
+     *             new Span(span1, new Id("span4"));
+     *         });
+     *     });
+     *     new Div(div1, new Id("div4"));
+     * });
+     * // will contain h11, span3, span1, div3, div1 tags.
+     * List&lt;AbstractHtml&gt; parentChildLinkedTags = h11.getParentChildLinkedTags();
+     *
+     * </code></pre>
+     *
+     * @return the list of parent child linked tags.
+     * @since 12.0.9
+     */
+    public List<AbstractHtml> getParentChildLinkedTags() {
+        final Lock lock = lockAndGetReadLock();
+        try {
+            int count = 0;
+            AbstractHtml tag = this;
+            do {
+                count++;
+                tag = tag.parent;
+            } while (tag != null);
+
+            final AbstractHtml[] parentChildLinkedTags = new AbstractHtml[count];
+            tag = this;
+            count = 0;
+            do {
+                parentChildLinkedTags[count] = tag;
+                count++;
+                tag = tag.getParent();
+            } while (tag != null);
+
+            return List.of(parentChildLinkedTags);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * @return the next sibling tag.
+     * @since 12.0.9
+     */
+    public AbstractHtml getNextSibling() {
+        final Lock lock = lockAndGetReadLock();
+        final AbstractHtml parent = this.parent;
+        try {
+            if (parent != null) {
+                final Iterator<AbstractHtml> iterator = parent.children.iterator();
+                while (iterator.hasNext()) {
+                    if (iterator.next().equals(this)) {
+                        return iterator.hasNext() ? iterator.next() : null;
+                    }
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+        return null;
+    }
+
+    /**
+     * @return the previous sibling tag.
+     * @since 12.0.9
+     */
+    public AbstractHtml getPreviousSibling() {
+        final Lock lock = lockAndGetReadLock();
+        final AbstractHtml parent = this.parent;
+        try {
+            if (parent != null) {
+                final Iterator<AbstractHtml> iterator = parent.children.iterator();
+                AbstractHtml prevSibling;
+                AbstractHtml sibling = null;
+                while (iterator.hasNext()) {
+                    prevSibling = sibling;
+                    sibling = iterator.next();
+                    if (sibling.equals(this)) {
+                        return prevSibling;
+                    }
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+        return null;
+    }
+
 }
