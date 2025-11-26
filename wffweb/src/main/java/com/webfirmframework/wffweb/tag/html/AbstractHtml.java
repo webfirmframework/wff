@@ -7885,7 +7885,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      *     new Div(div1, new Id("div4"));
      * });
      * // will contain h11, span3, span1, div3, div1 tags.
-     * List<AbstractHtml> parentChildLinkedTags = h11.getParentChildLinkedTags();
+     * List&lt;AbstractHtml&gt; parentChildLinkedTags = h11.getParentChildLinkedTags();
      *
      * </code></pre>
      *
