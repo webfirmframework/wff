@@ -1,17 +1,36 @@
-
-var wffWS = new function() {
+wffGlobalConst('wffWS',
+new function() {
 
 	var encoder = wffGlobal.encoder;
 	var decoder = wffGlobal.decoder;
+	var getTime = function() {
+	    return Date.now ? Date.now() : new Date().getTime();
+    };
 	
 	// (null == undefined) is true
-	
+
+    // last timeout id
+	var prevTmt = null;
 	//last reconnect interval obj
 	var prevIntvl = null;
 	var webSocket = null;
 	var inDataQ = [];
 	var sendQData = null;
-	var lastWSPingTime = new Date().getTime();
+	var lastWSPingTime = getTime();
+	//websocket re-openable by hearbeat internal
+
+	this.ping = function() {
+        if (wffGlobal.WS_HRTBT > 0 && wffGlobal.WS_HRTBT_TMT > 0) {
+            if (prevTmt !== null) {
+                clearTimeout(prevTmt);
+            }
+            prevTmt = setTimeout(function(){
+            lastWSPingTime = getTime();
+            prevTmt = null;
+            try{wffWS.send([]);}catch(e){wffWS.closeSocket();}
+            }, wffGlobal.WS_HRTBT);
+        }
+	};
 
 	this.openSocket = function(wsUrl) {
 
@@ -23,6 +42,14 @@ var wffWS = new function() {
 			return;
 		}
 
+		if (webSocket) {
+			var fn = function(event){};
+			webSocket.onopen = fn;
+			webSocket.onmessage = fn;
+			webSocket.onclose = fn;
+			webSocket.onerror = fn;
+		}
+
 		// Create a new instance of websocket
 		webSocket = new WebSocket(wsUrl);
 		
@@ -31,25 +58,20 @@ var wffWS = new function() {
 				var inData = [];
 				var ndx = 0;
 				var xp = false;
-				var dataSent = false;
 				for (ndx = 0; ndx < inDataQ.length; ndx++) {
 					var each = inDataQ[ndx];
 					if (!xp) {
 						try {
 							webSocket.send(new Int8Array(each).buffer);
-							dataSent = true;
 						} catch(e) {
 							xp = true;
 							inData.push(each);
 						}
 					} else {
 						inData.push(each);
-					}					
+					}
 				}
 				inDataQ = inData;
-				if (dataSent) {
-					lastWSPingTime = new Date().getTime();
-				}
 			}			
 		};
 		
@@ -78,6 +100,11 @@ var wffWS = new function() {
 				var binary = new Int8Array(event.data);
 				
 				if (binary.length < 4) {
+				    if (binary.length == 0) {
+				        lastWSPingTime = getTime();
+                        wffWS.ping();
+				    }
+
 					//invalid wff bm message so not to process
 					return;
 				}
@@ -97,6 +124,8 @@ var wffWS = new function() {
 				} else {
 				    wffClientCRUDUtil.invokeTasks(binary);
 				}
+				lastWSPingTime = getTime();
+                wffWS.ping();
 			}catch(e){
 				wffLog(e);
 			}
@@ -108,17 +137,12 @@ var wffWS = new function() {
 				console.log(binary);
 				
 				if (binary.length < 4) {
+				    if (binary.length == 0) {
+				        lastWSPingTime = getTime();
+				        wffWS.ping();
+				    }
 					//invalid wff bm message so not to process
 					return;
-				}
-				
-				if (wffGlobal.WS_HRTBT > 0 && (new Date().getTime() - lastWSPingTime) >= wffGlobal.WS_HRTBT) {
-					try{
-						webSocket.send(new Int8Array([]).buffer);
-						lastWSPingTime = new Date().getTime();						
-					} catch(e){
-						console.error("Failed sending ping data.", e);
-					}					
 				}
 
 				// for (var i = 0; i < binary.length; i++) {
@@ -144,6 +168,10 @@ var wffWS = new function() {
 				var executed = wffClientMethods.exePostFun(binary);
 				if (!executed) {
 					wffClientCRUDUtil.invokeTasks(binary);
+				}
+				lastWSPingTime = getTime();
+				if (prevTmt === null) {
+					wffWS.ping();
 				}
 
 				// var wffMessage = wffBMUtil.parseWffBinaryMessageBytes(binary);
@@ -190,11 +218,15 @@ var wffWS = new function() {
 			prevIntvl = setInterval(function() {
 				if (webSocket === null || webSocket.readyState === WebSocket.CLOSED) {					
 					wffWS.openSocket(wffGlobal.WS_URL);
+				} else if (prevIntvl !== null && webSocket
+				&& (webSocket.readyState === WebSocket.CONNECTING || webSocket.readyState === WebSocket.OPEN)) {
+				    clearInterval(prevIntvl);
+				    prevIntvl = null;
 				}
 			}, wffGlobal.WS_RECON);
 		};
 		webSocket.onerror = function(event) {
-			try{webSocket.close();}catch(e){wffLog("ws.close error");}
+			try{webSocket.close();}catch(e){wffLog(e);}
 		};
 	};
 
@@ -215,20 +247,18 @@ var wffWS = new function() {
 			if (sendQData !== null) {
 				sendQData();
 			}
-		} else {
+		} else if (webSocket !== null && webSocket.readyState === WebSocket.OPEN) {
 			webSocket.send(new Int8Array(bytes).buffer);
-			lastWSPingTime = new Date().getTime();
 		}
 	};
 
 	this.closeSocket = function() {
 		try {
 			if (webSocket !== null 
-				&& webSocket.readyState !== WebSocket.CONNECTING
-				&& webSocket.readyState !== WebSocket.CLOSED) {
+				&& webSocket.readyState === WebSocket.OPEN) {
 				webSocket.close();
 			}
-		} catch(e){}
+		} catch(e){wffLog(e);}
 	};
 
 	this.getState = function() {
@@ -237,5 +267,42 @@ var wffWS = new function() {
 		}
 		return -1;
 	};
-};
 
+	this.checkCon = function() {
+        if (webSocket !== null && wffWS
+        && wffGlobal.WS_HRTBT > 0 && wffGlobal.WS_HRTBT_TMT > 0
+        && (getTime() - lastWSPingTime) >= (wffGlobal.WS_HRTBT + wffGlobal.WS_HRTBT_TMT)) {
+            if (webSocket.readyState === WebSocket.CONNECTING) {
+                lastWSPingTime = getTime();
+            } else {
+                if(prevIntvl !== null) {
+                    clearInterval(prevIntvl);
+                    prevIntvl = null;
+                }
+                var oldWS = webSocket;
+                var fn = function(event){};
+                oldWS.onopen = fn;
+                oldWS.onmessage = fn;
+                oldWS.onclose = fn;
+                oldWS.onerror = fn;
+                webSocket = null;
+
+                //should be after nullifying webSocket
+                if (wffGlobal.LOSSLESS_COMM) {
+                    var taskNameValue = wffTaskUtil.getTaskNameValue(wffGlobal.taskValues.TASK, wffGlobal.taskValues.CLIENT_SIDE_PING_ON_NEW_WS_OPEN);
+                    var nameValues = [taskNameValue];
+                    var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
+                    wffWS.send(wffBM);
+                }
+
+                lastWSPingTime = getTime();
+                wffWS.openSocket(wffGlobal.WS_URL);
+                try {
+                    if (oldWS !== null && oldWS.readyState === WebSocket.OPEN) {
+                        oldWS.close();
+                    }
+                } catch(e){wffLog(e);}
+            }
+        }
+    };
+});

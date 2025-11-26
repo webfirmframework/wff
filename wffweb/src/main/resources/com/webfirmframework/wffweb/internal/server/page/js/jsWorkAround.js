@@ -88,3 +88,7 @@ if (!Array.from) {
 		};
 	}());
 }
+window.wffGlobalConst = function(n, v) {
+    Object.defineProperty(window,n,{value:v,configurable:false,writable:false,enumerable:true});
+    Object.freeze(v);
+};

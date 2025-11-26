@@ -24,8 +24,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -33,6 +35,17 @@ import java.util.*;
 public class JsonParserTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
+
+    private void testToOutputStreamAndToBigOutputStream(JsonBaseNode jsonBaseNode) {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            jsonBaseNode.toOutputStream(outputStream, StandardCharsets.UTF_8, true);
+            String outputStreamString = outputStream.toString(StandardCharsets.UTF_8);
+            Assert.assertEquals(jsonBaseNode.toJsonString(), outputStreamString);
+        } catch (IOException e) {
+            Assert.fail("IOException white testing toOutputStream");
+        }
+    }
 
     @Test
     public void testJsonParserBuilder()  {
@@ -440,6 +453,7 @@ public class JsonParserTest {
                 }""") instanceof JsonMap jsonMap ? jsonMap : null;
 
         Assert.assertEquals("{\"key1\":\"val1\",\"key2\":\"val2\"}", jsonObject.toJsonString());
+        testToOutputStreamAndToBigOutputStream(jsonObject);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -738,6 +752,7 @@ public class JsonParserTest {
 
         JsonNode expected = objectMapper.readTree("[null, 14, 300000.0004, 3000000003, 3000000002, null]");
         Assert.assertEquals(expected, objectMapper.readTree(listNode.toJsonString()));
+        testToOutputStreamAndToBigOutputStream(listNode);
     }
 
     @Test

@@ -5199,4 +5199,138 @@ public class AbstractHtmlTest {
 
     }
 
+    @Test
+    public void testGetParentChildLinkedTags() {
+        final H1 h11 = new H1(null, new Id("h11"));
+        new Div(null, new Id("div1")).give(div1 -> {
+            new Div(div1, new Id("div2"));
+            new Div(div1, new Id("div3")).give(div3 -> {
+                new Span(div3, new Id("span1")).give(span1 -> {
+                    new Span(span1, new Id("span2"));
+                    new Span(span1, new Id("span3")).give(span3 -> {
+                        span3.appendChild(h11);
+                    });
+                    new Span(span1, new Id("span4"));
+                });
+            });
+            new Div(div1, new Id("div4"));
+        });
+
+        final List<AbstractHtml> parentChildLinkedTags = h11.getParentChildLinkedTags();
+
+        assertEquals(5, parentChildLinkedTags.size());
+        assertEquals("h11", parentChildLinkedTags.get(0).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("span3", parentChildLinkedTags.get(1).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("span1", parentChildLinkedTags.get(2).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("div3", parentChildLinkedTags.get(3).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("div1", parentChildLinkedTags.get(4).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+
+        AbstractHtml div1 = TagRepository.findTagById("div1", h11.getRootTag());
+        assertNotNull(div1);
+        List<AbstractHtml> parentChildLinkedTagsDiv1 = div1.getParentChildLinkedTags();
+        assertEquals(1, parentChildLinkedTagsDiv1.size());
+        assertEquals("div1", parentChildLinkedTagsDiv1.get(0).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+
+        AbstractHtml div2 = TagRepository.findTagById("div2", h11.getRootTag());
+        assertNotNull(div2);
+        List<AbstractHtml> parentChildLinkedTagsDiv2 = div2.getParentChildLinkedTags();
+        assertEquals(2, parentChildLinkedTagsDiv2.size());
+        assertEquals("div2", parentChildLinkedTagsDiv2.get(0).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("div1", parentChildLinkedTagsDiv2.get(1).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+
+        AbstractHtml div3 = TagRepository.findTagById("div3", h11.getRootTag());
+        assertNotNull(div3);
+        List<AbstractHtml> parentChildLinkedTagsDiv3 = div3.getParentChildLinkedTags();
+        assertEquals(2, parentChildLinkedTagsDiv3.size());
+        assertEquals("div3", parentChildLinkedTagsDiv3.get(0).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("div1", parentChildLinkedTagsDiv3.get(1).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+
+        AbstractHtml div4 = TagRepository.findTagById("div4", h11.getRootTag());
+        assertNotNull(div4);
+        List<AbstractHtml> parentChildLinkedTagsDiv4 = div4.getParentChildLinkedTags();
+        assertEquals(2, parentChildLinkedTagsDiv4.size());
+        assertEquals("div4", parentChildLinkedTagsDiv4.get(0).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("div1", parentChildLinkedTagsDiv4.get(1).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+
+        AbstractHtml span1 = TagRepository.findTagById("span1", h11.getRootTag());
+        assertNotNull(span1);
+        List<AbstractHtml> parentChildLinkedTagsSpan1 = span1.getParentChildLinkedTags();
+        assertEquals(3, parentChildLinkedTagsSpan1.size());
+        assertEquals("span1", parentChildLinkedTagsSpan1.get(0).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("div3", parentChildLinkedTagsSpan1.get(1).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("div1", parentChildLinkedTagsSpan1.get(2).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+
+        AbstractHtml span2 = TagRepository.findTagById("span2", h11.getRootTag());
+        assertNotNull(span2);
+        List<AbstractHtml> parentChildLinkedTagsSpan2 = span2.getParentChildLinkedTags();
+        assertEquals(4, parentChildLinkedTagsSpan2.size());
+        assertEquals("span2", parentChildLinkedTagsSpan2.get(0).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("span1", parentChildLinkedTagsSpan2.get(1).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("div3", parentChildLinkedTagsSpan2.get(2).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("div1", parentChildLinkedTagsSpan2.get(3).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+
+        AbstractHtml span3 = TagRepository.findTagById("span3", h11.getRootTag());
+        assertNotNull(span3);
+        List<AbstractHtml> parentChildLinkedTagsSpan3 = span3.getParentChildLinkedTags();
+        assertEquals(4, parentChildLinkedTagsSpan3.size());
+        assertEquals("span3", parentChildLinkedTagsSpan3.get(0).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("span1", parentChildLinkedTagsSpan3.get(1).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("div3", parentChildLinkedTagsSpan3.get(2).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("div1", parentChildLinkedTagsSpan3.get(3).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+
+        AbstractHtml span4 = TagRepository.findTagById("span4", h11.getRootTag());
+        assertNotNull(span4);
+        List<AbstractHtml> parentChildLinkedTagsSpan4 = span4.getParentChildLinkedTags();
+        assertEquals(4, parentChildLinkedTagsSpan4.size());
+        assertEquals("span4", parentChildLinkedTagsSpan4.get(0).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("span1", parentChildLinkedTagsSpan4.get(1).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("div3", parentChildLinkedTagsSpan4.get(2).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+        assertEquals("div1", parentChildLinkedTagsSpan4.get(3).getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+
+    }
+
+    @Test
+    public void testGetNextSibling() {
+        final Div rootTag = new Div(null, new Id("div1")).give(div1 -> {
+            new Div(div1, new Id("div2"));
+            new Div(div1, new Id("div3"));
+            new Div(div1, new Id("div4"));
+        });
+        AbstractHtml div2 = TagRepository.findTagById("div2", rootTag);
+        assertEquals("div3", div2.getNextSibling().getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+
+        AbstractHtml div3 = TagRepository.findTagById("div3", rootTag);
+        assertEquals("div4", div3.getNextSibling().getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+
+        AbstractHtml div4 = TagRepository.findTagById("div4", rootTag);
+        assertNull(div4.getNextSibling());
+
+        div2.getParent().removeChild(div2);
+        div3.getParent().removeChild(div3);
+        assertNull(div4.getNextSibling());
+        assertNull(rootTag.getNextSibling());
+    }
+
+    @Test
+    public void testGetPreviousSibling() {
+        final Div rootTag = new Div(null, new Id("div1")).give(div1 -> {
+            new Div(div1, new Id("div2"));
+            new Div(div1, new Id("div3"));
+            new Div(div1, new Id("div4"));
+        });
+        AbstractHtml div2 = TagRepository.findTagById("div2", rootTag);
+        assertNull(div2.getPreviousSibling());
+
+        AbstractHtml div3 = TagRepository.findTagById("div3", rootTag);
+        assertEquals("div2", div3.getPreviousSibling().getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+
+        AbstractHtml div4 = TagRepository.findTagById("div4", rootTag);
+        assertEquals("div3", div4.getPreviousSibling().getAttributeByName(AttributeNameConstants.ID).getAttributeValue());
+
+        div3.getParent().removeChild(div3);
+        div4.getParent().removeChild(div4);
+        assertNull(div2.getPreviousSibling());
+        assertNull(rootTag.getPreviousSibling());
+    }
+
 }

@@ -15,6 +15,9 @@
  */
 package com.webfirmframework.wffweb.json;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 /**
@@ -49,7 +52,110 @@ final class JsonStringUtil {
         };
     }
 
+    static void writeJsonKeyValue(final OutputStream outputStream, final Charset charset, final boolean flushOnWrite,
+            final Map.Entry<String, Object> entry) throws IOException {
+        final byte[] charBytes = ":\"".getBytes(charset);
+        final byte colon = charBytes[0];
+        final byte doubleQuotes = charBytes[1];
+        final Object value = entry.getValue();
+        final String key = entry.getKey();
+        if (value instanceof final JsonValue jsonValue) {
+            if (JsonValueType.STRING.equals(jsonValue.getValueType())) {
+                outputStream.write(doubleQuotes);
+                outputStream.write(key.getBytes(charset));
+                outputStream.write(doubleQuotes);
+                outputStream.write(colon);
+                outputStream.write(doubleQuotes);
+                outputStream.write(String.valueOf(placeEscapeCharInJsonStringValueIfRequired(jsonValue.asString()))
+                        .getBytes(charset));
+                outputStream.write(doubleQuotes);
+            } else {
+                outputStream.write(doubleQuotes);
+                outputStream.write(key.getBytes(charset));
+                outputStream.write(doubleQuotes);
+                outputStream.write(colon);
+                outputStream.write(String.valueOf(jsonValue.asString()).getBytes(charset));
+            }
+            if (flushOnWrite) {
+                outputStream.flush();
+            }
+        } else if (value instanceof final String s) {
+            outputStream.write(doubleQuotes);
+            outputStream.write(key.getBytes(charset));
+            outputStream.write(doubleQuotes);
+            outputStream.write(colon);
+            outputStream.write(doubleQuotes);
+            outputStream.write(placeEscapeCharInJsonStringValueIfRequired(s).getBytes(charset));
+            outputStream.write(doubleQuotes);
+            if (flushOnWrite) {
+                outputStream.flush();
+            }
+        } else if (value instanceof final JsonListNode jln) {
+            outputStream.write(doubleQuotes);
+            outputStream.write(key.getBytes(charset));
+            outputStream.write(doubleQuotes);
+            outputStream.write(colon);
+            jln.toOutputStream(outputStream, charset, flushOnWrite);
+        } else if (value instanceof final JsonMapNode jmn) {
+            outputStream.write(doubleQuotes);
+            outputStream.write(key.getBytes(charset));
+            outputStream.write(doubleQuotes);
+            outputStream.write(colon);
+            jmn.toOutputStream(outputStream, charset, flushOnWrite);
+        } else {
+            outputStream.write(doubleQuotes);
+            outputStream.write(key.getBytes(charset));
+            outputStream.write(doubleQuotes);
+            outputStream.write(colon);
+            outputStream.write(String.valueOf(value).getBytes(charset));
+            if (flushOnWrite) {
+                outputStream.flush();
+            }
+        }
+    }
+
+    static void writeJsonValue(final OutputStream outputStream, final Charset charset, final boolean flushOnWrite,
+            final Object value) throws IOException {
+        if (value instanceof final JsonValue jsonValue) {
+            final String s = jsonValue.asString();
+            if (s == null) {
+                outputStream.write("null".getBytes(charset));
+            } else if (JsonValueType.STRING.equals(jsonValue.getValueType())) {
+                outputStream.write(
+                        "\"".concat(placeEscapeCharInJsonStringValueIfRequired(s)).concat("\"").getBytes(charset));
+            } else {
+                outputStream.write(s.getBytes(charset));
+            }
+            if (flushOnWrite) {
+                outputStream.flush();
+            }
+        } else if (value instanceof final String s) {
+            outputStream
+                    .write("\"".concat(placeEscapeCharInJsonStringValueIfRequired(s)).concat("\"").getBytes(charset));
+            if (flushOnWrite) {
+                outputStream.flush();
+            }
+        } else if (value instanceof final JsonListNode jln) {
+            jln.toOutputStream(outputStream, charset, flushOnWrite);
+        } else if (value instanceof final JsonMapNode jmn) {
+            jmn.toOutputStream(outputStream, charset, flushOnWrite);
+        } else {
+            outputStream.write(String.valueOf(value).getBytes(charset));
+            if (flushOnWrite) {
+                outputStream.flush();
+            }
+        }
+    }
+
     static String buildJsonValue(final Object value) {
+        return buildJsonValue(value, false);
+    }
+
+    static String buildBigJsonValue(final Object value) {
+        return buildJsonValue(value, true);
+    }
+
+    private static String buildJsonValue(final Object value, final boolean parallel) {
         if (value instanceof final JsonValue jsonValue) {
             final String s = jsonValue.asString();
             if (s == null) {
@@ -64,10 +170,10 @@ final class JsonStringUtil {
             return "\"".concat(placeEscapeCharInJsonStringValueIfRequired(s)).concat("\"");
         }
         if (value instanceof final JsonListNode jln) {
-            return jln.toJsonString();
+            return parallel ? jln.toBigJsonString() : jln.toJsonString();
         }
         if (value instanceof final JsonMapNode jmn) {
-            return jmn.toJsonString();
+            return parallel ? jmn.toBigJsonString() : jmn.toJsonString();
         }
         return String.valueOf(value);
     }

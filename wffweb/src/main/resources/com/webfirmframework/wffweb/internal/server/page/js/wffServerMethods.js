@@ -1,7 +1,6 @@
-var wffTaskUtil = new function () {
-	
+wffGlobalConst('wffTaskUtil',
+new function () {
 	var encoder = wffGlobal.encoder;
-	
 	this.getTaskNameValue = function(nameByte, valueByte) {
 //		var tUtf8Bytes = encoder.encode(name);
 //		var cUtf8Bytes = encoder.encode(value);
@@ -11,9 +10,10 @@ var wffTaskUtil = new function () {
 		};
 		return taskNameValue;
 	};
-};
-
-var wffServerMethods = new function () {
+});
+//never ever change name
+wffGlobalConst('wffSM',
+new function () {
 
 	var encoder = wffGlobal.encoder;
 	
@@ -62,7 +62,7 @@ var wffServerMethods = new function () {
 		var wffBM = wffBMUtil.getWffBinaryMessageBytes(nameValues);
 		wffWS.send(wffBM);
 	};	
-	//never ever rename iapd
+	//never ever rename, iapd
 	this.b = function(event, tag, attrNmOrNdx) {
 		invokeAsyncPD(event, tag, attrNmOrNdx, true);
 	};
@@ -70,7 +70,7 @@ var wffServerMethods = new function () {
 	var invokeAsync = function(event, tag, attrNmOrNdx) {
 		invokeAsyncPD(event, tag, attrNmOrNdx, false);
 	};
-	//never ever rename ia
+	//never ever rename, ia
 	this.a = invokeAsync;
 	
 	var invokeAsyncWithPreFunPD = function(event, tag, attrNmOrNdx, preFun, prvntDflt) {
@@ -104,7 +104,7 @@ var wffServerMethods = new function () {
 		}
 		
 	};
-	//never ever rename iawpfpd
+	//never ever rename, iawpfpd
 	this.f = function(event, tag, attrNmOrNdx, preFun) {
 		invokeAsyncWithPreFunPD(event, tag, attrNmOrNdx, preFun, true);
 	};
@@ -113,7 +113,7 @@ var wffServerMethods = new function () {
 		invokeAsyncWithPreFunPD(event, tag, attrNmOrNdx, preFun, false);
 	};
 	
-	//never ever rename iawpf
+	//never ever rename, iawpf
 	this.e = invokeAsyncWithPreFun;
 	
 	var invokeAsyncWithPreFilterFunPD = function(event, tag, attrNmOrNdx, preFun, filterFun, prvntDflt) {
@@ -154,7 +154,7 @@ var wffServerMethods = new function () {
 		
 	};	
 	
-	//never ever rename iawpffpd
+	//never ever rename, iawpffpd
 	this.h = function(event, tag, attrNmOrNdx, preFun, filterFun) {
 		invokeAsyncWithPreFilterFunPD(event, tag, attrNmOrNdx, preFun, filterFun, true);
 	};
@@ -162,7 +162,7 @@ var wffServerMethods = new function () {
 	var invokeAsyncWithPreFilterFun = function(event, tag, attrNmOrNdx, preFun, filterFun) {
 		invokeAsyncWithPreFilterFunPD(event, tag, attrNmOrNdx, preFun, filterFun, false);
 	};
-	//never ever rename iawpff
+	//never ever rename, iawpff
 	this.g = invokeAsyncWithPreFilterFun;
 	
 	var invokeAsyncWithFilterFunPD = function(event, tag, attrNmOrNdx, filterFun, prvntDflt) {
@@ -184,7 +184,7 @@ var wffServerMethods = new function () {
 		
 		wffWS.send(wffBM);
 	};
-	//never ever rename iawffpd
+	//never ever rename, iawffpd
 	this.d = function(event, tag, attrNmOrNdx, filterFun) {
 		invokeAsyncWithFilterFunPD(event, tag, attrNmOrNdx, filterFun, true);
 	};
@@ -193,9 +193,8 @@ var wffServerMethods = new function () {
 		invokeAsyncWithFilterFunPD(event, tag, attrNmOrNdx, filterFun, false);
 	};
 	
-	//never ever rename iawff
+	//never ever rename, iawff
 	this.c = invokeAsyncWithFilterFun;
 	
-};
-//never ever rename ia
-var wffSM = wffServerMethods;
+});
+wffGlobalConst('wffServerMethods',window.wffSM);

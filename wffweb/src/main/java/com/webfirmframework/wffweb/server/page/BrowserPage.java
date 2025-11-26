@@ -46,6 +46,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceArray;
@@ -124,11 +125,11 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile boolean wsWarningDisabled;
 
-    private final Map<String, WebSocketPushListener> sessionIdWsListeners = new ConcurrentHashMap<>();
+    private final Map<String, WebSocketPushListenerHolder> sessionIdWsListeners = new ConcurrentHashMap<>();
 
-    private final Deque<WebSocketPushListener> wsListeners = new ConcurrentLinkedDeque<>();
+    private final Deque<WebSocketPushListenerHolder> wsListeners = new ConcurrentLinkedDeque<>();
 
-    private volatile WebSocketPushListener wsListener;
+    private volatile WebSocketPushListenerHolder wsListener;
 
     private volatile DataWffId wffScriptTagId;
 
@@ -185,11 +186,17 @@ public abstract class BrowserPage implements Serializable {
 
     private int wsReconnectInterval = -1;
 
+    private int wsHeartbeatTimeout = -1;
+
     private static final int INITIAL_WS_DEFAULT_HEARTBEAT_INTERVAL = 25_000;
+
+    private static final int INITIAL_WS_DEFAULT_HEARTBEAT_TIMEOUT = INITIAL_WS_DEFAULT_HEARTBEAT_INTERVAL;
 
     private static volatile int wsDefaultHeartbeatInterval = INITIAL_WS_DEFAULT_HEARTBEAT_INTERVAL;
 
     private static volatile int wsDefaultReconnectInterval = 2_000;
+
+    private static volatile int wsDefaultHeartbeatTimeout = 10_000;
 
     private final LongAdder pushQueueSize = new LongAdder();
 
@@ -232,6 +239,8 @@ public abstract class BrowserPage implements Serializable {
 
     private volatile Reference<BrowserPageSessionImpl> sessionRef;
 
+    private volatile boolean clientMarkedBrowserPageForRemoval;
+
     private static final byte[] PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID = new byte[4];
 
     private final AtomicInteger serverSidePayloadIdGenerator = new AtomicInteger();
@@ -262,8 +271,6 @@ public abstract class BrowserPage implements Serializable {
             ? new Semaphore(settings.outputBufferLimit)
             : null;
 
-    private volatile boolean losslessCommunicationCheckFailed;
-
     // NB: this non-static initialization makes BrowserPage and PayloadProcessor
     // never to get GCd. It leads to memory leak. It seems to be a bug.
     // private final ThreadLocal<PayloadProcessor> PALYLOAD_PROCESSOR_TL =
@@ -281,6 +288,36 @@ public abstract class BrowserPage implements Serializable {
                 throw new AssertionError("Not allowed to call this constructor");
             }
         }
+    }
+
+    /**
+     *
+     * @since 12.0.9
+     */
+    private static final record WebSocketPushListenerHolder(String sessionId,
+            WebSocketPushListener webSocketPushListener, AtomicBoolean serverSideActionPerformed,
+            AtomicBoolean clientSideJSExecuted) {
+
+        private WebSocketPushListenerHolder(final String sessionId, final WebSocketPushListener webSocketPushListener,
+                final boolean serverSideActionPerformed, final boolean clientSideJSExecuted) {
+            this(sessionId, webSocketPushListener, new AtomicBoolean(serverSideActionPerformed),
+                    new AtomicBoolean(clientSideJSExecuted));
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (!(o instanceof final WebSocketPushListenerHolder that)) {
+                return false;
+            }
+            return Objects.equals(sessionId, that.sessionId)
+                    && Objects.equals(webSocketPushListener, that.webSocketPushListener);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(sessionId, webSocketPushListener);
+        }
+
     }
 
     /**
@@ -484,7 +521,8 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.0.0
      */
     public final void setWebSocketPushListener(final WebSocketPushListener wsListener) {
-        this.wsListener = wsListener;
+        clientMarkedBrowserPageForRemoval = false;
+        this.wsListener = new WebSocketPushListenerHolder(null, wsListener, false, false);
         if (rootTag != null) {
             rootTag.getSharedObject().setActiveWSListener(wsListener != null, ACCESS_OBJECT);
         }
@@ -502,16 +540,19 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      */
     public final void addWebSocketPushListener(final String sessionId, final WebSocketPushListener wsListener) {
-
-        sessionIdWsListeners.put(sessionId, wsListener);
-
+        Objects.requireNonNull(sessionId);
+        Objects.requireNonNull(wsListener);
+        clientMarkedBrowserPageForRemoval = false;
         // should be in the first of this queue as it could provide the latest
         // reliable ws connection
-        wsListeners.push(wsListener);
+        final WebSocketPushListenerHolder wsListenerHolder = new WebSocketPushListenerHolder(sessionId, wsListener,
+                false, false);
+        sessionIdWsListeners.put(sessionId, wsListenerHolder);
+        wsListeners.push(wsListenerHolder);
 
-        this.wsListener = wsListener;
+        this.wsListener = wsListenerHolder;
         if (rootTag != null) {
-            rootTag.getSharedObject().setActiveWSListener(wsListener != null, ACCESS_OBJECT);
+            rootTag.getSharedObject().setActiveWSListener(true, ACCESS_OBJECT);
         }
 
         if (pushQueueOnNewWebSocketListener) {
@@ -528,15 +569,19 @@ public abstract class BrowserPage implements Serializable {
      * @since 2.1.0
      */
     public final void removeWebSocketPushListener(final String sessionId) {
-
-        final WebSocketPushListener removedListener = sessionIdWsListeners.remove(sessionId);
-        // remove all
-        while (wsListeners.remove(removedListener)) {
+        final WebSocketPushListenerHolder removedListener = sessionIdWsListeners.remove(sessionId);
+        if (removedListener != null) {
+            // remove all
+            while (wsListeners.remove(removedListener)) {
+            }
         }
-
-        wsListener = wsListeners.peek();
+        final WebSocketPushListenerHolder wsListenerCurrent = wsListeners.peek();
+        wsListener = wsListenerCurrent;
         if (rootTag != null) {
             rootTag.getSharedObject().setActiveWSListener(wsListener != null, ACCESS_OBJECT);
+        }
+        if (clientMarkedBrowserPageForRemoval && wsListenerCurrent == null) {
+            BrowserPageContext.INSTANCE.removeBrowserPage(instanceId, instanceId);
         }
     }
 
@@ -557,7 +602,8 @@ public abstract class BrowserPage implements Serializable {
     }
 
     public final WebSocketPushListener getWsListener() {
-        return wsListener;
+        final WebSocketPushListenerHolder wsListenerHolder = wsListener;
+        return wsListenerHolder != null ? wsListenerHolder.webSocketPushListener : null;
     }
 
     final void push(final NameValue... nameValues) {
@@ -608,14 +654,15 @@ public abstract class BrowserPage implements Serializable {
 
     private void push(final ClientTasksWrapper clientTasks) {
         if (outputBufferLimitLock != null) {
-            if (!losslessCommunicationCheckFailed) {
+            final WebSocketPushListenerHolder wsListenerCurrent = wsListener;
+            if (wsListenerCurrent == null || (!wsListenerCurrent.serverSideActionPerformed.get()
+                    && !wsListenerCurrent.clientSideJSExecuted.get())) {
                 try {
                     // onPayloadLoss check should be second
                     if (outputBufferLimitLock.tryAcquire(clientTasks.getCurrentSize(), settings.outputBufferTimeout,
                             TimeUnit.NANOSECONDS) || onPayloadLoss == null) {
                         pushLockless(clientTasks);
                     } else {
-                        losslessCommunicationCheckFailed = true;
                         if (LOGGER.isLoggable(Level.SEVERE)) {
                             LOGGER.severe(
                                     """
@@ -623,7 +670,8 @@ public abstract class BrowserPage implements Serializable {
                                              Increase Settings.outputBufferLimit or Settings.outputBufferTimeout to solve this issue.
                                              NB: Settings.outputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
                         }
-                        if (onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
+                        if (wsListenerCurrent != null && !wsListenerCurrent.clientSideJSExecuted.get()
+                                && onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
                             // it already contains placeholder for payloadId
                             final ByteBuffer clientAction = BrowserPageAction
                                     .getActionByteBufferForExecuteJS(onPayloadLoss.javaScript);
@@ -642,7 +690,9 @@ public abstract class BrowserPage implements Serializable {
                                 }
                                 wffBMBytesQueue.offerFirst(new ClientTasksWrapper(clientAction));
                             }
+                            wsListenerCurrent.clientSideJSExecuted.set(true);
                         }
+
                     }
                 } catch (final InterruptedException e) {
                     if (LOGGER.isLoggable(Level.SEVERE)) {
@@ -684,7 +734,8 @@ public abstract class BrowserPage implements Serializable {
                     ClientTasksWrapper clientTask = wffBMBytesQueue.poll();
                     if (clientTask != null) {
                         AtomicReferenceArray<ByteBuffer> tasks;
-
+                        boolean taskAvailable = false;
+                        ByteBuffer pong = null;
                         do {
                             pushQueueSize.decrement();
                             int totalBytesPushed = 0;
@@ -695,10 +746,16 @@ public abstract class BrowserPage implements Serializable {
                                     for (int i = 0; i < length; i++) {
                                         final ByteBuffer task = tasks.get(i);
                                         if (task != null) {
-                                            wsListener.push(buildPayloadForClient(task));
                                             final int capacity = task.capacity();
-                                            totalBytesPushed += capacity;
-                                            clientTask.nullifyTask(capacity, tasks, i);
+//                                            capacity == 0 represents a pong message
+                                            if (capacity > 0) {
+                                                wsListener.webSocketPushListener.push(buildPayloadForClient(task));
+                                                totalBytesPushed += capacity;
+                                                clientTask.nullifyTask(capacity, tasks, i);
+                                                taskAvailable = true;
+                                            } else {
+                                                pong = task;
+                                            }
                                         }
                                     }
                                     clientTask.nullifyTasks();
@@ -736,6 +793,18 @@ public abstract class BrowserPage implements Serializable {
 
                         } while (clientTask != null);
 
+                        if (!taskAvailable && pong != null) {
+                            final WebSocketPushListenerHolder wsListenerLocal = wsListener;
+                            if (wsListenerLocal != null) {
+                                try {
+                                    wsListenerLocal.webSocketPushListener.push(pong);
+                                } catch (final Exception e) {
+                                    if (LOGGER.isLoggable(Level.WARNING) && !wsWarningDisabled) {
+                                        LOGGER.warning("Error while pushing pong message!");
+                                    }
+                                }
+                            }
+                        }
                     }
 
                 } finally {
@@ -809,6 +878,15 @@ public abstract class BrowserPage implements Serializable {
         webSocketMessagedWithoutLosslessCheck(message);
     }
 
+    private void sendPongMessage() {
+        clientMarkedBrowserPageForRemoval = false;
+        // send empty message to be considered as a pong response
+        if (wffBMBytesQueue.offerLast(new ClientTasksWrapper(ByteBuffer.wrap(new byte[0])))) {
+            pushQueueSize.increment();
+        }
+        pushWffBMBytesQueue();
+    }
+
     /**
      * @param message the bytes the received in onmessage
      *
@@ -823,6 +901,9 @@ public abstract class BrowserPage implements Serializable {
         // message.length < 4
         // later if there is such requirement
         if (message.length < 4) {
+            if (message.length == 0) {
+                sendPongMessage();
+            }
             return;
         }
 
@@ -835,7 +916,6 @@ public abstract class BrowserPage implements Serializable {
                         || onPayloadLoss == null) {
                     taskFromClientQ.offer(message);
                 } else {
-                    losslessCommunicationCheckFailed = true;
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.severe(
                                 """
@@ -843,8 +923,10 @@ public abstract class BrowserPage implements Serializable {
                                          Increase Settings.inputBufferLimit or Settings.inputBufferTimeout to solve this issue.
                                          NB: Settings.inputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
                     }
-                    if (onPayloadLoss.serverSideAction != null) {
+                    final WebSocketPushListenerHolder wsListenerCurrent = wsListener;
+                    if (wsListenerCurrent != null && onPayloadLoss.serverSideAction != null) {
                         onPayloadLoss.serverSideAction.perform();
+                        wsListenerCurrent.serverSideActionPerformed.set(true);
                     }
                 }
             } catch (final InterruptedException e) {
@@ -871,22 +953,25 @@ public abstract class BrowserPage implements Serializable {
     }
 
     final boolean checkLosslessCommunication(final byte[] message) {
-        if (losslessCommunicationCheckFailed) {
-            return false;
-        }
-        // if lossless communication is enabled
-        if (onPayloadLoss != null && message.length > PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length) {
-            final int payloadId = WffBinaryMessageUtil
-                    .getIntFromBytes(new byte[] { message[0], message[1], message[2], message[3] });
-            if (payloadId == getClientSidePayloadId()) {
-                losslessCommunicationCheckFailed = false;
-                return true;
+        // NB: should be declared as final local variable
+        final WebSocketPushListenerHolder wsListenerCurrent = wsListener;
+        if (wsListenerCurrent != null) {
+            if (wsListenerCurrent.serverSideActionPerformed.get()) {
+                return false;
             }
-            losslessCommunicationCheckFailed = true;
-            onPayloadLoss.serverSideAction.perform();
-            return false;
+            // if lossless communication is enabled
+            if (onPayloadLoss != null && message.length > PLACEHOLDER_BYTE_ARRAY_FOR_PAYLOAD_ID.length) {
+                final int payloadId = WffBinaryMessageUtil
+                        .getIntFromBytes(new byte[] { message[0], message[1], message[2], message[3] });
+                if (payloadId == getClientSidePayloadId()) {
+                    return true;
+                }
+                onPayloadLoss.serverSideAction.perform();
+                wsListenerCurrent.serverSideActionPerformed.set(true);
+                return false;
+            }
         }
-        losslessCommunicationCheckFailed = false;
+
         return true;
     }
 
@@ -1132,26 +1217,23 @@ public abstract class BrowserPage implements Serializable {
         }
     }
 
-    /**
-     * @param nameValues
-     * @throws UnsupportedEncodingException throwing this exception will be removed
-     *                                      in future version because its internal
-     *                                      implementation will never make this
-     *                                      exception due to the code changes since
-     *                                      3.0.1.
-     */
-    private void removeBrowserPageFromContext(final List<NameValue> nameValues) throws UnsupportedEncodingException {
+    private void markBrowserPageForRemoval(final List<NameValue> nameValues) {
         // @formatter:off
         // invoke custom server method task format :-
         // { "name": task_byte, "values" : [remove_browser_page_byte_from_Task_enum]},
         // { "name": wff-instance-id-bytes, "values" : []}
         // @formatter:on
-
         final NameValue instanceIdNameValue = nameValues.get(1);
-
         final String instanceIdToRemove = new String(instanceIdNameValue.getName(), StandardCharsets.UTF_8);
-
-        BrowserPageContext.INSTANCE.removeBrowserPage(getInstanceId(), instanceIdToRemove);
+        if (instanceId.equals(instanceIdToRemove)) {
+            // marked as eligible for removal and
+            // this browserPage will be removed from BrowserPageContext when all ws
+            // connections are closed.
+            clientMarkedBrowserPageForRemoval = true;
+        } else if (WffConfiguration.isDebugMode() && LOGGER.isLoggable(Level.WARNING)) {
+            LOGGER.warning("The callerInstanceId " + instanceIdToRemove + " tried to remove instanceId " + instanceId
+                    + " from BrowserPageContext");
+        }
     }
 
     /**
@@ -1271,7 +1353,7 @@ public abstract class BrowserPage implements Serializable {
 
             } else if (taskValue == Task.REMOVE_BROWSER_PAGE.getValueByte()) {
 
-                removeBrowserPageFromContext(nameValues);
+                markBrowserPageForRemoval(nameValues);
 
             } else if (taskValue == Task.INITIAL_WS_OPEN.getValueByte()) {
                 if (!onInitialClientPingInvoked) {
@@ -1522,6 +1604,11 @@ public abstract class BrowserPage implements Serializable {
                         LOGGER.log(Level.SEVERE, "Exception while updating token at server", e);
                     }
                 }
+            } else if (taskValue == Task.CLIENT_SIDE_PING_ON_NEW_WS_OPEN.getValueByte()) {
+                push(Task.SERVER_SIDE_PONG_ON_NEW_WS_OPEN.getTaskNameValue());
+                if (holdPush.get() == 0) {
+                    pushWffBMBytesQueue();
+                }
             }
 
         }
@@ -1761,11 +1848,19 @@ public abstract class BrowserPage implements Serializable {
         final boolean losslessCommunication = onPayloadLoss != null;
         final String onPayloadLossJS = losslessCommunication ? onPayloadLoss.javaScript : "";
 
+        final int wsHeartbeatIntervalFinal = wsHeartbeatInterval;
+        final int wsDefaultHeartbeatIntervalFinal = wsDefaultHeartbeatInterval;
+        final int wsHeartbeatTimeoutFinal = wsHeartbeatTimeout;
+        final int wsDefaultHeartbeatTimeoutFinal = wsDefaultHeartbeatTimeout;
+        final int wsReconnectIntervalFinal = wsReconnectInterval;
+        final int wsDefaultReconnectIntervalFinal = wsDefaultReconnectInterval;
+
         final String wffJs = WffJsFile.getAllOptimizedContent(wsUrlWithInstanceId, getInstanceId(),
                 removePrevFromBrowserContextOnTabInit, removeFromBrowserContextOnTabClose,
-                (wsHeartbeatInterval > 0 ? wsHeartbeatInterval : wsDefaultHeartbeatInterval),
-                (wsReconnectInterval > 0 ? wsReconnectInterval : wsDefaultReconnectInterval), autoremoveWffScript,
-                losslessCommunication, onPayloadLossJS);
+                (wsHeartbeatIntervalFinal > 0 ? wsHeartbeatIntervalFinal : wsDefaultHeartbeatIntervalFinal),
+                (wsHeartbeatTimeoutFinal > 0 ? wsHeartbeatTimeoutFinal : wsDefaultHeartbeatTimeoutFinal),
+                (wsReconnectIntervalFinal > 0 ? wsReconnectIntervalFinal : wsDefaultReconnectIntervalFinal),
+                autoremoveWffScript, losslessCommunication, onPayloadLossJS);
 
         if (enableDeferOnWffScript) {
             // byes are in UTF-8 so charset=utf-8 is explicitly
@@ -2673,6 +2768,51 @@ public abstract class BrowserPage implements Serializable {
      */
     public final int getWebSocketHeartbeatInterval() {
         return wsHeartbeatInterval;
+    }
+
+    /**
+     * Sets timeout value for websocket heartbeat. Its default value is 10000
+     * milliseconds i.e. 10 seconds.
+     *
+     * @param milliseconds the timeout milliseconds. A value more than zero is
+     *                     considered as valid timeout.
+     * @since 12.0.9
+     */
+    public static final void setWebSocketDefaultHeartbeatTimeout(final int milliseconds) {
+        wsDefaultHeartbeatTimeout = milliseconds;
+    }
+
+    /**
+     * A value more than zero is considered as valid timeout.
+     *
+     * @return the timeout in milliseconds.
+     * @since 12.0.9
+     */
+    public static final int getWebSocketDefaultHeartbeatTimeout() {
+        return wsDefaultHeartbeatTimeout;
+    }
+
+    /**
+     * Sets timeout value for websocket heartbeat. If it is not set, the default
+     * value set by {@link #setWebSocketDefaultHeartbeatTimeout} will be used as
+     * heartbeat timeout value.
+     *
+     * @param milliseconds the timeout milliseconds. A value more than zero is
+     *                     considered as valid timeout.
+     * @since 12.0.9
+     */
+    protected final void setWebSocketHeartbeatTimeout(final int milliseconds) {
+        wsHeartbeatTimeout = milliseconds;
+    }
+
+    /**
+     * A value more than zero is considered as valid timeout.
+     *
+     * @return the timeout in milliseconds.
+     * @since 12.0.9
+     */
+    public final int getWebSocketHeartbeatTimeout() {
+        return wsHeartbeatTimeout;
     }
 
     /**

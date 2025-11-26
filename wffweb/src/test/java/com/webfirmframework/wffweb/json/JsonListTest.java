@@ -24,12 +24,25 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 
 public class JsonListTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
+
+    private void testToOutputStreamAndToBigOutputStream(JsonBaseNode jsonBaseNode) {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            jsonBaseNode.toOutputStream(outputStream, StandardCharsets.UTF_8, true);
+            String outputStreamString = outputStream.toString(StandardCharsets.UTF_8);
+            Assert.assertEquals(jsonBaseNode.toJsonString(), outputStreamString);
+        } catch (IOException e) {
+            Assert.fail("IOException white testing toOutputStream");
+        }
+    }
 
     @Test
     public void testJsonListParse() {
@@ -40,7 +53,7 @@ public class JsonListTest {
         Assert.assertNotNull(parsed);
 
         Assert.assertEquals(json.strip(), parsed.toJsonString());
-
+        testToOutputStreamAndToBigOutputStream(parsed);
     }
 
     @Test
@@ -51,6 +64,7 @@ public class JsonListTest {
         JsonList jsonList = JsonList.parse(json);
         Assert.assertNotNull(jsonList);
         Assert.assertEquals(objectMapper.readTree(json), objectMapper.readTree(jsonList.toJsonString()));
+        testToOutputStreamAndToBigOutputStream(jsonList);
     }
 
     @Test
@@ -72,6 +86,7 @@ public class JsonListTest {
         Assert.assertNull(parsed.get(5));
         Assert.assertEquals(" some string ", parsed.get(parsed.size() - 1));
         Assert.assertEquals(json.strip().replace(", ", ","), parsed.toJsonString());
+        testToOutputStreamAndToBigOutputStream(parsed);
     }
 
     @Test
@@ -85,6 +100,7 @@ public class JsonListTest {
         Assert.assertNull(parsed.get(parsed.size() - 1));
 
         Assert.assertEquals(json.strip().replace(" ", ""), parsed.toJsonString());
+        testToOutputStreamAndToBigOutputStream(parsed);
 
     }
 

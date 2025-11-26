@@ -173,7 +173,25 @@ public enum Task {
 
     MOVABLE_REPLACED_TAG,
 
-    MOVABLE_REPLACED_ALL_CHILDREN_OF_TAG;
+    MOVABLE_REPLACED_ALL_CHILDREN_OF_TAG,
+
+    /**
+     *
+     * This task is for client side payload id validation at server side on new
+     * websocket connection.
+     *
+     * @since 12.0.9
+     */
+    CLIENT_SIDE_PING_ON_NEW_WS_OPEN,
+
+    /**
+     *
+     * This task is for server side payload id validation at client side on new
+     * websocket connection.
+     *
+     * @since 12.0.9
+     */
+    SERVER_SIDE_PONG_ON_NEW_WS_OPEN;
 
     private final String shortName;
 
