@@ -169,7 +169,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
         // almost all attributes may have only one owner tag
         // in a practical scenario so passed 2 here because the load factor is
         // 0.75f
-        ownerTags = Collections.newSetFromMap(new WeakHashMap<AbstractHtml, Boolean>(2));
+        ownerTags = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>(2)));
 
         setRebuild(true);
     }

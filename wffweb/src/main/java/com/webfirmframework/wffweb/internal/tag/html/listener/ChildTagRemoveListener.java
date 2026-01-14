@@ -31,6 +31,6 @@ public sealed interface ChildTagRemoveListener extends Serializable permits Chil
 
     public void childrenRemoved(Event event);
 
-    public void allChildrenRemoved(Event event);
+    public boolean allChildrenRemoved(Event event);
 
 }

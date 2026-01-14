@@ -15,22 +15,21 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
-import com.webfirmframework.wffweb.tag.html.SharedTagContent.Content;
-import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
+import java.lang.ref.ReferenceQueue;
 
-/**
- * NB: only for internal use
- *
- * @author WFF
- * @since 3.0.6
- * @since 12.0.10 converted to record class.
- *
- */
-record ParentNoTagData<T> (NoTag previousNoTag, AbstractHtml parent, NoTag noTag, InsertedTagData<T> insertedTagData,
-        Content<String> contentApplied) {
+class NoTagWeakReference<T> extends ApplicableTagGCTask<T> {
 
-    ParentNoTagData(final NoTag previousNoTag, final AbstractHtml parent, final InsertedTagData<T> insertedTagData) {
-        this(previousNoTag, parent, null, insertedTagData, null);
+    NoTagWeakReference(final AbstractHtml referent, final ReferenceQueue<? super AbstractHtml> q,
+            final SharedTagContent<T> stc) {
+        super(referent, q, stc);
     }
 
+    @Override
+    public void run() {
+        final SharedTagContent<T> sharedTagContent = stc;
+        if (sharedTagContent != null) {
+            sharedTagContent.insertedTags.remove(applicableTagId);
+            stc = null;
+        }
+    }
 }

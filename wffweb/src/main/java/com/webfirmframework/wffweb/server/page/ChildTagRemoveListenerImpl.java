@@ -148,7 +148,7 @@ public final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener 
     }
 
     @Override
-    public void allChildrenRemoved(@SuppressWarnings("exports") final Event event) {
+    public boolean allChildrenRemoved(@SuppressWarnings("exports") final Event event) {
 
         final AbstractHtml parentTag = event.parentTag();
 
@@ -177,15 +177,16 @@ public final class ChildTagRemoveListenerImpl implements ChildTagRemoveListener 
 
             nameValue.setValues(parentTagName);
 
-            browserPage.push(task, nameValue);
-
+            final boolean pushed = browserPage.push(task, nameValue);
             for (final AbstractHtml each : event.removedChildrenTags()) {
                 removeFromTagByWffIdMap(each);
             }
+            return pushed;
         } else {
             LOGGER.severe("Could not find data-wff-id from owner tag");
         }
 
+        return false;
     }
 
 }

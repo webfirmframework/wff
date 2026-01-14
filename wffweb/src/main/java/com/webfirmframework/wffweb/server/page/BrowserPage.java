@@ -190,13 +190,13 @@ public abstract class BrowserPage implements Serializable {
 
     private static final int INITIAL_WS_DEFAULT_HEARTBEAT_INTERVAL = 25_000;
 
-    private static final int INITIAL_WS_DEFAULT_HEARTBEAT_TIMEOUT = INITIAL_WS_DEFAULT_HEARTBEAT_INTERVAL;
+    private static final int INITIAL_WS_DEFAULT_HEARTBEAT_TIMEOUT = 10_000;
 
     private static volatile int wsDefaultHeartbeatInterval = INITIAL_WS_DEFAULT_HEARTBEAT_INTERVAL;
 
     private static volatile int wsDefaultReconnectInterval = 2_000;
 
-    private static volatile int wsDefaultHeartbeatTimeout = 10_000;
+    private static volatile int wsDefaultHeartbeatTimeout = INITIAL_WS_DEFAULT_HEARTBEAT_TIMEOUT;
 
     private final LongAdder pushQueueSize = new LongAdder();
 
@@ -246,6 +246,8 @@ public abstract class BrowserPage implements Serializable {
     private final AtomicInteger serverSidePayloadIdGenerator = new AtomicInteger();
 
     private final AtomicInteger clientSidePayloadIdGenerator = new AtomicInteger();
+
+    private final AtomicBoolean hasHitBufferOutOfMemory = new AtomicBoolean();
 
     private static final long DEFAULT_IO_BUFFER_TIMEOUT = TimeUnit.MILLISECONDS
             .toNanos(INITIAL_WS_DEFAULT_HEARTBEAT_INTERVAL);
@@ -606,9 +608,9 @@ public abstract class BrowserPage implements Serializable {
         return wsListenerHolder != null ? wsListenerHolder.webSocketPushListener : null;
     }
 
-    final void push(final NameValue... nameValues) {
+    final boolean push(final NameValue... nameValues) {
         final ByteBuffer payload = buildPayload(WffBinaryMessageUtil.VERSION_1.getWffBinaryMessageBytes(nameValues));
-        push(new ClientTasksWrapper(payload));
+        return push(new ClientTasksWrapper(payload));
     }
 
     /**
@@ -631,8 +633,10 @@ public abstract class BrowserPage implements Serializable {
         }
 
         final ClientTasksWrapper clientTasks = new ClientTasksWrapper(tasks);
-        push(clientTasks);
-        return clientTasks;
+        if (push(clientTasks)) {
+            return clientTasks;
+        }
+        return null;
     }
 
     private void pushLockless(final ClientTasksWrapper clientTasks) {
@@ -652,23 +656,40 @@ public abstract class BrowserPage implements Serializable {
         }
     }
 
-    private void push(final ClientTasksWrapper clientTasks) {
+    private boolean push(final ClientTasksWrapper clientTasks) {
         if (outputBufferLimitLock != null) {
             final WebSocketPushListenerHolder wsListenerCurrent = wsListener;
             if (wsListenerCurrent == null || (!wsListenerCurrent.serverSideActionPerformed.get()
                     && !wsListenerCurrent.clientSideJSExecuted.get())) {
                 try {
+                    // if wsListenerCurrent is null there is no advantage of waiting
+                    final boolean acquired = isQuickTryAcquireApplicableWithNoBOMCheck(wsListenerCurrent)
+                            ? outputBufferLimitLock.tryAcquire(clientTasks.getCurrentSize())
+                            : outputBufferLimitLock.tryAcquire(clientTasks.getCurrentSize(),
+                                    settings.outputBufferTimeout, TimeUnit.NANOSECONDS);
                     // onPayloadLoss check should be second
-                    if (outputBufferLimitLock.tryAcquire(clientTasks.getCurrentSize(), settings.outputBufferTimeout,
-                            TimeUnit.NANOSECONDS) || onPayloadLoss == null) {
+                    if (acquired || onPayloadLoss == null) {
                         pushLockless(clientTasks);
+                        return true;
                     } else {
-                        if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.severe(
-                                    """
-                                            Buffer timeout reached while preparing server event for client so further changes will not be pushed to client.
-                                             Increase Settings.outputBufferLimit or Settings.outputBufferTimeout to solve this issue.
-                                             NB: Settings.outputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                        if (LOGGER.isLoggable(Level.SEVERE) || LOGGER.isLoggable(Level.FINEST)) {
+                            if (wsListenerCurrent != null) {
+                                if (LOGGER.isLoggable(Level.SEVERE)) {
+                                    LOGGER.severe(
+                                            """
+                                                    Buffer timeout reached while preparing server event for client so further changes will not be pushed to client.
+                                                    Increase Settings.outputBufferLimit or Settings.outputBufferTimeout to solve this issue.
+                                                    NB: Settings.outputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                                }
+                            } else {
+                                if (LOGGER.isLoggable(Level.FINEST)) {
+                                    LOGGER.finest(
+                                            """
+                                                    Buffer timeout reached while preparing server event for client so further changes will not be pushed to client and there is no active websocket connection available at the moment.
+                                                    Increase Settings.outputBufferLimit or Settings.outputBufferTimeout to solve this issue.
+                                                    NB: Settings.outputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                                }
+                            }
                         }
                         if (wsListenerCurrent != null && !wsListenerCurrent.clientSideJSExecuted.get()
                                 && onPayloadLoss.javaScript != null && !onPayloadLoss.javaScript.isBlank()) {
@@ -691,6 +712,7 @@ public abstract class BrowserPage implements Serializable {
                                 wffBMBytesQueue.offerFirst(new ClientTasksWrapper(clientAction));
                             }
                             wsListenerCurrent.clientSideJSExecuted.set(true);
+                            hasHitBufferOutOfMemory.set(true);
                         }
 
                     }
@@ -702,7 +724,9 @@ public abstract class BrowserPage implements Serializable {
             }
         } else {
             pushLockless(clientTasks);
+            return true;
         }
+        return false;
     }
 
     private void pushWffBMBytesQueue() {
@@ -783,7 +807,7 @@ public abstract class BrowserPage implements Serializable {
 
                             if (pushWffBMBytesQueueLock.hasQueuedThreads()) {
                                 final Thread waitingThread = waitingThreadRef.get();
-                                if (waitingThread != null && !waitingThread.equals(taskThread)
+                                if (waitingThread != null && waitingThread != taskThread
                                         && waitingThread.getPriority() >= taskThread.getPriority()) {
                                     break;
                                 }
@@ -911,22 +935,34 @@ public abstract class BrowserPage implements Serializable {
 
         if (inputBufferLimitLock != null) {
             try {
+                final WebSocketPushListenerHolder wsListenerCurrent = wsListener;
+                final boolean acquired = isQuickTryAcquireApplicable(wsListenerCurrent)
+                        ? inputBufferLimitLock.tryAcquire(message.length)
+                        : inputBufferLimitLock.tryAcquire(message.length, settings.inputBufferTimeout,
+                                TimeUnit.NANOSECONDS);
                 // onPayloadLoss check should be second
-                if (inputBufferLimitLock.tryAcquire(message.length, settings.inputBufferTimeout, TimeUnit.NANOSECONDS)
-                        || onPayloadLoss == null) {
+                if (acquired || onPayloadLoss == null) {
                     taskFromClientQ.offer(message);
                 } else {
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.severe(
-                                """
-                                        Buffer timeout reached while processing event from client so further client events will not be received at server side.
-                                         Increase Settings.inputBufferLimit or Settings.inputBufferTimeout to solve this issue.
-                                         NB: Settings.inputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""");
+                    if (LOGGER.isLoggable(Level.SEVERE) || LOGGER.isLoggable(Level.FINEST)) {
+                        final String msg = """
+                                Buffer timeout reached while processing event from client so further client events will not be received at server side.
+                                Increase Settings.inputBufferLimit or Settings.inputBufferTimeout to solve this issue.
+                                NB: Settings.inputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.""";
+                        if (wsListenerCurrent != null) {
+                            if (LOGGER.isLoggable(Level.SEVERE)) {
+                                LOGGER.severe(msg);
+                            }
+                        } else {
+                            if (LOGGER.isLoggable(Level.FINEST)) {
+                                LOGGER.finest(msg);
+                            }
+                        }
                     }
-                    final WebSocketPushListenerHolder wsListenerCurrent = wsListener;
                     if (wsListenerCurrent != null && onPayloadLoss.serverSideAction != null) {
                         onPayloadLoss.serverSideAction.perform();
                         wsListenerCurrent.serverSideActionPerformed.set(true);
+                        hasHitBufferOutOfMemory.set(true);
                     }
                 }
             } catch (final InterruptedException e) {
@@ -968,6 +1004,7 @@ public abstract class BrowserPage implements Serializable {
                 }
                 onPayloadLoss.serverSideAction.perform();
                 wsListenerCurrent.serverSideActionPerformed.set(true);
+                hasHitBufferOutOfMemory.set(true);
                 return false;
             }
         }
@@ -3479,6 +3516,25 @@ public abstract class BrowserPage implements Serializable {
             id = clientSidePayloadIdGenerator.incrementAndGet();
         }
         return id;
+    }
+
+    private boolean isQuickTryAcquireApplicable(final WebSocketPushListenerHolder wsListenerCurrent) {
+        return wsListenerCurrent == null || hasHitBufferOutOfMemory.get() || (wsHeartbeatInterval > 0
+                && wsHeartbeatTimeout > 0
+                && (System.currentTimeMillis() - lastClientAccessedTime) > (wsHeartbeatInterval + wsHeartbeatTimeout));
+    }
+
+    private boolean isQuickTryAcquireApplicableWithNoBOMCheck(final WebSocketPushListenerHolder wsListenerCurrent) {
+        return wsListenerCurrent == null || (wsHeartbeatInterval > 0 && wsHeartbeatTimeout > 0
+                && (System.currentTimeMillis() - lastClientAccessedTime) > (wsHeartbeatInterval + wsHeartbeatTimeout));
+    }
+
+    /**
+     * @return true if the browser page has hit out of memory.
+     * @since 12.0.10
+     */
+    public final boolean hasHitBufferOutOfMemory() {
+        return hasHitBufferOutOfMemory.get();
     }
 
 }
