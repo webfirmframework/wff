@@ -16,9 +16,13 @@
 package com.webfirmframework.wffweb.settings;
 
 import java.lang.management.ManagementFactory;
+import java.lang.ref.Cleaner;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * @author WFF
@@ -28,12 +32,16 @@ import java.util.concurrent.Executors;
 public class WffConfiguration {
 
     private static boolean debugMode;
+
     private static boolean directionWarningOn;
 
     private static final Executor VIRTUAL_THREAD_EXECUTOR;
 
+    private static final Cleaner SECONDARY_CLEANER;
+
     static {
         Executor tempExecutor = null;
+        ThreadFactory threadFactory = null;
         try {
             final int javaSpecVersion = Integer
                     .parseInt(parseFirstDigits(System.getProperty("java.vm.specification.version", "17")));
@@ -45,10 +53,12 @@ public class WffConfiguration {
                 // later and the module entry from module-info.java as well
                 final List<String> inputArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
                 if ((inputArguments.contains("--enable-preview") || inputArguments.contains("--enable-virtual-thread")
-                        || "true".equals(System.getProperty("virtualThread.enable")))
-                        && Executors.class.getMethod("newVirtualThreadPerTaskExecutor")
-                                .invoke(null) instanceof final Executor executor) {
-                    tempExecutor = executor;
+                        || "true".equals(System.getProperty("virtualThread.enable")))) {
+                    if (Executors.class.getMethod("newVirtualThreadPerTaskExecutor")
+                            .invoke(null) instanceof final Executor executor) {
+                        tempExecutor = executor;
+                    }
+                    threadFactory = getThreadFactory();
                 }
             }
         } catch (final Exception e) {
@@ -56,6 +66,30 @@ public class WffConfiguration {
             e.printStackTrace();
         }
         VIRTUAL_THREAD_EXECUTOR = tempExecutor;
+
+        SECONDARY_CLEANER = threadFactory != null ? Cleaner.create(threadFactory) : Cleaner.create();
+    }
+
+    private static ThreadFactory getThreadFactory() {
+        try {
+            final Method ofVirtualMethod = Thread.class.getMethod("ofVirtual");
+            final Object builderOfVirtual = ofVirtualMethod.invoke(null);
+            if (builderOfVirtual != null) {
+                final Class<?> virtualMethodReturnType = ofVirtualMethod.getReturnType();
+                final Method nameMethod = virtualMethodReturnType.getMethod("name", String.class, long.class);
+                final Object namedVirtualBuilder = nameMethod.invoke(builderOfVirtual, "wff-vt-", 0L);
+                if (namedVirtualBuilder != null) {
+                    final Method factoryMethod = virtualMethodReturnType.getMethod("factory");
+                    if (factoryMethod.invoke(namedVirtualBuilder) instanceof final ThreadFactory tf) {
+                        return tf;
+                    }
+                }
+            }
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            // NOP
+            e.printStackTrace();
+        }
+        return null;
     }
 
     static String parseFirstDigits(final String s) {
@@ -117,5 +151,16 @@ public class WffConfiguration {
      */
     public static Executor getVirtualThreadExecutor() {
         return VIRTUAL_THREAD_EXECUTOR;
+    }
+
+    /**
+     * The primary cleaning process should be done manually, this Cleaner object
+     * should only be used for a safety net.
+     *
+     * @return the cleaner object.
+     * @since 12.0.10
+     */
+    public static Cleaner secondaryCleaner() {
+        return SECONDARY_CLEANER;
     }
 }

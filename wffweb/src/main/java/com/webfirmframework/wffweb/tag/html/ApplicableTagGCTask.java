@@ -15,26 +15,31 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
+import java.lang.ref.Cleaner;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.Set;
 
 import com.webfirmframework.wffweb.internal.InternalId;
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentChangeListener;
 import com.webfirmframework.wffweb.tag.html.SharedTagContent.DetachListener;
 
 class ApplicableTagGCTask<T> extends WeakReference<AbstractHtml> implements Runnable {
 
-    private volatile SharedTagContent<T> stc;
+    private final Cleaner.Cleanable cleanable;
 
-    private final InternalId applicableTagId;
+    protected volatile SharedTagContent<T> stc;
+
+    protected final InternalId applicableTagId;
 
     ApplicableTagGCTask(final AbstractHtml referent, final ReferenceQueue<? super AbstractHtml> q,
             final SharedTagContent<T> stc) {
         super(referent, q);
         this.stc = stc;
         this.applicableTagId = referent.internalId();
+        cleanable = WffConfiguration.secondaryCleaner().register(referent, this);
     }
 
     @Override
@@ -49,9 +54,16 @@ class ApplicableTagGCTask<T> extends WeakReference<AbstractHtml> implements Runn
             if (contentChangeListeners != null) {
                 contentChangeListeners.remove(applicableTagId);
             }
-            sharedTagContent.applicableTagGCTasksCache.remove(this);
             this.stc = null;
         }
 
+    }
+
+    /**
+     * @since 12.0.10
+     */
+    void clean() {
+        // clean will invoke run method.
+        cleanable.clean();
     }
 }

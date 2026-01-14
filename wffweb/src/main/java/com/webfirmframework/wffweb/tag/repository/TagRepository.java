@@ -2447,7 +2447,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
         }
         final Body bodyTag = findOneTagAssignableToTag(parallel, Body.class);
         if (bodyTag != null) {
-            this.bodyTagRef = new WeakReference<Body>(bodyTag);
+            this.bodyTagRef = new WeakReference<>(bodyTag);
         } else {
             this.bodyTagRef = null;
         }
@@ -2498,7 +2498,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
         }
         final Head headTag = findOneTagAssignableToTag(parallel, Head.class);
         if (headTag != null) {
-            this.headTagRef = new WeakReference<Head>(headTag);
+            this.headTagRef = new WeakReference<>(headTag);
         } else {
             this.headTagRef = null;
         }
@@ -2548,7 +2548,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
         }
         final TitleTag titleTag = findOneTagAssignableToTag(parallel, TitleTag.class);
         if (titleTag != null) {
-            this.titleTagRef = new WeakReference<TitleTag>(titleTag);
+            this.titleTagRef = new WeakReference<>(titleTag);
         } else {
             this.titleTagRef = null;
         }

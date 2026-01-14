@@ -2,12 +2,19 @@ package com.webfirmframework.wffweb.tag.html;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.webfirmframework.wffweb.server.page.BrowserPage;
@@ -2120,6 +2127,9 @@ public class SharedTagContentTest {
         assertEquals(stc, span.getSharedTagContent());
         stc.setContent("again changed");
         assertNull(span.getSharedTagContent());
+        while (stc.hasPendingTask()) {
+            Thread.onSpinWait();
+        }
         assertNull(stc.getContentChangeListeners(span));
 
     }
@@ -2292,6 +2302,292 @@ public class SharedTagContentTest {
         stc.setContent("modified");
         stc.readState(stateEvent -> stateRef.set(stateEvent.content()));
         assertEquals("modified", stateRef.get().content());
+    }
+
+    @Test
+    public void testContentChangeListener() {
+        //The expected log while running this test:
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage push
+        //FINEST: Buffer timeout reached while preparing server event for client so further changes will not be pushed to client and there is no active websocket connection available at the moment.
+        //Increase Settings.outputBufferLimit or Settings.outputBufferTimeout to solve this issue.
+        //NB: Settings.outputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage push
+        //FINEST: Buffer timeout reached while preparing server event for client so further changes will not be pushed to client and there is no active websocket connection available at the moment.
+        //Increase Settings.outputBufferLimit or Settings.outputBufferTimeout to solve this issue.
+        //NB: Settings.outputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage push
+        //FINEST: Buffer timeout reached while preparing server event for client so further changes will not be pushed to client and there is no active websocket connection available at the moment.
+        //Increase Settings.outputBufferLimit or Settings.outputBufferTimeout to solve this issue.
+        //NB: Settings.outputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage push
+        //FINEST: Buffer timeout reached while preparing server event for client so further changes will not be pushed to client and there is no active websocket connection available at the moment.
+        //Increase Settings.outputBufferLimit or Settings.outputBufferTimeout to solve this issue.
+        //NB: Settings.outputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage push
+        //FINEST: Buffer timeout reached while preparing server event for client so further changes will not be pushed to client and there is no active websocket connection available at the moment.
+        //Increase Settings.outputBufferLimit or Settings.outputBufferTimeout to solve this issue.
+        //NB: Settings.outputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage push
+        //FINEST: Buffer timeout reached while preparing server event for client so further changes will not be pushed to client and there is no active websocket connection available at the moment.
+        //Increase Settings.outputBufferLimit or Settings.outputBufferTimeout to solve this issue.
+        //NB: Settings.outputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage push
+        //FINEST: Buffer timeout reached while preparing server event for client so further changes will not be pushed to client and there is no active websocket connection available at the moment.
+        //Increase Settings.outputBufferLimit or Settings.outputBufferTimeout to solve this issue.
+        //NB: Settings.outputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage push
+        //FINEST: Buffer timeout reached while preparing server event for client so further changes will not be pushed to client and there is no active websocket connection available at the moment.
+        //Increase Settings.outputBufferLimit or Settings.outputBufferTimeout to solve this issue.
+        //NB: Settings.outputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage push
+        //FINEST: Buffer timeout reached while preparing server event for client so further changes will not be pushed to client and there is no active websocket connection available at the moment.
+        //Increase Settings.outputBufferLimit or Settings.outputBufferTimeout to solve this issue.
+        //NB: Settings.outputBufferTimeout should be <= maxIdleTimeout by BrowserPageContent.enableAutoClean method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+        //Jan 12, 2026 5:10:32 PM com.webfirmframework.wffweb.server.page.BrowserPage pushWffBMBytesQueue
+        //WARNING: There is no WebSocket listener set, set it with BrowserPage#setWebSocketPushListener method.
+
+        final SharedTagContent<String> stc = new SharedTagContent<>("");
+        final StringBuffer controlFlow = new StringBuffer();
+
+        Div div = new Div(null);
+        final BrowserPage browserPage = new BrowserPage() {
+
+            @Override
+            public String webSocketUrl() {
+                return "wss://wffweb";
+            }
+
+            @Override
+            protected void beforeRender() {
+                final Logger logger = getBrowserPageLogger();
+                logger.setLevel(Level.FINEST);
+                final Handler handler = new ConsoleHandler();
+                handler.setLevel(Level.FINEST);
+                logger.addHandler(handler);
+            }
+
+            @Override
+            public AbstractHtml render() {
+                super.setURI("/someuri");
+                return new Html(null).<Html>give(html1 -> {
+                    new Body(html1).give(body -> {
+
+                        body.appendChild(div);
+                        div.subscribeTo(stc);
+                        stc.addContentChangeListener(div, changeEvent -> {
+                            controlFlow.append("changeEvent.contentBefore() = ").append(changeEvent.contentBefore());
+                            final ContentFormatter<String> contentFormatter = stc.getContentFormatter(div);
+                            assertNotNull(contentFormatter);
+                            try {
+                                final Field defaultContentFormatterField = SharedTagContent.class.getDeclaredField("DEFAULT_CONTENT_FORMATTER");
+                                defaultContentFormatterField.setAccessible(true);
+                                final Object expectedContentFormatter = defaultContentFormatterField.get(stc);
+                                assertEquals(expectedContentFormatter, contentFormatter);
+
+                                stc.getContentFormatter(div, stringContentFormatter -> {
+                                    try {
+                                        Thread.sleep(100);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    controlFlow.append("(getContentFormatter invoked)");
+                                    assertEquals(expectedContentFormatter, stringContentFormatter);
+                                });
+
+                                stc.getContentChangeListeners(div, contentChangeListeners -> {
+                                    try {
+                                        Thread.sleep(10);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    controlFlow.append("(getContentChangeListeners invoked)");
+                                    assertNotNull(contentChangeListeners);
+                                    assertEquals(1, contentChangeListeners.size());
+                                });
+
+                                final Set<ContentChangeListener<String>> contentChangeListeners = stc.getContentChangeListeners(div);
+                                assertNotNull(contentChangeListeners);
+                                assertEquals(1, contentChangeListeners.size());
+
+                            } catch (NoSuchFieldException | IllegalAccessException e) {
+                                Assert.fail("Unable to get defaultContentFormatterField");
+                            }
+                            controlFlow.append("changeEvent.contentAfter() = ").append(changeEvent.contentAfter());
+                            return null;
+                        });
+
+                    });
+                });
+            }
+
+            @Override
+            protected Settings useSettings() {
+                return new Settings(defaultSettings().inputBufferLimit(), defaultSettings().inputBufferTimeout(),
+                        50, TimeUnit.SECONDS.toNanos(10),
+                        defaultSettings().onPayloadLoss());
+            }
+        };
+        browserPage.toHtmlString();
+
+        assertEquals("", controlFlow.toString());
+        stc.setContent("new content1");
+//
+        assertEquals("changeEvent.contentBefore() = Content[content=, contentTypeHtml=false]changeEvent.contentAfter() = Content[content=new content1, contentTypeHtml=false](getContentFormatter invoked)(getContentChangeListeners invoked)", controlFlow.toString());
+        controlFlow.delete(0, controlFlow.length());
+//
+        stc.setContent("new content2", true);
+        assertEquals("changeEvent.contentBefore() = Content[content=new content1, contentTypeHtml=false]changeEvent.contentAfter() = Content[content=new content2, contentTypeHtml=true](getContentFormatter invoked)(getContentChangeListeners invoked)", controlFlow.toString());
+        controlFlow.delete(0, controlFlow.length());
+
+        stc.setContent("new content3", false);
+        assertEquals("changeEvent.contentBefore() = Content[content=new content2, contentTypeHtml=true]changeEvent.contentAfter() = Content[content=new content3, contentTypeHtml=false](getContentFormatter invoked)(getContentChangeListeners invoked)", controlFlow.toString());
+
+        controlFlow.delete(0, controlFlow.length());
+
+        assertEquals(1, stc.insertedTags.size());
+        div.removeSharedTagContent(false);
+        assertEquals(0, stc.insertedTags.size());
+        assertNull(stc.getContentChangeListeners(div));
+        assertEquals("", controlFlow.toString());
+        stc.setContent("new content4", false);
+        assertEquals("", controlFlow.toString());
+        assertEquals("new content3", div.getFirstChild().toHtmlString());
+
+        div.subscribeTo(stc);
+        assertNull(stc.getContentChangeListeners(div));
+        assertEquals("new content4", div.getFirstChild().toHtmlString());
+        assertEquals("", controlFlow.toString());
+        stc.setContent("new content5", false);
+        assertEquals("new content5", div.getFirstChild().toHtmlString());
+        assertEquals("", controlFlow.toString());
+
+        stc.addContentChangeListener(div, changeEvent -> {
+            controlFlow.append("changeEvent.contentBefore() = ").append(changeEvent.contentBefore());
+            controlFlow.append("changeEvent.contentAfter() = ").append(changeEvent.contentAfter());
+            return null;
+        });
+        assertNotNull(stc.getContentChangeListeners(div));
+        stc.setContent("new content6", false);
+        assertEquals("new content6", div.getFirstChild().toHtmlString());
+        assertEquals("changeEvent.contentBefore() = Content[content=new content5, contentTypeHtml=false]changeEvent.contentAfter() = Content[content=new content6, contentTypeHtml=false]", controlFlow.toString());
+
+        controlFlow.delete(0, controlFlow.length());
+        assertEquals(1, stc.insertedTags.size());
+        div.removeSharedTagContent(false);
+        assertEquals(0, stc.insertedTags.size());
+        div.subscribeTo(stc);
+        stc.addContentChangeListener(div, changeEvent -> {
+            controlFlow.append("changeEvent.contentBefore() = ").append(changeEvent.contentBefore());
+            controlFlow.append("changeEvent.contentAfter() = ").append(changeEvent.contentAfter());
+            div.removeSharedTagContent(true);
+            return null;
+        });
+        assertEquals(1, stc.insertedTags.size());
+        assertEquals("", controlFlow.toString());
+        stc.setContent("new content7", true);
+        assertEquals(0, stc.insertedTags.size());
+        assertNull(div.getFirstChild());
+
+        assertEquals("changeEvent.contentBefore() = Content[content=new content6, contentTypeHtml=false]changeEvent.contentAfter() = Content[content=new content7, contentTypeHtml=true]", controlFlow.toString());
+
+        controlFlow.delete(0, controlFlow.length());
+        stc.setContent("new content8", true);
+        assertNull(div.getFirstChild());
+        assertEquals("", controlFlow.toString());
+
+        div.subscribeTo(stc);
+        controlFlow.delete(0, controlFlow.length());
+        stc.addDetachListener(div, detachEvent -> {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            controlFlow.append("(detachEvent invoked)");
+            assertNotNull(detachEvent);
+            assertEquals(div, detachEvent.sourceTag());
+            assertNotNull(detachEvent.sourceListener());
+
+            stc.getDetachListeners(div, detachListeners -> {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                controlFlow.append("(getDetachListeners invoked)");
+                assertNull(detachListeners);
+            });
+
+            final Set<SharedTagContent.DetachListener<String>> detachListeners = stc.getDetachListeners(div);
+            assertNull(detachListeners);
+            return null;
+        });
+
+        stc.getDetachListeners(div, detachListeners -> {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            controlFlow.append("(getDetachListeners 2 invoked)");
+            assertNotNull(detachListeners);
+            assertEquals(1, detachListeners.size());
+        });
+
+        assertEquals("(getDetachListeners 2 invoked)", controlFlow.toString());
+
+        controlFlow.delete(0, controlFlow.length());
+        final Set<SharedTagContent.DetachListener<String>> detachListeners = stc.getDetachListeners(div);
+        assertNotNull(detachListeners);
+        assertEquals(1, detachListeners.size());
+
+        stc.detach(false);
+        assertEquals("(detachEvent invoked)(getDetachListeners invoked)", controlFlow.toString());
+        controlFlow.delete(0, controlFlow.length());
+        stc.detach(false);
+        assertEquals("", controlFlow.toString());
+
+        while(stc.hasPendingTask()) {
+            Thread.onSpinWait();
+        }
     }
 
 }

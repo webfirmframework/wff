@@ -15,9 +15,11 @@
  */
 package com.webfirmframework.wffweb.server.page;
 
+import java.lang.ref.Cleaner;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.util.FileUtil;
 
 /**
@@ -25,20 +27,31 @@ import com.webfirmframework.wffweb.util.FileUtil;
  * @since 3.0.18
  *
  */
-class BrowserPageGCTask extends WeakReference<BrowserPage> {
+class BrowserPageGCTask extends WeakReference<BrowserPage> implements Runnable {
 
     private final String externalDrivePath;
 
     private final String subDirName;
 
+    private final Cleaner.Cleanable cleanable;
+
     BrowserPageGCTask(final BrowserPage referent, final ReferenceQueue<? super BrowserPage> q) {
         super(referent, q);
         externalDrivePath = referent.getExternalDrivePath();
         subDirName = referent.getInstanceId();
+        cleanable = WffConfiguration.secondaryCleaner().register(referent, this);
     }
 
-    void run() {
+    @Override
+    public void run() {
         FileUtil.removeDirRecursively(externalDrivePath, subDirName);
+    }
+
+    /**
+     * @since 12.0.10
+     */
+    void clean() {
+        cleanable.clean();
     }
 
 }

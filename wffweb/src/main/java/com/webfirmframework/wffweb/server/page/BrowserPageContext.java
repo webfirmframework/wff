@@ -26,7 +26,6 @@ import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -86,13 +85,6 @@ public enum BrowserPageContext {
 
     private transient final ReferenceQueue<BrowserPage> browserPageRQ;
 
-    private transient final Queue<BrowserPageGCTask> browserPageGCTasksQ;
-
-    // NB: this caching is required trigger to enqueue to ReferenceQueue when
-    // BrowserPageGCTask object is GCed
-    // also remove it from this cache when polled from browserPageRQ
-    private transient final Set<BrowserPageGCTask> browserPageGCTasksCache;
-
     /**
      * Note: Only for internal use.
      *
@@ -120,8 +112,6 @@ public enum BrowserPageContext {
         instanceIdBPForWS = new ConcurrentHashMap<>();
         instanceIdHttpSessionId = new ConcurrentHashMap<>();
         browserPageRQ = new ReferenceQueue<>();
-        browserPageGCTasksQ = new ConcurrentLinkedQueue<>();
-        browserPageGCTasksCache = ConcurrentHashMap.newKeySet(2);
 
         initConfig();
     }
@@ -170,10 +160,8 @@ public enum BrowserPageContext {
         }
 
         if (browserPage.getExternalDrivePath() != null) {
-            // NB: this caching is required trigger to enqueue to ReferenceQueue when
-            // BrowserPageGCTask object is GCed
-            // also remove it from this cache when polled from browserPageRQ
-            browserPageGCTasksCache.add(new BrowserPageGCTask(browserPage, browserPageRQ));
+            // the object is registered in Cleaner object in the constructor.
+            new BrowserPageGCTask(browserPage, browserPageRQ);
         }
 
         runAutoClean();
@@ -579,20 +567,18 @@ public enum BrowserPageContext {
             });
         }
 
-        Reference<? extends BrowserPage> gcTask;
-        while ((gcTask = browserPageRQ.poll()) != null) {
-            gcTask.clear();
-            browserPageGCTasksQ.offer((BrowserPageGCTask) gcTask);
-        }
-
         runGCTasksForBrowserPage();
     }
 
     private void runGCTasksForBrowserPage() {
-        BrowserPageGCTask gcTask;
-        while ((gcTask = browserPageGCTasksQ.poll()) != null) {
-            browserPageGCTasksCache.remove(gcTask);
-            gcTask.run();
+        // Never call gcTask.clear(), it may lead to potential race condition (We faced
+        // similar bug.).
+        // Read javadoc for more details.
+        Reference<? extends BrowserPage> gcTask;
+        while ((gcTask = browserPageRQ.poll()) != null) {
+            if (gcTask instanceof final BrowserPageGCTask browserPageGCTask) {
+                browserPageGCTask.clean();
+            }
         }
     }
 
@@ -687,11 +673,7 @@ public enum BrowserPageContext {
      * @since 12.0.1
      */
     public void runAutoClean() {
-        Reference<? extends BrowserPage> gcTask;
-        while ((gcTask = browserPageRQ.poll()) != null) {
-            gcTask.clear();
-            browserPageGCTasksQ.offer((BrowserPageGCTask) gcTask);
-        }
+        runGCTasksForBrowserPage();
         final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
         if (autoCleanTaskExecutor != null) {
             autoCleanTaskExecutor.runAsync();
@@ -954,9 +936,10 @@ public enum BrowserPageContext {
      * Checks the existence of valid {@code browserPage} in this context.
      *
      * <br>
-     * Note: this operation is not atomic. The validity is time dependent, even if
+     * Note: this operation is not atomic. The validity is time-dependent, even if
      * the method returns true {@code browserPage} could be invalid in the next
-     * moment. However, if it returns false it is trust worthy.
+     * moment. However, if it returns false it is trustworthy. Even if the browser
+     * page has hit buffer out of memory then also it will return false.
      *
      * @param browserPage
      * @return true if the given browserPage exists in the BrowserPageContext and
@@ -972,7 +955,9 @@ public enum BrowserPageContext {
         if (browserPage == null) {
             throw new NullValueException("browserPage instance cannot be null");
         }
-
+        if (browserPage.hasHitBufferOutOfMemory()) {
+            return false;
+        }
         final MinIntervalExecutor autoCleanTaskExecutor = this.autoCleanTaskExecutor;
         if (autoCleanTaskExecutor != null) {
             if ((System.currentTimeMillis() - browserPage.getLastClientAccessedTime()) >= autoCleanTaskExecutor

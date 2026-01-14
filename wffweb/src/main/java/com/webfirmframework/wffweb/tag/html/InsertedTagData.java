@@ -31,10 +31,11 @@ import com.webfirmframework.wffweb.tag.html.SharedTagContent.ContentFormatter;
  *
  * @author WFF
  * @since 3.0.6
- *
+ * @since 12.0.10 improved for better thread-safety and GC for SharedTagContent.
  */
 final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
 
+    private final NoTagWeakReference<T> noTagWeakReference;
     /**
      * it should be unique as it also acts as id
      */
@@ -49,11 +50,26 @@ final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
 
     private volatile WeakReference<ClientTasksWrapper> lastClientTaskRef;
 
-    InsertedTagData(final long ordinal, final ContentFormatter<T> formatter, final boolean subscribed) {
+    private InsertedTagData(final NoTagWeakReference<T> noTagWeakReference, final long ordinal,
+            final WeakReference<ContentFormatter<T>> formatterRef, final boolean subscribed,
+            final WeakReference<ClientTasksWrapper> lastClientTaskRef) {
         super();
+        this.noTagWeakReference = noTagWeakReference;
         this.ordinal = ordinal;
-        this.formatterRef = formatter != null ? new WeakReference<>(formatter) : null;
+        this.formatterRef = formatterRef;
         this.subscribed = subscribed;
+        this.lastClientTaskRef = lastClientTaskRef;
+    }
+
+    InsertedTagData(final NoTagWeakReference<T> noTagWeakReference, final long ordinal,
+            final ContentFormatter<T> formatter, final boolean subscribed) {
+        this(noTagWeakReference, ordinal, (formatter != null ? new WeakReference<>(formatter) : null), subscribed,
+                null);
+    }
+
+    InsertedTagData(final NoTagWeakReference<T> noTagWeakReference, final InsertedTagData<T> insertedTagData) {
+        this(noTagWeakReference, insertedTagData.ordinal, insertedTagData.formatterRef, insertedTagData.subscribed,
+                insertedTagData.lastClientTaskRef);
     }
 
     ContentFormatter<T> formatter() {
@@ -63,7 +79,7 @@ final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
         return null;
     }
 
-    long id() {
+    long ordinal() {
         return ordinal;
     }
 
@@ -86,6 +102,10 @@ final class InsertedTagData<T> implements Comparable<InsertedTagData<T>> {
      */
     void lastClientTask(final ClientTasksWrapper lastClientTask) {
         lastClientTaskRef = new WeakReference<>(lastClientTask);
+    }
+
+    public NoTagWeakReference<T> noTagWeakReference() {
+        return noTagWeakReference;
     }
 
     @Override

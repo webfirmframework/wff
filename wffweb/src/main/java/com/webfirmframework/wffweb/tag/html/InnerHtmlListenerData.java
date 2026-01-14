@@ -24,34 +24,8 @@ import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
  *
  * @author WFF
  * @since 3.0.6
+ * @since 12.0.10 converted to record class.
  *
  */
-final class InnerHtmlListenerData {
-
-    private final AbstractHtml5SharedObject sharedObject;
-
-    private final InnerHtmlAddListener.Event[] events;
-
-    private final InnerHtmlAddListener listener;
-
-    InnerHtmlListenerData(final AbstractHtml5SharedObject sharedObject, final InnerHtmlAddListener listener,
-            final Event[] events) {
-        super();
-        this.sharedObject = sharedObject;
-        this.listener = listener;
-        this.events = events;
-    }
-
-    AbstractHtml5SharedObject sharedObject() {
-        return sharedObject;
-    }
-
-    InnerHtmlAddListener.Event[] events() {
-        return events;
-    }
-
-    InnerHtmlAddListener listener() {
-        return listener;
-    }
-
+record InnerHtmlListenerData(AbstractHtml5SharedObject sharedObject, InnerHtmlAddListener listener, Event[] events) {
 }
