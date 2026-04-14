@@ -32,7 +32,7 @@ public final class StringBuilderUtil {
      * @return
      * @author WFF
      * @since 1.0.0 initial implementation.
-     * @since 3.0.15 It is unicode aware.
+     * @since 3.0.15 It is Unicode aware.
      *
      */
     public static String getTrimmedString(final StringBuilder sb) {
@@ -77,7 +77,7 @@ public final class StringBuilderUtil {
      * @return
      * @author WFF
      * @since 1.0.0 initial implementation.
-     * @since 3.0.15 It is unicode aware.
+     * @since 3.0.15 It is Unicode aware.
      *
      */
     @SuppressWarnings("unused")

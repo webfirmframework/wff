@@ -21,9 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.junit.Assert;
 import org.junit.Test;
-
-import com.webfirmframework.wffweb.lang.UnicodeString;
 
 /**
  * @author WFF
@@ -733,6 +732,63 @@ public class StringUtilTest {
         assertEquals("", StringUtil.replace("", "a".codePoints().toArray(), "b"));
         assertEquals("b", StringUtil.replace("", "".codePoints().toArray(), "b"));
         assertEquals("", StringUtil.replace("", "".codePoints().toArray(), ""));
+    }
+
+    @Test
+    public void testToCodePoints() {
+        final String inputString = "abc😀aaaaaaa😀defg";
+        int[] codePoints = StringUtil.toCodePoints(inputString);
+        Assert.assertEquals(inputString, new String(codePoints, 0, codePoints.length));
+        Assert.assertArrayEquals(inputString.codePoints().toArray(), codePoints);
+
+        codePoints = StringUtil.toCodePoints("ab1cd");
+        Assert.assertEquals("ab1cd", new String(codePoints, 0, codePoints.length));
+        Assert.assertArrayEquals("ab1cd".codePoints().toArray(), codePoints);
+
+        codePoints = StringUtil.toCodePoints("");
+        Assert.assertEquals("", new String(codePoints, 0, codePoints.length));
+        Assert.assertArrayEquals("".codePoints().toArray(), codePoints);
+    }
+
+    @Test
+    public void testSubstringByCodePointIndices() {
+        String s = "abc😀def";
+        final int length = Math.toIntExact(s.codePoints().count());
+        Assert.assertNotEquals(s.length(), length);
+        Assert.assertEquals(s, StringUtil.substringByCodePointIndices(s, 0, length));
+        Assert.assertEquals(s.substring(0, s.length()), StringUtil.substringByCodePointIndices(s, 0, length));
+        Assert.assertEquals("bc😀de", StringUtil.substringByCodePointIndices(s, 1, length - 1));
+        Assert.assertEquals(s.substring(1, s.length() - 1), StringUtil.substringByCodePointIndices(s, 1, length - 1));
+        Assert.assertEquals("bc😀de".substring(0, 0), StringUtil.substringByCodePointIndices(s, 0, 0));
+        Assert.assertEquals("a", StringUtil.substringByCodePointIndices(s, 0, 1));
+        Assert.assertEquals("c", StringUtil.substringByCodePointIndices(s, 2, 3));
+        Assert.assertEquals("😀", StringUtil.substringByCodePointIndices(s, 3, 4));
+        Assert.assertEquals("d", StringUtil.substringByCodePointIndices(s, 4, 5));
+        Assert.assertEquals("", StringUtil.substringByCodePointIndices(s, 0, 0));
+        Assert.assertEquals("".substring(0, 0), StringUtil.substringByCodePointIndices(s, 0, 0));
+    }
+
+    private String codePointsToString(int[] codePoints) {
+        return new String(codePoints, 0, codePoints.length);
+    }
+    @Test
+    public void testSubcodePointsByCodePointIndices() {
+        String s = "abc😀def";
+        final int length = Math.toIntExact(s.codePoints().count());
+        Assert.assertNotEquals(s.length(), length);
+        Assert.assertEquals(s, new String(StringUtil.subcodePointsByCodePointIndices(s, 0, length), 0, length));
+        Assert.assertEquals(s.substring(0, s.length()), codePointsToString(StringUtil.subcodePointsByCodePointIndices(s, 0, length)));
+        Assert.assertEquals("bc😀de", codePointsToString(StringUtil.subcodePointsByCodePointIndices(s, 1, length - 1)));
+        Assert.assertEquals(s.substring(1, s.length() - 1), codePointsToString(StringUtil.subcodePointsByCodePointIndices(s, 1, length - 1)));
+        Assert.assertEquals("bc😀de".substring(0, 0), codePointsToString(StringUtil.subcodePointsByCodePointIndices(s, 0, 0)));
+        Assert.assertEquals("a", codePointsToString(StringUtil.subcodePointsByCodePointIndices(s, 0, 1)));
+        Assert.assertEquals("c", codePointsToString(StringUtil.subcodePointsByCodePointIndices(s, 2, 3)));
+        Assert.assertEquals("😀", codePointsToString(StringUtil.subcodePointsByCodePointIndices(s, 3, 4)));
+        Assert.assertEquals("d", codePointsToString(StringUtil.subcodePointsByCodePointIndices(s, 4, 5)));
+        Assert.assertEquals("e", codePointsToString(StringUtil.subcodePointsByCodePointIndices(s, 5, 6)));
+        Assert.assertEquals("f", codePointsToString(StringUtil.subcodePointsByCodePointIndices(s, 6, 7)));
+        Assert.assertEquals("", codePointsToString(StringUtil.subcodePointsByCodePointIndices(s, 0, 0)));
+        Assert.assertEquals("".substring(0, 0), codePointsToString(StringUtil.subcodePointsByCodePointIndices(s, 0, 0)));
     }
 
 }

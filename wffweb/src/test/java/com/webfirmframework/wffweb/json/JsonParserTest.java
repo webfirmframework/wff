@@ -242,6 +242,11 @@ public class JsonParserTest {
         Assert.assertNotNull(parsedValue);
         Assert.assertFalse((Boolean) parsedValue);
 
+        parsedValue = jsonParser.parseJson("\"string_value\"");
+        Assert.assertNotNull(parsedValue);
+        Assert.assertTrue(parsedValue instanceof String);
+        Assert.assertEquals("string_value", parsedValue);
+
         parsedValue = jsonParser.parseJson("14");
         Assert.assertNotNull(parsedValue);
         Assert.assertTrue(parsedValue instanceof BigDecimal);
@@ -753,6 +758,161 @@ public class JsonParserTest {
         JsonNode expected = objectMapper.readTree("[null, 14, 300000.0004, 3000000003, 3000000002, null]");
         Assert.assertEquals(expected, objectMapper.readTree(listNode.toJsonString()));
         testToOutputStreamAndToBigOutputStream(listNode);
+    }
+
+    @Test
+    public void testJsonParserWithJsonValueType2() throws JsonProcessingException {
+
+        String inputJsonString = """
+                {
+                "key_for_string_value": "string_value\\u2122",
+                "key_for_string_array": ["one\\u2122", "two", "three"],
+                "key_for_number_value": 14,
+                "intArray" : [5, 4, 3, 2],
+                "longArray" : [3000000005, 3000000004, 3000000003, 3000000002],
+                "mixedIntLongNumberArray" : [null, 14, 300000.0004, 3000000003, 3000000002, null],
+                "k4imojiVal" : "Hello 🌍筀🍻👻🕻🥻!",
+                "k2" : "v2{}[]",
+                "k4nullable": {"nullAry":[null,null,null,{"k4nl":null}],"k4ObjContainingNull":{"k4nul":null},"k4null":null},
+                "otherItems": ["one:two pair", " some str ", "yes", null]
+                }
+                """;
+        JsonParser jsonParser = JsonParser.newBuilder()
+                .jsonObjectType(JsonObjectType.JSON_MAP)
+                .jsonArrayType(JsonArrayType.JSON_LIST)
+                .jsonStringValueTypeForObject(JsonStringValueType.JSON_VALUE)
+                .jsonStringValueTypeForArray(JsonStringValueType.JSON_VALUE)
+                .jsonNumberValueTypeForObject(JsonNumberValueType.JSON_VALUE)
+                .jsonNumberValueTypeForArray(JsonNumberValueType.JSON_VALUE)
+                .jsonBooleanValueTypeForObject(JsonBooleanValueType.JSON_VALUE)
+                .jsonBooleanValueTypeForArray(JsonBooleanValueType.JSON_VALUE)
+                .jsonNullValueTypeForObject(JsonNullValueType.JSON_VALUE)
+                .jsonNullValueTypeForObject(JsonNullValueType.JSON_VALUE).build();
+
+        JsonMap jsonMap = jsonParser.parseJsonObject(inputJsonString) instanceof JsonMap jsonMapTmp ? jsonMapTmp : null;
+        JsonNode jsonNode = objectMapper.readTree(inputJsonString);
+
+        Assert.assertEquals("""
+                {"mixedIntLongNumberArray":[null,14,300000.0004,3000000003,3000000002,null],"k4nullable":{"nullAry":[null,null,null,{"k4nl":null}],"k4ObjContainingNull":{"k4nul":null},"k4null":null},"key_for_string_value":"string_value\\u2122","key_for_number_value":14,"longArray":[3000000005,3000000004,3000000003,3000000002],"k2":"v2{}[]","k4imojiVal":"Hello 🌍筀🍻👻🕻🥻!","otherItems":["one:two pair"," some str ","yes",null],"key_for_string_array":["one\\u2122","two","three"],"intArray":[5,4,3,2]}
+                """.trim(), jsonMap.toJsonString());
+
+        Assert.assertNotNull(jsonMap.get("key_for_string_value"));
+        Assert.assertTrue(jsonMap.get("key_for_string_value") instanceof JsonValue);
+        if (jsonMap.getValueAsJsonValue("key_for_string_value") instanceof JsonValue) {
+            JsonValue jsonValue = jsonMap.getValueAsJsonValue("key_for_string_value");
+            Assert.assertEquals("string_value\\u2122", jsonValue.asString());
+            Assert.assertEquals("string_value\\u2122", jsonValue.asString(true));
+            Assert.assertEquals("string_value\u2122", jsonValue.asString(true, true));
+
+        } else {
+            Assert.fail("key_for_string_value is not a JsonValue");
+        }
+
+        Assert.assertTrue(jsonMap.get("key_for_string_array") instanceof JsonListNode);
+
+        if (jsonMap.getValueAsJsonListNode("key_for_string_array").getValueAsJsonValue(0) instanceof JsonValue) {
+            JsonValue jsonValue = jsonMap.getValueAsJsonListNode("key_for_string_array").getValueAsJsonValue(0); 
+            Assert.assertEquals("one\\u2122", jsonValue.asString());
+            Assert.assertEquals("one\\u2122", jsonValue.asString(true));
+            Assert.assertEquals("one\u2122", jsonValue.asString(true, true));
+        } else {
+            Assert.fail("key_for_string_array.get(0) is not a JsonValue");
+        }
+
+        Assert.assertNotNull(jsonMap.get("key_for_number_value"));
+        Assert.assertTrue(jsonMap.get("key_for_number_value") instanceof JsonValue);
+        if (jsonMap.getValueAsJsonValue("key_for_number_value") instanceof JsonValue) {
+            JsonValue jsonValue = jsonMap.getValueAsJsonValue("key_for_number_value");
+            Assert.assertEquals(JsonValueType.NUMBER, jsonValue.valueType());
+            Assert.assertEquals(14, jsonValue.asInteger().intValue());
+            Assert.assertEquals("14", jsonValue.asString());
+            Assert.assertEquals("14", jsonValue.asString(true));
+
+        } else {
+            Assert.fail("key_for_number_value is not a JsonValue");
+        }
+
+        Assert.assertTrue(jsonMap.get("intArray") instanceof JsonListNode);
+
+        if (jsonMap.getValueAsJsonListNode("intArray").getValueAsJsonValue(0) instanceof JsonValue) {
+            JsonValue jsonValue = jsonMap.getValueAsJsonListNode("intArray").getValueAsJsonValue(0);
+            Assert.assertEquals(JsonValueType.NUMBER, jsonValue.valueType());
+            Assert.assertEquals(5, jsonValue.asInteger().intValue());
+            Assert.assertEquals("5", jsonValue.asString());
+            Assert.assertEquals("5", jsonValue.asString(true));
+        } else {
+            Assert.fail("intArray.get(0) is not a JsonValue");
+        }
+
+    }
+
+    @Test
+    public void testJsonParserWithJsonValueType3() {
+        String stringValue = "string_value \\\\u2122 \\u2122 \\\\ \\nend";
+        String inputJsonObjectString = """
+                {"key_for_string_value": "%s"}
+                """.formatted(stringValue);
+        JsonParser jsonParser = JsonParser.newBuilder()
+                .jsonObjectType(JsonObjectType.JSON_MAP)
+                .jsonArrayType(JsonArrayType.JSON_LIST)
+                .jsonStringValueTypeForObject(JsonStringValueType.JSON_VALUE)
+                .jsonStringValueTypeForArray(JsonStringValueType.JSON_VALUE)
+                .jsonNumberValueTypeForObject(JsonNumberValueType.JSON_VALUE)
+                .jsonNumberValueTypeForArray(JsonNumberValueType.JSON_VALUE)
+                .jsonBooleanValueTypeForObject(JsonBooleanValueType.JSON_VALUE)
+                .jsonBooleanValueTypeForArray(JsonBooleanValueType.JSON_VALUE)
+                .jsonNullValueTypeForObject(JsonNullValueType.JSON_VALUE)
+                .jsonNullValueTypeForObject(JsonNullValueType.JSON_VALUE).build();
+
+        JsonMap jsonMap = jsonParser.parseJsonObject(inputJsonObjectString) instanceof JsonMap jsonMapTmp ? jsonMapTmp : null;
+        JsonValue jsonValue = jsonMap.getValueAsJsonValue("key_for_string_value");
+        Assert.assertEquals("""
+                {"key_for_string_value":"%s"}""".formatted(jsonValue.asString()), jsonMap.toJsonString());
+
+        jsonMap.put("key_for_string_value", new JsonValue(stringValue, JsonValueType.ENCODED_STRING));
+        Assert.assertEquals("""
+                {"key_for_string_value":"%s"}""".formatted(jsonValue.asString()), jsonMap.toJsonString());
+
+        jsonMap.put("key_for_string_value", new JsonValue(stringValue, JsonValueType.STRING));
+        Assert.assertEquals("""
+                {"key_for_string_value":"%s"}""".formatted(JsonStringUtil.placeEscapeCharInJsonStringValueIfRequired(stringValue, false)), jsonMap.toJsonString());
+
+        Assert.assertEquals("""
+                {"key_for_string_value":%s}""".formatted(JsonStringUtil.placeEscapeCharInJsonStringValueIfRequired(stringValue, true)), jsonMap.toJsonString());
+
+
+        Assert.assertEquals("\"%s\"".formatted(stringValue), new JsonValue(stringValue, JsonValueType.ENCODED_STRING).toJsonString());
+        Assert.assertEquals("\"string_value \\\\\\u2122 \\u2122 \\\\\\\\ \\nend\"", new JsonValue(stringValue, JsonValueType.STRING).toJsonString());
+    }
+
+    @Test
+    public void testJsonParserWithJsonValueType4() {
+        String stringValue = "string_value \\\\u2122 \\u2122 \\\\ \\nend";
+        String inputJsonObjectString = """
+                ["%s"]
+                """.formatted(stringValue);
+        JsonParser jsonParser = JsonParser.newBuilder()
+                .jsonObjectType(JsonObjectType.JSON_MAP)
+                .jsonArrayType(JsonArrayType.JSON_LIST)
+                .jsonStringValueTypeForObject(JsonStringValueType.JSON_VALUE)
+                .jsonStringValueTypeForArray(JsonStringValueType.JSON_VALUE)
+                .jsonNumberValueTypeForObject(JsonNumberValueType.JSON_VALUE)
+                .jsonNumberValueTypeForArray(JsonNumberValueType.JSON_VALUE)
+                .jsonBooleanValueTypeForObject(JsonBooleanValueType.JSON_VALUE)
+                .jsonBooleanValueTypeForArray(JsonBooleanValueType.JSON_VALUE)
+                .jsonNullValueTypeForObject(JsonNullValueType.JSON_VALUE)
+                .jsonNullValueTypeForObject(JsonNullValueType.JSON_VALUE).build();
+
+        JsonList jsonList = jsonParser.parseJsonArray(inputJsonObjectString) instanceof JsonList jsonListTmp ? jsonListTmp : null;
+        JsonValue jsonValue = jsonList.getValueAsJsonValue(0);
+        Assert.assertEquals("[\"%s\"]".formatted(jsonValue.asString()), jsonList.toJsonString());
+
+        jsonList.set(0, new JsonValue(stringValue, JsonValueType.ENCODED_STRING));
+        Assert.assertEquals("[\"%s\"]".formatted(jsonValue.asString()), jsonList.toJsonString());
+
+        jsonList.set(0, new JsonValue(stringValue, JsonValueType.STRING));
+        Assert.assertEquals("[\"%s\"]".formatted(JsonStringUtil.placeEscapeCharInJsonStringValueIfRequired(stringValue, false)), jsonList.toJsonString());
+        Assert.assertEquals("[%s]".formatted(JsonStringUtil.placeEscapeCharInJsonStringValueIfRequired(stringValue, true)), jsonList.toJsonString());
     }
 
     @Test

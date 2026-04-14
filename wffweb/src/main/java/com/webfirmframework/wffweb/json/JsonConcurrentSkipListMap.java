@@ -17,14 +17,16 @@ package com.webfirmframework.wffweb.json;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.SortedMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  * To parse json object string:
  *
  * <pre><code>
- * JsonMapNode jsonMap = JsonConcurrentMap.parse("""
+ * JsonMapNode jsonMap = JsonConcurrentSkipListMap.parse("""
  *             {
  *             "key" : "value",
  *             "key1" : "value1"
@@ -41,45 +43,41 @@ import java.util.concurrent.ConcurrentHashMap;
  * System.out.println("jsonString = " + jsonString); // jsonString = {"key1":"value1","key":"value"}
  * </code></pre>
  *
- * @since 12.0.4
+ * @since 12.0.11
  */
-public non-sealed class JsonConcurrentMap extends ConcurrentHashMap<String, Object>
+public non-sealed class JsonConcurrentSkipListMap extends ConcurrentSkipListMap<String, Object>
         implements JsonMapNode, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     private static final JsonParser JSON_PARSER = JsonParser.newBuilder()
-            .jsonObjectType(JsonObjectType.JSON_CONCURRENT_MAP).jsonArrayType(JsonArrayType.JSON_LINKED_LIST)
+            .jsonObjectType(JsonObjectType.JSON_CONCURRENT_SKIP_LIST_MAP).jsonArrayType(JsonArrayType.JSON_LINKED_LIST)
             .validateEscapeSequence(true).build();
 
-    public JsonConcurrentMap() {
+    public JsonConcurrentSkipListMap() {
         super();
     }
 
-    public JsonConcurrentMap(final int initialCapacity) {
-        super(initialCapacity);
+    public JsonConcurrentSkipListMap(final Comparator<? super String> comparator) {
+        super(comparator);
     }
 
-    public JsonConcurrentMap(final Map<? extends String, ?> m) {
+    public JsonConcurrentSkipListMap(final Map<? extends String, ?> m) {
         super(m);
     }
 
-    public JsonConcurrentMap(final int initialCapacity, final float loadFactor) {
-        super(initialCapacity, loadFactor);
-    }
-
-    public JsonConcurrentMap(final int initialCapacity, final float loadFactor, final int concurrencyLevel) {
-        super(initialCapacity, loadFactor, concurrencyLevel);
+    public JsonConcurrentSkipListMap(final SortedMap<String, ?> m) {
+        super(m);
     }
 
     /**
      * @param json the json string to parse
-     * @return the JsonConcurrentMap object which is equivalent to JSON object.
-     * @since 12.0.4
+     * @return the JsonConcurrentSkipListMap object which is equivalent to JSON object.
+     * @since 12.0.11
      */
-    public static JsonConcurrentMap parse(final String json) {
-        if (JSON_PARSER.parseJsonObject(json) instanceof final JsonConcurrentMap jsonMap) {
+    public static JsonConcurrentSkipListMap parse(final String json) {
+        if (JSON_PARSER.parseJsonObject(json) instanceof final JsonConcurrentSkipListMap jsonMap) {
             return jsonMap;
         }
         return null;

@@ -22,56 +22,58 @@ package com.webfirmframework.wffweb.json;
  */
 final class JsonCodePointUtil {
 
-    private static final int[] LONG_MIN_VALUE_CODE_POINTS = String.valueOf(Long.MIN_VALUE).codePoints().toArray();
+    //    private static final int[] LONG_MIN_VALUE_CODE_POINTS = String.valueOf(Long.MIN_VALUE).codePoints().toArray();
+    private static final int[] LONG_MIN_VALUE_CODE_POINTS = {45, 57, 50, 50, 51, 51, 55, 50, 48, 51, 54, 56, 53, 52, 55, 55, 53, 56, 48, 56};
 
-    private static final int[] LONG_MAX_VALUE_CODE_POINTS = String.valueOf(Long.MAX_VALUE).codePoints().toArray();
+    //    private static final int[] LONG_MAX_VALUE_CODE_POINTS = String.valueOf(Long.MAX_VALUE).codePoints().toArray();
+    private static final int[] LONG_MAX_VALUE_CODE_POINTS = {57, 50, 50, 51, 51, 55, 50, 48, 51, 54, 56, 53, 52, 55, 55, 53, 56, 48, 55};
 
-//    private static final int MINUS_CODE_POINT = "-".codePointAt(0);
+    //    private static final int MINUS_CODE_POINT = "-".codePointAt(0);
     private static final int MINUS_CODE_POINT = 45;
 
     // static final int E_UPPER_CASE_CODE_POINT = "E".codePointAt(0);
     private static final int E_UPPER_CASE_CODE_POINT = 69;
 
-//    static final int E_LOWER_CASE_CODE_POINT = "e".codePointAt(0);
+    //    static final int E_LOWER_CASE_CODE_POINT = "e".codePointAt(0);
     private static final int E_LOWER_CASE_CODE_POINT = 101;
 
-//    static final int ESCAPE_CODE_POINT = "\\".codePointAt(0);
+    //    static final int ESCAPE_CODE_POINT = "\\".codePointAt(0);
     static final int ESCAPE_CODE_POINT = 92;
 
-//    static final int DOUBLE_QUOTES_CODE_POINT = "\"".codePointAt(0);
+    //    static final int DOUBLE_QUOTES_CODE_POINT = "\"".codePointAt(0);
     static final int DOUBLE_QUOTES_CODE_POINT = 34;
 
-//    private static final int SPACE_CODE_POINT = " ".codePointAt(0);
+    //    private static final int SPACE_CODE_POINT = " ".codePointAt(0);
     private static final int SPACE_CODE_POINT = 32;
 
-//    static final int SLASH_N_CODE_POINT = "\n".codePointAt(0);
+    //    static final int SLASH_N_CODE_POINT = "\n".codePointAt(0);
     static final int SLASH_N_CODE_POINT = 10;
 
-//    static final int SLASH_R_CODE_POINT = "\r".codePointAt(0);
+    //    static final int SLASH_R_CODE_POINT = "\r".codePointAt(0);
     static final int SLASH_R_CODE_POINT = 13;
 
-//    static final int SLASH_T_CODE_POINT = "\t".codePointAt(0);
+    //    static final int SLASH_T_CODE_POINT = "\t".codePointAt(0);
     static final int SLASH_T_CODE_POINT = 9;
 
-//    static final int U_CODE_POINT = "u".codePointAt(0);
+    //    static final int U_CODE_POINT = "u".codePointAt(0);
     static final int U_CODE_POINT = 117;
 
-//    private static final int ZERO_CODE_POINT = "0".codePointAt(0);
+    //    private static final int ZERO_CODE_POINT = "0".codePointAt(0);
     private static final int ZERO_CODE_POINT = 48;
 
-//    private static final int NINE_CODE_POINT = "9".codePointAt(0);
+    //    private static final int NINE_CODE_POINT = "9".codePointAt(0);
     private static final int NINE_CODE_POINT = 57;
 
-//    private static final int A_UPPER_CASE_CODE_POINT = "A".codePointAt(0);
+    //    private static final int A_UPPER_CASE_CODE_POINT = "A".codePointAt(0);
     private static final int A_UPPER_CASE_CODE_POINT = 65;
 
-//    private static final int A_LOWER_CASE_CODE_POINT = "a".codePointAt(0);
+    //    private static final int A_LOWER_CASE_CODE_POINT = "a".codePointAt(0);
     private static final int A_LOWER_CASE_CODE_POINT = 97;
 
-//    private static final int F_UPPER_CASE_CODE_POINT = "F".codePointAt(0);
+    //    private static final int F_UPPER_CASE_CODE_POINT = "F".codePointAt(0);
     private static final int F_UPPER_CASE_CODE_POINT = 70;
 
-//    private static final int F_LOWER_CASE_CODE_POINT = "f".codePointAt(0);
+    //    private static final int F_LOWER_CASE_CODE_POINT = "f".codePointAt(0);
     private static final int F_LOWER_CASE_CODE_POINT = 102;
 
     // Note: it should be sorted in ascending order, call
@@ -115,7 +117,7 @@ final class JsonCodePointUtil {
     static int[][] splitByAnyOld(final int[] codePoints, final int delim) {
         // TODO remove this method later
         if (codePoints.length == 0) {
-            return new int[][] { codePoints };
+            return new int[][]{codePoints};
         }
 
         int[] delimPositionInit = new int[codePoints.length];
@@ -148,7 +150,7 @@ final class JsonCodePointUtil {
         }
 
         if (delimCount == 0) {
-            return new int[][] { codePoints };
+            return new int[][]{codePoints};
         }
 
         final int[] delimPositionsFinal = new int[delimCount];
@@ -214,12 +216,12 @@ final class JsonCodePointUtil {
      * @since 12.0.4
      */
     static int[][] splitByAnyRangeBound(final int[] codePoints, final int startIndex, final int endIndex,
-            final int delim) {
+                                        final int delim) {
         if (startIndex > endIndex) {
-            return new int[][] { new int[0] };
+            return new int[][]{new int[0]};
         }
         if (startIndex == endIndex && codePoints[startIndex] == delim) {
-            return new int[][] { new int[0], new int[0] };
+            return new int[][]{new int[0], new int[0]};
         }
         final int length = endIndex - startIndex + 1;
         final int[] delimPositionInit = new int[length];
@@ -250,7 +252,7 @@ final class JsonCodePointUtil {
         if (delimCount == 0) {
             final int[] part = new int[length];
             System.arraycopy(codePoints, startIndex, part, 0, part.length);
-            return new int[][] { part };
+            return new int[][]{part};
         }
 
         final int[][] splitCodePoints = new int[delimCount + 1][];
@@ -296,8 +298,8 @@ final class JsonCodePointUtil {
             return false;
         }
         return switch (c) {
-        case SPACE_CODE_POINT, SLASH_N_CODE_POINT, SLASH_T_CODE_POINT, SLASH_R_CODE_POINT -> true;
-        default -> Character.isWhitespace(c);
+            case SPACE_CODE_POINT, SLASH_N_CODE_POINT, SLASH_T_CODE_POINT, SLASH_R_CODE_POINT -> true;
+            default -> Character.isWhitespace(c);
         };
     }
 
@@ -354,7 +356,7 @@ final class JsonCodePointUtil {
                 break;
             }
         }
-        return new int[] { first, last };
+        return new int[]{first, last};
     }
 
     static int[] cut(final int[] codePoints, final int[] startEndIndices) {
@@ -376,17 +378,17 @@ final class JsonCodePointUtil {
         if (startEndIndices != null) {
             for (int i = startEndIndices[0]; i < startEndIndices[1]; i++) {
                 switch (codePoints[i]) {
-                case E_LOWER_CASE_CODE_POINT, E_UPPER_CASE_CODE_POINT -> {
-                    return true;
-                }
+                    case E_LOWER_CASE_CODE_POINT, E_UPPER_CASE_CODE_POINT -> {
+                        return true;
+                    }
                 }
             }
         }
         for (final int codePoint : codePoints) {
             switch (codePoint) {
-            case E_LOWER_CASE_CODE_POINT, E_UPPER_CASE_CODE_POINT -> {
-                return true;
-            }
+                case E_LOWER_CASE_CODE_POINT, E_UPPER_CASE_CODE_POINT -> {
+                    return true;
+                }
             }
         }
         return false;

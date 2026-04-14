@@ -30,7 +30,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class JsonMapTest {
 
@@ -87,19 +90,17 @@ public class JsonMapTest {
                    "unicode": "𝒜𝒷𝒸𝒹",
                    "large_number": 1.7976931348623157e+308,
                    "negative_number": -0.000123,
-                   "escaped_unicode": "\uD83D\uDE80 \\uWXYZ"
+                   "escaped_unicode": "\uD83D\uDE80 \\u2122"
                  }
                 """;
         JsonMapNode jsonMap = JsonParser.newBuilder().jsonObjectType(JsonObjectType.JSON_MAP).validateEscapeSequence(false).build().parseJsonObject(json) instanceof JsonMapNode mapNode ? mapNode : null;
         Assert.assertNotNull(jsonMap);
-        Assert.assertEquals("Hello, World!\\nNew Line • Bullet", jsonMap.getValueAsString("string"));
-        Assert.assertEquals(" \\\" \\\\ / \\b \\f \\n \\r \\t \\/ ", jsonMap.getValueAsString("special_chars"));
-        String value = jsonMap.getValueAsString("escaped_unicode");
-        Assert.assertEquals("\uD83D\uDE80 \\uWXYZ", value);
-        System.out.println("Arrays.toString(value.codePoints().toArray()) = " + Arrays.toString(value.codePoints().toArray()));
-        System.out.println("jsonMap.toJsonString = " + jsonMap.toJsonString());
+        Assert.assertEquals("Hello, World!\nNew Line • Bullet", jsonMap.getValueAsString("string"));
+        Assert.assertEquals(" \" \\ / \b \f \n \r \t / ", jsonMap.getValueAsString("special_chars"));
+        Assert.assertEquals("\uD83D\uDE80 \\u2122", jsonMap.getValueAsString("escaped_unicode"));
+        Assert.assertEquals("\uD83D\uDE80 \u2122", jsonMap.getValueAsString("escaped_unicode", true));
 
-        Assert.assertEquals("{\"string\":\"Hello, World!\\nNew Line • Bullet\",\"escaped_unicode\":\"\uD83D\uDE80 \\\\uWXYZ\",\"null_value\":null,\"empty_object\":{},\"negative_number\":-0.000123,\"nested_object\":{\"level1\":{\"level2\":{\"level3\":{\"key\":\"value\"}}}},\"special_chars\":\" \\\" \\\\ / \\b \\f \\n \\r \\t \\/ \",\"nested_array\":[[[[[\"deep\"]]]]],\"number\":12345678901234567890,\"empty_array\":[],\"boolean_false\":false,\"mixed_array\":[123,\"text\",true,null,{\"key\":\"value\"},[1,2,3]],\"unicode\":\"\uD835\uDC9C\uD835\uDCB7\uD835\uDCB8\uD835\uDCB9\",\"large_number\":1.7976931348623157E+308,\"boolean_true\":true}", jsonMap.toJsonString());
+        Assert.assertEquals("{\"string\":\"Hello, World!\\nNew Line • Bullet\",\"escaped_unicode\":\"\uD83D\uDE80 \\u2122\",\"null_value\":null,\"empty_object\":{},\"negative_number\":-0.000123,\"nested_object\":{\"level1\":{\"level2\":{\"level3\":{\"key\":\"value\"}}}},\"special_chars\":\" \\\" \\\\ / \\b \\f \\n \\r \\t / \",\"nested_array\":[[[[[\"deep\"]]]]],\"number\":12345678901234567890,\"empty_array\":[],\"boolean_false\":false,\"mixed_array\":[123,\"text\",true,null,{\"key\":\"value\"},[1,2,3]],\"unicode\":\"\uD835\uDC9C\uD835\uDCB7\uD835\uDCB8\uD835\uDCB9\",\"large_number\":1.7976931348623157E+308,\"boolean_true\":true}", jsonMap.toJsonString());
         testToOutputStreamAndToBigOutputStream(jsonMap);
 //         Assert.assertEquals(objectMapper.readTree(json), objectMapper.readTree(jsonMap.toString()));
 //         Assert.assertEquals(objectMapper.readTree(json).toString(), objectMapper.readTree(jsonMap.toString()).toString());
@@ -270,21 +271,61 @@ public class JsonMapTest {
         JsonLinkedMap parsed = JsonLinkedMap.parse("""
                 {
                 "key" : "value",
-                "key1" : "value1"
+                "key1" : "value1",
+                "key2:key3" : "value2\nvalue3",
+                "key4": {"key4:1": "line1\nline2"}
                 }
                 """);
         Assert.assertNotNull(parsed);
+        Assert.assertEquals("value", parsed.get("key"));
+        Assert.assertEquals("value1", parsed.get("key1"));
+        Assert.assertEquals("value2\nvalue3", parsed.get("key2:key3"));
+        Assert.assertEquals("line1\nline2", parsed.getValueAsJsonMapNode("key4").getValueAsString("key4:1"));
     }
 
     @Test
     public void testJsonConcurrentMapParse() {
-        JsonConcurrentMap parse = JsonConcurrentMap.parse("""
+        JsonConcurrentMap parsed = JsonConcurrentMap.parse("""
                 {
                 "key" : "value",
-                "key1" : "value1"
+                "key1" : "value1",
+                "key2:key3" : "value2\nvalue3",
+                "key4": {"key4:1": "line1\nline2"}
                 }
                 """);
-        Assert.assertNotNull(parse);
+        Assert.assertNotNull(parsed);
+        Assert.assertEquals("value", parsed.get("key"));
+        Assert.assertEquals("value1", parsed.get("key1"));
+        Assert.assertEquals("value2\nvalue3", parsed.get("key2:key3"));
+        Assert.assertEquals("line1\nline2", parsed.getValueAsJsonMapNode("key4").getValueAsString("key4:1"));
+    }
+
+    @Test
+    public void testJsonJsonConcurrentSkipListMapParse() {
+        final String inputJson = """
+                {
+                "key" : "value",
+                "key1" : "value1",
+                "key2:key3" : "value2\nvalue3",
+                "key4": {"key4:1": "line1\nline2"}
+                }
+                """;
+        JsonConcurrentSkipListMap parsed = JsonConcurrentSkipListMap.parse(inputJson);
+        Assert.assertNotNull(parsed);
+        Assert.assertEquals("value", parsed.get("key"));
+        Assert.assertEquals("value1", parsed.get("key1"));
+        Assert.assertEquals("value2\nvalue3", parsed.get("key2:key3"));
+        Assert.assertEquals("line1\nline2", parsed.getValueAsJsonMapNode("key4").getValueAsString("key4:1"));
+    }
+
+    @Test
+    public void testJsonMapEscapeChar() throws IOException {
+        String jsonStringFromFile = Files.readString(Path.of(Objects.requireNonNull(JsonListTest.class.getResource("testing_for_escape_char_sequence_json_sample1.json")).getPath())).strip();
+        JsonMap jsonMap = JsonMap.parse(jsonStringFromFile);
+        Assert.assertNotNull(jsonMap);
+        JsonMapNode data = jsonMap.getValueAsJsonMapNode("data");
+        Assert.assertEquals("    \uD83D\uDE80 \u2022 \u00A9 \u2122 ™ \n    ",  data.getValueAsString("escapedUnicode", true));
+        Assert.assertEquals("    \\uD83D\\uDE80 \\u2022 \\u00A9 \\u2122 ™ \n    ",  data.getValueAsString("escapedUnicode"));
     }
 
     @Test
@@ -294,14 +335,16 @@ public class JsonMapTest {
         String value = "{\\\"k\\\":\\\"v\\\"} with \\\\ \\\" ";
         String key = "key4String";
         jsonMap.put(key, value);
-        String expected = """
-                {"%s":"%s"}
-                """.formatted(key, value).strip();
-        Assert.assertEquals(expected, jsonMap.toJsonString());
+
+        Assert.assertEquals("""
+                {"key4String":"{\\"k\\":\\"v\\"} with \\\\\\\\ \\" "}""".strip(), jsonMap.toJsonString());
+        JsonMap newJsonMap = JsonMap.parse(jsonMap.toJsonString());
+        Assert.assertEquals(jsonMap.toJsonString(), newJsonMap.toJsonString());
+
         testToOutputStreamAndToBigOutputStream(jsonMap);
         jsonMap.put("anotherkey", "val\\");
         Assert.assertEquals("""
-                {"anotherkey":"val\\\\","key4String":"{\\"k\\":\\"v\\"} with \\\\ \\" "}
+                {"anotherkey":"val\\\\","key4String":"{\\"k\\":\\"v\\"} with \\\\\\\\ \\" "}
                 """.strip(), jsonMap.toJsonString());
         testToOutputStreamAndToBigOutputStream(jsonMap);
     }
@@ -400,7 +443,7 @@ public class JsonMapTest {
         Assert.assertNotNull(jsonMap);
         WffBMObject wffBMObject = jsonMap.toWffBMObject();
         Assert.assertNotNull(wffBMObject);
-        
+
         Assert.assertEquals(14, wffBMObject.getValueAsInteger("k1").intValue());
         Assert.assertEquals(1, wffBMObject.getValueAsInteger("k2").intValue());
         Assert.assertEquals(19, wffBMObject.getValueAsInteger("k3").intValue());
@@ -429,7 +472,7 @@ public class JsonMapTest {
         Assert.assertNotNull(jsonMap);
         WffBMObject wffBMObject = jsonMap.toWffBMObject();
         Assert.assertNotNull(wffBMObject);
-        
+
         Assert.assertEquals(3000000005L, wffBMObject.getValueAsLong("k1").longValue());
         Assert.assertEquals(3000000004L, wffBMObject.getValueAsLong("k2").longValue());
         Assert.assertEquals(3000000003L, wffBMObject.getValueAsLong("k3").longValue());
@@ -458,7 +501,7 @@ public class JsonMapTest {
         Assert.assertNotNull(jsonMap);
         WffBMObject wffBMObject = jsonMap.toWffBMObject();
         Assert.assertNotNull(wffBMObject);
-        
+
         Assert.assertEquals(14.01D, wffBMObject.getValueAsDouble("k1").doubleValue(), 0);
         Assert.assertEquals(1.19D, wffBMObject.getValueAsDouble("k2").doubleValue(), 0);
         Assert.assertEquals(11.9D, wffBMObject.getValueAsDouble("k3").doubleValue(), 0);
@@ -488,7 +531,7 @@ public class JsonMapTest {
         Assert.assertNotNull(jsonMap);
         WffBMObject wffBMObject = jsonMap.toWffBMObject();
         Assert.assertNotNull(wffBMObject);
-        
+
         Assert.assertEquals(14.01D, wffBMObject.getValueAsBigDecimal("k1").doubleValue(), 0);
         Assert.assertEquals(1.19D, wffBMObject.getValueAsBigDecimal("k2").doubleValue(), 0);
         Assert.assertEquals(11.9D, wffBMObject.getValueAsBigDecimal("k3").doubleValue(), 0);
@@ -596,12 +639,14 @@ public class JsonMapTest {
         //the same with wffweb JsonMap handles it properly
         JsonMap jsonMap = new JsonMap();
         jsonMap.put("k", value);
-        Assert.assertEquals(expectedJson, jsonMap.toJsonString());
+        Assert.assertEquals("{\"k\":\"\\\\\\\\\"}", jsonMap.toJsonString());
+        Assert.assertEquals(JsonLinkedMap.parse(jsonMap.toJsonString()).toJsonString(), jsonMap.toJsonString());
         testToOutputStreamAndToBigOutputStream(jsonMap);
         JsonMap jsonMap1 = new JsonMap();
         jsonMap1.put("k2", "val2");
         jsonMap.put("map", jsonMap1);
-        Assert.assertEquals("{\"k\":\"\\\\\",\"map\":{\"k2\":\"val2\"}}", jsonMap.toJsonString());
+        Assert.assertEquals("{\"k\":\"\\\\\\\\\",\"map\":{\"k2\":\"val2\"}}", jsonMap.toJsonString());
+        Assert.assertEquals(JsonLinkedMap.parse(jsonMap.toJsonString()).toJsonString(), jsonMap.toJsonString());
         testToOutputStreamAndToBigOutputStream(jsonMap);
     }
 
@@ -610,7 +655,7 @@ public class JsonMapTest {
         String json = """
                 {
                   "string" : "Hello, World!\\nNew Line • Bullet",
-                  "escaped_unicode" : "🚀 \\\\WXYZ",
+                  "escaped_unicode" : "🚀 \\u2122",
                   "null_value" : null,
                   "empty_object" : { },
                   "negative_number" : -1.23E-4,
@@ -638,7 +683,6 @@ public class JsonMapTest {
                 """;
 
         JsonMap jsonMap = JsonMap.parse(json);
-
         Assert.assertEquals(objectMapper.readTree(json), objectMapper.readTree(jsonMap.toJsonString()));
         testToOutputStreamAndToBigOutputStream(jsonMap);
 
@@ -683,6 +727,18 @@ public class JsonMapTest {
         System.out.println("(jsonStringDiff - jsonBigStringDiff) = " + (jsonStringDiff - jsonBigStringDiff));
         testToOutputStreamAndToBigOutputStream(jsonMap);
 
+    }
+
+    @Test
+    public void testLargeLong() {
+        String largeLong = "9999" + Long.MAX_VALUE;
+        String inputJson = """
+                {"key": %s}
+                """.formatted(largeLong);
+        JsonMap jsonMap = JsonMap.parse(inputJson);
+        Object o = jsonMap.get("key");
+        Assert.assertTrue(o instanceof BigDecimal);
+        Assert.assertEquals(new BigDecimal(largeLong), o);
     }
 
 }

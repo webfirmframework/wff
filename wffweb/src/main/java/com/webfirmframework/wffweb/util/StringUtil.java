@@ -76,7 +76,7 @@ public final class StringUtil {
      *
      * @param input the string to convert
      * @return the converted string having a single space in between characters.
-     * @since 3.0.15 it is unicode aware
+     * @since 3.0.15 it is Unicode aware
      */
     public static String convertSpacesToSingleSpace(final String input) {
 
@@ -88,7 +88,7 @@ public final class StringUtil {
 
         int prevCP = 0;
         boolean zerothIndex = true;
-        final int[] codePoints = input.codePoints().toArray();
+        final int[] codePoints = toCodePoints(input);
 
         for (final int c : codePoints) {
             if (zerothIndex || prevCP != SPACE_CODE_POINT || c != SPACE_CODE_POINT) {
@@ -115,7 +115,7 @@ public final class StringUtil {
      *
      * @param input the string to convert
      * @return the converted string having a single space in between characters.
-     * @since 3.0.15 it is unicode aware.
+     * @since 3.0.15 it is Unicode aware.
      */
     public static String convertWhitespacesToSingleSpace(final String input) {
 
@@ -128,7 +128,7 @@ public final class StringUtil {
         int prevCP = 0;
         boolean zerothIndex = true;
 
-        final int[] codePoints = input.codePoints().toArray();
+        final int[] codePoints = toCodePoints(input);
         for (final int c : codePoints) {
             final boolean ws = isWhitespace(c);
 
@@ -160,7 +160,7 @@ public final class StringUtil {
      *
      * @param input
      * @return the string without spaces.
-     * @since 3.0.15 it is unicode aware.
+     * @since 3.0.15 it is Unicode aware.
      */
     public static String removeSpaces(final String input) {
         if (input.length() == 0) {
@@ -169,7 +169,7 @@ public final class StringUtil {
 
         final StringBuilder builder = new StringBuilder(input.length());
 
-        final int[] codePoints = input.codePoints().toArray();
+        final int[] codePoints = toCodePoints(input);
         for (final int c : codePoints) {
             if (c != SPACE_CODE_POINT) {
                 builder.appendCodePoint(c);
@@ -185,7 +185,7 @@ public final class StringUtil {
      *
      * @param input
      * @return the string without spaces.
-     * @since 3.0.15 it is unicode aware.
+     * @since 3.0.15 it is Unicode aware.
      */
     public static String removeWhitespaces(final String input) {
 
@@ -195,7 +195,7 @@ public final class StringUtil {
 
         final StringBuilder builder = new StringBuilder(input.length());
 
-        final int[] codePoints = input.codePoints().toArray();
+        final int[] codePoints = toCodePoints(input);
         for (final int c : codePoints) {
             if (!isWhitespace(c)) {
                 builder.appendCodePoint(c);
@@ -211,7 +211,7 @@ public final class StringUtil {
      * @param input
      * @param codePoints
      * @return the string without spaces.
-     * @since 3.0.15 it is unicode aware.
+     * @since 3.0.15 it is Unicode aware.
      */
     @SuppressWarnings("unused")
     private static String removeCodePoints(final String input, final int[] codePoints) {
@@ -222,7 +222,7 @@ public final class StringUtil {
 
         final StringBuilder builder = new StringBuilder(input.length());
 
-        final int[] codePointsAry = input.codePoints().toArray();
+        final int[] codePointsAry = toCodePoints(input);
         for (final int c : codePointsAry) {
 
             boolean remove = false;
@@ -684,7 +684,7 @@ public final class StringUtil {
      * @param value
      * @return true if the given value is starting with a white space
      * @since 2.1.8 initial implementation.
-     * @since 3.0.15 unicode aware.
+     * @since 3.0.15 Unicode aware.
      */
     public static boolean startsWithWhitespace(final String value) {
         if (value.length() == 0) {
@@ -705,7 +705,7 @@ public final class StringUtil {
      * @param value
      * @return true if the given value is ending with a white space
      * @since 2.1.8 initial implementation.
-     * @since 3.0.15 unicode aware.
+     * @since 3.0.15 Unicode aware.
      */
     public static boolean endsWithWhitespace(final String value) {
         if (value.length() == 0) {
@@ -718,7 +718,7 @@ public final class StringUtil {
         // works but not sure about the performance cost.
 //      return isWhitespace(value.codePoints().reduce((first, second) -> second).getAsInt());
 
-        final int[] codePoints = value.codePoints().toArray();
+        final int[] codePoints = toCodePoints(value);
         return isWhitespace(codePoints[codePoints.length - 1]);
     }
 
@@ -727,7 +727,7 @@ public final class StringUtil {
      * @param delim  to by which the given string to be split.
      * @return the array of strings split by the given char.
      * @since 3.0.0 public
-     * @since 3.0.15 unicode aware.
+     * @since 3.0.15 Unicode aware.
      */
     public static String[] split(final String string, final char delim) {
 
@@ -767,7 +767,7 @@ public final class StringUtil {
             return new String[] { string };
         }
 
-        final int[] codePoints = string.codePoints().toArray();
+        final int[] codePoints = toCodePoints(string);
 
         final int[] delimPositionInit = new int[codePoints.length];
 
@@ -903,7 +903,7 @@ public final class StringUtil {
         if (string.length() == 0) {
             return false;
         }
-        final int[] codePoints = string.codePoints().toArray();
+        final int[] codePoints = toCodePoints(string);
         return codePoints[codePoints.length - 1] == c;
     }
 
@@ -971,14 +971,14 @@ public final class StringUtil {
      * @param string
      * @return true if the given string contains space char.
      * @since 3.0.1 initial implementation.
-     * @since 3.0.15 it is unicode aware.
+     * @since 3.0.15 it is Unicode aware.
      */
     public static boolean containsWhitespace(final String string) {
         if (string.length() == 0) {
             return false;
         }
 
-        final int[] codePoints = string.codePoints().toArray();
+        final int[] codePoints = toCodePoints(string);
 
         for (int i = 0; i < codePoints.length; i++) {
             if (isWhitespace(codePoints[i])) {
@@ -1130,7 +1130,7 @@ public final class StringUtil {
      * @return true if the given string doesn't contain any char other than
      *         whitespace.
      * @since 3.0.1 initial implementation.
-     * @since 3.0.15 it is unicode aware.
+     * @since 3.0.15 it is Unicode aware.
      * @since 12.0.0-beta.3 it is String.isBlank.
      */
     public static boolean isBlank(final String s) {
@@ -1156,7 +1156,7 @@ public final class StringUtil {
      * @param s
      * @return the striped string
      * @since 3.0.1 initial implementation.
-     * @since 3.0.15 it is unicode aware.
+     * @since 3.0.15 it is Unicode aware.
      * @since 12.0.0-beta.3 it is String.strip.
      */
     public static String strip(final String s) {
@@ -1203,7 +1203,7 @@ public final class StringUtil {
      * @since 3.0.15
      */
     public static String replace(final String s, final String it, final String with) {
-        return replace(s, it.codePoints().toArray(), with);
+        return replace(s, toCodePoints(it), with);
     }
 
     /**
@@ -1220,7 +1220,7 @@ public final class StringUtil {
             return s;
         }
 
-        final int[] codePoints = s.codePoints().toArray();
+        final int[] codePoints = toCodePoints(s);
 
         if (codePoints.length == codePointsSequence.length && Arrays.equals(codePoints, codePointsSequence)) {
             return with;
@@ -1292,7 +1292,7 @@ public final class StringUtil {
             return new String[] { string };
         }
 
-        final int[] codePoints = string.codePoints().toArray();
+        final int[] codePoints = toCodePoints(string);
 
         int[] delimPositionInit = new int[codePoints.length];
 
@@ -1347,6 +1347,60 @@ public final class StringUtil {
         }
 
         return splittedStrings;
+    }
+
+    /**
+     * @param string the input string.
+     * @return the code points array from the string.
+     * @since 12.0.11
+     */
+    public static int[] toCodePoints(final String string) {
+        final int length = string.length();
+        if (length == 0) {
+            return new int[0];
+        }
+        final int[] codePoints = new int[string.codePointCount(0, length)];
+        for (int i = 0, j = 0; i < codePoints.length; i++) {
+            final int codePoint = string.codePointAt(j);
+            codePoints[i] = codePoint;
+            j += Character.charCount(codePoint);
+        }
+        return codePoints;
+    }
+
+    /**
+     * For future dev.
+     * @param string the input string.
+     * @param startIndex the beginning code point index, inclusive. It is NOT char index.
+     * @param exclusiveEndIndex the ending code point index, exclusive. It is NOT char index.
+     * @return the substring.
+     * @since 12.0.11
+     */
+    static String substringByCodePointIndices(final String string, final int startIndex, final int exclusiveEndIndex) {
+        final int a = string.offsetByCodePoints(0, startIndex);
+        return string.substring(a, string.offsetByCodePoints(a, exclusiveEndIndex - startIndex));
+    }
+
+    /**
+     * For future dev.
+     * @param string the input string
+     * @param startIndex the beginning index, inclusive. It is NOT char index.
+     * @param exclusiveEndIndex the ending index, exclusive. It is NOT char index.
+     * @return the substring code points.
+     * @since 12.0.11
+     */
+    static int[] subcodePointsByCodePointIndices(final String string, final int startIndex, final int exclusiveEndIndex) {
+        final int length = exclusiveEndIndex - startIndex;
+        if (length == 0) {
+            return new int[0];
+        }
+        final int[] codePoints = new int[length];
+        for (int i = 0, j = string.offsetByCodePoints(0, startIndex); i < codePoints.length; i++) {
+            final int codePoint = string.codePointAt(j);
+            codePoints[i] = codePoint;
+            j += Character.charCount(codePoint);
+        }
+        return codePoints;
     }
 
 }

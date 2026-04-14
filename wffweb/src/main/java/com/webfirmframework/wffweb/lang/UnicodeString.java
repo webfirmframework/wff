@@ -15,12 +15,14 @@
  */
 package com.webfirmframework.wffweb.lang;
 
+import com.webfirmframework.wffweb.util.StringUtil;
+
 import java.util.Arrays;
 import java.util.stream.IntStream;
 import java.util.stream.IntStream.Builder;
 
 /**
- * An immutable class for unicode based string manipulation.
+ * An immutable class for Unicode based string manipulation.
  *
  * @author WFF
  * @since 3.0.15
@@ -67,7 +69,7 @@ public final class UnicodeString {
     private int hash;
 
     public UnicodeString(final String s) {
-        this(s != null ? s.codePoints().toArray() : null);
+        this(s != null ? StringUtil.toCodePoints(s) : null);
     }
 
     public UnicodeString(final int[] codePoints) {
@@ -76,7 +78,7 @@ public final class UnicodeString {
     }
 
     /**
-     * @return the number of unicode chars contained in it or -1 if it is a null
+     * @return the number of Unicode chars contained in it or -1 if it is a null
      *         UnicodeString.
      */
     public int length() {
@@ -185,7 +187,7 @@ public final class UnicodeString {
     }
 
     /**
-     * @param c the unicode char code
+     * @param c the Unicode char code
      * @return the index
      * @since 3.0.15
      */
@@ -215,7 +217,7 @@ public final class UnicodeString {
     }
 
     /**
-     * @param c c the unicode char code
+     * @param c c the Unicode char code
      * @return the index from last
      * @since 3.0.15
      */
@@ -238,7 +240,7 @@ public final class UnicodeString {
      * @since 3.0.15
      */
     public UnicodeString replace(final String forString, final String with) {
-        return replace(codePoints, forString.codePoints().toArray(), with.codePoints().toArray());
+        return replace(codePoints, StringUtil.toCodePoints(forString), StringUtil.toCodePoints(with));
     }
 
     /**
@@ -296,7 +298,7 @@ public final class UnicodeString {
     /**
      * @param delim to by which the given string to be split. It is the code point
      *              value of char.
-     * @return the array of UnicodeStrings split by the given unicode char code.
+     * @return the array of UnicodeStrings split by the given Unicode char code.
      * @since 3.0.15
      */
     public UnicodeString[] split(final int delim) {
@@ -305,7 +307,7 @@ public final class UnicodeString {
 
     /**
      * @param delims to by which the given string to be split. It is the code point
-     *               values of chars, i.e. unicode values.
+     *               values of chars, i.e. Unicode values.
      * @return the array of UnicodeStrings split by the given chars.
      * @since 3.0.15
      */

@@ -35,9 +35,14 @@ final class JsonSection {
 
     private List<Object> jsonArray;
 
+    //not used anywhere
     private String jsonStringPart;
 
+    private int[] jsonStringPartCodePoints;
+
     private Object jsonObjectArrayOrStringPart;
+
+    private Object jsonObjectOrArray;
 
     private int endIndex = -1;
 
@@ -74,6 +79,7 @@ final class JsonSection {
     void setJsonObject(final Map<String, Object> jsonObject) {
         this.jsonObject = jsonObject;
         jsonObjectArrayOrStringPart = jsonObject;
+        jsonObjectOrArray = jsonObject;
     }
 
     List<Object> getJsonArray() {
@@ -83,19 +89,34 @@ final class JsonSection {
     void setJsonArray(final List<Object> jsonArray) {
         this.jsonArray = jsonArray;
         jsonObjectArrayOrStringPart = jsonArray;
+        jsonObjectOrArray = jsonArray;
     }
 
+    @Deprecated(since = "12.0.11", forRemoval = true)
     String getJsonStringPart() {
         return jsonStringPart;
     }
 
+    @Deprecated(since = "12.0.11", forRemoval = true)
     void setJsonStringPart(final String jsonStringPart) {
         this.jsonStringPart = jsonStringPart;
         jsonObjectArrayOrStringPart = jsonStringPart;
     }
 
+    @Deprecated(since = "12.0.11", forRemoval = true)
     Object getJsonObjectArrayOrStringPart() {
         return jsonObjectArrayOrStringPart;
     }
 
+    void setJsonStringPartCodePoints(final int[] jsonStringPartCodePoints) {
+        this.jsonStringPartCodePoints = jsonStringPartCodePoints;
+    }
+
+    int[] getJsonStringPartCodePoints() {
+        return jsonStringPartCodePoints;
+    }
+
+    Object getJsonObjectOrArray() {
+        return jsonObjectOrArray;
+    }
 }

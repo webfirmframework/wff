@@ -15,17 +15,12 @@
  */
 package com.webfirmframework.wffweb.json;
 
-import java.math.BigDecimal;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-
 import com.webfirmframework.wffweb.InvalidUsageException;
+import com.webfirmframework.wffweb.util.StringUtil;
+
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Refer {@link #newBuilder()} for creating object with custom config.
@@ -33,34 +28,40 @@ import com.webfirmframework.wffweb.InvalidUsageException;
  * @since 12.0.6
  */
 public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayType,
-        boolean jsonNumberArrayUniformValueType, JsonNumberValueType jsonNumberValueTypeForObject,
-        JsonNumberValueType jsonNumberValueTypeForArray, JsonStringValueType jsonStringValueTypeForObject,
-        JsonStringValueType jsonStringValueTypeForArray, JsonBooleanValueType jsonBooleanValueTypeForObject,
-        JsonBooleanValueType jsonBooleanValueTypeForArray, JsonNullValueType jsonNullValueTypeForObject,
-        JsonNullValueType jsonNullValueTypeForArray, boolean validateEscapeSequence,
-        Supplier<Map<String, Object>> jsonMapFactory, Supplier<List<Object>> jsonListFactory) {
+                         boolean jsonNumberArrayUniformValueType, JsonNumberValueType jsonNumberValueTypeForObject,
+                         JsonNumberValueType jsonNumberValueTypeForArray,
+                         JsonStringValueType jsonStringValueTypeForObject,
+                         JsonStringValueType jsonStringValueTypeForArray,
+                         JsonBooleanValueType jsonBooleanValueTypeForObject,
+                         JsonBooleanValueType jsonBooleanValueTypeForArray,
+                         JsonNullValueType jsonNullValueTypeForObject,
+                         JsonNullValueType jsonNullValueTypeForArray, boolean validateEscapeSequence,
+                         Supplier<Map<String, Object>> jsonMapFactory, Supplier<List<Object>> jsonListFactory) {
 
     // private static final int CURLY_BRACE_START_CODE_POINT = "{".codePointAt(0);
     private static final int CURLY_BRACE_START_CODE_POINT = 123;
 
-//    private static final int CURLY_BRACE_END_CODE_POINT = "}".codePointAt(0);
+    //    private static final int CURLY_BRACE_END_CODE_POINT = "}".codePointAt(0);
     private static final int CURLY_BRACE_END_CODE_POINT = 125;
 
-//    private static final int SQUARE_BRACKET_START_CODE_POINT = "[".codePointAt(0);
+    //    private static final int SQUARE_BRACKET_START_CODE_POINT = "[".codePointAt(0);
     private static final int SQUARE_BRACKET_START_CODE_POINT = 91;
 
-//    private static final int SQUARE_BRACKET_END_CODE_POINT = "]".codePointAt(0);
+    //    private static final int SQUARE_BRACKET_END_CODE_POINT = "]".codePointAt(0);
     private static final int SQUARE_BRACKET_END_CODE_POINT = 93;
 
-    private static final int COMMA_CODE_POINT = ",".codePointAt(0);
+//    private static final int COMMA_CODE_POINT = ",".codePointAt(0);
+    private static final int COMMA_CODE_POINT = 44;
 
-    private static final int COLON_CODE_POINT = ":".codePointAt(0);
+//    private static final int COLON_CODE_POINT = ":".codePointAt(0);
+    private static final int COLON_CODE_POINT = 58;
 
     private static final int ESCAPE_CODE_POINT = JsonCodePointUtil.ESCAPE_CODE_POINT;
 
     private static final int DOUBLE_QUOTES_CODE_POINT = JsonCodePointUtil.DOUBLE_QUOTES_CODE_POINT;
 
-    private static final int[] NULL_CODE_POINTS = "null".codePoints().toArray();
+//    private static final int[] NULL_CODE_POINTS = "null".codePoints().toArray();
+    private static final int[] NULL_CODE_POINTS = { 110, 117, 108, 108 };
 
     // Note: it should be sorted in ascending order, call
     // Arrays.sort(JSON_NODE_DELIMS_SORTED_ASC); to dynamically sort
@@ -177,14 +178,14 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
     }
 
     public JsonParser(final JsonObjectType jsonObjectType, final JsonArrayType jsonArrayType,
-            final boolean jsonNumberArrayUniformValueType, final JsonNumberValueType jsonNumberValueTypeForObject,
-            final JsonNumberValueType jsonNumberValueTypeForArray,
-            final JsonStringValueType jsonStringValueTypeForObject,
-            final JsonStringValueType jsonStringValueTypeForArray,
-            final JsonBooleanValueType jsonBooleanValueTypeForObject,
-            final JsonBooleanValueType jsonBooleanValueTypeForArray, final JsonNullValueType jsonNullValueTypeForObject,
-            final JsonNullValueType jsonNullValueTypeForArray, final boolean validateEscapeSequence,
-            final Supplier<Map<String, Object>> jsonMapFactory, final Supplier<List<Object>> jsonListFactory) {
+                      final boolean jsonNumberArrayUniformValueType, final JsonNumberValueType jsonNumberValueTypeForObject,
+                      final JsonNumberValueType jsonNumberValueTypeForArray,
+                      final JsonStringValueType jsonStringValueTypeForObject,
+                      final JsonStringValueType jsonStringValueTypeForArray,
+                      final JsonBooleanValueType jsonBooleanValueTypeForObject,
+                      final JsonBooleanValueType jsonBooleanValueTypeForArray, final JsonNullValueType jsonNullValueTypeForObject,
+                      final JsonNullValueType jsonNullValueTypeForArray, final boolean validateEscapeSequence,
+                      final Supplier<Map<String, Object>> jsonMapFactory, final Supplier<List<Object>> jsonListFactory) {
         this.jsonObjectType = jsonObjectType != null ? jsonObjectType : JsonObjectType.UNMODIFIABLE_MAP;
         this.jsonArrayType = jsonArrayType != null ? jsonArrayType : JsonArrayType.UNMODIFIABLE_LIST;
         this.jsonNumberArrayUniformValueType = jsonNumberArrayUniformValueType;
@@ -215,13 +216,13 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
      * @since 12.0.4
      */
     public JsonParser(final JsonObjectType jsonObjectType, final JsonArrayType jsonArrayType,
-            final boolean jsonNumberArrayUniformValueType, final JsonNumberValueType jsonNumberValueTypeForObject,
-            final JsonNumberValueType jsonNumberValueTypeForArray,
-            final JsonStringValueType jsonStringValueTypeForObject,
-            final JsonStringValueType jsonStringValueTypeForArray,
-            final JsonBooleanValueType jsonBooleanValueTypeForObject,
-            final JsonBooleanValueType jsonBooleanValueTypeForArray, final JsonNullValueType jsonNullValueTypeForObject,
-            final JsonNullValueType jsonNullValueTypeForArray, final boolean validateEscapeSequence) {
+                      final boolean jsonNumberArrayUniformValueType, final JsonNumberValueType jsonNumberValueTypeForObject,
+                      final JsonNumberValueType jsonNumberValueTypeForArray,
+                      final JsonStringValueType jsonStringValueTypeForObject,
+                      final JsonStringValueType jsonStringValueTypeForArray,
+                      final JsonBooleanValueType jsonBooleanValueTypeForObject,
+                      final JsonBooleanValueType jsonBooleanValueTypeForArray, final JsonNullValueType jsonNullValueTypeForObject,
+                      final JsonNullValueType jsonNullValueTypeForArray, final boolean validateEscapeSequence) {
         this(jsonObjectType, jsonArrayType, jsonNumberArrayUniformValueType, jsonNumberValueTypeForObject,
                 jsonNumberValueTypeForArray, jsonStringValueTypeForObject, jsonStringValueTypeForArray,
                 jsonBooleanValueTypeForObject, jsonBooleanValueTypeForArray, jsonNullValueTypeForObject,
@@ -386,41 +387,42 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
 
     private Map<String, Object> newMap(final int length) {
         return switch (jsonObjectType) {
-        case JSON_MAP, UNMODIFIABLE_MAP -> new JsonMap(length);
-        case JSON_CONCURRENT_MAP -> new JsonConcurrentMap(length);
-        case JSON_LINKED_MAP -> new JsonLinkedMap(length);
-        case CUSTOM_JSON_MAP -> {
-            if (jsonMapFactory != null) {
-                final Map<String, Object> map = jsonMapFactory.get();
-                if (map != null) {
-                    yield map;
+            case JSON_MAP, UNMODIFIABLE_MAP -> new JsonMap(length);
+            case JSON_CONCURRENT_MAP -> new JsonConcurrentMap(length);
+            case JSON_CONCURRENT_SKIP_LIST_MAP -> new JsonConcurrentSkipListMap();
+            case JSON_LINKED_MAP -> new JsonLinkedMap(length);
+            case CUSTOM_JSON_MAP -> {
+                if (jsonMapFactory != null) {
+                    final Map<String, Object> map = jsonMapFactory.get();
+                    if (map != null) {
+                        yield map;
+                    }
                 }
+                throw new InvalidUsageException(
+                        "If JsonObjectType.JSON_CUSTOM_MAP is used jsonMapFactory should be provided and the supplier should always return an object.");
             }
-            throw new InvalidUsageException(
-                    "If JsonObjectType.JSON_CUSTOM_MAP is used jsonMapFactory should be provided and the supplier should always return an object.");
-        }
         };
     }
 
     private List<Object> newList(final int initialCapacity) {
         return switch (jsonArrayType) {
-        case JSON_LIST, UNMODIFIABLE_LIST -> new JsonList(initialCapacity);
-        case JSON_LINKED_LIST -> new JsonLinkedList();
-        case CUSTOM_JSON_LIST -> {
-            if (jsonListFactory != null) {
-                final List<Object> list = jsonListFactory.get();
-                if (list != null) {
-                    yield list;
+            case JSON_LIST, UNMODIFIABLE_LIST -> new JsonList(initialCapacity);
+            case JSON_LINKED_LIST -> new JsonLinkedList();
+            case CUSTOM_JSON_LIST -> {
+                if (jsonListFactory != null) {
+                    final List<Object> list = jsonListFactory.get();
+                    if (list != null) {
+                        yield list;
+                    }
                 }
+                throw new InvalidUsageException(
+                        "If JsonArrayType.JSON_CUSTOM_LIST is used jsonListFactory should be provided and the supplier should always return an object.");
             }
-            throw new InvalidUsageException(
-                    "If JsonArrayType.JSON_CUSTOM_LIST is used jsonListFactory should be provided and the supplier should always return an object.");
-        }
         };
     }
 
     private Map<String, Object> parseJsonObject(final int[] jsonCodePoints, final int startIndex, final int endIndex,
-            final List<JsonSection> idToJsonSection) {
+                                                final List<JsonSection> idToJsonSection) {
         if (isJsonObject(jsonCodePoints, startIndex, endIndex)) {
 
             final int length = endIndex - startIndex + 1;
@@ -477,7 +479,8 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
                     final JsonSection jsonSection = idToJsonSection.get(indexOfId);
                     idToJsonSection.set(indexOfId, null);
                     if (JsonSectionType.STRING.equals(jsonSection.jsonSectionType())) {
-                        key = jsonSection.getJsonStringPart();
+                        final int[] keyCodePoints = jsonSection.getJsonStringPartCodePoints();
+                        key = JsonStringUtil.replaceEscapeCharSequenceWithJavaChars(keyCodePoints, 0, keyCodePoints.length);
                     } else {
                         throw new IllegalJsonFormatException(
                                 "Invalid JSON! It contains illegal JSON object key format!");
@@ -491,7 +494,12 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
                     final int indexOfId = Math.negateExact(id) - 1;
                     final JsonSection jsonSection = idToJsonSection.get(indexOfId);
                     idToJsonSection.set(indexOfId, null);
-                    previous = keyToValue.put(key, jsonSection.getJsonObjectArrayOrStringPart());
+                    if (JsonSectionType.STRING.equals(jsonSection.jsonSectionType())) {
+                        final int[] jsonStringPartCodePoints = jsonSection.getJsonStringPartCodePoints();
+                        previous = keyToValue.put(key, jsonStringValueTypeForObject.parse(jsonStringPartCodePoints));
+                    } else {
+                        previous = keyToValue.put(key, jsonSection.getJsonObjectOrArray());
+                    }
                 } else if (isNullValue(valuePartCodePoints, valuePartCodePointsIndices)) {
                     previous = keyToValue.put(key, jsonNullValueTypeForObject.nullValue());
                 } else if (isBooleanValue(valuePartCodePoints, valuePartCodePointsIndices)) {
@@ -514,7 +522,7 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
     }
 
     private List<Object> parseJsonArray(final int[] jsonCodePoints, final int startIndex, final int endIndex,
-            final List<JsonSection> idToJsonSection) {
+                                        final List<JsonSection> idToJsonSection) {
         if (isJsonArray(jsonCodePoints, startIndex, endIndex)) {
             final int length = endIndex - startIndex + 1;
             if (length == 2) {
@@ -546,8 +554,12 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
                     final int indexOfId = Math.negateExact(id) - 1;
                     final JsonSection jsonSection = idToJsonSection.get(indexOfId);
                     idToJsonSection.set(indexOfId, null);
-                    final Object v = jsonSection.getJsonObjectArrayOrStringPart();
-                    values.add(v);
+                    if (JsonSectionType.STRING.equals(jsonSection.jsonSectionType())) {
+                        final int[] jsonStringPartCodePoints = jsonSection.getJsonStringPartCodePoints();
+                        values.add(jsonStringValueTypeForArray.parse(jsonStringPartCodePoints));
+                    } else {
+                        values.add(jsonSection.getJsonObjectOrArray());
+                    }
                     nullOrNumberValuesOnly = false;
                 } else if (isNullValue(fullPartValueCodePoints, fullPartValueCodePointsIndices)) {
                     values.add(jsonNullValueTypeForArray.nullValue());
@@ -562,7 +574,7 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
             }
             if (jsonNumberArrayUniformValueType && nullOrNumberValuesOnly
                     && (JsonNumberValueType.AUTO_INTEGER_LONG_BIG_DECIMAL.equals(jsonNumberValueTypeForArray)
-                            || JsonNumberValueType.AUTO_INTEGER_LONG_DOUBLE.equals(jsonNumberValueTypeForArray))) {
+                    || JsonNumberValueType.AUTO_INTEGER_LONG_DOUBLE.equals(jsonNumberValueTypeForArray))) {
 
                 boolean containsMixedNumberTypes = false;
                 boolean convertToLong = false;
@@ -640,7 +652,7 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
         if (length <= 0) {
             return "";
         }
-        return new String(codePoints, startIndexAfterDoubleQuote, length);
+        return JsonStringUtil.replaceEscapeCharSequenceWithJavaChars(codePoints, startIndexAfterDoubleQuote, length);
     }
 
     private JsonSection buildOuterMostJsonSection(final int[] jsonCodePoints, final int[] startEndIndices) {
@@ -690,79 +702,85 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
                 continue;
             }
             switch (codePoint) {
-            case CURLY_BRACE_START_CODE_POINT -> {
-                nodeId--;
-                final JsonSection jsonSection = new JsonSection(nodeId, JsonSectionType.OBJECT, i);
-                objectNodeDeque.offerFirst(jsonSection);
-                idToJsonSection.add(jsonSection);
-
-                if (outerMostJsonSection == null) {
-                    outerMostJsonSection = jsonSection;
-                }
-            }
-            case CURLY_BRACE_END_CODE_POINT -> {
-                final JsonSection jsonSection = objectNodeDeque.poll();
-                if (jsonSection == null || (jsonSection.startIndex() == 0 && i != endIndex)) {
-                    throw new IllegalJsonFormatException("Invalid JSON! It contains invalid JSON object.");
-                }
-                jsonSection.setEndIndex(i);
-                jsonSection.setJsonObject(parseJsonObject(jsonCodePoints, jsonSection.startIndex(),
-                        jsonSection.getEndIndex(), idToJsonSection));
-                for (int j = idToJsonSection.size() - 1; j > 0; j--) {
-                    if (idToJsonSection.get(j) == null) {
-                        idToJsonSection.remove(j);
-                        nodeId = -j;
-                    } else {
-                        break;
-                    }
-                }
-                fillJsonSectionId(jsonCodePoints, jsonSection);
-            }
-            case SQUARE_BRACKET_START_CODE_POINT -> {
-                nodeId--;
-                final JsonSection jsonSection = new JsonSection(nodeId, JsonSectionType.ARRAY, i);
-                arrayNodeDeque.offerFirst(jsonSection);
-                idToJsonSection.add(jsonSection);
-                if (outerMostJsonSection == null) {
-                    outerMostJsonSection = jsonSection;
-                }
-            }
-            case SQUARE_BRACKET_END_CODE_POINT -> {
-                final JsonSection jsonSection = arrayNodeDeque.poll();
-                if (jsonSection == null || (jsonSection.startIndex() == 0 && i != endIndex)) {
-                    throw new IllegalJsonFormatException("Invalid JSON! It contains invalid JSON array.");
-                }
-                jsonSection.setEndIndex(i);
-                jsonSection.setJsonArray(parseJsonArray(jsonCodePoints, jsonSection.startIndex(),
-                        jsonSection.getEndIndex(), idToJsonSection));
-                for (int j = idToJsonSection.size() - 1; j > 0; j--) {
-                    if (idToJsonSection.get(j) == null) {
-                        idToJsonSection.remove(j);
-                        nodeId = -j;
-                    } else {
-                        break;
-                    }
-                }
-                fillJsonSectionId(jsonCodePoints, jsonSection);
-            }
-            case DOUBLE_QUOTES_CODE_POINT -> {
-                if (jsonStringNodeIsNull) {
+                case CURLY_BRACE_START_CODE_POINT -> {
                     nodeId--;
-                    final JsonSection jsonSection = new JsonSection(nodeId, JsonSectionType.STRING, i);
-                    jsonStringNode = jsonSection;
+                    final JsonSection jsonSection = new JsonSection(nodeId, JsonSectionType.OBJECT, i);
+                    objectNodeDeque.offerFirst(jsonSection);
+                    idToJsonSection.add(jsonSection);
+
+                    if (outerMostJsonSection == null) {
+                        outerMostJsonSection = jsonSection;
+                    }
+                }
+                case CURLY_BRACE_END_CODE_POINT -> {
+                    final JsonSection jsonSection = objectNodeDeque.poll();
+                    if (jsonSection == null || (jsonSection.startIndex() == 0 && i != endIndex)) {
+                        throw new IllegalJsonFormatException("Invalid JSON! It contains invalid JSON object.");
+                    }
+                    jsonSection.setEndIndex(i);
+                    jsonSection.setJsonObject(parseJsonObject(jsonCodePoints, jsonSection.startIndex(),
+                            jsonSection.getEndIndex(), idToJsonSection));
+                    for (int j = idToJsonSection.size() - 1; j > 0; j--) {
+                        if (idToJsonSection.get(j) == null) {
+                            idToJsonSection.remove(j);
+                            nodeId = -j;
+                        } else {
+                            break;
+                        }
+                    }
+                    fillJsonSectionId(jsonCodePoints, jsonSection);
+                }
+                case SQUARE_BRACKET_START_CODE_POINT -> {
+                    nodeId--;
+                    final JsonSection jsonSection = new JsonSection(nodeId, JsonSectionType.ARRAY, i);
+                    arrayNodeDeque.offerFirst(jsonSection);
                     idToJsonSection.add(jsonSection);
                     if (outerMostJsonSection == null) {
                         outerMostJsonSection = jsonSection;
                     }
-                } else {
-                    final JsonSection jsonSection = jsonStringNode;
+                }
+                case SQUARE_BRACKET_END_CODE_POINT -> {
+                    final JsonSection jsonSection = arrayNodeDeque.poll();
+                    if (jsonSection == null || (jsonSection.startIndex() == 0 && i != endIndex)) {
+                        throw new IllegalJsonFormatException("Invalid JSON! It contains invalid JSON array.");
+                    }
                     jsonSection.setEndIndex(i);
-                    jsonStringNode = null;
-                    jsonSection.setJsonStringPart(
-                            parseJsonString(jsonCodePoints, jsonSection.startIndex(), jsonSection.getEndIndex()));
+                    jsonSection.setJsonArray(parseJsonArray(jsonCodePoints, jsonSection.startIndex(),
+                            jsonSection.getEndIndex(), idToJsonSection));
+                    for (int j = idToJsonSection.size() - 1; j > 0; j--) {
+                        if (idToJsonSection.get(j) == null) {
+                            idToJsonSection.remove(j);
+                            nodeId = -j;
+                        } else {
+                            break;
+                        }
+                    }
                     fillJsonSectionId(jsonCodePoints, jsonSection);
                 }
-            }
+                case DOUBLE_QUOTES_CODE_POINT -> {
+                    if (jsonStringNodeIsNull) {
+                        nodeId--;
+                        final JsonSection jsonSection = new JsonSection(nodeId, JsonSectionType.STRING, i);
+                        jsonStringNode = jsonSection;
+                        idToJsonSection.add(jsonSection);
+                        if (outerMostJsonSection == null) {
+                            outerMostJsonSection = jsonSection;
+                        }
+                    } else {
+                        final JsonSection jsonSection = jsonStringNode;
+                        jsonSection.setEndIndex(i);
+                        jsonStringNode = null;
+                        final int startIndexAfterDoubleQuote = jsonSection.startIndex() + 1;
+                        final int endIndexBeforeDoubleQuote = jsonSection.getEndIndex() - 1;
+                        final int length = endIndexBeforeDoubleQuote - startIndexAfterDoubleQuote + 1;
+                        final int[] stringPartCodePoints = length > 0 ? new int[length] : new int[0];
+                        if (length > 0) {
+                            System.arraycopy(jsonCodePoints, startIndexAfterDoubleQuote, stringPartCodePoints, 0, length);
+                        }
+                        jsonSection.setJsonStringPartCodePoints(stringPartCodePoints);
+                        fillJsonSectionId(jsonCodePoints, jsonSection);
+                    }
+                }
             }
         }
 
@@ -798,7 +816,7 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
      * @since 12.0.4
      */
     public Object parseJson(final String json) {
-        final int[] jsonCodePoints = json.codePoints().toArray();
+        final int[] jsonCodePoints = StringUtil.toCodePoints(json);
         final int[] startEndIndices = JsonCodePointUtil.findFirstAndLastNonWhitespaceIndices(jsonCodePoints);
         final boolean isBooleanValue = isBooleanValue(jsonCodePoints, startEndIndices);
         final boolean notJsonArrayObjectStringValue = !isJsonString(jsonCodePoints, startEndIndices)
@@ -831,7 +849,8 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
             return outerMostJsonSection.getJsonArray();
         }
         if (JsonSectionType.STRING.equals(outerMostJsonSection.jsonSectionType())) {
-            return outerMostJsonSection.getJsonStringPart();
+            final int[] jsonStringPartCodePoints = outerMostJsonSection.getJsonStringPartCodePoints();
+            return JsonStringUtil.replaceEscapeCharSequenceWithJavaChars(jsonStringPartCodePoints, 0, jsonStringPartCodePoints.length);
         }
         return null;
     }
@@ -842,7 +861,7 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
      * @since 12.0.4
      */
     public Map<String, Object> parseJsonObject(final String json) {
-        final int[] jsonCodePoints = json.codePoints().toArray();
+        final int[] jsonCodePoints = StringUtil.toCodePoints(json);
         final int[] startEndIndices = JsonCodePointUtil.findFirstAndLastNonWhitespaceIndices(jsonCodePoints);
         if (isJsonObject(jsonCodePoints, startEndIndices)) {
             final JsonSection outerMostJsonSection = buildOuterMostJsonSection(jsonCodePoints, startEndIndices);
@@ -857,7 +876,7 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
      * @since 12.0.4
      */
     public List<Object> parseJsonArray(final String json) {
-        final int[] jsonCodePoints = json.codePoints().toArray();
+        final int[] jsonCodePoints = StringUtil.toCodePoints(json);
         final int[] startEndIndices = JsonCodePointUtil.findFirstAndLastNonWhitespaceIndices(jsonCodePoints);
         if (isJsonArray(jsonCodePoints, startEndIndices)) {
             final JsonSection outerMostJsonSection = buildOuterMostJsonSection(jsonCodePoints, startEndIndices);
@@ -872,11 +891,12 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
      * @since 12.0.4
      */
     public String parseJsonEncodedStringValue(final String json) {
-        final int[] jsonCodePoints = json.codePoints().toArray();
+        final int[] jsonCodePoints = StringUtil.toCodePoints(json);
         final int[] startEndIndices = JsonCodePointUtil.findFirstAndLastNonWhitespaceIndices(jsonCodePoints);
         if (isJsonString(jsonCodePoints, startEndIndices)) {
             final JsonSection outerMostJsonSection = buildOuterMostJsonSection(jsonCodePoints, startEndIndices);
-            return outerMostJsonSection.getJsonStringPart();
+            final int[] jsonStringPartCodePoints = outerMostJsonSection.getJsonStringPartCodePoints();
+            return JsonStringUtil.replaceEscapeCharSequenceWithJavaChars(jsonStringPartCodePoints, 0, jsonStringPartCodePoints.length);
         }
         throw new IllegalJsonFormatException("Invalid JSON encoded string value! It should start and end with \"");
     }
