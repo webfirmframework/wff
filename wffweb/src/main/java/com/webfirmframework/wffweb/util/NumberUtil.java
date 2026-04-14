@@ -223,8 +223,12 @@ public final class NumberUtil {
     }
 
     private static boolean isNotAStrictNumber(final String value, final boolean skipFirst) {
+        final int length = value.length();
+        final int codePointCount = value.codePointCount(0, length);
+        if (length > codePointCount) {
+            return true;
+        }
         boolean skip = skipFirst;
-        final int codePointCount = value.codePointCount(0, value.length());
         for (int i = 0, j = 0; i < codePointCount; i++) {
             final int codePoint = value.codePointAt(j);
             j += Character.charCount(codePoint);
