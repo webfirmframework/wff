@@ -321,7 +321,7 @@ public final class JsUtil {
      * @param codePoints
      * @return the striped codePoints
      * @since 3.0.1 initial implementation.
-     * @since 3.0.15 it is unicode aware.
+     * @since 3.0.15 it is Unicode aware.
      */
     private static int[] strip(final int[] codePoints) {
 
@@ -370,7 +370,7 @@ public final class JsUtil {
     @Deprecated(forRemoval = true, since = "12.0.0-beta.5")
     static String toDynamicJs(final String s) {
 
-        final int[] codePoints = strip(s.codePoints().toArray());
+        final int[] codePoints = strip(StringUtil.toCodePoints(s));
 
         final StringBuilder builder = new StringBuilder(codePoints.length);
 
@@ -406,7 +406,7 @@ public final class JsUtil {
     /**
      * It replaces all new lines by {@code \n} so that it can be used as a dynamic
      * JavaScript string variable value in js function body of event attributes. It
-     * is unicode aware.
+     * is Unicode aware.
      *
      * @param s
      * @return the string having all lines replaced by {@code \n} .
@@ -414,7 +414,7 @@ public final class JsUtil {
      */
     public static String toDynamicJsString(final String s) {
 
-        final int[] codePoints = s.codePoints().toArray();
+        final int[] codePoints = StringUtil.toCodePoints(s);
 
         final StringBuilder builder = new StringBuilder(codePoints.length);
 

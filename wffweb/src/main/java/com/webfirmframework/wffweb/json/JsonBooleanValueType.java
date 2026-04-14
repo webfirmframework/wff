@@ -36,9 +36,11 @@ public enum JsonBooleanValueType {
         }
     };
 
-    private static final int[] TRUE_CODE_POINTS = "true".codePoints().toArray();
+    //    private static final int[] TRUE_CODE_POINTS = "true".codePoints().toArray();
+    private static final int[] TRUE_CODE_POINTS = {116, 114, 117, 101};
 
-    private static final int[] FALSE_CODE_POINTS = "false".codePoints().toArray();
+    //    private static final int[] FALSE_CODE_POINTS = "false".codePoints().toArray();
+    private static final int[] FALSE_CODE_POINTS = {102, 97, 108, 115, 101};
 
     JsonBooleanValueType() {
     }
@@ -58,8 +60,8 @@ public enum JsonBooleanValueType {
         return Arrays.equals(JsonBooleanValueType.TRUE_CODE_POINTS, 0, JsonBooleanValueType.TRUE_CODE_POINTS.length,
                 jsonCodePoints, startEndIndices[0], (startEndIndices[1] + 1))
                 || Arrays.equals(JsonBooleanValueType.FALSE_CODE_POINTS, 0,
-                        JsonBooleanValueType.FALSE_CODE_POINTS.length, jsonCodePoints, startEndIndices[0],
-                        (startEndIndices[1] + 1));
+                JsonBooleanValueType.FALSE_CODE_POINTS.length, jsonCodePoints, startEndIndices[0],
+                (startEndIndices[1] + 1));
     }
 
     static Boolean parseBooleanOtherwiseNull(final int[] jsonCodePoints, final int[] startEndIndices) {

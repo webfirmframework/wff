@@ -15,22 +15,26 @@
  */
 package com.webfirmframework.wffweb.json;
 
+import com.webfirmframework.wffweb.InvalidValueException;
+import com.webfirmframework.wffweb.TriConsumer;
+import com.webfirmframework.wffweb.util.StringUtil;
+import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 /**
  * @since 12.0.4
  */
 public sealed interface JsonMapNode
-        extends JsonBaseNode, Map<String, Object>permits JsonMap, JsonConcurrentMap, JsonLinkedMap {
+        extends JsonBaseNode, Map<String, Object> permits JsonConcurrentMap, JsonConcurrentSkipListMap, JsonLinkedMap, JsonMap {
 
     /**
      * @param key the key to get value.
@@ -48,13 +52,66 @@ public sealed interface JsonMapNode
         if (o instanceof final String s) {
             return s;
         }
+        if (o instanceof final JsonValue jsonValue) {
+            return JsonValueType.ENCODED_STRING.equals(jsonValue.valueType()) ? jsonValue.asString(true) : jsonValue.asString(false);
+        }
+        return o.toString();
+    }
+
+    /**
+     * @param key                        the key to get value.
+     * @param decodeUnicodeCharsSequence true to decode the Unicode chars sequences like <span>\</span><span>u2122</span> to Java chars or false to use as it is.
+     * @return the string value or null.
+     * @since 12.0.11
+     */
+    default String getValueAsString(final String key, final boolean decodeUnicodeCharsSequence) {
+        if (key == null) {
+            return null;
+        }
+        final Object o = get(key);
+        if (o == null) {
+            return null;
+        }
+        if (o instanceof final String s) {
+            if (decodeUnicodeCharsSequence) {
+                final int[] codePoints = StringUtil.toCodePoints(s);
+                return JsonStringUtil.toUnicodeCharsDecodedString(codePoints, 0, codePoints.length);
+            }
+            return s;
+        }
+        if (o instanceof final JsonValue jsonValue) {
+            return JsonValueType.ENCODED_STRING.equals(jsonValue.valueType()) ? jsonValue.asString(true, decodeUnicodeCharsSequence) : jsonValue.asString(false, decodeUnicodeCharsSequence);
+        }
         return o.toString();
     }
 
     /**
      * @param key the key to get value.
+     * @return the Boolean value or null. It will throw exception if the value is
+     * not parsable to Boolean.
+     * @since 12.0.11
+     */
+    default Boolean getValueAsBoolean(final String key) {
+        if (key == null) {
+            return null;
+        }
+        final Object o = get(key);
+        if (o == null) {
+            return null;
+        }
+        if (o instanceof final Boolean i) {
+            return i;
+        }
+        if (o instanceof final JsonValue jsonValue) {
+            return jsonValue.asBoolean();
+        }
+        return Boolean.valueOf(o.toString());
+    }
+
+    /**
+     * @param key the key to get value.
      * @return the Integer value or null. It will throw exception if the value is
-     *         not parsable to integer.
+     * not parsable to integer.
      * @since 12.0.4
      */
     default Integer getValueAsInteger(final String key) {
@@ -68,13 +125,16 @@ public sealed interface JsonMapNode
         if (o instanceof final Integer i) {
             return i;
         }
+        if (o instanceof final JsonValue jsonValue) {
+            return jsonValue.asInteger();
+        }
         return Integer.valueOf(o.toString());
     }
 
     /**
      * @param key the key to get value.
      * @return the Long value or null. It will throw exception if the value is not
-     *         parsable to Long.
+     * parsable to Long.
      * @since 12.0.4
      */
     default Long getValueAsLong(final String key) {
@@ -88,13 +148,16 @@ public sealed interface JsonMapNode
         if (o instanceof final Long l) {
             return l;
         }
+        if (o instanceof final JsonValue jsonValue) {
+            return jsonValue.asLong();
+        }
         return Long.valueOf(o.toString());
     }
 
     /**
      * @param key the key to get value.
      * @return the Double value or null. It will throw exception if the value is not
-     *         parsable to Double.
+     * parsable to Double.
      * @since 12.0.4
      */
     default Double getValueAsDouble(final String key) {
@@ -108,13 +171,16 @@ public sealed interface JsonMapNode
         if (o instanceof final Double l) {
             return l;
         }
+        if (o instanceof final JsonValue jsonValue) {
+            return jsonValue.asDouble();
+        }
         return Double.valueOf(o.toString());
     }
 
     /**
      * @param key the key to get value.
      * @return the BigInteger value or null. It will throw exception if the value is
-     *         not parsable to BigInteger.
+     * not parsable to BigInteger.
      * @since 12.0.4
      */
     default BigInteger getValueAsBigInteger(final String key) {
@@ -128,13 +194,16 @@ public sealed interface JsonMapNode
         if (o instanceof final BigInteger bi) {
             return bi;
         }
+        if (o instanceof final JsonValue jsonValue) {
+            return jsonValue.asBigInteger();
+        }
         return new BigInteger(o.toString());
     }
 
     /**
      * @param key the key to get value.
      * @return the BigDecimal value or null. It will throw exception if the value is
-     *         not parsable to BigDecimal.
+     * not parsable to BigDecimal.
      * @since 12.0.4
      */
     default BigDecimal getValueAsBigDecimal(final String key) {
@@ -148,13 +217,64 @@ public sealed interface JsonMapNode
         if (o instanceof final BigDecimal bd) {
             return bd;
         }
+        if (o instanceof final JsonValue jsonValue) {
+            return jsonValue.asBigDecimal();
+        }
         return new BigDecimal(o.toString());
     }
 
     /**
      * @param key the key to get value.
+     * @return the value as JsonValue object.
+     * @throws InvalidValueException if the value is not suitable to create an object of JsonValue.
+     * @since 12.0.11
+     */
+    default JsonValue getValueAsJsonValue(final String key) {
+        if (key == null) {
+            return null;
+        }
+        final Object o = get(key);
+        if (o == null) {
+            return new JsonValue();
+        }
+        if (o instanceof final JsonValue jsonValue) {
+            return jsonValue;
+        }
+        if (o instanceof final String s) {
+            return new JsonValue(StringUtil.toCodePoints(s), JsonValueType.STRING);
+        }
+        if (o instanceof final Number n) {
+            return new JsonValue(StringUtil.toCodePoints(n.toString()), JsonValueType.NUMBER);
+        }
+        if (o instanceof final Boolean b) {
+            return new JsonValue(StringUtil.toCodePoints(b.toString()), JsonValueType.BOOLEAN);
+        }
+        throw new InvalidValueException("""
+                The underlying value is not suitable to create an object of JsonValue.
+                The underlying value should be one of the types of JsonValue, String, Number, Boolean or null.""");
+    }
+
+    /**
+     * @param key the key to get value.
+     * @return the JsonBaseNode value or null. It will throw exception if the value
+     * is not an instance of JsonBaseNode.
+     * @since 12.0.11
+     */
+    default JsonBaseNode getValueAsJsonBaseNode(final String key) {
+        if (key == null) {
+            return null;
+        }
+        final Object o = get(key);
+        if (o == null) {
+            return null;
+        }
+        return (JsonBaseNode) o;
+    }
+
+    /**
+     * @param key the key to get value.
      * @return the JsonListNode value or null. It will throw exception if the value
-     *         is not an instance of JsonListNode.
+     * is not an instance of JsonListNode.
      * @since 12.0.4
      */
     default JsonListNode getValueAsJsonListNode(final String key) {
@@ -171,7 +291,7 @@ public sealed interface JsonMapNode
     /**
      * @param key the key to get value.
      * @return the JsonMapNode value or null. It will throw exception if the value
-     *         is not an instance of JsonMapNode.
+     * is not an instance of JsonMapNode.
      * @since 12.0.4
      */
     default JsonMapNode getValueAsJsonMapNode(final String key) {
@@ -265,4 +385,70 @@ public sealed interface JsonMapNode
 
         return bmObject;
     }
+
+
+    /**
+     * <pre><code>
+     *         class CustomJsonMap extends JsonMap {
+     *         }
+     *         class CustomList extends JsonList {
+     *         }
+     *
+     *         JsonMap jsonMap = new  JsonMap();
+     *         jsonMap.put("number", new JsonValue("14", JsonValueType.NUMBER));
+     *         jsonMap.put("string", "string value");
+     *         jsonMap.put("bool", true);
+     *         jsonMap.put("fornull1", new JsonValue());
+     *         jsonMap.put("fornull2", null);
+     *
+     *         JsonList jsonList = new JsonList();
+     *         jsonList.add("one");
+     *         jsonList.add("two");
+     *         jsonMap.put("jsonList", jsonList);
+     *
+     *         CustomJsonMap convertedObject = jsonMap.convertTo(
+     *         CustomJsonMap::new, CustomJsonMap::put, CustomList::new, CustomList::add, true);
+     * </code></pre>
+     *
+     * @param jsonObjectSupplier the supplier to provide new JSON object.
+     * @param putOperation       the TriConsumer of the supplied JSON object, the key and value.
+     * @param jsonArraySupplier  the supplier to provide new JSON array.
+     * @param addOperation       the BiConsumer of the supplied JSON array and value.
+     * @param <T>                the JSON object class type. It is the return type of the method.
+     * @param <U>                the JSON array class type.
+     * @param parseJsonValue     true to parse the JsonValue to appropriate value types if the underlying value is a JsonValue object.
+     * @return the converted object.
+     * @since 12.0.11
+     */
+    default <T, U> T convertTo(final Supplier<T> jsonObjectSupplier, final TriConsumer<T, String, Object> putOperation,
+                               final Supplier<U> jsonArraySupplier, final BiConsumer<U, Object> addOperation, final boolean parseJsonValue) {
+        final T t = jsonObjectSupplier.get();
+        for (final Entry<String, Object> entry : entrySet()) {
+            if (entry.getValue() instanceof final JsonMapNode jsonMapNode) {
+                putOperation.accept(t, entry.getKey(), jsonMapNode.convertTo(jsonObjectSupplier, putOperation, jsonArraySupplier, addOperation, parseJsonValue));
+            } else if (entry.getValue() instanceof final JsonListNode jsonListNode) {
+                putOperation.accept(t, entry.getKey(), jsonListNode.convertTo(jsonObjectSupplier, putOperation, jsonArraySupplier, addOperation, parseJsonValue));
+            } else if (parseJsonValue && entry.getValue() instanceof final JsonValue jsonValue) {
+                switch (jsonValue.valueType()) {
+                    case NULL -> putOperation.accept(t, entry.getKey(), null);
+                    case ENCODED_STRING -> putOperation.accept(t, entry.getKey(), jsonValue.asString(true));
+                    case STRING -> putOperation.accept(t, entry.getKey(), jsonValue.asString());
+                    case NUMBER -> {
+                        final int[] codePoints = jsonValue.originalCodePoints();
+                        if (codePoints != null) {
+                            putOperation.accept(t, entry.getKey(), JsonNumberValueType.AUTO_INTEGER_LONG_BIG_DECIMAL.parse(
+                                    codePoints, new int[]{0, codePoints.length - 1}));
+                        } else {
+                            putOperation.accept(t, entry.getKey(), entry.getValue());
+                        }
+                    }
+                    case BOOLEAN -> putOperation.accept(t, entry.getKey(), jsonValue.asBoolean());
+                }
+            } else {
+                putOperation.accept(t, entry.getKey(), entry.getValue());
+            }
+        }
+        return t;
+    }
+
 }

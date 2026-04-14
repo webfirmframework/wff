@@ -51,14 +51,14 @@ public enum JsonNumberValueType {
     },
 
     /**
-     * To represent JsonValue wrapper object as null value.
+     * To represent JsonValue wrapper object as value.
      *
      * @since 12.0.4
      */
     JSON_VALUE {
         @Override
         JsonValue parse(final int[] codePoints, final int[] startEndIndices) {
-            return new JsonValue(codePoints, JsonValueType.NUMBER);
+            return new JsonValue(JsonCodePointUtil.cut(codePoints, startEndIndices), JsonValueType.NUMBER);
         }
     },
 

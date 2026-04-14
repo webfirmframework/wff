@@ -21,7 +21,7 @@ package com.webfirmframework.wffweb.json;
 public enum JsonValueType {
 
     /**
-     * To represent a JSON string value.
+     * To represent a JSON decoded string value.
      */
     STRING,
 
@@ -38,5 +38,11 @@ public enum JsonValueType {
     /**
      * To represent a JSON null value.
      */
-    NULL;
+    NULL,
+
+    /**
+     * To represent a JSON string value which is already encoded to JSON compatible string value.
+     * If the parser creates a JsonValue object it will be this type and object will contain raw text value i.e. without decoding new line, escape chars, Unicode char sequences etc... to Java chars.
+     */
+    ENCODED_STRING
 }

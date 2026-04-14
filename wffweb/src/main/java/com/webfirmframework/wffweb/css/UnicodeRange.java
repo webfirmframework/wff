@@ -82,7 +82,7 @@ public class UnicodeRange extends AbstractCssProperty<UnicodeRange> {
 
     /**
      * @param unicodeChars
-     * @return Defines the range of unicode characters the font supports. Default
+     * @return Defines the range of Unicode characters the font supports. Default
      *         value is "U+0-10FFFF"
      * @author WFF
      * @since 1.1.2

@@ -234,7 +234,8 @@ import com.webfirmframework.wffweb.wffbm.data.WffBMObjectTest;
         SharedObjectIdGeneratorTest.class, WhenURIUseCaseTest.class, URIUtilTest.class, EventInitiatorTest.class,
         ImmutableCustomAttributeTest.class, BrowserPageActionTest.class, WffConfigurationTest.class,
         TagContentTest.class, WffBMObjectTest.class, WffBMArrayTest.class, TagCompressedWffBMBytesParserTest.class,
-        JsonCodePointUtilTest.class, JsonListTest.class, JsonMapTest.class, JsonParserTest.class, JsonValueTest.class })
+        JsonCodePointUtilTest.class, JsonListTest.class, JsonMapTest.class, JsonParserTest.class, JsonValueTest.class,
+        JsonMapNodeTest.class, JsonListNodeTest.class, JsonStringUtilTest.class})
 public class AllTests {
 
 }

@@ -19,12 +19,14 @@ package com.webfirmframework.wffweb.json;
  * @since 12.0.4
  */
 public enum JsonObjectType {
+
     /**
      * represents JsonMap which is extended by HashMap.
      *
      * @since 12.0.4
      */
     JSON_MAP,
+
     /**
      * represents JsonConcurrentMap which is extended by ConcurrentHashMap.
      *
@@ -51,5 +53,12 @@ public enum JsonObjectType {
      *
      * @since 12.0.6
      */
-    CUSTOM_JSON_MAP;
+    CUSTOM_JSON_MAP,
+
+    /**
+     * represents JsonConcurrentSkipListMap which is extended by ConcurrentSkipListMap.
+     *
+     * @since 12.0.10
+     */
+    JSON_CONCURRENT_SKIP_LIST_MAP;
 }

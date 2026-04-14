@@ -15,12 +15,13 @@
  */
 package com.webfirmframework.wffweb.json;
 
+import com.webfirmframework.wffweb.InvalidValueException;
+import com.webfirmframework.wffweb.util.StringUtil;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
-
-import com.webfirmframework.wffweb.InvalidValueException;
 
 /**
  * @param codePoints the code points of string representation of value.
@@ -43,7 +44,7 @@ public record JsonValue(int[] codePoints, JsonValueType valueType) implements Js
      * @since 12.0.4
      */
     public JsonValue(final String value, final JsonValueType valueType) {
-        this(value != null ? value.codePoints().toArray() : null, valueType);
+        this(value != null ? StringUtil.toCodePoints(value) : null, valueType);
     }
 
     /**
@@ -62,7 +63,7 @@ public record JsonValue(int[] codePoints, JsonValueType valueType) implements Js
      * @since 12.0.4
      */
     public JsonValue(final String value) {
-        this(Objects.requireNonNull(value).codePoints().toArray(), JsonValueType.STRING);
+        this(StringUtil.toCodePoints(Objects.requireNonNull(value)), JsonValueType.STRING);
     }
 
     /**
@@ -72,7 +73,7 @@ public record JsonValue(int[] codePoints, JsonValueType valueType) implements Js
      * @since 12.0.4
      */
     public JsonValue(final Number value) {
-        this(Objects.requireNonNull(value).toString().codePoints().toArray(), JsonValueType.NUMBER);
+        this(StringUtil.toCodePoints(Objects.requireNonNull(value).toString()), JsonValueType.NUMBER);
     }
 
     /**
@@ -82,7 +83,7 @@ public record JsonValue(int[] codePoints, JsonValueType valueType) implements Js
      * @since 12.0.4
      */
     public JsonValue(final boolean value) {
-        this(String.valueOf(value).codePoints().toArray(), JsonValueType.BOOLEAN);
+        this(StringUtil.toCodePoints(String.valueOf(value)), JsonValueType.BOOLEAN);
     }
 
     @Override
@@ -90,9 +91,13 @@ public record JsonValue(int[] codePoints, JsonValueType valueType) implements Js
         return codePoints != null ? Arrays.copyOfRange(codePoints, 0, codePoints.length) : null;
     }
 
+    int[] originalCodePoints() {
+        return codePoints;
+    }
+
     /**
      * @return the value as Integer or null. It will throw exception if the value is
-     *         not parsable to Integer.
+     * not parsable to Integer.
      * @since 12.0.4
      */
     public Integer asInteger() {
@@ -104,7 +109,7 @@ public record JsonValue(int[] codePoints, JsonValueType valueType) implements Js
 
     /**
      * @return the value as Long or null. It will throw exception if the value is
-     *         not parsable to Long.
+     * not parsable to Long.
      * @since 12.0.4
      */
     public Long asLong() {
@@ -116,7 +121,7 @@ public record JsonValue(int[] codePoints, JsonValueType valueType) implements Js
 
     /**
      * @return the value as Double or null. It will throw exception if the value is
-     *         not parsable to Double.
+     * not parsable to Double.
      * @since 12.0.4
      */
     public Double asDouble() {
@@ -128,7 +133,7 @@ public record JsonValue(int[] codePoints, JsonValueType valueType) implements Js
 
     /**
      * @return the value as BigDecimal or null. It will throw exception if the value
-     *         is not parsable to BigDecimal.
+     * is not parsable to BigDecimal.
      * @since 12.0.4
      */
     public BigDecimal asBigDecimal() {
@@ -140,7 +145,7 @@ public record JsonValue(int[] codePoints, JsonValueType valueType) implements Js
 
     /**
      * @return the value as BigInteger or null. It will throw exception if the value
-     *         is not parsable to BigInteger.
+     * is not parsable to BigInteger.
      * @since 12.0.4
      */
     public BigInteger asBigInteger() {
@@ -152,7 +157,7 @@ public record JsonValue(int[] codePoints, JsonValueType valueType) implements Js
 
     /**
      * @return the value as Boolean or null. It will throw exception if the value is
-     *         not parsable to Boolean.
+     * not parsable to Boolean.
      * @since 12.0.4
      */
     public Boolean asBoolean() {
@@ -167,16 +172,49 @@ public record JsonValue(int[] codePoints, JsonValueType valueType) implements Js
     }
 
     /**
+     * This method returns raw JSON string value (i.e. without decoding to Java string) if the object is created by JsonParser.
+     * Use {@link #asString(boolean)} with argument true if the returned string to be JSON decoded value.
+     * Use {@link #asString(boolean)} with arguments (true, true) if the returned string to be JSON decoded value and Unicode chars sequence to be parsed to Java chars.
+     *
      * @return the value as String or null.
      * @since 12.0.4
      */
     public String asString() {
+        return asString(false, false);
+    }
+
+    /**
+     * @param decode true to decode the json string value or false to get the raw text.
+     * @return the value as String or null.
+     * @since 12.0.11
+     */
+    public String asString(final boolean decode) {
+        return asString(decode, false);
+    }
+
+    /**
+     * @param decodeJson                 true to decode the json string value or false to get the raw text.
+     * @param decodeUnicodeCharsSequence true to decode the Unicode chars sequences like <span>\</span><span>u2122</span> to Java chars or false to use as it is.
+     * @return the value as String or null.
+     * @since 12.0.11
+     */
+    public String asString(final boolean decodeJson, final boolean decodeUnicodeCharsSequence) {
         if (codePoints == null) {
             return null;
+        }
+        if (decodeJson) {
+            return JsonStringUtil.replaceEscapeCharSequenceWithJavaChars(codePoints, 0, codePoints.length, decodeUnicodeCharsSequence);
+        } else if (decodeUnicodeCharsSequence) {
+            return JsonStringUtil.toUnicodeCharsDecodedString(codePoints, 0, codePoints.length);
         }
         return new String(codePoints, 0, codePoints.length);
     }
 
+    /**
+     * @return the valueType.
+     * @deprecated use the alternative method {@link #valueType()} which does the same job.
+     */
+    @Deprecated(since = "12.0.11", forRemoval = true)
     public JsonValueType getValueType() {
         return valueType;
     }
@@ -187,14 +225,15 @@ public record JsonValue(int[] codePoints, JsonValueType valueType) implements Js
      */
     @Override
     public String toJsonString() {
-        final String s = asString();
-        if (s == null) {
+        if (codePoints == null) {
             return "null";
         }
         if (JsonValueType.STRING.equals(valueType)) {
-            return "\"".concat(s).concat("\"");
+            return JsonStringUtil.placeEscapeCharInJsonStringValueIfRequired(codePoints, true);
+        } else if (JsonValueType.ENCODED_STRING.equals(valueType)) {
+            return "\"".concat(new String(codePoints, 0, codePoints.length)).concat("\"");
         }
-        return s;
+        return new String(codePoints, 0, codePoints.length);
     }
 
     @Override

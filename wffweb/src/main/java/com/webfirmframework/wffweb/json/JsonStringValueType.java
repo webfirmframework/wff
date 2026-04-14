@@ -30,17 +30,27 @@ public enum JsonStringValueType {
         String parse(final int[] codePoints, final int[] startEndIndices) {
             return JsonCodePointUtil.toString(codePoints, startEndIndices);
         }
+
+        @Override
+        String parse(final int[] codePoints) {
+            return JsonStringUtil.replaceEscapeCharSequenceWithJavaChars(codePoints, 0, codePoints.length);
+        }
     },
 
     /**
-     * To represent JsonValue wrapper object as null value.
+     * To represent JsonValue wrapper object as value.
      *
      * @since 12.0.4
      */
     JSON_VALUE {
         @Override
         JsonValue parse(final int[] codePoints, final int[] startEndIndices) {
-            return new JsonValue(JsonCodePointUtil.cut(codePoints, startEndIndices), JsonValueType.STRING);
+            return new JsonValue(JsonCodePointUtil.cut(codePoints, startEndIndices), JsonValueType.ENCODED_STRING);
+        }
+
+        @Override
+        JsonValue parse(final int[] codePoints) {
+            return new JsonValue(codePoints, JsonValueType.ENCODED_STRING);
         }
     };
 
@@ -50,4 +60,10 @@ public enum JsonStringValueType {
     Object parse(final int[] codePoints, final int[] startEndIndices) {
         throw new AssertionError();
     }
+
+    Object parse(final int[] codePoints) {
+        throw new AssertionError();
+    }
+
+
 }

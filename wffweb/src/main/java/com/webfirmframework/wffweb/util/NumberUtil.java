@@ -25,20 +25,27 @@ import java.math.BigInteger;
 public final class NumberUtil {
 
     // length = 11
-    private static final int[] INT_MIN_VALUE_CODE_POINTS = String.valueOf(Integer.MIN_VALUE).codePoints().toArray();
+//    private static final int[] INT_MIN_VALUE_CODE_POINTS = String.valueOf(Integer.MIN_VALUE).codePoints().toArray();
+    private static final int[] INT_MIN_VALUE_CODE_POINTS = { 45, 50, 49, 52, 55, 52, 56, 51, 54, 52, 56 };
 
     // length = 10
-    private static final int[] INT_MAX_VALUE_CODE_POINTS = String.valueOf(Integer.MAX_VALUE).codePoints().toArray();
+//    private static final int[] INT_MAX_VALUE_CODE_POINTS = String.valueOf(Integer.MAX_VALUE).codePoints().toArray();
+    private static final int[] INT_MAX_VALUE_CODE_POINTS = {50, 49, 52, 55, 52, 56, 51, 54, 52, 55};
 
-    private static final int[] LONG_MIN_VALUE_CODE_POINTS = String.valueOf(Long.MIN_VALUE).codePoints().toArray();
+//    private static final int[] LONG_MIN_VALUE_CODE_POINTS = String.valueOf(Long.MIN_VALUE).codePoints().toArray();
+    private static final int[] LONG_MIN_VALUE_CODE_POINTS = { 45, 57, 50, 50, 51, 51, 55, 50, 48, 51, 54, 56, 53, 52, 55, 55, 53, 56, 48, 56 };
 
-    private static final int[] LONG_MAX_VALUE_CODE_POINTS = String.valueOf(Long.MAX_VALUE).codePoints().toArray();
+//    private static final int[] LONG_MAX_VALUE_CODE_POINTS = String.valueOf(Long.MAX_VALUE).codePoints().toArray();
+    private static final int[] LONG_MAX_VALUE_CODE_POINTS = { 57, 50, 50, 51, 51, 55, 50, 48, 51, 54, 56, 53, 52, 55, 55, 53, 56, 48, 55 };
 
-    private static final int[] NUMBER_CODE_POINTS = "0123456789".codePoints().toArray();
+//    private static final int[] NUMBER_CODE_POINTS = "0123456789".codePoints().toArray();
+    private static final int[] NUMBER_CODE_POINTS = { 48, 49, 50, 51, 52, 53, 54, 55, 56, 57 };
 
-    private static final int ZERO_CODE_POINT = NUMBER_CODE_POINTS[0];
+//    private static final int ZERO_CODE_POINT = NUMBER_CODE_POINTS[0];
+    private static final int ZERO_CODE_POINT = 48;
 
-    private static final int NINE_CODE_POINT = NUMBER_CODE_POINTS[NUMBER_CODE_POINTS.length - 1];
+//    private static final int NINE_CODE_POINT = NUMBER_CODE_POINTS[NUMBER_CODE_POINTS.length - 1];
+    private static final int NINE_CODE_POINT = 57;
 
     private NumberUtil() {
         throw new AssertionError();
@@ -192,9 +199,7 @@ public final class NumberUtil {
                 return false;
             }
 
-            final boolean notAStrictNumber = startsWithMinus
-                    ? value.codePoints().skip(1).anyMatch(cp -> cp < ZERO_CODE_POINT || cp > NINE_CODE_POINT)
-                    : value.codePoints().anyMatch(cp -> cp < ZERO_CODE_POINT || cp > NINE_CODE_POINT);
+            final boolean notAStrictNumber = isNotAStrictNumber(value, startsWithMinus);
 
             if (!notAStrictNumber) {
                 if (valueLength == INT_MAX_VALUE_CODE_POINTS.length) {
@@ -213,6 +218,23 @@ public final class NumberUtil {
             }
 
             return !notAStrictNumber;
+        }
+        return false;
+    }
+
+    private static boolean isNotAStrictNumber(final String value, final boolean skipFirst) {
+        boolean skip = skipFirst;
+        final int codePointCount = value.codePointCount(0, value.length());
+        for (int i = 0, j = 0; i < codePointCount; i++) {
+            final int codePoint = value.codePointAt(j);
+            j += Character.charCount(codePoint);
+            if (skip) {
+                skip = false;
+                continue;
+            }
+            if (codePoint < ZERO_CODE_POINT || codePoint > NINE_CODE_POINT) {
+                return true;
+            }
         }
         return false;
     }
@@ -245,9 +267,7 @@ public final class NumberUtil {
                 return false;
             }
 
-            final boolean notAStrictNumber = startsWithMinus
-                    ? value.codePoints().skip(1).anyMatch(cp -> cp < ZERO_CODE_POINT || cp > NINE_CODE_POINT)
-                    : value.codePoints().anyMatch(cp -> cp < ZERO_CODE_POINT || cp > NINE_CODE_POINT);
+            final boolean notAStrictNumber = isNotAStrictNumber(value, startsWithMinus);
 
             if (!notAStrictNumber) {
                 if (valueLength == LONG_MAX_VALUE_CODE_POINTS.length) {
