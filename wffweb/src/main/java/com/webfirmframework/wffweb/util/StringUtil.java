@@ -41,7 +41,7 @@ public final class StringUtil {
     static final int MINUS_CODE_POINT = 45;
 
 //    private static final int PLUS_CODE_POINT = "+".codePointAt(0) ;;
-    private static final int PLUS_CODE_POINT = 43;
+    static final int PLUS_CODE_POINT = 43;
 
     // static final int SLASH_T_CODE_POINT = "\t".codePointAt(0);
     static final int SLASH_T_CODE_POINT = 9;
@@ -698,7 +698,7 @@ public final class StringUtil {
         // NB: doesn't work
 //      return isWhitespace(value.codePointAt((int) (value.codePoints().count() - 1)));
 
-        return isWhitespace(value.codePoints().findFirst().getAsInt());
+        return isWhitespace(value.codePointAt(0));
     }
 
     /**
@@ -890,7 +890,7 @@ public final class StringUtil {
         if (string.length() == 0) {
             return false;
         }
-        return string.codePoints().findFirst().getAsInt() == c;
+        return string.codePointAt(0) == c;
     }
 
     /**
@@ -948,10 +948,18 @@ public final class StringUtil {
     /**
      * @param string
      * @param c      codePoint
-     * @return
+     * @return true if it contains the given codePoint otherwise false.
      */
     private static boolean contains(final String string, final int c) {
-        return string.codePoints().anyMatch(e -> c == e);
+        final int length = string.length();
+        for (int i = 0; i < length;) {
+            final int codePoint = string.codePointAt(i);
+            if (codePoint == c) {
+                return true;
+            }
+            i += Character.charCount(codePoint);
+        }
+        return false;
     }
 
     /**

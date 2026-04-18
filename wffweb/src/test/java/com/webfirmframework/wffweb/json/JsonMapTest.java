@@ -32,7 +32,6 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class JsonMapTest {
@@ -290,7 +289,8 @@ public class JsonMapTest {
                 "key" : "value",
                 "key1" : "value1",
                 "key2:key3" : "value2\nvalue3",
-                "key4": {"key4:1": "line1\nline2"}
+                "key4": {"key4:1": "line1\nline2"},
+                "key4_null": null
                 }
                 """);
         Assert.assertNotNull(parsed);
@@ -298,6 +298,50 @@ public class JsonMapTest {
         Assert.assertEquals("value1", parsed.get("key1"));
         Assert.assertEquals("value2\nvalue3", parsed.get("key2:key3"));
         Assert.assertEquals("line1\nline2", parsed.getValueAsJsonMapNode("key4").getValueAsString("key4:1"));
+        Assert.assertNotNull(parsed.get("key4_null"));
+        Assert.assertTrue(parsed.get("key4_null") instanceof JsonValue);
+        Assert.assertEquals(JsonValue.NULL, parsed.get("key4_null"));
+        Assert.assertEquals("""
+                {"key1":"value1","key2:key3":"value2\\nvalue3","key4_null":null,"key":"value","key4":{"key4:1":"line1\\nline2"}}""", parsed.toJsonString());
+
+        parsed.putNull("newkey4_null");
+        Assert.assertNotNull(parsed.get("newkey4_null"));
+        Assert.assertTrue(parsed.get("newkey4_null") instanceof JsonValue);
+        Assert.assertEquals(JsonValue.NULL, parsed.get("newkey4_null"));
+
+        Assert.assertEquals("""
+                {"key1":"value1","newkey4_null":null,"key2:key3":"value2\\nvalue3","key4":{"key4:1":"line1\\nline2"},"key4_null":null,"key":"value"}""", parsed.toJsonString());
+    }
+
+    @Test
+    public void testJsonConcurrentSkipListMapParse() {
+        JsonConcurrentSkipListMap parsed = JsonConcurrentSkipListMap.parse("""
+                {
+                "key" : "value",
+                "key1" : "value1",
+                "key2:key3" : "value2\nvalue3",
+                "key4": {"key4:1": "line1\nline2"},
+                "key4_null": null
+                }
+                """);
+        Assert.assertNotNull(parsed);
+        Assert.assertEquals("value", parsed.get("key"));
+        Assert.assertEquals("value1", parsed.get("key1"));
+        Assert.assertEquals("value2\nvalue3", parsed.get("key2:key3"));
+        Assert.assertEquals("line1\nline2", parsed.getValueAsJsonMapNode("key4").getValueAsString("key4:1"));
+        Assert.assertNotNull(parsed.get("key4_null"));
+        Assert.assertTrue(parsed.get("key4_null") instanceof JsonValue);
+        Assert.assertEquals(JsonValue.NULL, parsed.get("key4_null"));
+        Assert.assertEquals("""
+                {"key":"value","key1":"value1","key2:key3":"value2\\nvalue3","key4":{"key4:1":"line1\\nline2"},"key4_null":null}""", parsed.toJsonString());
+
+        parsed.putNull("newkey4_null");
+        Assert.assertNotNull(parsed.get("newkey4_null"));
+        Assert.assertTrue(parsed.get("newkey4_null") instanceof JsonValue);
+        Assert.assertEquals(JsonValue.NULL, parsed.get("newkey4_null"));
+
+        Assert.assertEquals("""
+                {"key":"value","key1":"value1","key2:key3":"value2\\nvalue3","key4":{"key4:1":"line1\\nline2"},"key4_null":null,"newkey4_null":null}""", parsed.toJsonString());
     }
 
     @Test

@@ -223,6 +223,9 @@ public final class NumberUtil {
 
     private static boolean isNotAStrictNumber(final String value, final boolean skipFirst) {
         final int length = value.length();
+        if (skipFirst && length < 2) {
+            return true;
+        }
         boolean skip = skipFirst;
         for (int i = 0; i < length; ) {
             final int codePoint = value.codePointAt(i);
@@ -287,6 +290,22 @@ public final class NumberUtil {
             return !notAStrictNumber;
         }
         return false;
+    }
+
+    /**
+     * @param value the value to check.
+     * @return true if the value is a sequence of numbers with or without - prefix.
+     * @since 12.0.12
+     */
+    public static boolean isCompatibleToBigInteger(final String value) {
+        final int valueLength = value.length();
+        if ((valueLength == 0)) {
+            return false;
+        }
+        final int codePointAt0 = value.codePointAt(0);
+        final boolean startsWithPlusOrMinus = codePointAt0 == StringUtil.MINUS_CODE_POINT
+                || codePointAt0 == StringUtil.PLUS_CODE_POINT;
+        return !isNotAStrictNumber(value, startsWithPlusOrMinus);
     }
 
 }

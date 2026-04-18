@@ -33,7 +33,7 @@ public class JsonMapNodeTest {
         jsonMap.put("number", new JsonValue("14", JsonValueType.NUMBER));
         jsonMap.put("string", new JsonValue("string value", JsonValueType.STRING));
         jsonMap.put("bool", new JsonValue("true", JsonValueType.BOOLEAN));
-        jsonMap.put("fornull", new JsonValue());
+        jsonMap.put("fornull", JsonValue.NULL);
         JsonList jsonList1 = new JsonList();
         jsonList1.add("one");
         jsonList1.add("two");
@@ -120,6 +120,20 @@ public class JsonMapNodeTest {
         Assert.assertTrue(convertedObject2.get("fornull") instanceof JsonValue);
         Assert.assertNull(convertedObject1.getValueAsJsonValue("fornull").asString());
         Assert.assertNotNull(convertedObject2.get("fornull"));
+    }
+
+    @Test
+    public void testGetValueAsShort() {
+        JsonMap jsonMap = new JsonMap();
+        jsonMap.put("zero", 14);
+        jsonMap.put("one", (short)1);
+        jsonMap.put("two", "19");
+        jsonMap.put("three", Short.valueOf("2026"));
+        Assert.assertEquals(Short.valueOf((short) 14),  jsonMap.getValueAsShort("zero"));
+        Assert.assertEquals(Short.valueOf((short) 1),  jsonMap.getValueAsShort("one"));
+        Assert.assertEquals(Short.valueOf((short) 19),  jsonMap.getValueAsShort("two"));
+        Assert.assertEquals(Short.valueOf("2026"),  jsonMap.getValueAsShort("three"));
+
     }
 
 }

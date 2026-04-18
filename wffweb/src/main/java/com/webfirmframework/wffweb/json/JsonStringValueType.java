@@ -45,11 +45,18 @@ public enum JsonStringValueType {
     JSON_VALUE {
         @Override
         JsonValue parse(final int[] codePoints, final int[] startEndIndices) {
-            return new JsonValue(JsonCodePointUtil.cut(codePoints, startEndIndices), JsonValueType.ENCODED_STRING);
+            final int[] stringPartCodePoints = JsonCodePointUtil.cut(codePoints, startEndIndices);
+            if (stringPartCodePoints.length == 0) {
+                return JsonValue.EMPTY_ENCODED_STRING;
+            }
+            return new JsonValue(stringPartCodePoints, JsonValueType.ENCODED_STRING);
         }
 
         @Override
         JsonValue parse(final int[] codePoints) {
+            if (codePoints.length == 0) {
+                return JsonValue.EMPTY_ENCODED_STRING;
+            }
             return new JsonValue(codePoints, JsonValueType.ENCODED_STRING);
         }
     };

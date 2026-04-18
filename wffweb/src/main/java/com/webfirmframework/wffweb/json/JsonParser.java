@@ -19,7 +19,13 @@ import com.webfirmframework.wffweb.InvalidUsageException;
 import com.webfirmframework.wffweb.util.StringUtil;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -50,18 +56,18 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
     //    private static final int SQUARE_BRACKET_END_CODE_POINT = "]".codePointAt(0);
     private static final int SQUARE_BRACKET_END_CODE_POINT = 93;
 
-//    private static final int COMMA_CODE_POINT = ",".codePointAt(0);
+    //    private static final int COMMA_CODE_POINT = ",".codePointAt(0);
     private static final int COMMA_CODE_POINT = 44;
 
-//    private static final int COLON_CODE_POINT = ":".codePointAt(0);
+    //    private static final int COLON_CODE_POINT = ":".codePointAt(0);
     private static final int COLON_CODE_POINT = 58;
 
     private static final int ESCAPE_CODE_POINT = JsonCodePointUtil.ESCAPE_CODE_POINT;
 
     private static final int DOUBLE_QUOTES_CODE_POINT = JsonCodePointUtil.DOUBLE_QUOTES_CODE_POINT;
 
-//    private static final int[] NULL_CODE_POINTS = "null".codePoints().toArray();
-    private static final int[] NULL_CODE_POINTS = { 110, 117, 108, 108 };
+    //    private static final int[] NULL_CODE_POINTS = "null".codePoints().toArray();
+    private static final int[] NULL_CODE_POINTS = {110, 117, 108, 108};
 
     // Note: it should be sorted in ascending order, call
     // Arrays.sort(JSON_NODE_DELIMS_SORTED_ASC); to dynamically sort
@@ -495,8 +501,7 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
                     final JsonSection jsonSection = idToJsonSection.get(indexOfId);
                     idToJsonSection.set(indexOfId, null);
                     if (JsonSectionType.STRING.equals(jsonSection.jsonSectionType())) {
-                        final int[] jsonStringPartCodePoints = jsonSection.getJsonStringPartCodePoints();
-                        previous = keyToValue.put(key, jsonStringValueTypeForObject.parse(jsonStringPartCodePoints));
+                        previous = keyToValue.put(key, jsonStringValueTypeForObject.parse(jsonSection.getJsonStringPartCodePoints()));
                     } else {
                         previous = keyToValue.put(key, jsonSection.getJsonObjectOrArray());
                     }
@@ -555,8 +560,7 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
                     final JsonSection jsonSection = idToJsonSection.get(indexOfId);
                     idToJsonSection.set(indexOfId, null);
                     if (JsonSectionType.STRING.equals(jsonSection.jsonSectionType())) {
-                        final int[] jsonStringPartCodePoints = jsonSection.getJsonStringPartCodePoints();
-                        values.add(jsonStringValueTypeForArray.parse(jsonStringPartCodePoints));
+                        values.add(jsonStringValueTypeForArray.parse(jsonSection.getJsonStringPartCodePoints()));
                     } else {
                         values.add(jsonSection.getJsonObjectOrArray());
                     }

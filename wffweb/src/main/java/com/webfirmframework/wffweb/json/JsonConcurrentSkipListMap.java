@@ -53,6 +53,7 @@ public non-sealed class JsonConcurrentSkipListMap extends ConcurrentSkipListMap<
 
     private static final JsonParser JSON_PARSER = JsonParser.newBuilder()
             .jsonObjectType(JsonObjectType.JSON_CONCURRENT_SKIP_LIST_MAP).jsonArrayType(JsonArrayType.JSON_LINKED_LIST)
+            .jsonNullValueTypeForObject(JsonNullValueType.JSON_VALUE)
             .validateEscapeSequence(true).build();
 
     public JsonConcurrentSkipListMap() {
@@ -87,4 +88,15 @@ public non-sealed class JsonConcurrentSkipListMap extends ConcurrentSkipListMap<
     public String toString() {
         return toJsonString();
     }
+
+    /**
+     * It inserts JsonValue object that represents null (JsonValue.NULL).
+     * @param key the key for null value.
+     * @return the previous value.
+     * @since 12.0.12
+     */
+    public Object putNull(final String key) {
+        return super.put(key, JsonValue.NULL);
+    }
+
 }
