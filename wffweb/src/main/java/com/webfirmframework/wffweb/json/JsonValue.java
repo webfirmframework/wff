@@ -30,6 +30,12 @@ import java.util.Objects;
  */
 public record JsonValue(int[] codePoints, JsonValueType valueType) implements JsonPart {
 
+    public static final JsonValue NULL = new JsonValue();
+
+    static final JsonValue EMPTY_STRING = new JsonValue(new int[0], JsonValueType.STRING);
+
+    static final JsonValue EMPTY_ENCODED_STRING = new JsonValue(EMPTY_STRING.codePoints, JsonValueType.ENCODED_STRING);
+
     public JsonValue {
         if (valueType == null) {
             throw new InvalidValueException("valueType in JsonValue cannot be null.");
@@ -48,7 +54,7 @@ public record JsonValue(int[] codePoints, JsonValueType valueType) implements Js
     }
 
     /**
-     * For null value and NULL type.
+     * For null value and NULL type. JsonValue.NULL may be used to avoid creating a new object.
      *
      * @since 12.0.4
      */
@@ -93,6 +99,18 @@ public record JsonValue(int[] codePoints, JsonValueType valueType) implements Js
 
     int[] originalCodePoints() {
         return codePoints;
+    }
+
+    /**
+     * @return the value as Short or null. It will throw exception if the value is
+     * not parsable to Short.
+     * @since 12.0.12
+     */
+    public Short asShort() {
+        if (codePoints == null) {
+            return null;
+        }
+        return Short.valueOf(new String(codePoints, 0, codePoints.length));
     }
 
     /**

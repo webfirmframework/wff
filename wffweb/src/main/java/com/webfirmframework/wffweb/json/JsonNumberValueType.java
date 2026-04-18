@@ -15,9 +15,10 @@
  */
 package com.webfirmframework.wffweb.json;
 
-import java.math.BigDecimal;
-
 import com.webfirmframework.wffweb.util.NumberUtil;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * @since 12.0.4
@@ -132,6 +133,50 @@ public enum JsonNumberValueType {
                         return l;
                     }
                     return Math.toIntExact(l);
+                }
+            }
+            return value;
+        }
+    },
+
+    /**
+     * If the number is in the range of Java Integer and not a decimal number it
+     * will be parsed to Integer, if the number is in the range of Java Long and not
+     * a decimal number it will be parsed to Long, if the number is compatible to be a BigInteger
+     * (numbers only sequence with or without - prefix) it will be parsed to BigInteger,
+     * otherwise it will be parsed to BigDecimal.
+     *
+     * @since 12.0.12
+     */
+    AUTO_INTEGER_LONG_BIG_INTEGER_BIG_DECIMAL {
+        @Override
+        Object parse(final int[] codePoints, final int[] startEndIndices) {
+            final String s1 = JsonCodePointUtil.toString(codePoints, startEndIndices);
+            if (JsonCodePointUtil.isStrictLong(codePoints, startEndIndices)) {
+                final long l = Long.parseLong(s1);
+                if ((int) l != l) {
+                    return l;
+                }
+                return Math.toIntExact(l);
+            }
+            if (NumberUtil.isCompatibleToBigInteger(s1)) {
+                return new BigInteger(s1);
+            }
+            final BigDecimal value = new BigDecimal(s1);
+            if (value.scale() > 0) {
+                return value;
+            }
+            if (JsonCodePointUtil.hasExponentialNotation(codePoints, startEndIndices)) {
+                final String s2 = value.stripTrailingZeros().toPlainString();
+                if (NumberUtil.isStrictLong(s2)) {
+                    final long l = Long.parseLong(s2);
+                    if ((int) l != l) {
+                        return l;
+                    }
+                    return Math.toIntExact(l);
+                }
+                if (NumberUtil.isCompatibleToBigInteger(s2)) {
+                    return new BigInteger(s2);
                 }
             }
             return value;

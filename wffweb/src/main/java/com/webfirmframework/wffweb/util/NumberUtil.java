@@ -26,25 +26,24 @@ public final class NumberUtil {
 
     // length = 11
 //    private static final int[] INT_MIN_VALUE_CODE_POINTS = String.valueOf(Integer.MIN_VALUE).codePoints().toArray();
-    private static final int[] INT_MIN_VALUE_CODE_POINTS = { 45, 50, 49, 52, 55, 52, 56, 51, 54, 52, 56 };
+    private static final int[] INT_MIN_VALUE_CODE_POINTS = {45, 50, 49, 52, 55, 52, 56, 51, 54, 52, 56};
 
     // length = 10
 //    private static final int[] INT_MAX_VALUE_CODE_POINTS = String.valueOf(Integer.MAX_VALUE).codePoints().toArray();
     private static final int[] INT_MAX_VALUE_CODE_POINTS = {50, 49, 52, 55, 52, 56, 51, 54, 52, 55};
 
-//    private static final int[] LONG_MIN_VALUE_CODE_POINTS = String.valueOf(Long.MIN_VALUE).codePoints().toArray();
-    private static final int[] LONG_MIN_VALUE_CODE_POINTS = { 45, 57, 50, 50, 51, 51, 55, 50, 48, 51, 54, 56, 53, 52, 55, 55, 53, 56, 48, 56 };
+    //    private static final int[] LONG_MIN_VALUE_CODE_POINTS = String.valueOf(Long.MIN_VALUE).codePoints().toArray();
+    private static final int[] LONG_MIN_VALUE_CODE_POINTS = {45, 57, 50, 50, 51, 51, 55, 50, 48, 51, 54, 56, 53, 52, 55, 55, 53, 56, 48, 56};
 
-//    private static final int[] LONG_MAX_VALUE_CODE_POINTS = String.valueOf(Long.MAX_VALUE).codePoints().toArray();
-    private static final int[] LONG_MAX_VALUE_CODE_POINTS = { 57, 50, 50, 51, 51, 55, 50, 48, 51, 54, 56, 53, 52, 55, 55, 53, 56, 48, 55 };
+    //    private static final int[] LONG_MAX_VALUE_CODE_POINTS = String.valueOf(Long.MAX_VALUE).codePoints().toArray();
+    private static final int[] LONG_MAX_VALUE_CODE_POINTS = {57, 50, 50, 51, 51, 55, 50, 48, 51, 54, 56, 53, 52, 55, 55, 53, 56, 48, 55};
 
-//    private static final int[] NUMBER_CODE_POINTS = "0123456789".codePoints().toArray();
-    private static final int[] NUMBER_CODE_POINTS = { 48, 49, 50, 51, 52, 53, 54, 55, 56, 57 };
+    //    private static final int[] NUMBER_CODE_POINTS = "0123456789".codePoints().toArray();
 
-//    private static final int ZERO_CODE_POINT = NUMBER_CODE_POINTS[0];
+    //    private static final int ZERO_CODE_POINT = NUMBER_CODE_POINTS[0];
     private static final int ZERO_CODE_POINT = 48;
 
-//    private static final int NINE_CODE_POINT = NUMBER_CODE_POINTS[NUMBER_CODE_POINTS.length - 1];
+    //    private static final int NINE_CODE_POINT = NUMBER_CODE_POINTS[NUMBER_CODE_POINTS.length - 1];
     private static final int NINE_CODE_POINT = 57;
 
     private NumberUtil() {
@@ -223,11 +222,14 @@ public final class NumberUtil {
     }
 
     private static boolean isNotAStrictNumber(final String value, final boolean skipFirst) {
+        final int length = value.length();
+        if (skipFirst && length < 2) {
+            return true;
+        }
         boolean skip = skipFirst;
-        final int codePointCount = value.codePointCount(0, value.length());
-        for (int i = 0, j = 0; i < codePointCount; i++) {
-            final int codePoint = value.codePointAt(j);
-            j += Character.charCount(codePoint);
+        for (int i = 0; i < length; ) {
+            final int codePoint = value.codePointAt(i);
+            i += Character.charCount(codePoint);
             if (skip) {
                 skip = false;
                 continue;
@@ -288,6 +290,22 @@ public final class NumberUtil {
             return !notAStrictNumber;
         }
         return false;
+    }
+
+    /**
+     * @param value the value to check.
+     * @return true if the value is a sequence of numbers with or without - prefix.
+     * @since 12.0.12
+     */
+    public static boolean isCompatibleToBigInteger(final String value) {
+        final int valueLength = value.length();
+        if ((valueLength == 0)) {
+            return false;
+        }
+        final int codePointAt0 = value.codePointAt(0);
+        final boolean startsWithPlusOrMinus = codePointAt0 == StringUtil.MINUS_CODE_POINT
+                || codePointAt0 == StringUtil.PLUS_CODE_POINT;
+        return !isNotAStrictNumber(value, startsWithPlusOrMinus);
     }
 
 }

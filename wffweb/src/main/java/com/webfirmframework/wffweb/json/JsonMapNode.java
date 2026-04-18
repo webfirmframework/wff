@@ -110,6 +110,29 @@ public sealed interface JsonMapNode
 
     /**
      * @param key the key to get value.
+     * @return the Short value or null. It will throw exception if the value is
+     * not parsable to Short.
+     * @since 12.0.12
+     */
+    default Short getValueAsShort(final String key) {
+        if (key == null) {
+            return null;
+        }
+        final Object o = get(key);
+        if (o == null) {
+            return null;
+        }
+        if (o instanceof final Short i) {
+            return i;
+        }
+        if (o instanceof final JsonValue jsonValue) {
+            return jsonValue.asShort();
+        }
+        return Short.valueOf(o.toString());
+    }
+
+    /**
+     * @param key the key to get value.
      * @return the Integer value or null. It will throw exception if the value is
      * not parsable to integer.
      * @since 12.0.4
@@ -235,13 +258,13 @@ public sealed interface JsonMapNode
         }
         final Object o = get(key);
         if (o == null) {
-            return new JsonValue();
+            return JsonValue.NULL;
         }
         if (o instanceof final JsonValue jsonValue) {
             return jsonValue;
         }
         if (o instanceof final String s) {
-            return new JsonValue(StringUtil.toCodePoints(s), JsonValueType.STRING);
+            return s.isEmpty() ? JsonValue.EMPTY_STRING : new JsonValue(StringUtil.toCodePoints(s), JsonValueType.STRING);
         }
         if (o instanceof final Number n) {
             return new JsonValue(StringUtil.toCodePoints(n.toString()), JsonValueType.NUMBER);
@@ -398,7 +421,7 @@ public sealed interface JsonMapNode
      *         jsonMap.put("number", new JsonValue("14", JsonValueType.NUMBER));
      *         jsonMap.put("string", "string value");
      *         jsonMap.put("bool", true);
-     *         jsonMap.put("fornull1", new JsonValue());
+     *         jsonMap.put("fornull1", JsonValue.NULL);
      *         jsonMap.put("fornull2", null);
      *
      *         JsonList jsonList = new JsonList();

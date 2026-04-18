@@ -15,12 +15,12 @@
  */
 package com.webfirmframework.wffweb.util;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.math.BigInteger;
 
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class NumberUtilTest {
 
@@ -140,6 +140,56 @@ public class NumberUtilTest {
                 .isStrictLong(new BigInteger(String.valueOf(Long.MIN_VALUE)).subtract(BigInteger.ONE).toString()));
         assertFalse(
                 NumberUtil.isStrictLong(new BigInteger(String.valueOf(Long.MAX_VALUE)).add(BigInteger.ONE).toString()));
+    }
+
+    @Test
+    public void testIsCompatibleToBigInteger() {
+        new BigInteger("0123456789");
+        new BigInteger("00");
+        new BigInteger("000");
+        new BigInteger("-01401");
+        new BigInteger("+1401");
+        final String intValue1 = String.valueOf(Long.MAX_VALUE);
+        final String intValue2 = String.valueOf(Long.MIN_VALUE);
+
+        assertTrue(NumberUtil.isCompatibleToBigInteger("+1401"));
+        assertTrue(NumberUtil.isCompatibleToBigInteger("00"));
+        assertTrue(NumberUtil.isCompatibleToBigInteger("000"));
+        assertTrue(NumberUtil.isCompatibleToBigInteger("0123456789"));
+        assertTrue(NumberUtil.isCompatibleToBigInteger("-01401"));
+        assertTrue(NumberUtil.isCompatibleToBigInteger(intValue1.concat("0")));
+        assertTrue(NumberUtil.isCompatibleToBigInteger(intValue2.concat("0")));
+        assertTrue(NumberUtil.isCompatibleToBigInteger(intValue2.concat("3147483647")));
+        assertTrue(NumberUtil.isCompatibleToBigInteger(intValue2.concat("2247483647")));
+        assertTrue(NumberUtil.isCompatibleToBigInteger(intValue2.concat("2157483647")));
+        assertTrue(NumberUtil.isCompatibleToBigInteger(intValue2.concat("2148483647")));
+        assertTrue(NumberUtil.isCompatibleToBigInteger(intValue2.concat("2147583647")));
+        assertTrue(NumberUtil.isCompatibleToBigInteger(intValue2.concat("2147493647")));
+        assertTrue(NumberUtil.isCompatibleToBigInteger(intValue2.concat("2147484647")));
+        assertTrue(NumberUtil.isCompatibleToBigInteger(intValue2.concat("2147483747")));
+        assertTrue(NumberUtil.isCompatibleToBigInteger(intValue2.concat("2147483657")));
+        assertTrue(NumberUtil.isCompatibleToBigInteger(intValue2.concat("2147483648")));
+
+        assertFalse(NumberUtil.isCompatibleToBigInteger(""));
+        assertFalse(NumberUtil.isCompatibleToBigInteger("-"));
+        assertFalse(NumberUtil.isCompatibleToBigInteger("--"));
+        assertFalse(NumberUtil.isCompatibleToBigInteger("+"));
+        assertFalse(NumberUtil.isCompatibleToBigInteger("++"));
+        assertFalse(NumberUtil.isCompatibleToBigInteger("-+"));
+
+        assertFalse(NumberUtil.isCompatibleToBigInteger("14-01"));
+        assertFalse(NumberUtil.isCompatibleToBigInteger("1401-"));
+
+        assertFalse(NumberUtil.isCompatibleToBigInteger(intValue2.concat("-3147483648")));
+        assertFalse(NumberUtil.isCompatibleToBigInteger(intValue2.concat("-2247483648")));
+        assertFalse(NumberUtil.isCompatibleToBigInteger(intValue2.concat("-2157483648")));
+        assertFalse(NumberUtil.isCompatibleToBigInteger(intValue2.concat("-2148483648")));
+        assertFalse(NumberUtil.isCompatibleToBigInteger(intValue2.concat("-2147583648")));
+        assertFalse(NumberUtil.isCompatibleToBigInteger(intValue2.concat("-2147493648")));
+        assertFalse(NumberUtil.isCompatibleToBigInteger(intValue2.concat("-2147484648")));
+        assertFalse(NumberUtil.isCompatibleToBigInteger(intValue2.concat("-2147483748")));
+        assertFalse(NumberUtil.isCompatibleToBigInteger(intValue2.concat("-2147483658")));
+        assertFalse(NumberUtil.isCompatibleToBigInteger(intValue2.concat("-2147483649")));
     }
 
 }

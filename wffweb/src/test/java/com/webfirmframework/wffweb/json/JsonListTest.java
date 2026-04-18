@@ -47,7 +47,7 @@ public class JsonListTest {
     @Test
     public void testJsonListParse() {
         String json = """
-                ["value1","value2"]
+                ["value1","value2",null,14,true]
                 """;
         JsonList parsed = JsonList.parse(json);
         Assert.assertNotNull(parsed);
@@ -69,10 +69,14 @@ public class JsonListTest {
 
     @Test
     public void testJsonLinkedListParse() {
-        JsonLinkedList parsed = JsonLinkedList.parse("""
-                ["value1", "value2"]
-                """);
+        String json = """
+                ["value1","value2",null,14,true]
+                """;
+        JsonLinkedList parsed = JsonLinkedList.parse(json);
         Assert.assertNotNull(parsed);
+
+        Assert.assertEquals(json.strip(), parsed.toJsonString());
+        testToOutputStreamAndToBigOutputStream(parsed);
     }
 
     @Test

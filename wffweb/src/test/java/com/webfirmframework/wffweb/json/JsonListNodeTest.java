@@ -38,7 +38,7 @@ public class JsonListNodeTest {
         jsonMap.put("number", new JsonValue("14", JsonValueType.NUMBER));
         jsonMap.put("string", new JsonValue("string value", JsonValueType.STRING));
         jsonMap.put("bool", new JsonValue("true", JsonValueType.BOOLEAN));
-        jsonMap.put("fornull", new JsonValue());
+        jsonMap.put("fornull", JsonValue.NULL);
         jsonList1.add(jsonMap);
 
         JsonMap subMap = new JsonMap();
@@ -77,6 +77,19 @@ public class JsonListNodeTest {
                 {"subMapString":"string","subMapBoolean":true,"subMapNumber":1,"jsonList2":["one","two",3,true,null]}""", convertedObject1.getValueAsJsonMapNode(5).getValueAsJsonMapNode("subMap").toJsonString());
         Assert.assertEquals("""
                 ["one","two",3,true,null]""", convertedObject1.getValueAsJsonMapNode(5).getValueAsJsonMapNode("subMap").getValueAsJsonListNode("jsonList2").toJsonString());
+    }
+
+    @Test
+    public void testGetValueAsShort() {
+        JsonList jsonList = new JsonList();
+        jsonList.add(14);
+        jsonList.add((short)1);
+        jsonList.add("19");
+        jsonList.add(Short.valueOf("2026"));
+        Assert.assertEquals(Short.valueOf((short) 14),  jsonList.getValueAsShort(0));
+        Assert.assertEquals(Short.valueOf((short) 1),  jsonList.getValueAsShort(1));
+        Assert.assertEquals(Short.valueOf((short) 19),  jsonList.getValueAsShort(2));
+        Assert.assertEquals(Short.valueOf("2026"),  jsonList.getValueAsShort(3));
     }
 
 }

@@ -102,6 +102,26 @@ public sealed interface JsonListNode extends JsonBaseNode, List<Object> permits 
 
     /**
      * @param index the index to get value.
+     * @return the Short value or null. It will throw exception if the value is
+     * not parsable to Short.
+     * @since 12.0.12
+     */
+    default Short getValueAsShort(final int index) {
+        final Object o = get(index);
+        if (o == null) {
+            return null;
+        }
+        if (o instanceof final Short i) {
+            return i;
+        }
+        if (o instanceof final JsonValue jsonValue) {
+            return jsonValue.asShort();
+        }
+        return Short.valueOf(o.toString());
+    }
+
+    /**
+     * @param index the index to get value.
      * @return the Integer value or null. It will throw exception if the value is
      * not parsable to integer.
      * @since 12.0.4
@@ -209,13 +229,13 @@ public sealed interface JsonListNode extends JsonBaseNode, List<Object> permits 
     default JsonValue getValueAsJsonValue(final int index) {
         final Object o = get(index);
         if (o == null) {
-            return new JsonValue();
+            return JsonValue.NULL;
         }
         if (o instanceof final JsonValue jsonValue) {
             return jsonValue;
         }
         if (o instanceof final String s) {
-            return new JsonValue(StringUtil.toCodePoints(s), JsonValueType.STRING);
+            return s.isEmpty() ? JsonValue.EMPTY_STRING : new JsonValue(StringUtil.toCodePoints(s), JsonValueType.STRING);
         }
         if (o instanceof final Number n) {
             return new JsonValue(StringUtil.toCodePoints(n.toString()), JsonValueType.NUMBER);
@@ -425,7 +445,7 @@ public sealed interface JsonListNode extends JsonBaseNode, List<Object> permits 
      *         jsonMap.put("number", new JsonValue("14", JsonValueType.NUMBER));
      *         jsonMap.put("string", "string value");
      *         jsonMap.put("bool", true);
-     *         jsonMap.put("fornull1", new JsonValue());
+     *         jsonMap.put("fornull1", JsonValue.NULL);
      *         jsonMap.put("fornull2", null);
      *
      *         JsonList jsonList = new JsonList();

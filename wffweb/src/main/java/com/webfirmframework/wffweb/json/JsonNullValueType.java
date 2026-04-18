@@ -40,7 +40,7 @@ public enum JsonNullValueType {
     JSON_VALUE {
         @Override
         JsonValue nullValue() {
-            return new JsonValue((int[]) null, JsonValueType.NULL);
+            return JsonValue.NULL;
         }
     };
 
