@@ -76,6 +76,12 @@ final class JsonCodePointUtil {
     //    private static final int F_LOWER_CASE_CODE_POINT = "f".codePointAt(0);
     private static final int F_LOWER_CASE_CODE_POINT = 102;
 
+    //    private static final int COMMA_CODE_POINT = ",".codePointAt(0);
+    static final int COMMA_CODE_POINT = 44;
+
+    //    private static final int COLON_CODE_POINT = ":".codePointAt(0);
+    private static final int COLON_CODE_POINT = 58;
+
     // Note: it should be sorted in ascending order, call
     // Arrays.sort(HEXA_CODE_POINTS_SORTED_ASC); to dynamically sort
 //    private static final int[] HEXA_CODE_POINTS_SORTED_ASC = {
@@ -204,6 +210,78 @@ final class JsonCodePointUtil {
     static int[][] splitByAny(final int[] codePoints, final int delim) {
         // TODO remove this method later
         return splitByAnyRangeBound(codePoints, 0, codePoints.length - 1, delim);
+    }
+
+    static int[][][] parseKeyValueCodePoints(final int[] codePoints, final int startIndex, final int endIndex) {
+        if (startIndex > endIndex) {
+            return new int[][][]{new int[0][]};
+        }
+        if (startIndex == endIndex && codePoints[startIndex] == COMMA_CODE_POINT) {
+            return new int[][][]{new int[0][], new int[0][]};
+        }
+        final int length = endIndex - startIndex + 1;
+        final int[] delimPositionInit = new int[length];
+
+        int delimCount = 0;
+
+        for (int i = startIndex; i <= endIndex; i++) {
+            final int codePoint = codePoints[i];
+            // char/code point will never be -Ve value, we use -Ve value for id which can be
+            // ignored
+            if (codePoint < 0) {
+                final int idIndex0 = i;
+                final int idIndex1 = i + 1;
+                if (idIndex1 < endIndex && codePoints[idIndex0] != codePoints[idIndex1]) {
+                    final int indicesDiff = codePoints[idIndex1];
+                    i += indicesDiff;
+                    continue;
+                }
+                i++;
+                continue;
+            }
+            if (codePoint == COMMA_CODE_POINT) {
+                delimPositionInit[delimCount] = i;
+                delimCount++;
+            }
+        }
+
+        if (delimCount == 0) {
+            final int[][] keyValueCodePoints = splitByAnyRangeBound(codePoints, startIndex, (startIndex + length - 1), COLON_CODE_POINT);
+            return new int[][][]{keyValueCodePoints};
+        }
+
+        final int[][][] splitCodePoints = new int[delimCount + 1][][];
+
+        int startIndexTemp = startIndex;
+        for (int i = 0; i < delimCount; i++) {
+            final int delimPosition = delimPositionInit[i];
+
+            final int range = delimPosition - startIndexTemp;
+
+            if (range > 0) {
+                final int[][] keyValueCodePoints = splitByAnyRangeBound(codePoints, startIndexTemp, (startIndexTemp + range - 1), COLON_CODE_POINT);
+                splitCodePoints[i] = keyValueCodePoints;
+            } else {
+                splitCodePoints[i] = new int[0][];
+            }
+
+            startIndexTemp = delimPosition + 1;
+        }
+
+        final int lastDelimPosition = delimPositionInit[delimCount - 1];
+
+        startIndexTemp = lastDelimPosition + 1;
+
+        final int range = endIndex - startIndexTemp + 1;
+
+        if (range > 0) {
+            final int[][] keyValueCodePoints = splitByAnyRangeBound(codePoints, startIndexTemp, (startIndexTemp + range - 1), COLON_CODE_POINT);
+            splitCodePoints[splitCodePoints.length - 1] = keyValueCodePoints;
+        } else {
+            splitCodePoints[splitCodePoints.length - 1] = new int[0][];
+        }
+
+        return splitCodePoints;
     }
 
     /**

@@ -18,6 +18,7 @@ package com.webfirmframework.wffweb.json;
 import com.webfirmframework.wffweb.InvalidValueException;
 import com.webfirmframework.wffweb.TriConsumer;
 import com.webfirmframework.wffweb.util.StringUtil;
+import com.webfirmframework.wffweb.wffbm.data.BMValueType;
 import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -329,6 +331,59 @@ public sealed interface JsonMapNode
     }
 
     /**
+     * @param enumClass the enum class type
+     * @param key the key to get value.
+     * @return the value as Enum object or null.
+     * @since 12.0.13
+     */
+    default <E extends Enum<E>> E getValueAsEnum(final Class<E> enumClass, final String key) {
+        final Object o = get(key);
+        if (o == null) {
+            return null;
+        }
+        final String value;
+        if (o instanceof final String s) {
+            value = s;
+        } else if (o instanceof final JsonValue jsonValue) {
+            value = JsonValueType.ENCODED_STRING.equals(jsonValue.valueType()) ? jsonValue.asString(true) : jsonValue.asString(false);
+        } else {
+            value = o.toString();
+        }
+        return Enum.valueOf(enumClass, value);
+    }
+
+    /**
+     * @param key the key to get enum.
+     * @param enumClass the enum class.
+     * @param value the enum object.
+     * @param <E> the enum class type.
+     * @return the previous object as Enum.
+     * @since 12.0.13
+     */
+    default <E extends Enum<E>> E putEnum(final String key, final Class<E> enumClass, final E value) {
+        final Object previous = this.put(key, value.name());
+        if (previous != null) {
+            return Enum.valueOf(enumClass, previous.toString());
+        }
+        return null;
+    }
+
+    /**
+     * @param key the key to get enum.
+     * @param value the enum object.
+     * @param <E> the enum class type.
+     * @return the previous object as string.
+     * @since 12.0.13
+     */
+    default <E extends Enum<E>> String putEnum(final String key, final E value) {
+        final Object previous = this.put(key, value.name());
+        if (previous != null) {
+            return previous.toString();
+        }
+        return null;
+    }
+
+    /**
      * @return the JSON object string.
      * @since 12.0.4
      */
@@ -384,6 +439,15 @@ public sealed interface JsonMapNode
      * @since 12.0.4
      */
     default WffBMObject toWffBMObject() {
+        return toWffBMObject(false);
+    }
+
+    /**
+     * @param parseJsonValue true to parse the JsonValue to appropriate value types if the underlying value is a JsonValue object.
+     * @return the WffBMObject.
+     * @since 12.0.13
+     */
+    default WffBMObject toWffBMObject(final boolean parseJsonValue) {
         final WffBMObject bmObject = new WffBMObject();
         for (final Entry<String, Object> entry : entrySet()) {
             final Object value = entry.getValue();
@@ -400,6 +464,22 @@ public sealed interface JsonMapNode
                 bmObject.put(key, l.toWffBMArray());
             } else if (value instanceof final JsonMapNode m) {
                 bmObject.put(key, m.toWffBMObject());
+            } else if (parseJsonValue && value instanceof final JsonValue jsonValue) {
+                switch (jsonValue.valueType()) {
+                    case NULL -> bmObject.putNull(key);
+                    case ENCODED_STRING -> bmObject.putString(entry.getKey(), jsonValue.asString(true));
+                    case STRING -> bmObject.putString(entry.getKey(), jsonValue.asString());
+                    case NUMBER -> {
+                        final int[] codePoints = jsonValue.originalCodePoints();
+                        if (codePoints != null) {
+                            bmObject.put(entry.getKey(), BMValueType.NUMBER, JsonNumberValueType.AUTO_INTEGER_LONG_BIG_DECIMAL.parse(
+                                    codePoints, new int[]{0, codePoints.length - 1}));
+                        } else {
+                            bmObject.put(entry.getKey(), BMValueType.NUMBER, entry.getValue());
+                        }
+                    }
+                    case BOOLEAN -> bmObject.put(entry.getKey(), jsonValue.asBoolean());
+                }
             } else {
                 throw new InvalidValueException(
                         "%s type object is not allowed to convert to WffBMObject!".formatted(value.getClass()));
@@ -451,6 +531,76 @@ public sealed interface JsonMapNode
                 putOperation.accept(t, entry.getKey(), jsonMapNode.convertTo(jsonObjectSupplier, putOperation, jsonArraySupplier, addOperation, parseJsonValue));
             } else if (entry.getValue() instanceof final JsonListNode jsonListNode) {
                 putOperation.accept(t, entry.getKey(), jsonListNode.convertTo(jsonObjectSupplier, putOperation, jsonArraySupplier, addOperation, parseJsonValue));
+            } else if (parseJsonValue && entry.getValue() instanceof final JsonValue jsonValue) {
+                switch (jsonValue.valueType()) {
+                    case NULL -> putOperation.accept(t, entry.getKey(), null);
+                    case ENCODED_STRING -> putOperation.accept(t, entry.getKey(), jsonValue.asString(true));
+                    case STRING -> putOperation.accept(t, entry.getKey(), jsonValue.asString());
+                    case NUMBER -> {
+                        final int[] codePoints = jsonValue.originalCodePoints();
+                        if (codePoints != null) {
+                            putOperation.accept(t, entry.getKey(), JsonNumberValueType.AUTO_INTEGER_LONG_BIG_DECIMAL.parse(
+                                    codePoints, new int[]{0, codePoints.length - 1}));
+                        } else {
+                            putOperation.accept(t, entry.getKey(), entry.getValue());
+                        }
+                    }
+                    case BOOLEAN -> putOperation.accept(t, entry.getKey(), jsonValue.asBoolean());
+                }
+            } else {
+                putOperation.accept(t, entry.getKey(), entry.getValue());
+            }
+        }
+        return t;
+    }
+
+    /**
+     * <pre><code>
+     *         class CustomJsonMap extends JsonMap {
+     *             public CustomJsonMap(final int initialCapacity) {
+     *                 super(initialCapacity);
+     *             }
+     *         }
+     *         class CustomList extends JsonList {
+     *             public CustomList(final int initialCapacity) {
+     *                 super(initialCapacity);
+     *             }
+     *         }
+     *
+     *         JsonMap jsonMap = new  JsonMap();
+     *         jsonMap.put("number", new JsonValue("14", JsonValueType.NUMBER));
+     *         jsonMap.put("string", "string value");
+     *         jsonMap.put("bool", true);
+     *         jsonMap.put("fornull1", JsonValue.NULL);
+     *         jsonMap.put("fornull2", null);
+     *
+     *         JsonList jsonList = new JsonList();
+     *         jsonList.add("one");
+     *         jsonList.add("two");
+     *         jsonMap.put("jsonList", jsonList);
+     *
+     *         CustomJsonMap convertedObject = jsonMap.sizeAwareConvertTo(
+     *         CustomJsonMap::new, CustomJsonMap::put, CustomList::new, CustomList::add, true);
+     * </code></pre>
+     *
+     * @param jsonObjectSupplier the supplier to provide new JSON object, the apply function argument is the capacity of the json object.
+     * @param putOperation       the TriConsumer of the supplied JSON object, the key and value.
+     * @param jsonArraySupplier  the supplier to provide new JSON array, the apply function argument is the capacity of the json array.
+     * @param addOperation       the BiConsumer of the supplied JSON array and value.
+     * @param <T>                the JSON object class type. It is the return type of the method.
+     * @param <U>                the JSON array class type.
+     * @param parseJsonValue     true to parse the JsonValue to appropriate value types if the underlying value is a JsonValue object.
+     * @return the converted object.
+     * @since 12.0.13
+     */
+    default <T, U> T sizeAwareConvertTo(final Function<Integer, T> jsonObjectSupplier, final TriConsumer<T, String, Object> putOperation,
+                                        final Function<Integer, U> jsonArraySupplier, final BiConsumer<U, Object> addOperation, final boolean parseJsonValue) {
+        final T t = jsonObjectSupplier.apply(this.size());
+        for (final Entry<String, Object> entry : entrySet()) {
+            if (entry.getValue() instanceof final JsonMapNode jsonMapNode) {
+                putOperation.accept(t, entry.getKey(), jsonMapNode.sizeAwareConvertTo(jsonObjectSupplier, putOperation, jsonArraySupplier, addOperation, parseJsonValue));
+            } else if (entry.getValue() instanceof final JsonListNode jsonListNode) {
+                putOperation.accept(t, entry.getKey(), jsonListNode.sizeAwareConvertTo(jsonObjectSupplier, putOperation, jsonArraySupplier, addOperation, parseJsonValue));
             } else if (parseJsonValue && entry.getValue() instanceof final JsonValue jsonValue) {
                 switch (jsonValue.valueType()) {
                     case NULL -> putOperation.accept(t, entry.getKey(), null);

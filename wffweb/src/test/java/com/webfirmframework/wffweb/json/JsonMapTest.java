@@ -579,6 +579,11 @@ public class JsonMapTest {
         Assert.assertEquals(14.01D, wffBMObject.getValueAsBigDecimal("k1").doubleValue(), 0);
         Assert.assertEquals(1.19D, wffBMObject.getValueAsBigDecimal("k2").doubleValue(), 0);
         Assert.assertEquals(11.9D, wffBMObject.getValueAsBigDecimal("k3").doubleValue(), 0);
+        JsonMap emptyMapExpected = JsonMap.parse("""
+                {  }
+                """);
+        Assert.assertNotNull(emptyMapExpected);
+        Assert.assertTrue(emptyMapExpected.isEmpty());
     }
 
     @Test
@@ -783,6 +788,22 @@ public class JsonMapTest {
         Object o = jsonMap.get("key");
         Assert.assertTrue(o instanceof BigDecimal);
         Assert.assertEquals(new BigDecimal(largeLong), o);
+    }
+
+    @Test
+    public void testJsonConcurrentSkipListMap() {
+        JsonConcurrentSkipListMap  jsonLinkedMap = JsonConcurrentSkipListMap.parse("""
+                {"key": null, "key1": 1, "key2": "str", "key3": true}
+                """);
+        Assert.assertEquals("{\"key\":null,\"key1\":1,\"key2\":\"str\",\"key3\":true}", jsonLinkedMap.toJsonString());
+    }
+
+    @Test
+    public void testJsonConcurrentMap() {
+        JsonConcurrentMap  jsonLinkedMap = JsonConcurrentMap.parse("""
+                {"key": null, "key1": 1, "key2": "str", "key3": true}
+                """);
+        Assert.assertEquals("{\"key1\":1,\"key2\":\"str\",\"key\":null,\"key3\":true}", jsonLinkedMap.toJsonString());
     }
 
 }

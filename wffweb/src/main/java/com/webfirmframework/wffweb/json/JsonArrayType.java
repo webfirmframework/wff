@@ -39,5 +39,13 @@ public enum JsonArrayType {
      *
      * @since 12.0.6
      */
-    CUSTOM_JSON_LIST;
+    CUSTOM_JSON_LIST,
+
+    /**
+     * represents the user defined Map supplied by jsonListFactorySizeAware of the
+     * JsonParser.
+     *
+     * @since 12.0.13
+     */
+    CUSTOM_JSON_LIST_SIZE_AWARE;
 }

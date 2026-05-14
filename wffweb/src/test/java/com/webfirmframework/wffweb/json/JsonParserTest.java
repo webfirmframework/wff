@@ -85,151 +85,422 @@ public class JsonParserTest {
     }
 
     @Test(expected = IllegalJsonFormatException.class)
+    public void testIllegalFormatException01()  {
+        JsonParser jsonParser = new JsonParser();
+        try {
+            jsonParser.parseJson("""
+                {"key" : "val",}
+                """.trim());
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! It contains illegal JSON key-value pair format!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
+    }
+
+    @Test(expected = IllegalJsonFormatException.class)
+    public void testIllegalFormatException02()  {
+        JsonParser jsonParser = new JsonParser();
+        try {
+            jsonParser.parseJson("""
+                {,"key":"val"}
+                """.trim());
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! It contains illegal JSON key-value pair format!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
+    }
+
+    @Test(expected = IllegalJsonFormatException.class)
+    public void testIllegalFormatException03()  {
+        JsonParser jsonParser = new JsonParser();
+        try {
+            jsonParser.parseJson("""
+                {,}
+                """.trim());
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! It contains illegal JSON key-value pair format!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
+    }
+
+    @Test(expected = IllegalJsonFormatException.class)
+    public void testIllegalFormatException0()  {
+        JsonParser jsonParser = new JsonParser();
+        try {
+            jsonParser.parseJson("""
+                {"key" : "val", }
+                """.trim());
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! It contains illegal JSON key-value pair format!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
+    }
+
+    @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException1()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("{}{}");
+        try {
+            jsonParser.parseJson("{}{}");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! It contains invalid JSON object.", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException2()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("[][]");
+        try {
+            jsonParser.parseJson("[][]");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! It contains invalid JSON array.", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException3()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("{}[]");
+        try {
+            jsonParser.parseJson("{}[]");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException4()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("[]{}");
+        try {
+            jsonParser.parseJson("[]{}");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException5()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("{{}");
+        try {
+            jsonParser.parseJson("{{}");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! Closing } is missing!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException6()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("[[]");
+        try {
+            jsonParser.parseJson("[[]");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! Closing ] is missing!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException7()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("{}}");
+        try {
+            jsonParser.parseJson("{}}");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! It contains invalid JSON object.", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException8()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("[]]");
+        try {
+            jsonParser.parseJson("[]]");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! It contains invalid JSON array.", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException9()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("""
+        try {
+            jsonParser.parseJson("""
                 {
                 "somekey" : \\: "someval":
                 }""");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! It contains illegal JSON key-value pair format!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException10()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("""
+        try {
+            jsonParser.parseJson("""
                 {
                 "somekey" : "v1" : "v2"
                 }""");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! It contains illegal JSON key-value pair format!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException11()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("""
+        try {
+            jsonParser.parseJson("""
                 {
                 "somekey" : "v1" \\: "v2"
                 }""");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! It contains illegal JSON key-value pair format!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = NumberFormatException.class)
     public void testIllegalFormatException12()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("""
+        try {
+            jsonParser.parseJson("""
                 [ "one", \\, "two"]
                 """);
+        } catch (NumberFormatException e) {
+            Assert.assertEquals("Character \\ is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", e.getMessage());
+            throw e;
+        }
+        Assert.fail("NumberFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException121()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("""
+        try {
+            jsonParser.parseJson("""
                 [ "one", , "two"]
                 """);
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid json. It contains invalid JSON array.", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException13()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("""
+        try {
+            jsonParser.parseJson("""
                 {
                 "somekey" : "v1" \\, "k2" : "val2"
                 }""");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException14()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("""
+        try {
+            jsonParser.parseJson("""
                 {
                 \\"somekey" : "v1", "k2" : "val2"
                 }""");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException15()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("""
+        try {
+            jsonParser.parseJson("""
                 {
                 "duplicateKey" : "v1",
                 "duplicateKey" : "v2"
                 }""");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! Duplicate key 'duplicateKey' found.", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatException16()  {
         JsonParser jsonParser = new JsonParser();
-        jsonParser.parseJson("""
+        try {
+            jsonParser.parseJson("""
                 {
                 {} : "val"
                 }""");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! It contains illegal JSON object key format!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatExceptionIllegalEscapeSequence()  {
         JsonParser jsonParser = JsonParser.newBuilder().validateEscapeSequence(true).build();
-        jsonParser.parseJson("""
+        try {
+            jsonParser.parseJson("""
                 {
                 "key" : "val \\ ue"
                 }""");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! The JSON string contains illegal escape sequence (\\)!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
     @Test(expected = IllegalJsonFormatException.class)
     public void testIllegalFormatExceptionIllegalEscapeSequence2()  {
         JsonParser jsonParser = JsonParser.newBuilder().validateEscapeSequence(true).build();
-        jsonParser.parseJson("""
+        try {
+            jsonParser.parseJson("""
                 {
                 "key" : "val \\uZZZZ ue"
                 }""");
+        } catch (IllegalJsonFormatException e) {
+            Assert.assertEquals("Invalid JSON! The JSON string contains illegal Unicode escape sequence! check \\uZZZZ", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testJsonParserBuilderBuildIllegalArgumentException1() {
+        try {
+            JsonParser.newBuilder().jsonObjectType(JsonObjectType.CUSTOM_JSON_MAP).build();
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals("jsonMapFactory is required if jsonObjectType is CUSTOM_JSON_MAP!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalJsonFormatException expected!");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testJsonParserBuilderBuildIllegalArgumentException2() {
+        try {
+            JsonParser.newBuilder().jsonObjectType(JsonObjectType.CUSTOM_JSON_MAP_SIZE_AWARE).build();
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals("jsonMapFactorySizeAware is required if jsonObjectType is CUSTOM_JSON_MAP_SIZE_AWARE!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalArgumentException expected!");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testJsonParserBuilderBuildIllegalArgumentException3() {
+        try {
+            JsonParser.newBuilder().jsonArrayType(JsonArrayType.CUSTOM_JSON_LIST).build();
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals("jsonListFactory is required if jsonArrayType is CUSTOM_JSON_LIST!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalArgumentException expected!");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testJsonParserBuilderBuildIllegalArgumentException4() {
+        try {
+            JsonParser.newBuilder().jsonArrayType(JsonArrayType.CUSTOM_JSON_LIST_SIZE_AWARE).build();
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals("jsonListFactorySizeAware is required if jsonArrayType is CUSTOM_JSON_LIST_SIZE_AWARE!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalArgumentException expected!");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testJsonParserBuilderBuildIllegalArgumentException5() {
+        try {
+            JsonParser.newBuilder().jsonObjectType(JsonObjectType.CUSTOM_JSON_MAP).jsonMapFactorySizeAware(JsonMap::new).build();
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals("jsonObjectType should be CUSTOM_JSON_MAP_SIZE_AWARE if jsonMapFactorySizeAware is provided!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalArgumentException expected!");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testJsonParserBuilderBuildIllegalArgumentException6() {
+        try {
+            JsonParser.newBuilder().jsonArrayType(JsonArrayType.CUSTOM_JSON_LIST).jsonListFactorySizeAware(JsonList::new).build();
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals("jsonObjectType should be CUSTOM_JSON_LIST_SIZE_AWARE if jsonListFactorySizeAware is provided!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalArgumentException expected!");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testJsonParserBuilderBuildIllegalArgumentException7() {
+        try {
+            JsonParser.newBuilder().jsonObjectType(JsonObjectType.JSON_CONCURRENT_MAP).jsonNullValueTypeForObject(JsonNullValueType.NULL).build();
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals("jsonNullValueTypeForObject should be JSON_VALUE if jsonObjectType is JSON_CONCURRENT_MAP!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalArgumentException expected!");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testJsonParserBuilderBuildIllegalArgumentException8() {
+        try {
+            JsonParser.newBuilder().jsonObjectType(JsonObjectType.JSON_CONCURRENT_SKIP_LIST_MAP).jsonNullValueTypeForObject(JsonNullValueType.NULL).build();
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals("jsonNullValueTypeForObject should be JSON_VALUE if jsonObjectType is JSON_CONCURRENT_SKIP_LIST_MAP!", e.getMessage());
+            throw e;
+        }
+        Assert.fail("IllegalArgumentException expected!");
+    }
+
+    @Test
+    public void testJsonNullValueTypeLength() {
+        Assert.assertEquals("JsonParserBuilderImpl.build method should be modified to handle new constants of JsonNullValueType.",
+                2, JsonNullValueType.values().length);
+    }
+
+    @Test
+    public void testParseJsonWithWhitespaces() {
+        JsonParser jsonParser = JsonParser.newBuilder().validateEscapeSequence(true).build();
+        jsonParser.parseJson("""
+                {    }
+                """.trim());
+    }
 
     @Test
     public void testParseJson() {

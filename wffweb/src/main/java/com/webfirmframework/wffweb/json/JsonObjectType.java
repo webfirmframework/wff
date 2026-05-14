@@ -60,5 +60,12 @@ public enum JsonObjectType {
      *
      * @since 12.0.10
      */
-    JSON_CONCURRENT_SKIP_LIST_MAP;
+    JSON_CONCURRENT_SKIP_LIST_MAP,
+
+    /**
+     * represents the user defined Map supplied in jsonMapFactorySizeAware of the JsonParser.
+     *
+     * @since 12.0.13
+     */
+    CUSTOM_JSON_MAP_SIZE_AWARE;
 }

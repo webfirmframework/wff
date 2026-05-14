@@ -29,6 +29,7 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -291,6 +292,39 @@ public sealed interface JsonListNode extends JsonBaseNode, List<Object> permits 
     }
 
     /**
+     * @param enumClass the enum class.
+     * @param index the index to get value.
+     * @param <E> the enum class type.
+     * @return the value as Enum object or null.
+     * @since 12.0.13
+     */
+    default <E extends Enum<E>> E getValueAsEnum(final Class<E> enumClass, final int index) {
+        final Object o = get(index);
+        if (o == null) {
+            return null;
+        }
+        final String value;
+        if (o instanceof final String s) {
+            value = s;
+        } else if (o instanceof final JsonValue jsonValue) {
+            value = JsonValueType.ENCODED_STRING.equals(jsonValue.valueType()) ? jsonValue.asString(true) : jsonValue.asString(false);
+        } else {
+            value = o.toString();
+        }
+        return Enum.valueOf(enumClass, value);
+    }
+
+    /**
+     * @param value the enum object.
+     * @param <E> the enum class type.
+     * @return true if added otherwise false.
+     * @since 12.0.13
+     */
+    default  <E extends Enum<E>> boolean addEnum(final E value) {
+        return this.add(value.name());
+    }
+
+    /**
      * @return the JSON array string.
      * @since 12.0.4
      */
@@ -345,6 +379,17 @@ public sealed interface JsonListNode extends JsonBaseNode, List<Object> permits 
      * @since 12.0.4
      */
     default WffBMArray toWffBMArray() {
+        return toWffBMArray(false);
+    }
+
+    /**
+     * NB: The array should not contain null values.
+     *
+     * @param parseJsonValue     true to parse the JsonValue to appropriate value types if the underlying value is a JsonValue object.
+     * @return the WffBMArray.
+     * @since 12.0.13
+     */
+    default WffBMArray toWffBMArray(final boolean parseJsonValue) {
         if (isEmpty()) {
             return new WffBMArray(BMValueType.STRING);
         }
@@ -372,6 +417,13 @@ public sealed interface JsonListNode extends JsonBaseNode, List<Object> permits 
                     listType = true;
                 } else if (one instanceof JsonMapNode && o instanceof JsonMapNode) {
                     mapType = true;
+                } else if (parseJsonValue && one instanceof final JsonValue jsonValue) {
+                    switch (jsonValue.valueType()) {
+                        case NULL -> throw new InvalidValueException("Invalid value type. Null array is not allowed.");
+                        case ENCODED_STRING, STRING -> stringType = true;
+                        case NUMBER -> numberType = true;
+                        case BOOLEAN -> booleanType = true;
+                    }
                 } else {
                     throw new InvalidValueException("All items in the array should be same type.");
                 }
@@ -389,6 +441,13 @@ public sealed interface JsonListNode extends JsonBaseNode, List<Object> permits 
                 listType = true;
             } else if (one instanceof JsonMapNode) {
                 mapType = true;
+            } else if (parseJsonValue && one instanceof final JsonValue jsonValue) {
+                switch (jsonValue.valueType()) {
+                    case NULL -> throw new InvalidValueException("Invalid value type. Null array is not allowed.");
+                    case ENCODED_STRING, STRING -> stringType = true;
+                    case NUMBER -> numberType = true;
+                    case BOOLEAN -> booleanType = true;
+                }
             } else {
                 throw new InvalidValueException(
                         "The item in the list should be one of Number, Boolean, String, JsonListNode, or JsonMapNode");
@@ -473,6 +532,74 @@ public sealed interface JsonListNode extends JsonBaseNode, List<Object> permits 
                 addOperation.accept(u, jsonMapNode.convertTo(jsonObjectSupplier, putOperation, jsonArraySupplier, addOperation, parseJsonValue));
             } else if (value instanceof final JsonListNode jsonListNode) {
                 addOperation.accept(u, jsonListNode.convertTo(jsonObjectSupplier, putOperation, jsonArraySupplier, addOperation, parseJsonValue));
+            } else if (parseJsonValue && value instanceof final JsonValue jsonValue) {
+                switch (jsonValue.valueType()) {
+                    case NULL -> addOperation.accept(u, null);
+                    case ENCODED_STRING -> addOperation.accept(u, jsonValue.asString(true));
+                    case STRING -> addOperation.accept(u, jsonValue.asString());
+                    case NUMBER -> {
+                        final int[] codePoints = jsonValue.originalCodePoints();
+                        if (codePoints != null) {
+                            addOperation.accept(u, JsonNumberValueType.AUTO_INTEGER_LONG_BIG_DECIMAL.parse(
+                                    codePoints, new int[]{0, codePoints.length - 1}));
+                        } else {
+                            addOperation.accept(u, value);
+                        }
+                    }
+                    case BOOLEAN -> addOperation.accept(u, jsonValue.asBoolean());
+                }
+            } else {
+                addOperation.accept(u, value);
+            }
+        }
+        return u;
+    }
+
+    /**
+     * <pre><code>
+     *         class CustomJsonMap extends JsonMap {
+     *             public CustomJsonMap(final int initialCapacity) {
+     *                 super(initialCapacity);
+     *             }
+     *         }
+     *         class CustomList extends JsonList {
+     *             public CustomList(final int initialCapacity) {
+     *                 super(initialCapacity);
+     *             }
+     *         }
+     *
+     *         JsonMap jsonMap = new  JsonMap();
+     *         jsonMap.put("number", new JsonValue("14", JsonValueType.NUMBER));
+     *         jsonMap.put("string", "string value");
+     *         jsonMap.put("bool", true);
+     *         jsonMap.put("fornull1", JsonValue.NULL);
+     *         jsonMap.put("fornull2", null);
+     *
+     *         JsonList jsonList = new JsonList();
+     *         jsonList.add(jsonMap);
+     *
+     *         CustomList convertedObject = jsonList.sizeAwareConvertTo(
+     *         CustomJsonMap::new, CustomJsonMap::put, CustomList::new, CustomList::add, true);
+     * </code></pre>
+     *
+     * @param jsonObjectSupplier the supplier to provide new JSON object, the apply function argument is the capacity of the json object.
+     * @param putOperation       the TriConsumer of the supplied JSON object, the key and value.
+     * @param jsonArraySupplier  the supplier to provide new JSON array, the apply function argument is the capacity of the json array.
+     * @param addOperation       the BiConsumer of the supplied JSON array and value.
+     * @param <T>                the JSON object class type.
+     * @param <U>                the JSON array class type. It is the return type of the method.
+     * @param parseJsonValue     true to parse the JsonValue to appropriate value types if the underlying value is a JsonValue object.
+     * @return the converted object.
+     * @since 12.0.13
+     */
+    default <T, U> U sizeAwareConvertTo(final Function<Integer, T> jsonObjectSupplier, final TriConsumer<T, String, Object> putOperation,
+                                        final Function<Integer, U> jsonArraySupplier, final BiConsumer<U, Object> addOperation, final boolean parseJsonValue) {
+        final U u = jsonArraySupplier.apply(this.size());
+        for (final Object value : this) {
+            if (value instanceof final JsonMapNode jsonMapNode) {
+                addOperation.accept(u, jsonMapNode.sizeAwareConvertTo(jsonObjectSupplier, putOperation, jsonArraySupplier, addOperation, parseJsonValue));
+            } else if (value instanceof final JsonListNode jsonListNode) {
+                addOperation.accept(u, jsonListNode.sizeAwareConvertTo(jsonObjectSupplier, putOperation, jsonArraySupplier, addOperation, parseJsonValue));
             } else if (parseJsonValue && value instanceof final JsonValue jsonValue) {
                 switch (jsonValue.valueType()) {
                     case NULL -> addOperation.accept(u, null);
