@@ -17,6 +17,7 @@ package com.webfirmframework.wffweb.json;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -38,6 +39,8 @@ final class JsonParserBuilderImpl implements JsonParser.Builder {
     private boolean validateEscapeSequence = true;
     private Supplier<Map<String, Object>> jsonMapFactory;
     private Supplier<List<Object>> jsonListFactory;
+    private Function<Integer, Map<String, Object>> jsonMapFactorySizeAware;
+    private Function<Integer, List<Object>> jsonListFactorySizeAware;
 
     @Override
     public JsonParserBuilderImpl jsonObjectType(final JsonObjectType jsonObjectType) {
@@ -124,11 +127,56 @@ final class JsonParserBuilderImpl implements JsonParser.Builder {
     }
 
     @Override
+    public JsonParser.Builder jsonMapFactorySizeAware(final Function<Integer, Map<String, Object>> jsonMapFactorySizeAware) {
+        this.jsonMapFactorySizeAware = jsonMapFactorySizeAware;
+        return this;
+    }
+
+    @Override
+    public JsonParser.Builder jsonListFactorySizeAware(final Function<Integer, List<Object>> jsonListFactorySizeAware) {
+        this.jsonListFactorySizeAware = jsonListFactorySizeAware;
+        return this;
+    }
+
+    @Override
     public JsonParser build() {
+        if (JsonObjectType.CUSTOM_JSON_MAP.equals(jsonObjectType) && jsonMapFactory == null) {
+            if (jsonMapFactorySizeAware != null) {
+                throw new IllegalArgumentException("jsonObjectType should be CUSTOM_JSON_MAP_SIZE_AWARE if jsonMapFactorySizeAware is provided!");
+            }
+            throw new IllegalArgumentException("jsonMapFactory is required if jsonObjectType is CUSTOM_JSON_MAP!");
+        }
+        if (JsonArrayType.CUSTOM_JSON_LIST.equals(jsonArrayType) && jsonListFactory == null) {
+            if (jsonListFactorySizeAware != null) {
+                throw new IllegalArgumentException("jsonObjectType should be CUSTOM_JSON_LIST_SIZE_AWARE if jsonListFactorySizeAware is provided!");
+            }
+            throw new IllegalArgumentException("jsonListFactory is required if jsonArrayType is CUSTOM_JSON_LIST!");
+        }
+        if (JsonObjectType.CUSTOM_JSON_MAP_SIZE_AWARE.equals(jsonObjectType) && jsonMapFactorySizeAware == null) {
+            if (jsonMapFactory != null) {
+                throw new IllegalArgumentException("jsonObjectType should be CUSTOM_JSON_MAP if jsonMapFactory is provided!");
+            }
+            throw new IllegalArgumentException("jsonMapFactorySizeAware is required if jsonObjectType is CUSTOM_JSON_MAP_SIZE_AWARE!");
+        }
+        if (JsonArrayType.CUSTOM_JSON_LIST_SIZE_AWARE.equals(jsonArrayType) && jsonListFactorySizeAware == null) {
+            if (jsonListFactory != null) {
+                throw new IllegalArgumentException("jsonObjectType should be CUSTOM_JSON_LIST if jsonListFactory is provided!");
+            }
+            throw new IllegalArgumentException("jsonListFactorySizeAware is required if jsonArrayType is CUSTOM_JSON_LIST_SIZE_AWARE!");
+        }
+
+        if (JsonObjectType.JSON_CONCURRENT_MAP.equals(jsonObjectType) || JsonObjectType.JSON_CONCURRENT_SKIP_LIST_MAP.equals(jsonObjectType)) {
+            if (jsonNullValueTypeForObject == null) {
+                jsonNullValueTypeForObject =  JsonNullValueType.JSON_VALUE;
+            } else if (JsonNullValueType.NULL.equals(jsonNullValueTypeForObject)) {
+                throw new IllegalArgumentException("jsonNullValueTypeForObject should be JSON_VALUE if jsonObjectType is %s!".formatted(jsonObjectType.name()));
+            }
+        }
+
         return new JsonParser(jsonObjectType, jsonArrayType, jsonNumberArrayUniformValueType,
                 jsonNumberValueTypeForObject, jsonNumberValueTypeForArray, jsonStringValueTypeForObject,
                 jsonStringValueTypeForArray, jsonBooleanValueTypeForObject, jsonBooleanValueTypeForArray,
                 jsonNullValueTypeForObject, jsonNullValueTypeForArray, validateEscapeSequence, jsonMapFactory,
-                jsonListFactory);
+                jsonListFactory, jsonMapFactorySizeAware, jsonListFactorySizeAware);
     }
 }

@@ -15,6 +15,9 @@
  */
 package com.webfirmframework.wffweb.json;
 
+import com.webfirmframework.wffweb.wffbm.data.BMValueType;
+import com.webfirmframework.wffweb.wffbm.data.ValueValueType;
+import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -123,6 +126,111 @@ public class JsonMapNodeTest {
     }
 
     @Test
+    public void testSizeAwareConvertTo() {
+        class CustomJsonMap extends JsonLinkedMap {
+            public CustomJsonMap(final int initialCapacity) {
+                super(initialCapacity);
+            }
+        }
+        class CustomList extends JsonList {
+            public CustomList(final int initialCapacity) {
+                super(initialCapacity);
+            }
+        }
+        JsonLinkedMap jsonMap = new  JsonLinkedMap();
+        jsonMap.put("number", new JsonValue("14", JsonValueType.NUMBER));
+        jsonMap.put("string", new JsonValue("string value", JsonValueType.STRING));
+        jsonMap.put("bool", new JsonValue("true", JsonValueType.BOOLEAN));
+        jsonMap.put("fornull", JsonValue.NULL);
+        JsonList jsonList1 = new JsonList();
+        jsonList1.add("one");
+        jsonList1.add("two");
+        jsonList1.add(3);
+        jsonList1.add(true);
+        jsonList1.add(null);
+        jsonMap.put("jsonList1", jsonList1);
+
+        JsonMap subMap = new JsonMap();
+        subMap.put("subMapNumber", 1);
+        subMap.put("subMapString", "string");
+        subMap.put("subMapBoolean", true);
+        jsonMap.put("subMap", subMap);
+
+        JsonList jsonList2 = new JsonList();
+        jsonList2.add("one");
+        jsonList2.add("two");
+        jsonList2.add(3);
+        jsonList2.add(true);
+        jsonList2.add(null);
+        subMap.put("jsonList2", jsonList2);
+
+
+        CustomJsonMap convertedObject1 = jsonMap.sizeAwareConvertTo(
+                CustomJsonMap::new, CustomJsonMap::put,
+                CustomList::new, CustomList::add, true);
+
+        Assert.assertEquals(CustomList.class, convertedObject1.getValueAsJsonListNode("jsonList1").getClass());
+        Assert.assertEquals(CustomList.class, convertedObject1.getValueAsJsonMapNode("subMap").getValueAsJsonListNode("jsonList2").getClass());
+
+        Assert.assertEquals("{\"number\":14,\"string\":\"string value\",\"bool\":true,\"fornull\":null,\"jsonList1\":[\"one\",\"two\",3,true,null],\"subMap\":{\"subMapString\":\"string\",\"subMapBoolean\":true,\"subMapNumber\":1,\"jsonList2\":[\"one\",\"two\",3,true,null]}}", convertedObject1.toJsonString());
+        Assert.assertEquals(CustomList.class, convertedObject1.getValueAsJsonListNode("jsonList1").getClass());
+
+        Assert.assertTrue(convertedObject1.get("string") instanceof String);
+        Assert.assertEquals("string value", convertedObject1.getValueAsString("string"));
+
+        Assert.assertTrue(convertedObject1.get("number") instanceof Integer);
+        Assert.assertEquals(new BigDecimal("14"), convertedObject1.getValueAsBigDecimal("number"));
+
+
+        jsonMap.put("number", new JsonValue("2147483648", JsonValueType.NUMBER));
+        convertedObject1 = jsonMap.sizeAwareConvertTo(
+                CustomJsonMap::new, CustomJsonMap::put,
+                CustomList::new, CustomList::add, true);
+        Assert.assertTrue(convertedObject1.get("number") instanceof Long);
+        Assert.assertEquals(2147483648L, convertedObject1.getValueAsLong("number").longValue());
+        Assert.assertEquals(new BigDecimal("2147483648"), convertedObject1.getValueAsBigDecimal("number"));
+
+        jsonMap.put("number", new JsonValue("2147483648.1401", JsonValueType.NUMBER));
+        convertedObject1 = jsonMap.sizeAwareConvertTo(
+                CustomJsonMap::new, CustomJsonMap::put,
+                CustomList::new, CustomList::add, true);
+        Assert.assertTrue(convertedObject1.get("number") instanceof BigDecimal);
+        Assert.assertEquals(new BigDecimal("2147483648.1401"), convertedObject1.getValueAsBigDecimal("number"));
+        Assert.assertEquals(new BigDecimal("2147483648.1401"), convertedObject1.getValueAsJsonValue("number").asBigDecimal());
+
+        jsonMap.put("number", new JsonValue("14", JsonValueType.NUMBER));
+        convertedObject1 = jsonMap.sizeAwareConvertTo(
+                CustomJsonMap::new, CustomJsonMap::put,
+                CustomList::new, CustomList::add, true);
+
+        Assert.assertTrue(convertedObject1.get("bool") instanceof Boolean);
+        Assert.assertTrue(convertedObject1.getValueAsBoolean("bool"));
+
+        Assert.assertNull(convertedObject1.get("fornull"));
+
+
+        final CustomJsonMap convertedObject2 = jsonMap.sizeAwareConvertTo(
+                CustomJsonMap::new, CustomJsonMap::put,
+                CustomList::new, CustomList::add, false);
+
+        Assert.assertTrue(convertedObject2.get("string") instanceof JsonValue);
+        Assert.assertEquals("string value", convertedObject2.getValueAsString("string"));
+        Assert.assertEquals("string value", convertedObject2.getValueAsJsonValue("string").asString());
+
+        Assert.assertTrue(convertedObject2.get("number") instanceof JsonValue);
+        Assert.assertEquals(new BigDecimal("14"), convertedObject2.getValueAsBigDecimal("number"));
+        Assert.assertEquals(new BigDecimal("14"), convertedObject2.getValueAsJsonValue("number").asBigDecimal());
+
+        Assert.assertTrue(convertedObject2.get("bool") instanceof JsonValue);
+        Assert.assertTrue(convertedObject2.getValueAsBoolean("bool"));
+        Assert.assertTrue(convertedObject2.getValueAsJsonValue("bool").asBoolean());
+
+        Assert.assertTrue(convertedObject2.get("fornull") instanceof JsonValue);
+        Assert.assertNull(convertedObject1.getValueAsJsonValue("fornull").asString());
+        Assert.assertNotNull(convertedObject2.get("fornull"));
+    }
+
+    @Test
     public void testGetValueAsShort() {
         JsonMap jsonMap = new JsonMap();
         jsonMap.put("zero", 14);
@@ -134,6 +242,37 @@ public class JsonMapNodeTest {
         Assert.assertEquals(Short.valueOf((short) 19),  jsonMap.getValueAsShort("two"));
         Assert.assertEquals(Short.valueOf("2026"),  jsonMap.getValueAsShort("three"));
 
+    }
+
+    @Test
+    public void testToWffBMObject() {
+        JsonMap jsonMap = new JsonMap();
+        jsonMap.put("zero", 14);
+        jsonMap.put("one", (short)1);
+        jsonMap.put("two", "19");
+        jsonMap.put("three", Short.valueOf("2026"));
+        jsonMap.put("four", new JsonValue("1401",  JsonValueType.NUMBER));
+        jsonMap.put("five", new JsonValue("some string value",  JsonValueType.STRING));
+        WffBMObject wffBMObject = jsonMap.toWffBMObject(true);
+        Assert.assertEquals(Integer.valueOf(14),  wffBMObject.getValueAsInteger("zero"));
+        Assert.assertEquals(Integer.valueOf(1),  wffBMObject.getValueAsInteger("one"));
+        Assert.assertEquals(Integer.valueOf((short) 19),  wffBMObject.getValueAsInteger("two"));
+        Assert.assertEquals(Integer.valueOf("2026"),  wffBMObject.getValueAsInteger("three"));
+        Assert.assertEquals(Integer.valueOf("1401"),  wffBMObject.getValueAsInteger("four"));
+        
+        ValueValueType valueValueType = wffBMObject.get("four");
+        Assert.assertNotNull(valueValueType);
+
+        Assert.assertEquals(BMValueType.NUMBER, valueValueType.getValueType());
+        Assert.assertTrue(valueValueType.getValue() instanceof Number);
+        
+        Assert.assertEquals("some string value",  wffBMObject.getValueAsString("five"));
+        
+        valueValueType = wffBMObject.get("five");
+        Assert.assertNotNull(valueValueType);
+        Assert.assertEquals(BMValueType.STRING, valueValueType.getValueType());
+        Assert.assertTrue(valueValueType.getValue() instanceof String);
+        Assert.assertEquals("some string value",  valueValueType.getValue());
     }
 
 }
