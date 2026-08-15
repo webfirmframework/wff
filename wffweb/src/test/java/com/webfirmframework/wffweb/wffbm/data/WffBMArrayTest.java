@@ -15,17 +15,14 @@
  */
 package com.webfirmframework.wffweb.wffbm.data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.webfirmframework.wffweb.InvalidValueException;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.junit.Test;
-
-import com.webfirmframework.wffweb.InvalidValueException;
+import static org.junit.Assert.*;
 
 public class WffBMArrayTest {
 
@@ -256,6 +253,23 @@ public class WffBMArrayTest {
         assertTrue(wffBMAry.similar(wffBMAryCopy));
         wffBMAryCopy.add("new item");
         assertFalse(wffBMAry.similar(wffBMAryCopy));
+    }
+
+    @Test
+    public void testWffBMArrayWithNullValues() {
+        WffBMArray wffBMArray = new WffBMArray(BMValueType.NULL);
+        wffBMArray.add(null);
+        wffBMArray.add(null);
+        wffBMArray.add(null);
+        assertNull(wffBMArray.get(0));
+        assertNull(wffBMArray.get(1));
+        assertNull(wffBMArray.get(2));
+        byte[] bmBytes = wffBMArray.buildBytes(true);
+        WffBMArray parsed = new WffBMArray(bmBytes, true);
+        assertNull(parsed.get(0));
+        assertNull(parsed.get(1));
+        assertNull(parsed.get(2));
+        assertEquals(wffBMArray, parsed);
     }
 
 }

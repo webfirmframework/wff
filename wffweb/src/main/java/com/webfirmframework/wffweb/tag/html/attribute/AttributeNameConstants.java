@@ -41,6 +41,8 @@ public final class AttributeNameConstants {
 
     public static final String CHECKED = "checked";
 
+    public static final String COMMAND = "command";
+
     public static final String CLASS = "class";
 
     public static final String COLOR = "color";
@@ -50,6 +52,8 @@ public final class AttributeNameConstants {
     public static final String CONTENTEDITABLE = "contenteditable";
 
     public static final String CONTEXTMENU = "contextmenu";
+
+    public static final String CROSSORIGIN = "crossorigin";
 
     public static final String CONTROLS = "controls";
 
@@ -65,6 +69,10 @@ public final class AttributeNameConstants {
 
     public static final String DRAGGABLE = "draggable";
 
+    public static final String INPUTMODE = "inputmode";
+
+    public static final String INTEGRITY = "integrity";
+
     public static final String DROPZONE = "dropzone";
 
     public static final String FACE = "face";
@@ -74,6 +82,8 @@ public final class AttributeNameConstants {
     public static final String FORMACTION = "formaction";
 
     public static final String FORMENCTYPE = "formenctype";
+
+    public static final String INTERESTFOR = "interestfor";
 
     public static final String FORMMETHOD = "formmethod";
 
@@ -121,6 +131,8 @@ public final class AttributeNameConstants {
 
     public static final String PATTERN = "pattern";
 
+    public static final String POPOVER = "popover";
+
     public static final String PLACEHOLDER = "placeholder";
 
     public static final String PRELOAD = "preload";
@@ -152,6 +164,8 @@ public final class AttributeNameConstants {
     public static final String TITLE = "title";
 
     public static final String TRANSLATE = "translate";
+
+    public static final String COMMANDFOR = "commandfor";
 
     public static final String TYPE = "type";
 
@@ -265,6 +279,8 @@ public final class AttributeNameConstants {
 
     public static final String ONAFTERPRINT = "onafterprint";
 
+    public static final String FETCHPRIORITY = "fetchpriority";
+
     public static final String ONBEFOREPRINT = "onbeforeprint";
 
     public static final String ONCANPLAY = "oncanplay";
@@ -311,6 +327,8 @@ public final class AttributeNameConstants {
 
     public static final String ANIMATIONITERATION = "animationiteration";
 
+    public static final String POPOVERTARGETACTION = "popovertargetaction";
+
     public static final String ANIMATIONSTART = "animationstart";
 
     public static final String TRANSITIONEND = "transitionend";
@@ -330,6 +348,8 @@ public final class AttributeNameConstants {
     public static final String ONWHEEL = "onwheel";
 
     public static final String ONTOUCHCANCEL = "ontouchcancel";
+
+    public static final String POPOVERTARGET = "popovertarget";
 
     public static final String ONTOUCHEND = "ontouchend";
 
@@ -366,6 +386,8 @@ public final class AttributeNameConstants {
     public static final String OPTIMUM = "optimum";
 
     public static final String DEFER = "defer";
+
+    public static final String INERT = "inert";
 
     public static final String DEFAULT = "default";
 

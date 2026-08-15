@@ -67,6 +67,7 @@ new function() {
 	this.WS_HRTBT = "${WS_HRTBT}";
 	this.WS_HRTBT_TMT = "${WS_HRTBT_TMT}";
 	this.LOSSLESS_COMM = "${LOSSLESS_COMM}";
+	this.DBGM = "${DBGM}" === "true";
 	//should not call this.onPLI as this object is frozen by wffGlobalConst
 	this.onPayloadLoss = function() {if (!onPLI) { onPLI = true; "${ON_PAYLOAD_LOSS}"}};
 

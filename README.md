@@ -1,5 +1,4 @@
 [![Build Status](https://img.shields.io/badge/build-passing-greensvg?style=flat)](https://app.circleci.com/pipelines/github/webfirmframework/wff?branch=master&filter=all)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/410601e16dc54b0a973c03845ad790c2)](https://www.codacy.com/app/webfirm-framework/wff?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=webfirmframework/wff&amp;utm_campaign=Badge_Grade)
 [![Stackoverflow](https://img.shields.io/badge/stackoverflow-wffweb-orange.svg)](https://stackoverflow.com/questions/tagged/wffweb)
 [![Maven Central](https://img.shields.io/maven-central/v/com.webfirmframework/wffweb.svg)](https://central.sonatype.com/artifact/com.webfirmframework/wffweb)
 [![javadoc](https://javadoc.io/badge2/com.webfirmframework/wffweb/javadoc.svg)](https://javadoc.io/doc/com.webfirmframework/wffweb)
@@ -10,7 +9,6 @@
 wffweb is one of the modules of webfirmframework. It's an open source java framework for real time application development which can generate html5 and css3 from java code, [read more...](https://webfirmframework.github.io/)
 
 
-#### [Register in wff hub for template reference and more!](http://hub.webfirmframework.com). It's built by wffweb-12.x.x
 #### [check out main features of wffweb](https://www.youtube.com/watch?v=UWoNliHOy6A)
 ##### [check out wffweb sample projects](https://github.com/webfirmframework/minimal-production-ready-projects)
 

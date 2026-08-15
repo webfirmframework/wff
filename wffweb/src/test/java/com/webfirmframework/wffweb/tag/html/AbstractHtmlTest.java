@@ -15,31 +15,6 @@
  */
 package com.webfirmframework.wffweb.tag.html;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.lang.ref.Reference;
-import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
-import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
-import com.webfirmframework.wffweb.tag.html.html5.images.FigCaption;
-import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.webfirmframework.wffweb.InvalidTagException;
 import com.webfirmframework.wffweb.InvalidUsageException;
 import com.webfirmframework.wffweb.NoParentException;
@@ -47,12 +22,8 @@ import com.webfirmframework.wffweb.css.Color;
 import com.webfirmframework.wffweb.server.page.BrowserPage;
 import com.webfirmframework.wffweb.server.page.BrowserPageTest;
 import com.webfirmframework.wffweb.settings.WffConfiguration;
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
-import com.webfirmframework.wffweb.tag.html.attribute.MaxLength;
-import com.webfirmframework.wffweb.tag.html.attribute.Name;
-import com.webfirmframework.wffweb.tag.html.attribute.Src;
-import com.webfirmframework.wffweb.tag.html.attribute.Type;
-import com.webfirmframework.wffweb.tag.html.attribute.Value;
+import com.webfirmframework.wffweb.tag.html.attribute.*;
+import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.ClassAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Id;
 import com.webfirmframework.wffweb.tag.html.attribute.global.Style;
@@ -61,10 +32,13 @@ import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import com.webfirmframework.wffweb.tag.html.formatting.B;
 import com.webfirmframework.wffweb.tag.html.formsandinputs.Input;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.Controls;
+import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.Translate;
+import com.webfirmframework.wffweb.tag.html.html5.images.FigCaption;
 import com.webfirmframework.wffweb.tag.html.links.A;
 import com.webfirmframework.wffweb.tag.html.links.Link;
 import com.webfirmframework.wffweb.tag.html.metainfo.Head;
+import com.webfirmframework.wffweb.tag.html.model.AbstractHtml5SharedObject;
 import com.webfirmframework.wffweb.tag.html.programming.Script;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Div;
 import com.webfirmframework.wffweb.tag.html.stylesandsemantics.Span;
@@ -73,15 +47,34 @@ import com.webfirmframework.wffweb.tag.htmlwff.NoTag;
 import com.webfirmframework.wffweb.tag.htmlwff.TagContent;
 import com.webfirmframework.wffweb.tag.repository.TagRepository;
 import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 public class AbstractHtmlTest {
 
     @BeforeClass
     public static void setupBeforeClass() {
         WffConfiguration.setDebugMode(true);
+    }
+
+    @AfterClass
+    public static void setupAfterClass() {
+        WffConfiguration.setDebugMode(false);
     }
 
     // for future development

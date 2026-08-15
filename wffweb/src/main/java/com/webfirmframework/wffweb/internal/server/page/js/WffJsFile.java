@@ -15,31 +15,27 @@
  */
 package com.webfirmframework.wffweb.internal.server.page.js;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.webfirmframework.wffweb.WffRuntimeException;
 import com.webfirmframework.wffweb.common.URIEventInitiator;
 import com.webfirmframework.wffweb.server.page.Task;
+import com.webfirmframework.wffweb.settings.WffConfiguration;
 import com.webfirmframework.wffweb.tag.html.attribute.core.AttributeRegistry;
 import com.webfirmframework.wffweb.tag.html.core.TagRegistry;
 import com.webfirmframework.wffweb.tag.html.html5.attribute.global.DataWffId;
 import com.webfirmframework.wffweb.util.StringBuilderUtil;
 import com.webfirmframework.wffweb.util.StringUtil;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author WFF
@@ -668,6 +664,10 @@ public enum WffJsFile {
         String onLossyCommJS = onPayloadLossJS != null ? onPayloadLossJS.strip() : "";
         onLossyCommJS = onLossyCommJS.endsWith(";") ? onLossyCommJS : onLossyCommJS + ";";
         StringBuilderUtil.replaceFirst(globalContentBuider, "\"${ON_PAYLOAD_LOSS}\"", onLossyCommJS);
+
+        if (WffConfiguration.isDebugMode()) {
+            StringBuilderUtil.replaceFirst(globalContentBuider, "\"${DBGM}\"", "\"true\"");
+        }
 
         final String globalContent = globalContentBuider.toString();
 
