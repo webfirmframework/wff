@@ -15,15 +15,15 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.core;
 
+import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
+import com.webfirmframework.wffweb.tag.html.attribute.InternalAttrNameConstants;
+import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import com.webfirmframework.wffweb.tag.html.attribute.AttributeNameConstants;
-import com.webfirmframework.wffweb.tag.html.attribute.InternalAttrNameConstants;
-import com.webfirmframework.wffweb.util.WffBinaryMessageUtil;
 
 /**
  * @author WFF
@@ -95,6 +95,8 @@ public enum PreIndexedAttributeName {
     COLOR(AttributeNameConstants.COLOR),
 
     DEFER(AttributeNameConstants.DEFER),
+
+    INERT(AttributeNameConstants.INERT),
 
     ISMAP(AttributeNameConstants.ISMAP),
 
@@ -169,6 +171,8 @@ public enum PreIndexedAttributeName {
 
     COLSPAN(AttributeNameConstants.COLSPAN),
 
+    COMMAND(AttributeNameConstants.COMMAND),
+
     CONTENT(AttributeNameConstants.CONTENT),
 
     DEFAULT(AttributeNameConstants.DEFAULT),
@@ -204,6 +208,8 @@ public enum PreIndexedAttributeName {
     OPTIMUM(AttributeNameConstants.OPTIMUM),
 
     PATTERN(AttributeNameConstants.PATTERN),
+
+    POPOVER(AttributeNameConstants.POPOVER),
 
     PRELOAD(AttributeNameConstants.PRELOAD),
 
@@ -263,6 +269,10 @@ public enum PreIndexedAttributeName {
 
     DRAGGABLE(AttributeNameConstants.DRAGGABLE),
 
+    INPUTMODE(AttributeNameConstants.INPUTMODE),
+
+    INTEGRITY(AttributeNameConstants.INTEGRITY),
+
     MAXLENGTH(AttributeNameConstants.MAXLENGTH),
 
     MINLENGTH(AttributeNameConstants.MINLENGTH),
@@ -296,6 +306,8 @@ public enum PreIndexedAttributeName {
     ONWAITING(AttributeNameConstants.ONWAITING),
 
     TRANSLATE(AttributeNameConstants.TRANSLATE),
+
+    COMMANDFOR(AttributeNameConstants.COMMANDFOR),
 
     FORMACTION(AttributeNameConstants.FORMACTION),
 
@@ -333,9 +345,13 @@ public enum PreIndexedAttributeName {
 
     CONTEXTMENU(AttributeNameConstants.CONTEXTMENU),
 
+    CROSSORIGIN(AttributeNameConstants.CROSSORIGIN),
+
     DATA_WFF_ID(InternalAttrNameConstants.DATA_WFF_ID),
 
     FORMENCTYPE(AttributeNameConstants.FORMENCTYPE),
+
+    INTERESTFOR(AttributeNameConstants.INTERESTFOR),
 
     ONDRAGENTER(AttributeNameConstants.ONDRAGENTER),
 
@@ -375,11 +391,15 @@ public enum PreIndexedAttributeName {
 
     ONTOUCHSTART(AttributeNameConstants.ONTOUCHSTART),
 
+    FETCHPRIORITY(AttributeNameConstants.FETCHPRIORITY),
+
     ONBEFOREPRINT(AttributeNameConstants.ONBEFOREPRINT),
 
     ONCONTEXTMENU(AttributeNameConstants.ONCONTEXTMENU),
 
     ONTOUCHCANCEL(AttributeNameConstants.ONTOUCHCANCEL),
+
+    POPOVERTARGET(AttributeNameConstants.POPOVERTARGET),
 
     TRANSITIONEND(AttributeNameConstants.TRANSITIONEND),
 
@@ -401,7 +421,9 @@ public enum PreIndexedAttributeName {
 
     ONLOADEDMETADATA(AttributeNameConstants.ONLOADEDMETADATA),
 
-    ANIMATIONITERATION(AttributeNameConstants.ANIMATIONITERATION);
+    ANIMATIONITERATION(AttributeNameConstants.ANIMATIONITERATION),
+
+    POPOVERTARGETACTION(AttributeNameConstants.POPOVERTARGETACTION);
 
     private static final PreIndexedAttributeName[] allValues;
 

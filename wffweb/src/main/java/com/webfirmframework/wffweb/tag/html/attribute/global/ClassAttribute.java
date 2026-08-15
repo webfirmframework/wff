@@ -16,12 +16,13 @@
  */
 package com.webfirmframework.wffweb.tag.html.attribute.global;
 
-import java.util.Collection;
-import java.util.Set;
-
 import com.webfirmframework.wffweb.tag.html.attribute.core.AbstractValueSetAttribute;
 import com.webfirmframework.wffweb.tag.html.attribute.core.PreIndexedAttributeName;
 import com.webfirmframework.wffweb.tag.html.identifier.GlobalAttributable;
+
+import java.io.Serial;
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * @author WFF
@@ -32,6 +33,7 @@ public class ClassAttribute extends AbstractValueSetAttribute implements GlobalA
     /**
      *
      */
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     private static final PreIndexedAttributeName PRE_INDEXED_ATTR_NAME = PreIndexedAttributeName.CLASS;

@@ -16,6 +16,7 @@
  */
 package com.webfirmframework.wffweb.interpreter;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import com.webfirmframework.wffweb.NullValueException;
@@ -31,6 +32,7 @@ public abstract class CodeExecutor implements Serializable, Cloneable {
     /**
      *
      */
+    @Serial
     private static final long serialVersionUID = 1_0_0L;
 
     @SuppressWarnings("unused")

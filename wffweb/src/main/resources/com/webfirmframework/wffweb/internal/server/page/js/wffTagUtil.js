@@ -136,23 +136,39 @@ var wffTagUtil = new function() {
 	this.getTagByTagNameAndWffId = function(tn, wffId) {
 	    // tn stands for tagName
 		console.log('getTagByTagNameAndWffId tagName', tn, 'wffId', wffId);
-		var elements = document.querySelectorAll(tn + '[data-wff-id="'
-				+ wffId + '"]');
-		if (elements.length > 1) {
-			console.log('getTagByTagNameAndWffId multiple tags with same wff id');
-			wffLog('multiple tags with same wff id', tn, 'wffId', wffId);
+		var qry = tn + '[data-wff-id="' + wffId + '"]';
+		//DBGM represents debug mode
+		if ((wffGlobal && wffGlobal.DBGM) || !document.querySelector) {
+			var elements = document.querySelectorAll(qry);
+			if (elements.length === 1) {
+				return elements[0];
+			} else if (elements.length > 1) {
+				console.log('getTagByTagNameAndWffId multiple tags with same wff id');
+				wffLog('multiple tags with same wff id', tn, 'wffId', wffId);
+			} else if (elements.length === 0) {
+				wffLog('tag not found for wff id', tn, 'wffId', wffId);
+			}
+			return elements[0];
 		}
-		return elements[0];
+		return document.querySelector(qry);
 	};
 
 	this.getTagByWffId = function(wffId) {
 		console.log('getTagByTagNameAndWffId ', 'wffId', wffId);
-		var elements = document.querySelectorAll('[data-wff-id="' + wffId
-				+ '"]');
-		if (elements.length > 1) {
-			wffLog('multiple tags with same wff id', 'wffId', wffId);
+		var qry = '[data-wff-id="' + wffId + '"]';
+		//DBGM represents debug mode
+		if ((wffGlobal && wffGlobal.DBGM) || !document.querySelector) {
+			var elements = document.querySelectorAll(qry);
+			if (elements.length === 1) {
+				return elements[0];
+			} else if (elements.length > 1) {
+				wffLog('multiple tags with same wff id', 'wffId', wffId);
+			} else if (elements.length === 0) {
+				wffLog('tag not found for wff id', tn, 'wffId', wffId);
+			}
+			return elements[0];
 		}
-		return elements[0];
+		return document.querySelector(qry);
 	};
 
 	/*
