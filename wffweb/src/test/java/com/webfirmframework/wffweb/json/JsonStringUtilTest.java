@@ -3,7 +3,6 @@ package com.webfirmframework.wffweb.json;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -161,6 +160,19 @@ public class JsonStringUtilTest {
         Assert.assertEquals("\n™\n", JsonStringUtil.toUnicodeCharsDecodedString(codePoints9, 0, codePoints9.length));
         Assert.assertEquals(input10, JsonStringUtil.toUnicodeCharsDecodedString(codePoints10, 0, codePoints10.length));
 
+    }
+
+    @Test
+    public void testToCodePointsMayEndWithNullCharCodePoints() {
+        final String input1 = "start\uD83D\uDE80 \uD83D\uDE80 \uD83D\uDE80end";
+        int[] codePointsWithOrWithoutNullCharCodePoints1 = JsonStringUtil.toCodePointsMayEndWithNullCharCodePoints(input1);
+        Assert.assertEquals(input1.length(), codePointsWithOrWithoutNullCharCodePoints1.length);
+        Assert.assertEquals(input1, new String(codePointsWithOrWithoutNullCharCodePoints1, 0, codePointsWithOrWithoutNullCharCodePoints1.length - 3));
+
+        final String input2 = "start0123456789end";
+        int[] codePointsWithOrWithoutNullCharCodePoints2 = JsonStringUtil.toCodePointsMayEndWithNullCharCodePoints(input2);
+        Assert.assertEquals(input2.length(), codePointsWithOrWithoutNullCharCodePoints2.length);
+        Assert.assertEquals(input2, new String(codePointsWithOrWithoutNullCharCodePoints2, 0, codePointsWithOrWithoutNullCharCodePoints2.length));
     }
 
 }

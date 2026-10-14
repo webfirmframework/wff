@@ -2327,7 +2327,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
     }
 
     /**
-     * Executes the JavaScript at the client browser page. This method is equalent
+     * Executes the JavaScript at the client browser page. This method is equivalent
      * to calling <br>
      *
      * <pre>
@@ -2357,7 +2357,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
      * Executes the given JavaScript only on the other pages not on the page from
      * which the {@code tagRepository} object is obtained. Other pages include all
      * other pages opened in other tabs even if they are loaded from different
-     * nodes. This method is equalent to calling <br>
+     * nodes. This method is equivalent to calling <br>
      *
      * <pre>
      * browserPage.performBrowserPageAction(
@@ -2384,7 +2384,7 @@ public class TagRepository extends AbstractHtmlRepository implements Serializabl
     }
 
     /**
-     * Performs the given {@code BrowserPageAction}. This method is equalent to
+     * Performs the given {@code BrowserPageAction}. This method is equivalent to
      * calling
      * <code>browserPage.performBrowserPageAction(pageAction.getActionByteBuffer());</code>.
      * <br>

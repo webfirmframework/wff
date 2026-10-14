@@ -69,7 +69,7 @@ public non-sealed class JsonMap extends HashMap<String, Object> implements JsonM
 
     /**
      * @param json the json string to parse
-     * @return the JsonMap object which is equalent to JSON object.
+     * @return the JsonMap object which is equivalent to JSON object.
      * @since 12.0.4
      */
     public static JsonMap parse(final String json) {

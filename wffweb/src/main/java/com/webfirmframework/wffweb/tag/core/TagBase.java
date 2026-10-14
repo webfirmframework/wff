@@ -23,7 +23,7 @@ public interface TagBase extends Serializable, Cloneable {
      * gets the html string of the tag including the child tags/values. rebuilds the
      * html string if the child tags/values or attributes have been modified.
      *
-     * @return {@code String} equalent to the html string of the tag including the
+     * @return {@code String} equivalent to the html string of the tag including the
      *         child tags.
      * @since 1.0.0
      * @author WFF
@@ -36,7 +36,7 @@ public interface TagBase extends Serializable, Cloneable {
      * cache.
      *
      * @param rebuild true to rebuild &amp; false to return previously built string.
-     * @return {@code String} equalent to the html string of the tag including the
+     * @return {@code String} equivalent to the html string of the tag including the
      *         child tags.
      * @since 1.0.0
      * @author WFF
@@ -47,7 +47,7 @@ public interface TagBase extends Serializable, Cloneable {
      * gets the html string of the tag including the child tags/values. rebuilds the
      * html string if the child tags/values or attributes have been modified.
      *
-     * @return {@code String} equalent to the html string of the tag including the
+     * @return {@code String} equivalent to the html string of the tag including the
      *         child tags.
      * @since 1.0.0
      * @author WFF

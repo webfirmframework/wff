@@ -15,12 +15,6 @@
  */
 package com.webfirmframework.wffweb.json;
 
-import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.TriConsumer;
-import com.webfirmframework.wffweb.util.StringUtil;
-import com.webfirmframework.wffweb.wffbm.data.BMValueType;
-import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -31,6 +25,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import com.webfirmframework.wffweb.InvalidValueException;
+import com.webfirmframework.wffweb.TriConsumer;
+import com.webfirmframework.wffweb.util.StringUtil;
+import com.webfirmframework.wffweb.wffbm.data.BMValueType;
+import com.webfirmframework.wffweb.wffbm.data.WffBMObject;
 
 /**
  * @since 12.0.4
@@ -258,25 +258,7 @@ public sealed interface JsonMapNode
         if (key == null) {
             return null;
         }
-        final Object o = get(key);
-        if (o == null) {
-            return JsonValue.NULL;
-        }
-        if (o instanceof final JsonValue jsonValue) {
-            return jsonValue;
-        }
-        if (o instanceof final String s) {
-            return s.isEmpty() ? JsonValue.EMPTY_STRING : new JsonValue(StringUtil.toCodePoints(s), JsonValueType.STRING);
-        }
-        if (o instanceof final Number n) {
-            return new JsonValue(StringUtil.toCodePoints(n.toString()), JsonValueType.NUMBER);
-        }
-        if (o instanceof final Boolean b) {
-            return new JsonValue(StringUtil.toCodePoints(b.toString()), JsonValueType.BOOLEAN);
-        }
-        throw new InvalidValueException("""
-                The underlying value is not suitable to create an object of JsonValue.
-                The underlying value should be one of the types of JsonValue, String, Number, Boolean or null.""");
+        return JsonValue.create(get(key));
     }
 
     /**
@@ -622,6 +604,25 @@ public sealed interface JsonMapNode
             }
         }
         return t;
+    }
+
+    /**
+     * Eg:
+     * <pre><code>
+     * JsonMapNode parsedJSON = JsonMap.parse("""
+     *         {"users": [{"username": "user1", "name": "Web Firm Framework", "yearOf
+     *         """);
+     * JsonBoxedValue user1 = parsedJSON.getValue("users").getValue(0);
+     * String username = user1.getValue("username").asString();//user1
+     * String name = user1.getValue("name").asString();//Web Firm Framework
+     * int yearOfBirth = user1.getValue("yearOfBirth").asInteger().intValue();//2014
+     * </code></pre>
+     * @param key the key to get value.
+     * @return the JsonBoxedValue object.
+     * @since 12.0.15
+     */
+    public default JsonBoxedValue getValue(final String key) {
+        return JsonBoxedValue.create(get(key));
     }
 
 }

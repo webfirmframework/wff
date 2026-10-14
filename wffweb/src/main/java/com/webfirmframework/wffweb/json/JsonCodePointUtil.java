@@ -437,6 +437,28 @@ final class JsonCodePointUtil {
         return new int[]{first, last};
     }
 
+    static int[] findFirstAndLastNonWhitespaceAndNonNullCharIndices(final int[] codePoints) {
+        int first;
+        int last;
+
+        for (first = 0; first < codePoints.length; first++) {
+            final int codePoint = codePoints[first];
+            if (codePoint != 0 && !JsonCodePointUtil.isWhitespace(codePoint)) {
+                break;
+            }
+        }
+        if (first == codePoints.length) {
+            return null;
+        }
+        for (last = (codePoints.length - 1); last > first; last--) {
+            final int codePoint = codePoints[last];
+            if (codePoint != 0 && !JsonCodePointUtil.isWhitespace(codePoint)) {
+                break;
+            }
+        }
+        return new int[]{first, last};
+    }
+
     static int[] cut(final int[] codePoints, final int[] startEndIndices) {
         if (startEndIndices == null) {
             return codePoints;

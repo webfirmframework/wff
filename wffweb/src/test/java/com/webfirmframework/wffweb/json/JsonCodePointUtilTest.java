@@ -333,8 +333,28 @@ public class JsonCodePointUtilTest {
         indices = JsonCodePointUtil.findFirstAndLastNonWhitespaceIndices("1 1 ".codePoints().toArray());
         Assert.assertNotNull(indices);
         Assert.assertArrayEquals(new int[] {0, 2}, indices);
+    }
 
+    @Test
+    public void testFindFirstAndLastNonWhitespaceAndNonNullCharIndices() {
+        int[] indices = JsonCodePointUtil.findFirstAndLastNonWhitespaceAndNonNullCharIndices("  \uD83D\uDE80 \uD83D\uDE80 \uD83D\uDE80  ".codePoints().toArray());
+        Assert.assertNotNull(indices);
 
+        indices = JsonCodePointUtil.findFirstAndLastNonWhitespaceAndNonNullCharIndices("  1 \uD83D\uDE80 \uD83D\uDE80 \uD83D\uDE80 1  ".codePoints().toArray());
+        Assert.assertNotNull(indices);
+        Assert.assertArrayEquals(new int[] {2, 10}, indices);
+
+        indices = JsonCodePointUtil.findFirstAndLastNonWhitespaceAndNonNullCharIndices("1 \uD83D\uDE80 \uD83D\uDE80 \uD83D\uDE80 1".codePoints().toArray());
+        Assert.assertNotNull(indices);
+        Assert.assertArrayEquals(new int[] {0, 8}, indices);
+
+        indices = JsonCodePointUtil.findFirstAndLastNonWhitespaceAndNonNullCharIndices(" 1 \uD83D\uDE80 \uD83D\uDE80 \uD83D\uDE80 1".codePoints().toArray());
+        Assert.assertNotNull(indices);
+        Assert.assertArrayEquals(new int[] {1, 9}, indices);
+
+        indices = JsonCodePointUtil.findFirstAndLastNonWhitespaceAndNonNullCharIndices("1 \uD83D\uDE80 \uD83D\uDE80 \uD83D\uDE80 1 ".codePoints().toArray());
+        Assert.assertNotNull(indices);
+        Assert.assertArrayEquals(new int[] {0, 8}, indices);
     }
 
     @Test

@@ -15,13 +15,6 @@
  */
 package com.webfirmframework.wffweb.json;
 
-import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.TriConsumer;
-import com.webfirmframework.wffweb.util.StringUtil;
-import com.webfirmframework.wffweb.wffbm.data.BMValueType;
-import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
-import com.webfirmframework.wffweb.wffbm.data.WffBMNumberArray;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -32,6 +25,13 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import com.webfirmframework.wffweb.InvalidValueException;
+import com.webfirmframework.wffweb.TriConsumer;
+import com.webfirmframework.wffweb.util.StringUtil;
+import com.webfirmframework.wffweb.wffbm.data.BMValueType;
+import com.webfirmframework.wffweb.wffbm.data.WffBMArray;
+import com.webfirmframework.wffweb.wffbm.data.WffBMNumberArray;
 
 /**
  * @since 12.0.4
@@ -228,25 +228,7 @@ public sealed interface JsonListNode extends JsonBaseNode, List<Object> permits 
      * @since 12.0.11
      */
     default JsonValue getValueAsJsonValue(final int index) {
-        final Object o = get(index);
-        if (o == null) {
-            return JsonValue.NULL;
-        }
-        if (o instanceof final JsonValue jsonValue) {
-            return jsonValue;
-        }
-        if (o instanceof final String s) {
-            return s.isEmpty() ? JsonValue.EMPTY_STRING : new JsonValue(StringUtil.toCodePoints(s), JsonValueType.STRING);
-        }
-        if (o instanceof final Number n) {
-            return new JsonValue(StringUtil.toCodePoints(n.toString()), JsonValueType.NUMBER);
-        }
-        if (o instanceof final Boolean b) {
-            return new JsonValue(StringUtil.toCodePoints(b.toString()), JsonValueType.BOOLEAN);
-        }
-        throw new InvalidValueException("""
-                The underlying value is not suitable to create an object of JsonValue.
-                The underlying value should be one of the types of JsonValue, String, Number, Boolean or null.""");
+        return JsonValue.create(get(index));
     }
 
     /**
@@ -623,4 +605,21 @@ public sealed interface JsonListNode extends JsonBaseNode, List<Object> permits 
         return u;
     }
 
+    /**
+     * Eg:
+     * <pre><code>
+     * JsonListNode parsedJSON = JsonList.parse("""
+     *         [{"user1": {"name": "Web Firm Framework", "yearOfBirth": 2014}}]
+     *         """);
+     * JsonBoxedValue user1 = parsedJSON.getValue(0).getValue("user1");
+     * String name = user1.getValue("name").asString();//Web Firm Framework
+     * int yearOfBirth = user1.getValue("yearOfBirth").asInteger().intValue();//2014
+     * </code></pre>
+     * @param index the index to get value.
+     * @return the JsonBoxedValue object.
+     * @since 12.0.15
+     */
+    public default JsonBoxedValue getValue(final int index) {
+        return JsonBoxedValue.create(get(index));
+    }
 }

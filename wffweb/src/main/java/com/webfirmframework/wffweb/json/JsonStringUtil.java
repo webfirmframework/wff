@@ -15,12 +15,12 @@
  */
 package com.webfirmframework.wffweb.json;
 
-import com.webfirmframework.wffweb.util.StringUtil;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
+
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * Only for internal use.
@@ -457,6 +457,25 @@ final class JsonStringUtil {
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param string the input string.
+     * @return the code points array from the string with or without ending with 0 code points.
+     * @since 12.0.15
+     */
+    static int[] toCodePointsMayEndWithNullCharCodePoints(final String string) {
+        final int length = string.length();
+        if (length == 0) {
+            return new int[0];
+        }
+        final int[] codePoints = new int[length];
+        for (int i = 0, j = 0; j < codePoints.length; i++) {
+            final int codePoint = string.codePointAt(j);
+            codePoints[i] = codePoint;
+            j += Character.charCount(codePoint);
+        }
+        return codePoints;
     }
 
 }

@@ -58,7 +58,7 @@ public non-sealed class JsonLinkedList extends LinkedList<Object> implements Jso
 
     /**
      * @param json the json array string to parse
-     * @return the JsonLinkedList object which is equalent to JSON array.
+     * @return the JsonLinkedList object which is equivalent to JSON array.
      * @since 12.0.4
      */
     public static JsonLinkedList parse(final String json) {
