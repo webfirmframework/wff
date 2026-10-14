@@ -610,7 +610,7 @@ public sealed interface JsonMapNode
      * Eg:
      * <pre><code>
      * JsonMapNode parsedJSON = JsonMap.parse("""
-     *         {"users": [{"username": "user1", "name": "Web Firm Framework", "yearOf
+     *         {"users": [{"username": "user1", "name": "Web Firm Framework", "yearOfBirth": 2014}]}
      *         """);
      * JsonBoxedValue user1 = parsedJSON.getValue("users").getValue(0);
      * String username = user1.getValue("username").asString();//user1
