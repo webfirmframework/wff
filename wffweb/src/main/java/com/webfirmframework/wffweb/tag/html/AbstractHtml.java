@@ -148,7 +148,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
      */
     private final Set<AbstractHtml> children;
 
-    private String openingTag;
+    private volatile String openingTag;
 
     // should be initialized with empty string
     private final String closingTag;
@@ -3597,7 +3597,7 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
     }
 
     /**
-     * @return {@code String} equalent to the html string of the tag including the
+     * @return {@code String} equivalent to the html string of the tag including the
      *         child tags.
      * @author WFF
      * @since 1.0.0
@@ -4756,7 +4756,8 @@ public abstract non-sealed class AbstractHtml extends AbstractJsObject implement
         if (htmlMiddleSB != null) {
             final Lock lock = lockAndGetReadLock();
             try {
-                return htmlMiddleSB.toString();
+                final StringBuilder htmlMiddleSBAfterLock = this.htmlMiddleSB;
+                return htmlMiddleSBAfterLock != null ? htmlMiddleSBAfterLock.toString() : "";
             } finally {
                 lock.unlock();
             }

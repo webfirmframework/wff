@@ -15,8 +15,7 @@
  */
 package com.webfirmframework.wffweb.json;
 
-import com.webfirmframework.wffweb.InvalidUsageException;
-import com.webfirmframework.wffweb.util.StringUtil;
+import static com.webfirmframework.wffweb.json.JsonStringUtil.toCodePointsMayEndWithNullCharCodePoints;
 
 import java.math.BigDecimal;
 import java.util.ArrayDeque;
@@ -28,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import com.webfirmframework.wffweb.InvalidUsageException;
 
 /**
  * Refer {@link #newBuilder()} for creating object with custom config.
@@ -874,8 +875,8 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
      * @since 12.0.4
      */
     public Object parseJson(final String json) {
-        final int[] jsonCodePoints = StringUtil.toCodePoints(json);
-        final int[] startEndIndices = JsonCodePointUtil.findFirstAndLastNonWhitespaceIndices(jsonCodePoints);
+        final int[] jsonCodePoints = toCodePointsMayEndWithNullCharCodePoints(json);
+        final int[] startEndIndices = JsonCodePointUtil.findFirstAndLastNonWhitespaceAndNonNullCharIndices(jsonCodePoints);
         final boolean isBooleanValue = isBooleanValue(jsonCodePoints, startEndIndices);
         final boolean notJsonArrayObjectStringValue = !isJsonString(jsonCodePoints, startEndIndices)
                 && !isJsonArray(jsonCodePoints, startEndIndices) && !isJsonObject(jsonCodePoints, startEndIndices);
@@ -919,8 +920,8 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
      * @since 12.0.4
      */
     public Map<String, Object> parseJsonObject(final String json) {
-        final int[] jsonCodePoints = StringUtil.toCodePoints(json);
-        final int[] startEndIndices = JsonCodePointUtil.findFirstAndLastNonWhitespaceIndices(jsonCodePoints);
+        final int[] jsonCodePoints = toCodePointsMayEndWithNullCharCodePoints(json);
+        final int[] startEndIndices = JsonCodePointUtil.findFirstAndLastNonWhitespaceAndNonNullCharIndices(jsonCodePoints);
         if (isJsonObject(jsonCodePoints, startEndIndices)) {
             final JsonSection outerMostJsonSection = buildOuterMostJsonSection(jsonCodePoints, startEndIndices);
             return outerMostJsonSection.getJsonObject();
@@ -934,8 +935,8 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
      * @since 12.0.4
      */
     public List<Object> parseJsonArray(final String json) {
-        final int[] jsonCodePoints = StringUtil.toCodePoints(json);
-        final int[] startEndIndices = JsonCodePointUtil.findFirstAndLastNonWhitespaceIndices(jsonCodePoints);
+        final int[] jsonCodePoints = toCodePointsMayEndWithNullCharCodePoints(json);
+        final int[] startEndIndices = JsonCodePointUtil.findFirstAndLastNonWhitespaceAndNonNullCharIndices(jsonCodePoints);
         if (isJsonArray(jsonCodePoints, startEndIndices)) {
             final JsonSection outerMostJsonSection = buildOuterMostJsonSection(jsonCodePoints, startEndIndices);
             return outerMostJsonSection.getJsonArray();
@@ -949,8 +950,8 @@ public record JsonParser(JsonObjectType jsonObjectType, JsonArrayType jsonArrayT
      * @since 12.0.4
      */
     public String parseJsonEncodedStringValue(final String json) {
-        final int[] jsonCodePoints = StringUtil.toCodePoints(json);
-        final int[] startEndIndices = JsonCodePointUtil.findFirstAndLastNonWhitespaceIndices(jsonCodePoints);
+        final int[] jsonCodePoints = toCodePointsMayEndWithNullCharCodePoints(json);
+        final int[] startEndIndices = JsonCodePointUtil.findFirstAndLastNonWhitespaceAndNonNullCharIndices(jsonCodePoints);
         if (isJsonString(jsonCodePoints, startEndIndices)) {
             final JsonSection outerMostJsonSection = buildOuterMostJsonSection(jsonCodePoints, startEndIndices);
             final int[] jsonStringPartCodePoints = outerMostJsonSection.getJsonStringPartCodePoints();

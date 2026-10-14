@@ -73,7 +73,7 @@ public non-sealed class JsonLinkedMap extends LinkedHashMap<String, Object> impl
 
     /**
      * @param json the json string to parse
-     * @return the JsonLinkedMap object which is equalent to JSON object.
+     * @return the JsonLinkedMap object which is equivalent to JSON object.
      * @since 12.0.4
      */
     public static JsonLinkedMap parse(final String json) {

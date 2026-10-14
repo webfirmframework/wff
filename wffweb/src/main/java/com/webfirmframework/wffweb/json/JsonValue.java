@@ -15,13 +15,13 @@
  */
 package com.webfirmframework.wffweb.json;
 
-import com.webfirmframework.wffweb.InvalidValueException;
-import com.webfirmframework.wffweb.util.StringUtil;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
+
+import com.webfirmframework.wffweb.InvalidValueException;
+import com.webfirmframework.wffweb.util.StringUtil;
 
 /**
  * @param codePoints the code points of string representation of value.
@@ -99,6 +99,31 @@ public record JsonValue(int[] codePoints, JsonValueType valueType) implements Js
 
     int[] originalCodePoints() {
         return codePoints;
+    }
+
+    /**
+     * @param value
+     * @return the JsonValue or throws exception if not convertible.
+     */
+    static JsonValue create(final Object value) {
+        if (value == null) {
+            return JsonValue.NULL;
+        }
+        if (value instanceof final JsonValue jsonValue) {
+            return jsonValue;
+        }
+        if (value instanceof final String s) {
+            return s.isEmpty() ? JsonValue.EMPTY_STRING : new JsonValue(StringUtil.toCodePoints(s), JsonValueType.STRING);
+        }
+        if (value instanceof final Number n) {
+            return new JsonValue(StringUtil.toCodePoints(n.toString()), JsonValueType.NUMBER);
+        }
+        if (value instanceof final Boolean b) {
+            return new JsonValue(StringUtil.toCodePoints(b.toString()), JsonValueType.BOOLEAN);
+        }
+        throw new InvalidValueException("""
+                The underlying value is not suitable to create an object of JsonValue.
+                The underlying value should be one of the types of JsonValue, String, Number, Boolean or null.""");
     }
 
     /**

@@ -59,7 +59,7 @@ public non-sealed class JsonList extends ArrayList<Object> implements JsonListNo
 
     /**
      * @param json the json array string to parse
-     * @return the JsonList object which is equalent to JSON array.
+     * @return the JsonList object which is equivalent to JSON array.
      * @since 12.0.4
      */
     public static JsonList parse(final String json) {

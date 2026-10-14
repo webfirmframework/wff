@@ -191,7 +191,7 @@ public abstract non-sealed class AbstractAttribute extends AbstractTagBase {
     }
 
     /**
-     * @return {@code String} equalent to the html string of the tag including the
+     * @return {@code String} equivalent to the html string of the tag including the
      *         child tags.
      * @author WFF
      * @since 1.0.0

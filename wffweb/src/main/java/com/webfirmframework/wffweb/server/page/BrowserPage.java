@@ -373,7 +373,7 @@ public abstract class BrowserPage implements Serializable {
      * {@code inputBufferLimit} and {@code outputBufferLimit} works as expected only
      * when {@code onPayloadLoss} param is passed otherwise the buffer may grow
      * beyond the given limit especially when corresponding buffer timeout is less
-     * than the equalent nanoseconds of BrowserPage session maxIdleTimeout (the
+     * than the equivalent nanoseconds of BrowserPage session maxIdleTimeout (the
      * {@code maxIdleTimeout} passed from
      * {@link BrowserPageContext#enableAutoClean}, eg: long inputBufferTimeout,
      * outputBufferTimeout = TimeUnit.MILLISECONDS.toNanos(maxIdleTimeout));.
@@ -1971,7 +1971,7 @@ public abstract class BrowserPage implements Serializable {
      * method because this method internally calls {@link BrowserPage#render()}
      * method.
      *
-     * @return {@code String} equalent to the html string of the tag including the
+     * @return {@code String} equivalent to the html string of the tag including the
      *         child tags.
      *
      */
@@ -1995,7 +1995,7 @@ public abstract class BrowserPage implements Serializable {
      * the cache.
      *
      * @param rebuild true to rebuild &amp; false to return previously built string.
-     * @return {@code String} equalent to the html string of the tag including the
+     * @return {@code String} equivalent to the html string of the tag including the
      *         child tags.
      *
      * @since 2.1.4

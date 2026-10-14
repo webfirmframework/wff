@@ -120,7 +120,7 @@ import org.junit.runners.Suite.SuiteClasses;
         JsonCodePointUtilTest.class, JsonListTest.class, JsonMapTest.class, JsonParserTest.class, JsonValueTest.class,
         JsonMapNodeTest.class, JsonListNodeTest.class, JsonStringUtilTest.class, PopoverTest.class, PopoverTargetTest.class,
         PopoverTargetActionTest.class, CommandTest.class, CommandForTest.class, InterestForTest.class, CrossOriginTest.class,
-        FetchPriorityTest.class, IntegrityTest.class, InertTest.class, InputModeTest.class})
+        FetchPriorityTest.class, IntegrityTest.class, InertTest.class, InputModeTest.class, JsonBoxedValueTest.class})
 public class AllTests {
 
 }
